@@ -16,7 +16,10 @@ const HeroSection = () => {
               />
             </div>
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-4">
-             AI assisted Modern Healthcare for a{" "}
+              <span className="relative inline-block overflow-hidden">
+                <span className="absolute inset-0 bg-gradient-to-r from-transparent via-preventify-light-gray/50 to-transparent animate-shimmer" />
+                <span className="relative">AI</span>
+              </span> assisted Modern Healthcare for a{" "}
               <span className="text-preventify-blue">Preventive Lifestyle</span>
             </h1>
             <p className="text-lg text-preventify-dark-gray mb-8">
