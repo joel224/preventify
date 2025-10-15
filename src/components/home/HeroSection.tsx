@@ -20,7 +20,10 @@ const HeroSection = () => {
                 <span className="absolute inset-0 bg-gradient-to-r from-transparent via-preventify-light-gray/50 to-transparent animate-shimmer" />
                 <span className="relative">AI</span>
               </span> assisted Modern Healthcare for a{" "}
-              <span className="text-preventify-blue">Preventive Lifestyle</span>
+              <span className="relative inline-block overflow-hidden text-preventify-blue">
+                <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent animate-shimmer" />
+                <span className="relative">Preventive Lifestyle</span>
+              </span>
             </h1>
             <p className="text-lg text-preventify-dark-gray mb-8">
               AI-assisted evidence-based care across Kerala focused on prevention, early intervention, 
