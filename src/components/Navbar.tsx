@@ -54,7 +54,7 @@ const Navbar = () => {
               variant="outline" 
               className="border-preventify-purple text-preventify-purple hover:bg-preventify-soft-purple relative overflow-hidden group"
             >
-              <span className="absolute w-0 h-0 transition-all duration-300 ease-out bg-white/10 group-hover:w-full group-hover:h-full"></span>
+              <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/50 to-transparent animate-shimmer group-hover:animate-shimmer" />
               <span className="relative">Find a Doctor</span>
             </Button>
             <Button className="bg-preventify-purple hover:bg-preventify-dark-purple text-white">
@@ -96,7 +96,7 @@ const Navbar = () => {
                   variant="outline" 
                   className="border-preventify-purple text-preventify-purple hover:bg-preventify-soft-purple w-full relative overflow-hidden group"
                 >
-                  <span className="absolute w-0 h-0 transition-all duration-300 ease-out bg-white/10 group-hover:w-full group-hover:h-full"></span>
+                  <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/50 to-transparent animate-shimmer group-hover:animate-shimmer" />
                   <span className="relative">Find a Doctor</span>
                 </Button>
                 <Button className="bg-preventify-purple hover:bg-preventify-dark-purple text-white w-full">
