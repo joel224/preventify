@@ -50,8 +50,12 @@ const Navbar = () => {
           </nav>
 
           <div className="hidden md:flex items-center space-x-4">
-            <Button variant="outline" className="border-preventify-purple text-preventify-purple hover:bg-preventify-soft-purple">
-              Find a Doctor
+            <Button 
+              variant="outline" 
+              className="border-preventify-purple text-preventify-purple hover:bg-preventify-soft-purple relative overflow-hidden group"
+            >
+              <span className="absolute w-0 h-0 transition-all duration-300 ease-out bg-white/10 group-hover:w-full group-hover:h-full"></span>
+              <span className="relative">Find a Doctor</span>
             </Button>
             <Button className="bg-preventify-purple hover:bg-preventify-dark-purple text-white">
               Book Appointment
@@ -88,8 +92,12 @@ const Navbar = () => {
                 </Link>
               ))}
               <div className="flex flex-col space-y-2 pt-3">
-                <Button variant="outline" className="border-preventify-purple text-preventify-purple hover:bg-preventify-soft-purple w-full">
-                  Find a Doctor
+                <Button 
+                  variant="outline" 
+                  className="border-preventify-purple text-preventify-purple hover:bg-preventify-soft-purple w-full relative overflow-hidden group"
+                >
+                  <span className="absolute w-0 h-0 transition-all duration-300 ease-out bg-white/10 group-hover:w-full group-hover:h-full"></span>
+                  <span className="relative">Find a Doctor</span>
                 </Button>
                 <Button className="bg-preventify-purple hover:bg-preventify-dark-purple text-white w-full">
                   Book Appointment
