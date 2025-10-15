@@ -24,7 +24,7 @@ const SubscriptionButton = () => {
       >
         <Button
           size="icon"
-          className="w-20 h-20 rounded-full bg-white/20 backdrop-blur-md border border-white/30 text-white hover:bg-white/30"
+          className="w-20 h-20 rounded-full bg-gray-400/20 backdrop-blur-lg border border-gray-300/30 text-preventify-dark-gray hover:bg-gray-400/30"
           aria-label="Annual Subscription"
         >
           <div className="flex flex-col items-center">
