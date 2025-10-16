@@ -24,11 +24,7 @@ const HeroSection = () => {
               </span>
             </h1>
             <p className="text-lg text-preventify-dark-gray mb-8">
-              AI-assisted evidence-based care across 
-              <span className="relative inline-block overflow-hidden">
-                 <span className="absolute inset-0 bg-gradient-to-r from-transparent via-preventify-light-gray to-transparent animate-shimmer group-hover:animate-shimmer" />
-                 <span className="relative">Kerala focused</span>
-               </span>
+              AI-assisted evidence-based care across Kerala focused
                on prevention, early intervention, and better health outcomes for you and your family.
             </p>
             <div className="flex flex-col sm:flex-row gap-4">
