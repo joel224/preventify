@@ -1,6 +1,7 @@
 
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
+import WhatsAppBooking from "../WhatsAppBooking";
 
 const HeroSection = () => {
   return (
@@ -23,13 +24,19 @@ const HeroSection = () => {
               </span>
             </h1>
             <p className="text-lg text-preventify-dark-gray mb-8">
-              AI-assisted evidence-based care across Kerala focused on prevention, early intervention, 
-              and better health outcomes for you and your family.
+              AI-assisted evidence-based care across 
+              <span className="relative inline-block overflow-hidden">
+                 <span className="absolute inset-0 bg-gradient-to-r from-transparent via-preventify-light-gray to-transparent animate-shimmer group-hover:animate-shimmer" />
+                 <span className="relative">Kerala focused</span>
+               </span>
+               on prevention, early intervention, and better health outcomes for you and your family.
             </p>
             <div className="flex flex-col sm:flex-row gap-4">
-              <Button className="bg-preventify-blue hover:bg-preventify-dark-blue text-white text-lg py-6 px-8">
-                Book an Appointment
-              </Button>
+              <WhatsAppBooking>
+                <Button className="bg-preventify-blue hover:bg-preventify-dark-blue text-white text-lg py-6 px-8">
+                  Book an Appointment
+                </Button>
+              </WhatsAppBooking>
               <Link href="/programs">
                 <Button variant="outline" className="border-preventify-green text-preventify-green hover:bg-preventify-green/10 text-lg py-6 px-8">
                   Our Services
