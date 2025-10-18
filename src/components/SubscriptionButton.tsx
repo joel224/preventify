@@ -52,43 +52,37 @@ const SubscriptionButton = () => {
         </div>
       </DialogTrigger>
       <DialogContent className="sm:max-w-xl bg-white p-8">
-        <DialogHeader className="text-left">
-          <DialogTitle className="text-3xl font-bold text-preventify-blue mb-4">Find Your Peace of Mind. We'll Handle the Rest.</DialogTitle>
+        <DialogHeader className="text-left mb-4">
+          <DialogTitle className="text-3xl font-bold text-preventify-blue mb-2">Find Your Peace of Mind.</DialogTitle>
+          <DialogDescription>We'll Handle the Rest.</DialogDescription>
         </DialogHeader>
         
-        <div className="py-4 space-y-6">
-          <div className="grid grid-cols-3 items-start text-preventify-dark-gray mb-6">
-            <div className="col-span-2 flex items-start gap-3">
-              <CloudUpload className="h-6 w-6 text-preventify-green shrink-0 mt-1"/>
-              <p>All your medical records files, reports, & bills. Secured online.</p>
-            </div>
-            <div className="col-span-1 flex justify-center items-center">
-                <div className="relative">
-                    <CheckCircle2 className="h-20 w-20 text-preventify-green" strokeWidth={1} />
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-center">
+            <div className="space-y-4 text-preventify-dark-gray">
+                <div className="flex items-start gap-3">
+                  <CloudUpload className="h-8 w-8 text-preventify-green shrink-0"/>
+                  <p>All your medical records files, reports, & bills. Secured online.</p>
+                </div>
+                <div className="flex items-start gap-3">
+                  <Search className="h-8 w-8 text-preventify-green shrink-0"/>
+                  <p>Instant access to lab results, anywhere you are.</p>
+                </div>
+                <div className="flex items-start gap-3">
+                  <Building className="h-8 w-8 text-preventify-green shrink-0"/>
+                  <p>Access records at clinics & partner pharmacies. Hassle-free.</p>
                 </div>
             </div>
-          </div>
-
-          <div className="grid grid-cols-3 gap-6 text-center text-sm text-preventify-dark-gray">
-              <div>
-                  <CloudUpload className="h-8 w-8 mx-auto text-preventify-green mb-2"/>
-                  <p>All your medical reports & bills. Secured online.</p>
-              </div>
-              <div>
-                  <Search className="h-8 w-8 mx-auto text-preventify-green mb-2"/>
-                  <p>Instant access lab results. anywhere.</p>
-              </div>
-              <div>
-                  <Building className="h-8 w-8 mx-auto text-preventify-green mb-2"/>
-                  <p>Access records at clinics & partner pharmacies. Hassle-free.</p>
-              </div>
-          </div>
+            <div className="flex justify-center items-center">
+                <div className="relative">
+                    <CheckCircle2 className="h-32 w-32 text-preventify-green" strokeWidth={1} />
+                </div>
+            </div>
+        </div>
           
-          <div className="bg-yellow-100/50 border border-yellow-200/80 p-4 rounded-lg text-center my-4">
+        <div className="bg-yellow-100/50 border border-yellow-200/80 p-4 rounded-lg text-center my-6">
             <p className="font-semibold text-red-700">Unlimited doctor services for just <span className="text-preventify-blue">₹730/year</span></p>
             <p className="text-sm text-preventify-dark-gray">for an individual</p>
             <p className="font-semibold text-preventify-blue mt-2">₹1999/year for a family.</p>
-          </div>
         </div>
 
         <DialogFooter className="flex flex-col gap-2 sm:flex-col sm:gap-2">
