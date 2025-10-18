@@ -1,0 +1,16 @@
+{
+  "node": {
+    "40054dc7a7381b40d894b0bef8a4ffa93efa9374b4": {
+      "workers": {
+        "app/_not-found/page": {
+          "moduleId": "[project]/.next-internal/server/app/_not-found/page/actions.js { ACTIONS_MODULE0 => \"[project]/src/ai/flows/explain-text-flow.ts [app-rsc] (ecmascript)\" } [app-rsc] (server actions loader, ecmascript)",
+          "async": false
+        }
+      },
+      "layer": {
+        "app/_not-found/page": "action-browser"
+      }
+    }
+  },
+  "edge": {}
+}
