@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import { Star } from "lucide-react";
+import { Star, Paperclip, FlaskConical, FileText } from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -11,6 +11,7 @@ import {
   DialogDescription,
   DialogTrigger,
   DialogFooter,
+  DialogClose,
 } from "@/components/ui/dialog";
 import { Check } from "lucide-react";
 
@@ -50,37 +51,38 @@ const SubscriptionButton = () => {
           </Button>
         </div>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[625px] bg-preventify-light-gray">
-        <DialogHeader>
-          <DialogTitle className="text-2xl font-bold text-preventify-blue">Annual Subscription Offers</DialogTitle>
-          <DialogDescription>
-            Choose a plan that works best for you and your family.
-          </DialogDescription>
+      <DialogContent className="sm:max-w-md bg-preventify-light-gray p-8">
+        <DialogHeader className="text-center">
+          <DialogTitle className="text-2xl font-bold text-preventify-blue mb-2">Find Your Peace of Mind. We'll Handle the Rest.</DialogTitle>
         </DialogHeader>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 py-4">
-          <div className="bg-white p-6 rounded-lg border">
-            <h3 className="text-xl font-semibold text-preventify-dark-gray mb-2">Individual Plan</h3>
-            <p className="text-3xl font-bold mb-4">₹2,999 <span className="text-sm font-normal text-muted-foreground">/year</span></p>
-            <ul className="space-y-2 text-sm text-muted-foreground">
-              <li className="flex items-center"><Check className="h-4 w-4 mr-2 text-preventify-green"/>Unlimited Consultations</li>
-              <li className="flex items-center"><Check className="h-4 w-4 mr-2 text-preventify-green"/>Annual Health Checkup</li>
-              <li className="flex items-center"><Check className="h-4 w-4 mr-2 text-preventify-green"/>20% off on Diagnostics</li>
+        <div className="py-4 space-y-4 text-center">
+            <ul className="space-y-3 text-muted-foreground text-left">
+              <li className="flex items-start">
+                <FileText className="h-5 w-5 mr-3 text-preventify-green shrink-0 mt-1"/>
+                <span>No need to carry bills, reports, or x-rays. We manage all your records digitally.</span>
+              </li>
+              <li className="flex items-start">
+                <FlaskConical className="h-5 w-5 mr-3 text-preventify-green shrink-0 mt-1"/>
+                <span>Lab test data is handled online, so your results are always accessible.</span>
+              </li>
+              <li className="flex items-start">
+                <Paperclip className="h-5 w-5 mr-3 text-preventify-green shrink-0 mt-1"/>
+                <span>Access your records from anywhere, including our partner medical shops. No need to remember everything.</span>
+              </li>
             </ul>
-            <Button className="w-full mt-6 bg-preventify-green hover:bg-preventify-dark-green">Choose Plan</Button>
+
+            <div className="bg-white p-4 rounded-lg border my-4">
+              <p className="font-bold text-preventify-dark-gray">Unlimited doctor services for just <span className="text-preventify-blue">₹730/year</span> for an individual, or <span className="text-preventify-blue">₹1999/year</span> for a family.</p>
+            </div>
           </div>
-          <div className="bg-white p-6 rounded-lg border-2 border-preventify-blue relative">
-            <div className="absolute top-0 -translate-y-1/2 bg-preventify-blue text-white px-3 py-1 text-sm rounded-full">Most Popular</div>
-            <h3 className="text-xl font-semibold text-preventify-dark-gray mb-2">Family Plan</h3>
-            <p className="text-3xl font-bold mb-4">₹5,999 <span className="text-sm font-normal text-muted-foreground">/year</span></p>
-            <ul className="space-y-2 text-sm text-muted-foreground">
-              <li className="flex items-center"><Check className="h-4 w-4 mr-2 text-preventify-green"/>For up to 4 members</li>
-              <li className="flex items-center"><Check className="h-4 w-4 mr-2 text-preventify-green"/>Unlimited Consultations</li>
-              <li className="flex items-center"><Check className="h-4 w-4 mr-2 text-preventify-green"/>Annual Health Checkup</li>
-              <li className="flex items-center"><Check className="h-4 w-4 mr-2 text-preventify-green"/>30% off on Diagnostics</li>
-            </ul>
-            <Button className="w-full mt-6 bg-preventify-blue hover:bg-preventify-dark-blue">Choose Plan</Button>
-          </div>
-        </div>
+        <DialogFooter className="flex flex-col gap-2 sm:flex-col sm:gap-2">
+            <Button className="w-full bg-preventify-green hover:bg-preventify-dark-green text-lg py-6">Claim My Peace of Mind</Button>
+            <DialogClose asChild>
+                <Button type="button" variant="ghost" className="text-xs text-muted-foreground">
+                    I'm Not Ready to Stop Worrying
+                </Button>
+            </DialogClose>
+        </DialogFooter>
       </DialogContent>
     </Dialog>
   );
