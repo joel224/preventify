@@ -11,12 +11,10 @@ const HeroSection = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
           <div className="order-2 md:order-1">
             <div className="mb-6">
-              <Image 
-                src="/13af45b7-8a4b-4a56-b1d2-02df670cc2fd.png" 
+              <img 
+                src="https://res.cloudinary.com/dyf8umlda/image/upload/v1749710604/Preventify_Logo_new_f7vxej.png" 
                 alt="Preventify Hospitals Logo" 
-                width={200}
-                height={50}
-                className="h-auto"
+                className="h-16 md:h-20"
               />
             </div>
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-4 text-preventify-dark-blue">
