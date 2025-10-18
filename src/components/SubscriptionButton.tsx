@@ -59,15 +59,15 @@ const SubscriptionButton = () => {
             <ul className="space-y-3 text-muted-foreground text-left">
               <li className="flex items-start">
                 <FileText className="h-5 w-5 mr-3 text-preventify-green shrink-0 mt-1"/>
-                <span>No need to carry bills, reports, or x-rays. We manage all your records digitally.</span>
+                <span>No more carrying bulky files. We keep your reports, bills, and X-rays safe online.</span>
               </li>
               <li className="flex items-start">
                 <FlaskConical className="h-5 w-5 mr-3 text-preventify-green shrink-0 mt-1"/>
-                <span>Lab test data is handled online, so your results are always accessible.</span>
+                <span>Lab results are instantly available online, so you can see them anytime.</span>
               </li>
               <li className="flex items-start">
                 <Paperclip className="h-5 w-5 mr-3 text-preventify-green shrink-0 mt-1"/>
-                <span>Access your records from anywhere, including our partner medical shops. No need to remember everything.</span>
+                <span>Access your records anywhere—at our clinics or partner pharmacies. No memorizing needed!</span>
               </li>
             </ul>
 
