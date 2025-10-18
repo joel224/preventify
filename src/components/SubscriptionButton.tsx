@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useState, useEffect } from "react";
@@ -85,13 +84,8 @@ const SubscriptionButton = () => {
             <p className="font-semibold text-preventify-blue mt-2 text-sm sm:text-base">₹1999/year for a family.</p>
         </div>
 
-        <DialogFooter className="flex flex-col gap-2 sm:flex-row sm:gap-2">
-            <Button className="w-full bg-preventify-green hover:bg-preventify-dark-green text-white text-base sm:text-lg py-3 sm:py-6">Claim My Peace of Mind</Button>
-            <DialogClose asChild>
-                <Button type="button" variant="ghost" className="text-xs text-muted-foreground">
-                    No thanks, I prefer to Stop Worrying
-                </Button>
-            </DialogClose>
+        <DialogFooter className="flex flex-col gap-2 sm:flex-row sm:gap-2 sm:justify-center">
+            <Button className="w-full sm:w-auto bg-preventify-green hover:bg-preventify-dark-green text-white text-base sm:text-lg py-3 sm:py-6 px-8">Claim My Peace of Mind</Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>
