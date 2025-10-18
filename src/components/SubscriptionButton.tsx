@@ -85,7 +85,7 @@ const SubscriptionButton = () => {
           </div>
           
           <div className="bg-yellow-100/50 border border-yellow-200/80 p-4 rounded-lg text-center my-4">
-            <p className="font-semibold text-preventify-dark-gray">Unlimited doctor services for just <span className="text-preventify-blue">₹730/year</span></p>
+            <p className="font-semibold text-red-700">Unlimited doctor services for just <span className="text-preventify-blue">₹730/year</span></p>
             <p className="text-sm text-preventify-dark-gray">for an individual</p>
             <p className="font-semibold text-preventify-blue mt-2">₹1999/year for a family.</p>
           </div>
