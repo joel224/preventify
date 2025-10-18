@@ -2,6 +2,7 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import WhatsAppBooking from "../WhatsAppBooking";
+import Image from "next/image";
 
 const HeroSection = () => {
   return (
@@ -10,10 +11,12 @@ const HeroSection = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
           <div className="order-2 md:order-1">
             <div className="flex items-center mb-6">
-              <img 
-                src="https://res.cloudinary.com/dyf8umlda/image/upload/v1749710604/Preventify_Logo_new_f7vxej.png" 
+              <Image 
+                src="/Preventify_Logo_new.png" 
                 alt="Preventify Hospitals Logo" 
-                className="h-16 md:h-20"
+                width={200}
+                height={80}
+                className="h-16 md:h-20 w-auto"
               />
             </div>
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-4 text-preventify-dark-blue">
