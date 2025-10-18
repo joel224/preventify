@@ -10,13 +10,13 @@ const HeroSection = () => {
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-16 md:py-24">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
           <div className="order-2 md:order-1">
-            <div className="flex items-center mb-6">
+            <div className="mb-6">
               <Image 
                 src="/13af45b7-8a4b-4a56-b1d2-02df670cc2fd.png" 
                 alt="Preventify Hospitals Logo" 
                 width={200}
-                height={80}
-                className="h-16 md:h-20 w-auto"
+                height={50}
+                className="h-auto"
               />
             </div>
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-4 text-preventify-dark-blue">
