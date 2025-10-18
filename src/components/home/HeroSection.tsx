@@ -12,7 +12,7 @@ const HeroSection = () => {
           <div className="order-2 md:order-1">
             <div className="flex items-center mb-6">
               <Image 
-                src="/Preventify_Logo_new.png" 
+                src="/13af45b7-8a4b-4a56-b1d2-02df670cc2fd.png" 
                 alt="Preventify Hospitals Logo" 
                 width={200}
                 height={80}
