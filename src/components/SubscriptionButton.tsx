@@ -51,7 +51,7 @@ const SubscriptionButton = () => {
           </Button>
         </div>
       </DialogTrigger>
-      <DialogContent className="w-[80vw] max-w-xl bg-white p-6 sm:p-8">
+      <DialogContent className="w-[90vw] max-w-xl bg-white p-6 sm:p-8">
         <DialogHeader className="text-left mb-4">
           <DialogTitle className="text-2xl sm:text-3xl font-bold text-preventify-blue mb-2">Find Your Peace of Mind.</DialogTitle>
           <DialogDescription>We'll Handle the Rest.</DialogDescription>
@@ -85,7 +85,7 @@ const SubscriptionButton = () => {
             <p className="font-semibold text-preventify-blue mt-2 text-sm sm:text-base">₹1999/year for a family.</p>
         </div>
 
-        <DialogFooter className="flex flex-col gap-2 sm:flex-col sm:gap-2">
+        <DialogFooter className="flex flex-col gap-2 sm:flex-row sm:gap-2">
             <Button className="w-full bg-preventify-green hover:bg-preventify-dark-green text-white text-base sm:text-lg py-3 sm:py-6">Claim My Peace of Mind</Button>
             <DialogClose asChild>
                 <Button type="button" variant="ghost" className="text-xs text-muted-foreground">

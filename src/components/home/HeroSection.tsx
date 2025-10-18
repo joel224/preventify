@@ -16,11 +16,10 @@ const HeroSection = () => {
                 className="h-16 md:h-20"
               />
             </div>
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-4">
+            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-4 text-preventify-dark-blue">
               AI assisted Modern Healthcare for a{" "}
-              <span className="relative inline-block overflow-hidden text-preventify-blue">
-                <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent animate-shimmer" />
-                <span className="relative">Preventive Lifestyle</span>
+              <span className="text-preventify-blue">
+                Preventive Lifestyle
               </span>
             </h1>
             <p className="text-lg text-preventify-dark-gray mb-8">
