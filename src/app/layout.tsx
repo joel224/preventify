@@ -7,8 +7,6 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import SubscriptionButton from "@/components/SubscriptionButton";
-import { AiContextProvider } from "@/context/ai-context";
-import AiActionMenu from "@/components/ai-action-menu";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -25,19 +23,16 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-        <AiContextProvider>
-          <TooltipProvider>
-            <div className="flex flex-col min-h-screen">
-              <Navbar />
-              <main className="flex-grow">{children}</main>
-              <Footer />
-              <SubscriptionButton />
-            </div>
-            <Toaster />
-            <Sonner />
-          </TooltipProvider>
-          <AiActionMenu />
-        </AiContextProvider>
+        <TooltipProvider>
+          <div className="flex flex-col min-h-screen">
+            <Navbar />
+            <main className="flex-grow">{children}</main>
+            <Footer />
+            <SubscriptionButton />
+          </div>
+          <Toaster />
+          <Sonner />
+        </TooltipProvider>
       </body>
     </html>
   );
