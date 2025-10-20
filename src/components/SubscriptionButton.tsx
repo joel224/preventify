@@ -10,9 +10,22 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import Image from "next/image";
+import ShimmerText from "./ShimmerText";
 
 const SubscriptionButton = () => {
   const [isScrolled, setIsScrolled] = useState(false);
+  const [activeShimmerLine, setActiveShimmerLine] = useState(0);
+
+  const shimmerLines = 6; // Total number of lines to animate
+
+  useEffect(() => {
+    const shimmerInterval = setInterval(() => {
+      setActiveShimmerLine((prevLine) => (prevLine + 1) % shimmerLines);
+    }, 1500); // Shimmer next line every 1.5 seconds
+
+    return () => clearInterval(shimmerInterval);
+  }, []);
+
 
   useEffect(() => {
     const handleScroll = () => {
@@ -48,47 +61,72 @@ const SubscriptionButton = () => {
         </div>
       </DialogTrigger>
       <DialogContent className="w-[90vw] max-w-4xl bg-white p-4 sm:p-6 pt-0">
-        
         <div className="grid md:grid-cols-2 gap-4 items-center">
-            <div>
-                <h3 className="tracking-tight text-xl sm:text-2xl font-bold text-preventify-dark-blue mb-4 text-center md:text-left">
-                    Simplify health, save time, save money.
-                </h3>
+          <div>
+            <ShimmerText isActive={activeShimmerLine === 0}>
+              <h3 className="tracking-tight text-2xl sm:text-3xl font-bold text-preventify-dark-blue mb-4 text-center md:text-left">
+                Simplify health, save time, save money.
+              </h3>
+            </ShimmerText>
 
-                <div className="space-y-3 text-preventify-dark-gray">
-                    <div className="flex items-start gap-3">
-                      <Search className="h-8 w-8 text-preventify-green shrink-0"/>
-                      <p className="text-sm sm:text-base">Instant access to lab results, anywhere you are.</p>
-                    </div>
-                    <div className="flex items-start gap-3">
-                      <Building className="h-8 w-8 text-preventify-green shrink-0"/>
-                      <p className="text-sm sm:text-base">Access records at clinics & partner pharmacies. Hassle-free.</p>
-                    </div>
-                     <div className="flex items-start gap-3">
-                      <FileLock className="h-8 w-8 text-preventify-green shrink-0" />
-                      <p className="text-sm sm:text-base">All your medical records files, reports, & bills. Secured online.</p>
-                    </div>
-                </div>
+            <div className="space-y-3 text-preventify-dark-gray">
+              <div className="flex items-start gap-3">
+                <Search className="h-8 w-8 text-preventify-green shrink-0" />
+                <ShimmerText isActive={activeShimmerLine === 1}>
+                  <p className="text-sm sm:text-base">
+                    Instant access to lab results, anywhere you are.
+                  </p>
+                </ShimmerText>
+              </div>
+              <div className="flex items-start gap-3">
+                <Building className="h-8 w-8 text-preventify-green shrink-0" />
+                <ShimmerText isActive={activeShimmerLine === 2}>
+                <p className="text-sm sm:text-base">
+                  Access records at clinics & partner pharmacies. Hassle-free.
+                </p>
+                </ShimmerText>
+              </div>
+              <div className="flex items-start gap-3">
+                <FileLock className="h-8 w-8 text-preventify-green shrink-0" />
+                <ShimmerText isActive={activeShimmerLine === 3}>
+                <p className="text-sm sm:text-base">
+                  All your medical records files, reports, & bills. Secured
+                  online.
+                </p>
+                </ShimmerText>
+              </div>
             </div>
-            <div>
-                <Image 
-                    src="/family.png"
-                    alt="Family"
-                    width={400}
-                    height={400}
-                    className="rounded-lg object-cover w-full aspect-square"
-                />
-            </div>
+          </div>
+          <div>
+            <Image
+              src="/family.png"
+              alt="Family"
+              width={400}
+              height={400}
+              className="rounded-lg object-cover w-full aspect-square"
+            />
+          </div>
         </div>
-          
+
         <div className="bg-yellow-100/50 border border-yellow-200/80 p-2 rounded-lg text-center my-2">
-            <p className="font-semibold text-red-700 text-sm sm:text-base">Unlimited doctor services for just <span className="text-preventify-blue">₹730/year</span></p>
-            <p className="text-xs text-preventify-dark-gray">for an individual</p>
-            <p className="font-semibold text-preventify-blue mt-1 text-sm sm:text-base">₹1999/year for a family.</p>
+          <ShimmerText isActive={activeShimmerLine === 4}>
+            <p className="font-semibold text-red-700 text-sm sm:text-base">
+              Unlimited doctor services for just{" "}
+              <span className="text-preventify-blue">₹730/year</span>
+            </p>
+          </ShimmerText>
+          <p className="text-xs text-preventify-dark-gray">for an individual</p>
+          <ShimmerText isActive={activeShimmerLine === 5}>
+            <p className="font-semibold text-preventify-blue mt-1 text-sm sm:text-base">
+              ₹1999/year for a family.
+            </p>
+          </ShimmerText>
         </div>
 
         <DialogFooter className="flex flex-col gap-2 sm:flex-row sm:gap-2 sm:justify-center">
-            <Button className="w-full sm:w-auto bg-preventify-green hover:bg-preventify-dark-green text-white text-base py-3 px-6">Claim My Peace of Mind</Button>
+          <Button className="w-full sm:w-auto bg-preventify-green hover:bg-preventify-dark-green text-white text-base py-3 px-6">
+            Claim My Peace of Mind
+          </Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>
