@@ -1,4 +1,7 @@
 
+'use client';
+
+import { useState, useEffect } from "react";
 import PageHeader from "@/components/PageHeader";
 import {
   Card,
@@ -15,6 +18,8 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Wallet, Stethoscope, Pill } from "lucide-react";
+import ShimmerText from "@/components/ShimmerText";
+
 
 const savingsData = [
     { service: "Complete Blood Count (CBC)", nonMember: 770, member: 300, save: 470 },
@@ -69,12 +74,31 @@ const SavingsTable = ({ data }: { data: typeof savingsData }) => (
 
 
 const SavingsPage = () => {
+  const [isShimmerActive, setIsShimmerActive] = useState(false);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setIsShimmerActive(true);
+      setTimeout(() => setIsShimmerActive(false), 2000); // Duration of the shimmer
+    }, 4000); // Repeat every 4 seconds
+
+    return () => clearInterval(interval);
+  }, []);
+
   return (
     <>
-      <PageHeader
-        title="How much can you save with the One Health Member Plan?"
-        subtitle="Explore the detailed savings and benefits of our membership."
-      />
+       <div className="bg-preventify-light-gray py-12 md:py-20">
+            <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+                <ShimmerText isActive={isShimmerActive}>
+                    <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-center text-preventify-blue">
+                        How much can you save with the One Health Member Plan?
+                    </h1>
+                </ShimmerText>
+                <p className="mt-4 text-lg text-center max-w-3xl mx-auto text-preventify-dark-gray">
+                    Explore the detailed savings and benefits of our membership.
+                </p>
+            </div>
+        </div>
 
       <section className="py-16 bg-preventify-light-gray">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
@@ -166,3 +190,5 @@ const SavingsPage = () => {
 };
 
 export default SavingsPage;
+
+    

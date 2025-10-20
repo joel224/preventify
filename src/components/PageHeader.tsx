@@ -4,6 +4,7 @@ interface PageHeaderProps {
   subtitle?: string;
   backgroundClass?: string;
   size?: "default" | "large" | "small";
+  children?: React.ReactNode;
 }
 
 const PageHeader = ({
@@ -11,12 +12,21 @@ const PageHeader = ({
   subtitle,
   backgroundClass = "bg-preventify-light-gray",
   size = "default",
+  children,
 }: PageHeaderProps) => {
   const paddingClasses = {
     default: "py-12 md:py-20",
     large: "py-16 md:py-24",
     small: "py-8 md:py-12"
   };
+
+  if (children) {
+    return (
+        <div className={`${backgroundClass} ${paddingClasses[size]}`}>
+            {children}
+        </div>
+    )
+  }
 
   return (
     <div className={`${backgroundClass} ${paddingClasses[size]}`}>
@@ -33,3 +43,5 @@ const PageHeader = ({
 };
 
 export default PageHeader;
+
+    
