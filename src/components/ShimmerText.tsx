@@ -14,7 +14,7 @@ const ShimmerText = ({ children, isActive }: ShimmerTextProps) => {
         <span
           className="absolute inset-0 animate-shimmer"
           style={{
-            background: 'linear-gradient(90deg, rgba(255, 255, 255, 0) 0%, rgba(212, 249, 241, 0.69) 34%, rgba(163, 210, 187, 0.83) 50%, rgba(211, 206, 155, 0.76) 71%, rgba(233, 206, 172, 0.77) 79%, rgba(145, 99, 107, 0.47) 100%)',
+            background: 'linear-gradient(90deg, transparent 20%, rgba(212, 206, 155, 0.1) 50%, transparent 80%)',
           }}
         />
       )}
