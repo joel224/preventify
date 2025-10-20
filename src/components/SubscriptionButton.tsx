@@ -53,7 +53,7 @@ const SubscriptionButton = () => {
       <DialogContent className="w-[90vw] max-w-4xl bg-white p-6 sm:p-8">
         <DialogHeader className="text-left mb-4">
           
-          <DialogDescription>We'll Handle the Rest.</DialogDescription>
+          
         </DialogHeader>
         
         <div className="grid md:grid-cols-2 gap-8 items-center">
