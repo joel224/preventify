@@ -36,6 +36,38 @@ const savingsData = [
     { service: "X-Ray Chest PA", nonMember: 650, member: 400, save: 250 },
 ];
 
+const half = Math.ceil(savingsData.length / 2);
+const firstHalf = savingsData.slice(0, half);
+const secondHalf = savingsData.slice(half);
+
+const SavingsTable = ({ data }: { data: typeof savingsData }) => (
+    <Card>
+      <CardContent className="p-0">
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>Service Name</TableHead>
+              <TableHead className="text-right font-bold text-preventify-green">You save</TableHead>
+              <TableHead className="text-right">Non-member</TableHead>
+              <TableHead className="text-right">Member</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {data.map((item, index) => (
+              <TableRow key={index} className="even:bg-preventify-green/5">
+                <TableCell className="font-medium">{item.service}</TableCell>
+                <TableCell className="text-right font-extrabold text-preventify-green">₹{item.save.toLocaleString()}</TableCell>
+                <TableCell className="text-right">₹{item.nonMember.toLocaleString()}</TableCell>
+                <TableCell className="text-right">₹{item.member.toLocaleString()}</TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </CardContent>
+    </Card>
+);
+
+
 const SavingsPage = () => {
   return (
     <>
@@ -113,32 +145,16 @@ const SavingsPage = () => {
             </Card>
           </div>
 
-          {/* Savings Table */}
+          {/* Savings Tables */}
           <Card>
             <CardHeader>
-              <CardTitle>Service-wise Savings</CardTitle>
+                <CardTitle>Service-wise Savings</CardTitle>
             </CardHeader>
             <CardContent>
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>Service Name</TableHead>
-                    <TableHead className="text-right font-bold text-preventify-green">You save</TableHead>
-                    <TableHead className="text-right">Non-member price</TableHead>
-                    <TableHead className="text-right">Member price</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {savingsData.map((item, index) => (
-                    <TableRow key={index} className="even:bg-preventify-green/5">
-                      <TableCell className="font-medium">{item.service}</TableCell>
-                      <TableCell className="text-right font-extrabold text-preventify-green">₹{item.save.toLocaleString()}</TableCell>
-                      <TableCell className="text-right">₹{item.nonMember.toLocaleString()}</TableCell>
-                      <TableCell className="text-right">₹{item.member.toLocaleString()}</TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                  <SavingsTable data={firstHalf} />
+                  <SavingsTable data={secondHalf} />
+              </div>
             </CardContent>
           </Card>
         </div>
