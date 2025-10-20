@@ -58,7 +58,7 @@ const SubscriptionButton = () => {
         
         <div className="grid md:grid-cols-2 gap-8 items-center">
             <div>
-                <h3 className="text-lg font-semibold text-preventify-dark-blue text-center mb-4">
+                <h3 className="text-xl font-semibold text-preventify-dark-blue text-center mb-4">
                     Simplify health, save time, save money.
                 </h3>
 
