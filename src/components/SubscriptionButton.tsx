@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import { Star, CloudUpload, Search, Building, CheckCircle2 } from "lucide-react";
+import { Star, FileLock, Search, Building } from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -11,7 +11,6 @@ import {
   DialogDescription,
   DialogTrigger,
   DialogFooter,
-  DialogClose,
 } from "@/components/ui/dialog";
 
 const SubscriptionButton = () => {
@@ -56,11 +55,15 @@ const SubscriptionButton = () => {
           <DialogDescription>We'll Handle the Rest.</DialogDescription>
         </DialogHeader>
         
+        <h3 className="text-lg font-semibold text-preventify-dark-blue text-center mb-4">
+            Simplify health, save time, save money.
+        </h3>
+
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 items-center">
             <div className="space-y-4 text-preventify-dark-gray">
                 <div className="flex items-start gap-3">
-                  <CloudUpload className="h-6 w-6 sm:h-8 sm:w-8 text-preventify-green shrink-0"/>
-                  <p className="text-sm sm:text-base">simplify helth ,same time.save money</p>
+                  <FileLock className="h-6 w-6 sm:h-8 sm:w-8 text-preventify-green shrink-0"/>
+                  <p className="text-sm sm:text-base">All your medical records files, reports, & bills. Secured online.</p>
                 </div>
                 <div className="flex items-start gap-3">
                   <Search className="h-6 w-6 sm:h-8 sm:w-8 text-preventify-green shrink-0"/>
@@ -73,7 +76,11 @@ const SubscriptionButton = () => {
             </div>
             <div className="flex justify-center items-center">
                 <div className="relative">
-                    <CheckCircle2 className="h-24 w-24 sm:h-32 sm:w-32 text-preventify-green" strokeWidth={1} />
+                    <img
+                        src="https://res.cloudinary.com/dyf8umlda/image/upload/v1757181395/peaceofmind_ludwje.png"
+                        alt="Peace of Mind"
+                        className="h-24 w-24 sm:h-32 sm:w-32"
+                    />
                 </div>
             </div>
         </div>
