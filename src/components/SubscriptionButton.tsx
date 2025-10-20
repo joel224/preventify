@@ -51,7 +51,7 @@ const SubscriptionButton = () => {
       </DialogTrigger>
       <DialogContent className="w-[90vw] max-w-xl bg-white p-6 sm:p-8">
         <DialogHeader className="text-left mb-4">
-          <DialogTitle className="text-2xl sm:text-3xl font-bold text-preventify-blue mb-2">Find Your Peace of Mind.</DialogTitle>
+          
           <DialogDescription>We'll Handle the Rest.</DialogDescription>
         </DialogHeader>
         
