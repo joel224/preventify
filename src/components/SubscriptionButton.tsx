@@ -62,10 +62,6 @@ const SubscriptionButton = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 items-center">
             <div className="space-y-4 text-preventify-dark-gray">
                 <div className="flex items-start gap-3">
-                  <FileLock className="h-6 w-6 sm:h-8 sm:w-8 text-preventify-green shrink-0"/>
-                  <p className="text-sm sm:text-base">All your medical records files, reports, & bills. Secured online.</p>
-                </div>
-                <div className="flex items-start gap-3">
                   <Search className="h-6 w-6 sm:h-8 sm:w-8 text-preventify-green shrink-0"/>
                   <p className="text-sm sm:text-base">Instant access to lab results, anywhere you are.</p>
                 </div>
