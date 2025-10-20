@@ -117,10 +117,10 @@ export default {
                 },
                 vibrate: {
                   '0%, 12.5%, 100%': { transform: 'translateX(0)' },
-                  '2.5%': { transform: 'translateX(-2px)' },
-                  '5%': { transform: 'translateX(2px)' },
-                  '7.5%': { transform: 'translateX(-2px)' },
-                  '10%': { transform: 'translateX(2px)' },
+                  '2.5%': { transform: 'translateX(-3px)' },
+                  '5%': { transform: 'translateX(3px)' },
+                  '7.5%': { transform: 'translateX(-3px)' },
+                  '10%': { transform: 'translateX(3px)' },
                 }
 			},
 			animation: {
