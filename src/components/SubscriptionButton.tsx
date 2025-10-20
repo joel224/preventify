@@ -79,8 +79,8 @@ const SubscriptionButton = () => {
             </div>
             <div>
                 <Image 
-                    src="https://images.unsplash.com/photo-1559839734-2b71ea197ec2?q=80&w=1470&auto=format&fit=crop"
-                    alt="Doctor"
+                    src="/family.png"
+                    alt="Family"
                     width={400}
                     height={400}
                     className="rounded-lg object-cover w-full aspect-square"
