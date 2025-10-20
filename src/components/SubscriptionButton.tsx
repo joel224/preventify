@@ -58,11 +58,11 @@ const SubscriptionButton = () => {
         
         <div className="grid md:grid-cols-2 gap-8 items-center">
             <div>
-                <h3 className="text-xl font-semibold text-preventify-dark-blue text-center mb-4">
+                <h3 className="text-xl font-semibold text-preventify-dark-blue mb-4">
                     Simplify health, save time, save money.
                 </h3>
 
-                <div className="space-y-4 text-preventify-dark-gray max-w-md mx-auto">
+                <div className="space-y-4 text-preventify-dark-gray">
                     <div className="flex items-start gap-3">
                       <Search className="h-8 w-8 text-preventify-green shrink-0"/>
                       <p className="text-sm sm:text-base">Instant access to lab results, anywhere you are.</p>
