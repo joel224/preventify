@@ -6,9 +6,6 @@ import { Star, FileLock, Search, Building } from "lucide-react";
 import {
   Dialog,
   DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogDescription,
   DialogTrigger,
   DialogFooter,
 } from "@/components/ui/dialog";
@@ -52,13 +49,13 @@ const SubscriptionButton = () => {
       </DialogTrigger>
       <DialogContent className="w-[90vw] max-w-4xl bg-white p-6 sm:p-8 pt-0">
         
-        <div className="grid md:grid-cols-2 gap-8 items-center">
+        <div className="grid md:grid-cols-2 gap-4 items-center">
             <div>
-                <h3 className="text-xl font-semibold text-preventify-dark-blue mb-4">
+                <h3 className="text-xl font-semibold text-preventify-dark-blue mb-3">
                     Simplify health, save time, save money.
                 </h3>
 
-                <div className="space-y-4 text-preventify-dark-gray">
+                <div className="space-y-3 text-preventify-dark-gray">
                     <div className="flex items-start gap-3">
                       <Search className="h-8 w-8 text-preventify-green shrink-0"/>
                       <p className="text-sm sm:text-base">Instant access to lab results, anywhere you are.</p>
@@ -84,14 +81,14 @@ const SubscriptionButton = () => {
             </div>
         </div>
           
-        <div className="bg-yellow-100/50 border border-yellow-200/80 p-4 rounded-lg text-center my-4 sm:my-6">
+        <div className="bg-yellow-100/50 border border-yellow-200/80 p-3 rounded-lg text-center my-4">
             <p className="font-semibold text-red-700 text-sm sm:text-base">Unlimited doctor services for just <span className="text-preventify-blue">₹730/year</span></p>
-            <p className="text-xs sm:text-sm text-preventify-dark-gray">for an individual</p>
-            <p className="font-semibold text-preventify-blue mt-2 text-sm sm:text-base">₹1999/year for a family.</p>
+            <p className="text-xs text-preventify-dark-gray">for an individual</p>
+            <p className="font-semibold text-preventify-blue mt-1 text-sm sm:text-base">₹1999/year for a family.</p>
         </div>
 
         <DialogFooter className="flex flex-col gap-2 sm:flex-row sm:gap-2 sm:justify-center">
-            <Button className="w-full sm:w-auto bg-preventify-green hover:bg-preventify-dark-green text-white text-base sm:text-lg py-3 sm:py-6 px-8">Claim My Peace of Mind</Button>
+            <Button className="w-full sm:w-auto bg-preventify-green hover:bg-preventify-dark-green text-white text-base py-3 px-6">Claim My Peace of Mind</Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>
