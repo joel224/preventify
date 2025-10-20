@@ -15,16 +15,19 @@ import ShimmerText from "./ShimmerText";
 const SubscriptionButton = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [activeShimmerLine, setActiveShimmerLine] = useState(0);
+  const [isOpen, setIsOpen] = useState(false);
 
   const shimmerLines = 6; // Total number of lines to animate
 
   useEffect(() => {
-    const shimmerInterval = setInterval(() => {
-      setActiveShimmerLine((prevLine) => (prevLine + 1) % shimmerLines);
-    }, 1500); // Shimmer next line every 1.5 seconds
+    if (isOpen) {
+      const shimmerInterval = setInterval(() => {
+        setActiveShimmerLine((prevLine) => (prevLine + 1) % shimmerLines);
+      }, 1500); // Shimmer next line every 1.5 seconds
 
-    return () => clearInterval(shimmerInterval);
-  }, []);
+      return () => clearInterval(shimmerInterval);
+    }
+  }, [isOpen]);
 
 
   useEffect(() => {
@@ -41,7 +44,7 @@ const SubscriptionButton = () => {
   }, []);
 
   return (
-    <Dialog>
+    <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
         <div
           className={`fixed bottom-8 right-8 z-50 transition-transform duration-300 ease-in-out ${
@@ -50,7 +53,7 @@ const SubscriptionButton = () => {
         >
           <Button
             size="icon"
-            className="w-20 h-20 rounded-full bg-gray-400/20 backdrop-blur-lg border border-gray-300/30 text-preventify-dark-gray hover:bg-gray-400/30"
+            className="w-20 h-20 rounded-full bg-gray-400/20 backdrop-blur-lg border border-gray-300/30 text-preventify-dark-gray hover:bg-gray-400/30 animate-vibrate"
             aria-label="Annual Subscription"
           >
             <div className="flex flex-col items-center">
@@ -108,7 +111,10 @@ const SubscriptionButton = () => {
           </div>
         </div>
 
-        <div className="bg-yellow-100/50 border border-yellow-200/80 p-2 rounded-lg text-center my-2">
+        <div 
+          className="p-2 rounded-lg text-center my-2"
+          style={{ backgroundColor: 'rgba(235, 199, 168)' }}
+        >
           <ShimmerText isActive={activeShimmerLine === 4}>
             <p className="font-semibold text-red-700 text-sm sm:text-base">
               Unlimited doctor services for just{" "}

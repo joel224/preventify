@@ -115,12 +115,20 @@ export default {
                         transform: 'translateX(100%)',
                     },
                 },
+                vibrate: {
+                  '0%, 12.5%, 100%': { transform: 'translateX(0)' },
+                  '2.5%': { transform: 'translateX(-2px)' },
+                  '5%': { transform: 'translateX(2px)' },
+                  '7.5%': { transform: 'translateX(-2px)' },
+                  '10%': { transform: 'translateX(2px)' },
+                }
 			},
 			animation: {
 				'accordion-down': 'accordion-down 0.2s ease-out',
 				'accordion-up': 'accordion-up 0.2s ease-out',
 				'fade-in': 'fade-in 0.3s ease-out',
                 'shimmer': 'shimmer 2s infinite',
+                'vibrate': 'vibrate 4s ease-in-out infinite',
 			},
 			fontFamily: {
 				sans: ['Inter', 'sans-serif'],

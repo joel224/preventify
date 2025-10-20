@@ -1320,13 +1320,18 @@ var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$Shimmer
 const SubscriptionButton = ()=>{
     const [isScrolled, setIsScrolled] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])(false);
     const [activeShimmerLine, setActiveShimmerLine] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])(0);
+    const [isOpen, setIsOpen] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])(false);
     const shimmerLines = 6; // Total number of lines to animate
     (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useEffect"])(()=>{
-        const shimmerInterval = setInterval(()=>{
-            setActiveShimmerLine((prevLine)=>(prevLine + 1) % shimmerLines);
-        }, 1500); // Shimmer next line every 1.5 seconds
-        return ()=>clearInterval(shimmerInterval);
-    }, []);
+        if (isOpen) {
+            const shimmerInterval = setInterval(()=>{
+                setActiveShimmerLine((prevLine)=>(prevLine + 1) % shimmerLines);
+            }, 1500); // Shimmer next line every 1.5 seconds
+            return ()=>clearInterval(shimmerInterval);
+        }
+    }, [
+        isOpen
+    ]);
     (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useEffect"])(()=>{
         const handleScroll = ()=>{
             setIsScrolled(window.scrollY > 50);
@@ -1338,6 +1343,8 @@ const SubscriptionButton = ()=>{
         };
     }, []);
     return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$dialog$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Dialog"], {
+        open: isOpen,
+        onOpenChange: setIsOpen,
         children: [
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$dialog$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["DialogTrigger"], {
                 asChild: true,
@@ -1345,7 +1352,7 @@ const SubscriptionButton = ()=>{
                     className: `fixed bottom-8 right-8 z-50 transition-transform duration-300 ease-in-out ${isScrolled ? "scale-100" : "scale-75"}`,
                     children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$button$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Button"], {
                         size: "icon",
-                        className: "w-20 h-20 rounded-full bg-gray-400/20 backdrop-blur-lg border border-gray-300/30 text-preventify-dark-gray hover:bg-gray-400/30",
+                        className: "w-20 h-20 rounded-full bg-gray-400/20 backdrop-blur-lg border border-gray-300/30 text-preventify-dark-gray hover:bg-gray-400/30 animate-vibrate",
                         "aria-label": "Annual Subscription",
                         children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                             className: "flex flex-col items-center",
@@ -1354,7 +1361,7 @@ const SubscriptionButton = ()=>{
                                     className: "h-6 w-6"
                                 }, void 0, false, {
                                     fileName: "[project]/src/components/SubscriptionButton.tsx",
-                                    lineNumber: 57,
+                                    lineNumber: 60,
                                     columnNumber: 15
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -1362,28 +1369,28 @@ const SubscriptionButton = ()=>{
                                     children: "Annual"
                                 }, void 0, false, {
                                     fileName: "[project]/src/components/SubscriptionButton.tsx",
-                                    lineNumber: 58,
+                                    lineNumber: 61,
                                     columnNumber: 15
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/src/components/SubscriptionButton.tsx",
-                            lineNumber: 56,
+                            lineNumber: 59,
                             columnNumber: 13
                         }, this)
                     }, void 0, false, {
                         fileName: "[project]/src/components/SubscriptionButton.tsx",
-                        lineNumber: 51,
+                        lineNumber: 54,
                         columnNumber: 11
                     }, this)
                 }, void 0, false, {
                     fileName: "[project]/src/components/SubscriptionButton.tsx",
-                    lineNumber: 46,
+                    lineNumber: 49,
                     columnNumber: 9
                 }, this)
             }, void 0, false, {
                 fileName: "[project]/src/components/SubscriptionButton.tsx",
-                lineNumber: 45,
+                lineNumber: 48,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$dialog$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["DialogContent"], {
@@ -1401,12 +1408,12 @@ const SubscriptionButton = ()=>{
                                             children: "Simplify health, save time, save money."
                                         }, void 0, false, {
                                             fileName: "[project]/src/components/SubscriptionButton.tsx",
-                                            lineNumber: 67,
+                                            lineNumber: 70,
                                             columnNumber: 15
                                         }, this)
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/SubscriptionButton.tsx",
-                                        lineNumber: 66,
+                                        lineNumber: 69,
                                         columnNumber: 13
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1419,7 +1426,7 @@ const SubscriptionButton = ()=>{
                                                         className: "h-8 w-8 text-preventify-green shrink-0"
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/components/SubscriptionButton.tsx",
-                                                        lineNumber: 74,
+                                                        lineNumber: 77,
                                                         columnNumber: 17
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ShimmerText$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["default"], {
@@ -1429,18 +1436,18 @@ const SubscriptionButton = ()=>{
                                                             children: "Instant access to lab results, anywhere you are."
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/components/SubscriptionButton.tsx",
-                                                            lineNumber: 76,
+                                                            lineNumber: 79,
                                                             columnNumber: 19
                                                         }, this)
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/components/SubscriptionButton.tsx",
-                                                        lineNumber: 75,
+                                                        lineNumber: 78,
                                                         columnNumber: 17
                                                     }, this)
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/src/components/SubscriptionButton.tsx",
-                                                lineNumber: 73,
+                                                lineNumber: 76,
                                                 columnNumber: 15
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1450,7 +1457,7 @@ const SubscriptionButton = ()=>{
                                                         className: "h-8 w-8 text-preventify-green shrink-0"
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/components/SubscriptionButton.tsx",
-                                                        lineNumber: 82,
+                                                        lineNumber: 85,
                                                         columnNumber: 17
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ShimmerText$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["default"], {
@@ -1460,18 +1467,18 @@ const SubscriptionButton = ()=>{
                                                             children: "Access records at clinics & partner pharmacies. Hassle-free."
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/components/SubscriptionButton.tsx",
-                                                            lineNumber: 84,
+                                                            lineNumber: 87,
                                                             columnNumber: 17
                                                         }, this)
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/components/SubscriptionButton.tsx",
-                                                        lineNumber: 83,
+                                                        lineNumber: 86,
                                                         columnNumber: 17
                                                     }, this)
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/src/components/SubscriptionButton.tsx",
-                                                lineNumber: 81,
+                                                lineNumber: 84,
                                                 columnNumber: 15
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1481,7 +1488,7 @@ const SubscriptionButton = ()=>{
                                                         className: "h-8 w-8 text-preventify-green shrink-0"
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/components/SubscriptionButton.tsx",
-                                                        lineNumber: 90,
+                                                        lineNumber: 93,
                                                         columnNumber: 17
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ShimmerText$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["default"], {
@@ -1491,30 +1498,30 @@ const SubscriptionButton = ()=>{
                                                             children: "All your medical records files, reports, & bills. Secured online."
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/components/SubscriptionButton.tsx",
-                                                            lineNumber: 92,
+                                                            lineNumber: 95,
                                                             columnNumber: 17
                                                         }, this)
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/components/SubscriptionButton.tsx",
-                                                        lineNumber: 91,
+                                                        lineNumber: 94,
                                                         columnNumber: 17
                                                     }, this)
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/src/components/SubscriptionButton.tsx",
-                                                lineNumber: 89,
+                                                lineNumber: 92,
                                                 columnNumber: 15
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/components/SubscriptionButton.tsx",
-                                        lineNumber: 72,
+                                        lineNumber: 75,
                                         columnNumber: 13
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/components/SubscriptionButton.tsx",
-                                lineNumber: 65,
+                                lineNumber: 68,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1526,22 +1533,25 @@ const SubscriptionButton = ()=>{
                                     className: "rounded-lg object-cover w-full aspect-square"
                                 }, void 0, false, {
                                     fileName: "[project]/src/components/SubscriptionButton.tsx",
-                                    lineNumber: 101,
+                                    lineNumber: 104,
                                     columnNumber: 13
                                 }, this)
                             }, void 0, false, {
                                 fileName: "[project]/src/components/SubscriptionButton.tsx",
-                                lineNumber: 100,
+                                lineNumber: 103,
                                 columnNumber: 11
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/components/SubscriptionButton.tsx",
-                        lineNumber: 64,
+                        lineNumber: 67,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                        className: "bg-yellow-100/50 border border-yellow-200/80 p-2 rounded-lg text-center my-2",
+                        className: "p-2 rounded-lg text-center my-2",
+                        style: {
+                            backgroundColor: 'rgba(235, 199, 168)'
+                        },
                         children: [
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ShimmerText$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["default"], {
                                 isActive: activeShimmerLine === 4,
@@ -1555,18 +1565,18 @@ const SubscriptionButton = ()=>{
                                             children: "₹730/year"
                                         }, void 0, false, {
                                             fileName: "[project]/src/components/SubscriptionButton.tsx",
-                                            lineNumber: 115,
+                                            lineNumber: 121,
                                             columnNumber: 15
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/components/SubscriptionButton.tsx",
-                                    lineNumber: 113,
+                                    lineNumber: 119,
                                     columnNumber: 13
                                 }, this)
                             }, void 0, false, {
                                 fileName: "[project]/src/components/SubscriptionButton.tsx",
-                                lineNumber: 112,
+                                lineNumber: 118,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -1574,7 +1584,7 @@ const SubscriptionButton = ()=>{
                                 children: "for an individual"
                             }, void 0, false, {
                                 fileName: "[project]/src/components/SubscriptionButton.tsx",
-                                lineNumber: 118,
+                                lineNumber: 124,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ShimmerText$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["default"], {
@@ -1584,18 +1594,18 @@ const SubscriptionButton = ()=>{
                                     children: "₹1999/year for a family."
                                 }, void 0, false, {
                                     fileName: "[project]/src/components/SubscriptionButton.tsx",
-                                    lineNumber: 120,
+                                    lineNumber: 126,
                                     columnNumber: 13
                                 }, this)
                             }, void 0, false, {
                                 fileName: "[project]/src/components/SubscriptionButton.tsx",
-                                lineNumber: 119,
+                                lineNumber: 125,
                                 columnNumber: 11
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/components/SubscriptionButton.tsx",
-                        lineNumber: 111,
+                        lineNumber: 114,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$dialog$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["DialogFooter"], {
@@ -1605,24 +1615,24 @@ const SubscriptionButton = ()=>{
                             children: "Claim My Peace of Mind"
                         }, void 0, false, {
                             fileName: "[project]/src/components/SubscriptionButton.tsx",
-                            lineNumber: 127,
+                            lineNumber: 133,
                             columnNumber: 11
                         }, this)
                     }, void 0, false, {
                         fileName: "[project]/src/components/SubscriptionButton.tsx",
-                        lineNumber: 126,
+                        lineNumber: 132,
                         columnNumber: 9
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/components/SubscriptionButton.tsx",
-                lineNumber: 63,
+                lineNumber: 66,
                 columnNumber: 7
             }, this)
         ]
     }, void 0, true, {
         fileName: "[project]/src/components/SubscriptionButton.tsx",
-        lineNumber: 44,
+        lineNumber: 47,
         columnNumber: 5
     }, this);
 };
