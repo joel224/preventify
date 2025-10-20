@@ -500,6 +500,10 @@ h1, h2, h3, h4, h5, h6 {
   top: 100%;
 }
 
+.bottom-4 {
+  bottom: 1rem;
+}
+
 .z-10 {
   z-index: 10;
 }
@@ -836,6 +840,10 @@ h1, h2, h3, h4, h5, h6 {
   height: 100svh;
 }
 
+.h-24 {
+  height: 6rem;
+}
+
 .max-h-96 {
   max-height: 24rem;
 }
@@ -984,6 +992,10 @@ h1, h2, h3, h4, h5, h6 {
   width: 1px;
 }
 
+.w-24 {
+  width: 6rem;
+}
+
 .min-w-0 {
   min-width: 0;
 }
@@ -1058,6 +1070,10 @@ h1, h2, h3, h4, h5, h6 {
 
 .border-collapse {
   border-collapse: collapse;
+}
+
+.origin-bottom-right {
+  transform-origin: 100% 100%;
 }
 
 .-translate-x-1\/2 {
