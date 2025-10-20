@@ -1265,7 +1265,10 @@ const ShimmerText = ({ children, isActive })=>{
         className: "relative overflow-hidden",
         children: [
             isActive && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
-                className: "absolute inset-0 bg-gradient-to-r from-transparent via-preventify-light-gray to-transparent animate-shimmer"
+                className: "absolute inset-0 animate-shimmer",
+                style: {
+                    background: 'linear-gradient(90deg, rgba(255, 255, 255, 0) 0%, rgba(212, 249, 241, 0.69) 34%, rgba(163, 210, 187, 0.83) 50%, rgba(211, 206, 155, 0.76) 71%, rgba(233, 206, 172, 0.77) 79%, rgba(145, 99, 107, 0.47) 100%)'
+                }
             }, void 0, false, {
                 fileName: "[project]/src/components/ShimmerText.tsx",
                 lineNumber: 14,
@@ -1276,7 +1279,7 @@ const ShimmerText = ({ children, isActive })=>{
                 children: children
             }, void 0, false, {
                 fileName: "[project]/src/components/ShimmerText.tsx",
-                lineNumber: 16,
+                lineNumber: 21,
                 columnNumber: 7
             }, this)
         ]
