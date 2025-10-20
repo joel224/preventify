@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState, useEffect } from "react";
@@ -53,6 +54,7 @@ const SubscriptionButton = () => {
           className={`fixed bottom-8 right-8 z-50 transition-transform duration-300 ease-in-out ${
             isScrolled ? "scale-100" : "scale-75"
           }`}
+          style={{ backfaceVisibility: 'hidden' }}
         >
           <Button
             size="icon"
@@ -145,3 +147,4 @@ const SubscriptionButton = () => {
 };
 
 export default SubscriptionButton;
+
