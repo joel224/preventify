@@ -12,6 +12,7 @@ import {
 } from "@/components/ui/dialog";
 import Image from "next/image";
 import ShimmerText from "./ShimmerText";
+import Link from "next/link";
 
 const SubscriptionButton = () => {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -137,9 +138,13 @@ const SubscriptionButton = () => {
         </div>
 
         <DialogFooter className="flex flex-col gap-2 sm:flex-row sm:gap-2 sm:justify-center">
-          <Button className="w-full sm:w-auto bg-preventify-green hover:bg-preventify-dark-green text-white text-base py-3 px-6">
-            Claim My Peace of Mind
-          </Button>
+          <Link href="/savings" legacyBehavior>
+            <a className="w-full sm:w-auto">
+              <Button className="w-full bg-preventify-green hover:bg-preventify-dark-green text-white text-base py-3 px-6">
+                Claim My Peace of Mind
+              </Button>
+            </a>
+          </Link>
         </DialogFooter>
       </DialogContent>
     </Dialog>

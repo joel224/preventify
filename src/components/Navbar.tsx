@@ -1,3 +1,4 @@
+
 'use client'
 import { useState } from "react";
 import Link from "next/link";
@@ -20,6 +21,7 @@ const Navbar = () => {
     { name: "Clinics", path: "/clinics" },
     { name: "Doctors", path: "/doctors" },
     { name: "Programs", path: "/programs" },
+    { name: "Savings", path: "/savings" },
     { name: "Blog", path: "/blog" },
     { name: "Partner with Us", path: "/partners" },
     { name: "Contact", path: "/contact" },
