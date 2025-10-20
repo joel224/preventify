@@ -14,18 +14,21 @@ import ShimmerText from "./ShimmerText";
 
 const SubscriptionButton = () => {
   const [isScrolled, setIsScrolled] = useState(false);
-  const [activeShimmerLine, setActiveShimmerLine] = useState(0);
+  const [activeShimmerLine, setActiveShimmerLine] = useState(-1);
   const [isOpen, setIsOpen] = useState(false);
 
   const shimmerLines = 6; // Total number of lines to animate
 
   useEffect(() => {
     if (isOpen) {
+      setActiveShimmerLine(0); // Start animation when dialog opens
       const shimmerInterval = setInterval(() => {
         setActiveShimmerLine((prevLine) => (prevLine + 1) % shimmerLines);
       }, 1500); // Shimmer next line every 1.5 seconds
 
       return () => clearInterval(shimmerInterval);
+    } else {
+      setActiveShimmerLine(-1); // Reset when dialog closes
     }
   }, [isOpen]);
 
@@ -112,8 +115,10 @@ const SubscriptionButton = () => {
         </div>
 
         <div 
-          className="p-2 rounded-lg text-center my-2"
-          style={{ backgroundColor: 'rgba(235, 199, 168)' }}
+          className="p-4 rounded-lg text-center my-4"
+          style={{
+            background: 'linear-gradient(to right, #FDF5ED, #F5ECE5, #E4DBCC)',
+          }}
         >
           <ShimmerText isActive={activeShimmerLine === 4}>
             <p className="font-semibold text-red-700 text-sm sm:text-base">
