@@ -15,7 +15,6 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Wallet, Stethoscope, Pill } from "lucide-react";
-import Image from "next/image";
 
 const savingsData = [
     { service: "Complete Blood Count (CBC)", nonMember: 770, member: 300, save: 470 },
@@ -80,7 +79,7 @@ const SavingsPage = () => {
       <section className="py-16 bg-preventify-light-gray">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           {/* Top Info Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             <Card>
               <CardHeader className="flex flex-row items-center gap-4">
                 <Wallet className="w-8 h-8 text-preventify-green" />
@@ -147,17 +146,19 @@ const SavingsPage = () => {
           </div>
 
           {/* Savings Tables */}
-          <Card>
-            <CardHeader>
-                <CardTitle>Service-wise Savings</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                  <SavingsTable data={firstHalf} />
-                  <SavingsTable data={secondHalf} />
-              </div>
-            </CardContent>
-          </Card>
+          <div className="mt-12">
+            <Card>
+                <CardHeader>
+                    <CardTitle>Service-wise Savings</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                      <SavingsTable data={firstHalf} />
+                      <SavingsTable data={secondHalf} />
+                  </div>
+                </CardContent>
+            </Card>
+          </div>
         </div>
       </section>
     </>
