@@ -8,10 +8,10 @@ import {
   Dialog,
   DialogContent,
   DialogTrigger,
+  DialogFooter,
 } from "@/components/ui/dialog";
 import Image from "next/image";
 import ShimmerText from "./ShimmerText";
-import { DialogFooter } from "./ui/dialog";
 
 const SubscriptionButton = () => {
   const [isScrolled, setIsScrolled] = useState(false);
