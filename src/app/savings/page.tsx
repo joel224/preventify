@@ -15,6 +15,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Wallet, Stethoscope, Pill } from "lucide-react";
+import Image from "next/image";
 
 const savingsData = [
     { service: "Complete Blood Count (CBC)", nonMember: 770, member: 300, save: 470 },
@@ -78,6 +79,15 @@ const SavingsPage = () => {
 
       <section className="py-16 bg-preventify-light-gray">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="relative mx-auto mb-12 -mt-8 h-48 w-48">
+            <Image
+                src="https://picsum.photos/seed/piggybank/200/200"
+                alt="Savings"
+                layout="fill"
+                className="rounded-full object-cover"
+                data-ai-hint="piggy bank"
+            />
+            </div>
           {/* Top Info Cards */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
             <Card>
