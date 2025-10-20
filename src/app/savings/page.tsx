@@ -123,18 +123,18 @@ const SavingsPage = () => {
                 <TableHeader>
                   <TableRow>
                     <TableHead>Service Name</TableHead>
+                    <TableHead className="text-right font-bold text-preventify-green">You save</TableHead>
                     <TableHead className="text-right">Non-member price</TableHead>
                     <TableHead className="text-right">Member price</TableHead>
-                    <TableHead className="text-right font-bold text-preventify-green">You save</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
                   {savingsData.map((item, index) => (
                     <TableRow key={index} className="even:bg-preventify-green/5">
                       <TableCell className="font-medium">{item.service}</TableCell>
+                      <TableCell className="text-right font-extrabold text-preventify-green">₹{item.save.toLocaleString()}</TableCell>
                       <TableCell className="text-right">₹{item.nonMember.toLocaleString()}</TableCell>
                       <TableCell className="text-right">₹{item.member.toLocaleString()}</TableCell>
-                      <TableCell className="text-right font-extrabold text-preventify-green">₹{item.save.toLocaleString()}</TableCell>
                     </TableRow>
                   ))}
                 </TableBody>
