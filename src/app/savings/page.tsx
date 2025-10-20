@@ -130,11 +130,11 @@ const SavingsPage = () => {
                 </TableHeader>
                 <TableBody>
                   {savingsData.map((item, index) => (
-                    <TableRow key={index}>
+                    <TableRow key={index} className="even:bg-preventify-green/5">
                       <TableCell className="font-medium">{item.service}</TableCell>
                       <TableCell className="text-right">₹{item.nonMember.toLocaleString()}</TableCell>
                       <TableCell className="text-right">₹{item.member.toLocaleString()}</TableCell>
-                      <TableCell className="text-right font-bold text-preventify-green">₹{item.save.toLocaleString()}</TableCell>
+                      <TableCell className="text-right font-extrabold text-preventify-green">₹{item.save.toLocaleString()}</TableCell>
                     </TableRow>
                   ))}
                 </TableBody>

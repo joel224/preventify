@@ -2067,6 +2067,10 @@ h1, h2, h3, h4, h5, h6 {
   font-weight: 600;
 }
 
+.font-extrabold {
+  font-weight: 800;
+}
+
 .italic {
   font-style: italic;
 }
@@ -2546,6 +2550,10 @@ h1, h2, h3, h4, h5, h6 {
 .last\:rounded-r-md:last-child {
   border-top-right-radius: calc(var(--radius)  - 2px);
   border-bottom-right-radius: calc(var(--radius)  - 2px);
+}
+
+.even\:bg-preventify-green\/5:nth-child(2n) {
+  background-color: #28b67a0d;
 }
 
 .focus-within\:relative:focus-within {

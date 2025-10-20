@@ -59,12 +59,12 @@ const SubscriptionButton = () => {
         >
           <Button
             size="icon"
-            className="w-24 h-24 rounded-full bg-gray-400/20 backdrop-blur-lg border border-gray-300/30 text-preventify-dark-gray hover:bg-gray-400/30 animate-vibrate"
+            className="w-20 h-20 rounded-full bg-gray-400/20 backdrop-blur-lg border border-gray-300/30 text-preventify-dark-gray hover:bg-gray-400/30 animate-vibrate"
             aria-label="Annual Subscription"
           >
             <div className="flex flex-col items-center">
               <Star className="h-8 w-8" />
-              <span className="text-sm mt-1">Annual</span>
+              <span className="text-xs mt-1">Annual</span>
             </div>
           </Button>
         </div>
@@ -139,7 +139,7 @@ const SubscriptionButton = () => {
 
         <DialogFooter className="flex flex-col gap-2 sm:flex-row sm:gap-2 sm:justify-center">
           <Link href="/savings" legacyBehavior>
-            <a className="w-full sm:w-auto">
+            <a className="w-full sm:w-auto" onClick={() => setIsOpen(false)}>
               <Button className="w-full bg-preventify-green hover:bg-preventify-dark-green text-white text-base py-3 px-6">
                 Claim My Peace of Mind
               </Button>
