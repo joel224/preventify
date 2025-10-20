@@ -6,8 +6,8 @@ import { Star, FileLock, Search, Building } from "lucide-react";
 import {
   Dialog,
   DialogContent,
-  DialogTrigger,
   DialogFooter,
+  DialogTrigger,
 } from "@/components/ui/dialog";
 import Image from "next/image";
 
@@ -47,11 +47,11 @@ const SubscriptionButton = () => {
           </Button>
         </div>
       </DialogTrigger>
-      <DialogContent className="w-[90vw] max-w-4xl bg-white p-6 sm:p-8 pt-0">
+      <DialogContent className="w-[90vw] max-w-4xl bg-white p-4 sm:p-6 pt-0">
         
         <div className="grid md:grid-cols-2 gap-4 items-center">
             <div>
-                <h3 className="text-xl font-semibold text-preventify-dark-blue mb-3">
+                <h3 className="tracking-tight text-xl sm:text-2xl font-bold text-preventify-dark-blue mb-4 text-center md:text-left">
                     Simplify health, save time, save money.
                 </h3>
 
@@ -81,7 +81,7 @@ const SubscriptionButton = () => {
             </div>
         </div>
           
-        <div className="bg-yellow-100/50 border border-yellow-200/80 p-3 rounded-lg text-center my-4">
+        <div className="bg-yellow-100/50 border border-yellow-200/80 p-2 rounded-lg text-center my-2">
             <p className="font-semibold text-red-700 text-sm sm:text-base">Unlimited doctor services for just <span className="text-preventify-blue">₹730/year</span></p>
             <p className="text-xs text-preventify-dark-gray">for an individual</p>
             <p className="font-semibold text-preventify-blue mt-1 text-sm sm:text-base">₹1999/year for a family.</p>
