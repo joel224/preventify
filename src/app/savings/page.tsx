@@ -51,7 +51,7 @@ const SavingsTable = ({ data }: { data: typeof savingsData }) => (
       <CardContent className="p-0">
         <Table>
           <TableHeader>
-            <TableRow>
+            <TableRow className="bg-preventify-blue/5 hover:bg-preventify-blue/10">
               <TableHead>Service Name</TableHead>
               <TableHead className="text-right font-bold text-preventify-green">You save</TableHead>
               <TableHead className="text-right">Non-member</TableHead>
@@ -130,7 +130,7 @@ const SavingsPage = () => {
 
   return (
     <>
-       <div className="bg-preventify-light-gray py-12 md:py-20">
+       <div className="bg-preventify-blue/10 py-12 md:py-20">
             <div className="container mx-auto px-4 sm:px-6 lg:px-8">
                 <ShimmerText isActive={isShimmerActive}>
                     <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-center text-preventify-blue">
@@ -144,7 +144,7 @@ const SavingsPage = () => {
             </div>
         </div>
 
-      <section id="savings-details" className="py-16 bg-preventify-light-gray pt-0">
+      <section id="savings-details" className="py-16 pt-0">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           {/* Top Info Cards */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">

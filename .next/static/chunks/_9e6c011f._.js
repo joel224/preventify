@@ -260,7 +260,7 @@ var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$re
 var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ShimmerText$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/src/components/ShimmerText.tsx [app-client] (ecmascript)");
 var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$button$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/src/components/ui/button.tsx [app-client] (ecmascript)");
 ;
-var _s = __turbopack_context__.k.signature();
+var _s = __turbopack_context__.k.signature(), _s1 = __turbopack_context__.k.signature();
 'use client';
 ;
 ;
@@ -498,8 +498,76 @@ const SavingsTable = ({ data })=>/*#__PURE__*/ (0, __TURBOPACK__imported__module
         columnNumber: 5
     }, this);
 _c = SavingsTable;
-const SavingsPage = ()=>{
+const MagneticButton = ()=>{
     _s();
+    const containerRef = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useRef"])(null);
+    const buttonRef = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useRef"])(null);
+    const handleMouseMove = (e)=>{
+        const container = containerRef.current;
+        const button = buttonRef.current;
+        if (!container || !button) return;
+        const { left, top, width, height } = container.getBoundingClientRect();
+        const x = e.clientX - (left + width / 2);
+        const y = e.clientY - (top + height / 2);
+        // Strength of the magnetic effect
+        const strength = 0.4;
+        button.style.transform = `translate(${x * strength}px, ${y * strength}px)`;
+    };
+    const handleMouseLeave = ()=>{
+        const button = buttonRef.current;
+        if (!button) return;
+        button.style.transform = 'translate(0, 0)';
+    };
+    return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+        ref: containerRef,
+        onMouseMove: handleMouseMove,
+        onMouseLeave: handleMouseLeave,
+        className: "mt-8 text-center flex justify-center items-center h-24 w-24 mx-auto",
+        children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("a", {
+            href: "#savings-details",
+            ref: buttonRef,
+            className: "transition-transform duration-200 ease-out",
+            children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$button$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Button"], {
+                variant: "outline",
+                size: "icon",
+                className: "rounded-full animate-bounce",
+                children: [
+                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$chevron$2d$down$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__ChevronDown$3e$__["ChevronDown"], {
+                        className: "h-4 w-4"
+                    }, void 0, false, {
+                        fileName: "[project]/src/app/savings/page.tsx",
+                        lineNumber: 110,
+                        columnNumber: 21
+                    }, this),
+                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
+                        className: "sr-only",
+                        children: "Scroll to details"
+                    }, void 0, false, {
+                        fileName: "[project]/src/app/savings/page.tsx",
+                        lineNumber: 111,
+                        columnNumber: 21
+                    }, this)
+                ]
+            }, void 0, true, {
+                fileName: "[project]/src/app/savings/page.tsx",
+                lineNumber: 109,
+                columnNumber: 17
+            }, this)
+        }, void 0, false, {
+            fileName: "[project]/src/app/savings/page.tsx",
+            lineNumber: 108,
+            columnNumber: 13
+        }, this)
+    }, void 0, false, {
+        fileName: "[project]/src/app/savings/page.tsx",
+        lineNumber: 102,
+        columnNumber: 9
+    }, this);
+};
+_s(MagneticButton, "PHhx+pjpliw0mz0elxuCUy6zEjQ=");
+_c1 = MagneticButton;
+const SavingsPage = ()=>{
+    _s1();
     const [isShimmerActive, setIsShimmerActive] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(false);
     (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useEffect"])({
         "SavingsPage.useEffect": ()=>{
@@ -530,12 +598,12 @@ const SavingsPage = ()=>{
                                 children: "How much can you save with the One Health Member Plan?"
                             }, void 0, false, {
                                 fileName: "[project]/src/app/savings/page.tsx",
-                                lineNumber: 94,
+                                lineNumber: 136,
                                 columnNumber: 21
                             }, this)
                         }, void 0, false, {
                             fileName: "[project]/src/app/savings/page.tsx",
-                            lineNumber: 93,
+                            lineNumber: 135,
                             columnNumber: 17
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -543,58 +611,23 @@ const SavingsPage = ()=>{
                             children: "Explore the detailed savings and benefits of our membership."
                         }, void 0, false, {
                             fileName: "[project]/src/app/savings/page.tsx",
-                            lineNumber: 98,
+                            lineNumber: 140,
                             columnNumber: 17
                         }, this),
-                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                            className: "mt-8 text-center",
-                            children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("a", {
-                                href: "#savings-details",
-                                children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$button$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Button"], {
-                                    variant: "outline",
-                                    size: "icon",
-                                    className: "rounded-full animate-bounce",
-                                    children: [
-                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$chevron$2d$down$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__ChevronDown$3e$__["ChevronDown"], {
-                                            className: "h-4 w-4"
-                                        }, void 0, false, {
-                                            fileName: "[project]/src/app/savings/page.tsx",
-                                            lineNumber: 104,
-                                            columnNumber: 29
-                                        }, this),
-                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
-                                            className: "sr-only",
-                                            children: "Scroll to details"
-                                        }, void 0, false, {
-                                            fileName: "[project]/src/app/savings/page.tsx",
-                                            lineNumber: 105,
-                                            columnNumber: 29
-                                        }, this)
-                                    ]
-                                }, void 0, true, {
-                                    fileName: "[project]/src/app/savings/page.tsx",
-                                    lineNumber: 103,
-                                    columnNumber: 25
-                                }, this)
-                            }, void 0, false, {
-                                fileName: "[project]/src/app/savings/page.tsx",
-                                lineNumber: 102,
-                                columnNumber: 21
-                            }, this)
-                        }, void 0, false, {
+                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(MagneticButton, {}, void 0, false, {
                             fileName: "[project]/src/app/savings/page.tsx",
-                            lineNumber: 101,
+                            lineNumber: 143,
                             columnNumber: 17
                         }, this)
                     ]
                 }, void 0, true, {
                     fileName: "[project]/src/app/savings/page.tsx",
-                    lineNumber: 92,
+                    lineNumber: 134,
                     columnNumber: 13
                 }, this)
             }, void 0, false, {
                 fileName: "[project]/src/app/savings/page.tsx",
-                lineNumber: 91,
+                lineNumber: 133,
                 columnNumber: 8
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("section", {
@@ -615,20 +648,20 @@ const SavingsPage = ()=>{
                                                     className: "w-8 h-8 text-preventify-green"
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/app/savings/page.tsx",
-                                                    lineNumber: 118,
+                                                    lineNumber: 153,
                                                     columnNumber: 17
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$card$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["CardTitle"], {
                                                     children: "The proof is in the saving"
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/app/savings/page.tsx",
-                                                    lineNumber: 119,
+                                                    lineNumber: 154,
                                                     columnNumber: 17
                                                 }, this)
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/src/app/savings/page.tsx",
-                                            lineNumber: 117,
+                                            lineNumber: 152,
                                             columnNumber: 15
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$card$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["CardContent"], {
@@ -638,7 +671,7 @@ const SavingsPage = ()=>{
                                                     children: "Most recovered more than their membership fee - many saved much more."
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/app/savings/page.tsx",
-                                                    lineNumber: 122,
+                                                    lineNumber: 157,
                                                     columnNumber: 17
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -651,7 +684,7 @@ const SavingsPage = ()=>{
                                                                     children: "90% members saved"
                                                                 }, void 0, false, {
                                                                     fileName: "[project]/src/app/savings/page.tsx",
-                                                                    lineNumber: 127,
+                                                                    lineNumber: 162,
                                                                     columnNumber: 25
                                                                 }, this),
                                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -659,13 +692,13 @@ const SavingsPage = ()=>{
                                                                     children: "₹2,000+ in a year"
                                                                 }, void 0, false, {
                                                                     fileName: "[project]/src/app/savings/page.tsx",
-                                                                    lineNumber: 128,
+                                                                    lineNumber: 163,
                                                                     columnNumber: 25
                                                                 }, this)
                                                             ]
                                                         }, void 0, true, {
                                                             fileName: "[project]/src/app/savings/page.tsx",
-                                                            lineNumber: 126,
+                                                            lineNumber: 161,
                                                             columnNumber: 21
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -675,7 +708,7 @@ const SavingsPage = ()=>{
                                                                     children: "50% saved"
                                                                 }, void 0, false, {
                                                                     fileName: "[project]/src/app/savings/page.tsx",
-                                                                    lineNumber: 131,
+                                                                    lineNumber: 166,
                                                                     columnNumber: 25
                                                                 }, this),
                                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -683,31 +716,31 @@ const SavingsPage = ()=>{
                                                                     children: "₹17,000+ in a year"
                                                                 }, void 0, false, {
                                                                     fileName: "[project]/src/app/savings/page.tsx",
-                                                                    lineNumber: 132,
+                                                                    lineNumber: 167,
                                                                     columnNumber: 25
                                                                 }, this)
                                                             ]
                                                         }, void 0, true, {
                                                             fileName: "[project]/src/app/savings/page.tsx",
-                                                            lineNumber: 130,
+                                                            lineNumber: 165,
                                                             columnNumber: 21
                                                         }, this)
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "[project]/src/app/savings/page.tsx",
-                                                    lineNumber: 125,
+                                                    lineNumber: 160,
                                                     columnNumber: 17
                                                 }, this)
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/src/app/savings/page.tsx",
-                                            lineNumber: 121,
+                                            lineNumber: 156,
                                             columnNumber: 15
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/app/savings/page.tsx",
-                                    lineNumber: 116,
+                                    lineNumber: 151,
                                     columnNumber: 13
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$card$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Card"], {
@@ -719,20 +752,20 @@ const SavingsPage = ()=>{
                                                     className: "w-8 h-8 text-preventify-green"
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/app/savings/page.tsx",
-                                                    lineNumber: 139,
+                                                    lineNumber: 174,
                                                     columnNumber: 17
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$card$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["CardTitle"], {
                                                     children: "Plan pays for itself in two visits"
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/app/savings/page.tsx",
-                                                    lineNumber: 140,
+                                                    lineNumber: 175,
                                                     columnNumber: 17
                                                 }, this)
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/src/app/savings/page.tsx",
-                                            lineNumber: 138,
+                                            lineNumber: 173,
                                             columnNumber: 15
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$card$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["CardContent"], {
@@ -742,7 +775,7 @@ const SavingsPage = ()=>{
                                                     children: "2 visits = membership fee covered. Rest is pure savings."
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/app/savings/page.tsx",
-                                                    lineNumber: 143,
+                                                    lineNumber: 178,
                                                     columnNumber: 17
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -755,7 +788,7 @@ const SavingsPage = ()=>{
                                                                     children: "GP/Paediatrics visit"
                                                                 }, void 0, false, {
                                                                     fileName: "[project]/src/app/savings/page.tsx",
-                                                                    lineNumber: 148,
+                                                                    lineNumber: 183,
                                                                     columnNumber: 25
                                                                 }, this),
                                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -763,13 +796,13 @@ const SavingsPage = ()=>{
                                                                     children: "₹800-₹1,500 (no charge per visit)"
                                                                 }, void 0, false, {
                                                                     fileName: "[project]/src/app/savings/page.tsx",
-                                                                    lineNumber: 149,
+                                                                    lineNumber: 184,
                                                                     columnNumber: 25
                                                                 }, this)
                                                             ]
                                                         }, void 0, true, {
                                                             fileName: "[project]/src/app/savings/page.tsx",
-                                                            lineNumber: 147,
+                                                            lineNumber: 182,
                                                             columnNumber: 21
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -779,7 +812,7 @@ const SavingsPage = ()=>{
                                                                     children: "Average family consults"
                                                                 }, void 0, false, {
                                                                     fileName: "[project]/src/app/savings/page.tsx",
-                                                                    lineNumber: 152,
+                                                                    lineNumber: 187,
                                                                     columnNumber: 25
                                                                 }, this),
                                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -787,31 +820,31 @@ const SavingsPage = ()=>{
                                                                     children: "4 visits/year = ₹1,600-₹3,000 saved"
                                                                 }, void 0, false, {
                                                                     fileName: "[project]/src/app/savings/page.tsx",
-                                                                    lineNumber: 153,
+                                                                    lineNumber: 188,
                                                                     columnNumber: 25
                                                                 }, this)
                                                             ]
                                                         }, void 0, true, {
                                                             fileName: "[project]/src/app/savings/page.tsx",
-                                                            lineNumber: 151,
+                                                            lineNumber: 186,
                                                             columnNumber: 21
                                                         }, this)
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "[project]/src/app/savings/page.tsx",
-                                                    lineNumber: 146,
+                                                    lineNumber: 181,
                                                     columnNumber: 17
                                                 }, this)
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/src/app/savings/page.tsx",
-                                            lineNumber: 142,
+                                            lineNumber: 177,
                                             columnNumber: 15
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/app/savings/page.tsx",
-                                    lineNumber: 137,
+                                    lineNumber: 172,
                                     columnNumber: 13
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$card$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Card"], {
@@ -823,20 +856,20 @@ const SavingsPage = ()=>{
                                                     className: "w-8 h-8 text-preventify-green"
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/app/savings/page.tsx",
-                                                    lineNumber: 160,
+                                                    lineNumber: 195,
                                                     columnNumber: 17
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$card$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["CardTitle"], {
                                                     children: "Save more on medicines, every time"
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/app/savings/page.tsx",
-                                                    lineNumber: 161,
+                                                    lineNumber: 196,
                                                     columnNumber: 17
                                                 }, this)
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/src/app/savings/page.tsx",
-                                            lineNumber: 159,
+                                            lineNumber: 194,
                                             columnNumber: 15
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$card$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["CardContent"], {
@@ -846,7 +879,7 @@ const SavingsPage = ()=>{
                                                     children: "That's just on medicines. Everything else is extra savings."
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/app/savings/page.tsx",
-                                                    lineNumber: 164,
+                                                    lineNumber: 199,
                                                     columnNumber: 17
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -859,7 +892,7 @@ const SavingsPage = ()=>{
                                                                     children: "Average monthly medicines bill = ₹1,000"
                                                                 }, void 0, false, {
                                                                     fileName: "[project]/src/app/savings/page.tsx",
-                                                                    lineNumber: 169,
+                                                                    lineNumber: 204,
                                                                     columnNumber: 25
                                                                 }, this),
                                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -867,13 +900,13 @@ const SavingsPage = ()=>{
                                                                     children: "15% off + 10% Health Credits = ₹235/month"
                                                                 }, void 0, false, {
                                                                     fileName: "[project]/src/app/savings/page.tsx",
-                                                                    lineNumber: 170,
+                                                                    lineNumber: 205,
                                                                     columnNumber: 25
                                                                 }, this)
                                                             ]
                                                         }, void 0, true, {
                                                             fileName: "[project]/src/app/savings/page.tsx",
-                                                            lineNumber: 168,
+                                                            lineNumber: 203,
                                                             columnNumber: 21
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -883,7 +916,7 @@ const SavingsPage = ()=>{
                                                                     children: "x 12 months"
                                                                 }, void 0, false, {
                                                                     fileName: "[project]/src/app/savings/page.tsx",
-                                                                    lineNumber: 173,
+                                                                    lineNumber: 208,
                                                                     columnNumber: 25
                                                                 }, this),
                                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -891,37 +924,37 @@ const SavingsPage = ()=>{
                                                                     children: "₹2,820 saved/year"
                                                                 }, void 0, false, {
                                                                     fileName: "[project]/src/app/savings/page.tsx",
-                                                                    lineNumber: 174,
+                                                                    lineNumber: 209,
                                                                     columnNumber: 25
                                                                 }, this)
                                                             ]
                                                         }, void 0, true, {
                                                             fileName: "[project]/src/app/savings/page.tsx",
-                                                            lineNumber: 172,
+                                                            lineNumber: 207,
                                                             columnNumber: 21
                                                         }, this)
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "[project]/src/app/savings/page.tsx",
-                                                    lineNumber: 167,
+                                                    lineNumber: 202,
                                                     columnNumber: 17
                                                 }, this)
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/src/app/savings/page.tsx",
-                                            lineNumber: 163,
+                                            lineNumber: 198,
                                             columnNumber: 15
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/app/savings/page.tsx",
-                                    lineNumber: 158,
+                                    lineNumber: 193,
                                     columnNumber: 13
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/src/app/savings/page.tsx",
-                            lineNumber: 115,
+                            lineNumber: 150,
                             columnNumber: 11
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -933,12 +966,12 @@ const SavingsPage = ()=>{
                                             children: "Service-wise Savings"
                                         }, void 0, false, {
                                             fileName: "[project]/src/app/savings/page.tsx",
-                                            lineNumber: 185,
+                                            lineNumber: 220,
                                             columnNumber: 21
                                         }, this)
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/savings/page.tsx",
-                                        lineNumber: 184,
+                                        lineNumber: 219,
                                         columnNumber: 17
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$card$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["CardContent"], {
@@ -949,58 +982,59 @@ const SavingsPage = ()=>{
                                                     data: firstHalf
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/app/savings/page.tsx",
-                                                    lineNumber: 189,
+                                                    lineNumber: 224,
                                                     columnNumber: 23
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(SavingsTable, {
                                                     data: secondHalf
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/app/savings/page.tsx",
-                                                    lineNumber: 190,
+                                                    lineNumber: 225,
                                                     columnNumber: 23
                                                 }, this)
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/src/app/savings/page.tsx",
-                                            lineNumber: 188,
+                                            lineNumber: 223,
                                             columnNumber: 19
                                         }, this)
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/savings/page.tsx",
-                                        lineNumber: 187,
+                                        lineNumber: 222,
                                         columnNumber: 17
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/app/savings/page.tsx",
-                                lineNumber: 183,
+                                lineNumber: 218,
                                 columnNumber: 13
                             }, this)
                         }, void 0, false, {
                             fileName: "[project]/src/app/savings/page.tsx",
-                            lineNumber: 182,
+                            lineNumber: 217,
                             columnNumber: 11
                         }, this)
                     ]
                 }, void 0, true, {
                     fileName: "[project]/src/app/savings/page.tsx",
-                    lineNumber: 113,
+                    lineNumber: 148,
                     columnNumber: 9
                 }, this)
             }, void 0, false, {
                 fileName: "[project]/src/app/savings/page.tsx",
-                lineNumber: 112,
+                lineNumber: 147,
                 columnNumber: 7
             }, this)
         ]
     }, void 0, true);
 };
-_s(SavingsPage, "O5PXQQCeipvjAZViJgWGs42GjDg=");
-_c1 = SavingsPage;
+_s1(SavingsPage, "O5PXQQCeipvjAZViJgWGs42GjDg=");
+_c2 = SavingsPage;
 const __TURBOPACK__default__export__ = SavingsPage;
-var _c, _c1;
+var _c, _c1, _c2;
 __turbopack_context__.k.register(_c, "SavingsTable");
-__turbopack_context__.k.register(_c1, "SavingsPage");
+__turbopack_context__.k.register(_c1, "MagneticButton");
+__turbopack_context__.k.register(_c2, "SavingsPage");
 if (typeof globalThis.$RefreshHelpers$ === 'object' && globalThis.$RefreshHelpers !== null) {
     __turbopack_context__.k.registerExports(module, globalThis.$RefreshHelpers$);
 }
