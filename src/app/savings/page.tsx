@@ -1,7 +1,7 @@
 
 'use client';
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import PageHeader from "@/components/PageHeader";
 import {
   Card,
@@ -73,6 +73,48 @@ const SavingsTable = ({ data }: { data: typeof savingsData }) => (
     </Card>
 );
 
+const MagneticButton = () => {
+    const containerRef = useRef<HTMLDivElement>(null);
+    const buttonRef = useRef<HTMLAnchorElement>(null);
+
+    const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+        const container = containerRef.current;
+        const button = buttonRef.current;
+        if (!container || !button) return;
+
+        const { left, top, width, height } = container.getBoundingClientRect();
+        const x = e.clientX - (left + width / 2);
+        const y = e.clientY - (top + height / 2);
+
+        // Strength of the magnetic effect
+        const strength = 0.4;
+        
+        button.style.transform = `translate(${x * strength}px, ${y * strength}px)`;
+    };
+
+    const handleMouseLeave = () => {
+        const button = buttonRef.current;
+        if (!button) return;
+        button.style.transform = 'translate(0, 0)';
+    };
+
+    return (
+        <div
+            ref={containerRef}
+            onMouseMove={handleMouseMove}
+            onMouseLeave={handleMouseLeave}
+            className="mt-8 text-center flex justify-center items-center h-24 w-24 mx-auto"
+        >
+            <a href="#savings-details" ref={buttonRef} className="transition-transform duration-200 ease-out">
+                <Button variant="outline" size="icon" className="rounded-full animate-bounce">
+                    <ChevronDown className="h-4 w-4" />
+                    <span className="sr-only">Scroll to details</span>
+                </Button>
+            </a>
+        </div>
+    );
+};
+
 
 const SavingsPage = () => {
   const [isShimmerActive, setIsShimmerActive] = useState(false);
@@ -98,14 +140,7 @@ const SavingsPage = () => {
                 <p className="mt-4 text-lg text-center max-w-3xl mx-auto text-preventify-dark-gray">
                     Explore the detailed savings and benefits of our membership.
                 </p>
-                <div className="mt-8 text-center">
-                    <a href="#savings-details">
-                        <Button variant="outline" size="icon" className="rounded-full animate-bounce">
-                            <ChevronDown className="h-4 w-4" />
-                            <span className="sr-only">Scroll to details</span>
-                        </Button>
-                    </a>
-                </div>
+                <MagneticButton />
             </div>
         </div>
 

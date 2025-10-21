@@ -312,9 +312,21 @@ h1, h2, h3, h4, h5, h6 {
   padding-right: 2rem;
 }
 
+.\!container {
+  width: 100% !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+  padding-left: 2rem !important;
+  padding-right: 2rem !important;
+}
+
 @media (width >= 1400px) {
   .container {
     max-width: 1400px;
+  }
+
+  .\!container {
+    max-width: 1400px !important;
   }
 }
 
@@ -832,6 +844,10 @@ h1, h2, h3, h4, h5, h6 {
   height: 100svh;
 }
 
+.h-24 {
+  height: 6rem;
+}
+
 .max-h-96 {
   max-height: 24rem;
 }
@@ -978,6 +994,10 @@ h1, h2, h3, h4, h5, h6 {
 
 .w-px {
   width: 1px;
+}
+
+.w-24 {
+  width: 6rem;
 }
 
 .min-w-0 {
@@ -2332,6 +2352,10 @@ h1, h2, h3, h4, h5, h6 {
   transition-timing-function: linear;
 }
 
+.ease-out {
+  transition-timing-function: cubic-bezier(0, 0, .2, 1);
+}
+
 @keyframes enter {
   from {
     opacity: var(--tw-enter-opacity, 1);
@@ -2390,6 +2414,10 @@ h1, h2, h3, h4, h5, h6 {
 
 .ease-linear {
   animation-timing-function: linear;
+}
+
+.ease-out {
+  animation-timing-function: cubic-bezier(0, 0, .2, 1);
 }
 
 .running {
