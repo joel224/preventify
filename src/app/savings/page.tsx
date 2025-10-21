@@ -17,8 +17,9 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Wallet, Stethoscope, Pill } from "lucide-react";
+import { Wallet, Stethoscope, Pill, ChevronDown } from "lucide-react";
 import ShimmerText from "@/components/ShimmerText";
+import { Button } from "@/components/ui/button";
 
 
 const savingsData = [
@@ -97,10 +98,18 @@ const SavingsPage = () => {
                 <p className="mt-4 text-lg text-center max-w-3xl mx-auto text-preventify-dark-gray">
                     Explore the detailed savings and benefits of our membership.
                 </p>
+                <div className="mt-8 text-center">
+                    <a href="#savings-details">
+                        <Button variant="outline" size="icon" className="rounded-full animate-bounce">
+                            <ChevronDown className="h-4 w-4" />
+                            <span className="sr-only">Scroll to details</span>
+                        </Button>
+                    </a>
+                </div>
             </div>
         </div>
 
-      <section className="py-16 bg-preventify-light-gray">
+      <section id="savings-details" className="py-16 bg-preventify-light-gray pt-0">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           {/* Top Info Cards */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
