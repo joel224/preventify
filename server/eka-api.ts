@@ -227,3 +227,18 @@ export async function getBusinessEntitiesAndDoctors(): Promise<any> {
     console.log(`Returning ${validDoctors.length} processed doctors and ${clinics.length} clinics.`);
     return { doctors: validDoctors, clinics };
 }
+
+export async function bookAppointment(bookingData: any): Promise<any> {
+    console.log("Received booking data. This is a placeholder and does not connect to the actual API yet.");
+    console.log("Booking Payload:", JSON.stringify(bookingData, null, 2));
+
+    // In the future, this is where the `makeApiRequest` call would go to post to /dr/v1/appointment
+    // For now, just return a mock success response
+    const mockResponse = {
+        appointment_id: `mock_${new Date().getTime()}`,
+        status: "BOOKING_PENDING_CONFIRMATION",
+    };
+
+    console.log("Returning mock success response:", mockResponse);
+    return Promise.resolve(mockResponse);
+}

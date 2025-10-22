@@ -18,7 +18,7 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { CalendarIcon } from "lucide-react";
+import { CalendarIcon, Loader2 } from "lucide-react";
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
 import { toast } from "@/components/ui/sonner";
@@ -28,38 +28,39 @@ const bookingFormSchema = z.object({
   phone: z.string().regex(/^\+?[0-9]{10,14}$/, { message: "Please enter a valid phone number." }),
   email: z.string().email({ message: "Please enter a valid email address." }),
   clinic: z.string().min(1, { message: "Please select a clinic." }),
-  doctor: z.string().optional(),
+  doctor: z.string().min(1, { message: "Please select a doctor." }),
   appointmentDate: z.date({ required_error: "Please select a date." }),
 });
 
 type BookingFormValues = z.infer<typeof bookingFormSchema>;
 
 const clinics = [
-  "Preventify Medical Center - Padinjarangadi",
-  "Preventify Health Clinic - Vattamkulam",
+    { name: "Preventify Medical Center - Padinjarangadi", id: "673d87fdaa91c2001d716c91" },
+    { name: "Preventify Health Clinic - Vattamkulam", id: "684043d6f138d3001dd5e995" },
 ];
 
 const doctors = [
-  "Any Available Doctor",
-  "Dr. Rakesh K R",
-  "Dr. Mohammed Faisal",
-  "Dr. Hafsa Hussain",
-  "Dr. Krishnendu U K",
-  "Dr. Girish U",
-  "Dr. Ijas V. I.",
-  "Dr. Husna V.",
-  "Dr. Md. Abdurahiman",
-  "Dr. Neeharika V.",
-  "Dr. Ashwin T.R.",
-  "Dr. Sreedev N",
-  "Dr. Ajay Biju",
-  "Dr. Renjith A.",
-  "Dr. K.Y.Sanjay",
-  "Dr. Reshma K.R.",
+  { name: "Any Available Doctor", id: "any" },
+  { name: "Dr. Rakesh K R", id: "173208576372747" },
+  { name: "Dr. Mohammed Faisal", id: "175949152812334" },
+  { name: "Dr. Hafsa Hussain", id: "174497110921725" },
+  { name: "Dr. Krishnendu U K", id: "175931888074630" },
+  { name: "Dr. Girish U", id: "175949141398449" },
+  { name: "Dr. Ijas V. I.", id: "175931883083616" },
+  { name: "Dr. Husna V.", id: "175949169261621" },
+  { name: "Dr. Md. Abdurahiman", id: "174306088551114" },
+  { name: "Dr. Neeharika V.", id: "173771631358722" },
+  { name: "Dr. Ashwin T.R.", id: "175949162376135" },
+  { name: "Dr. Sreedev N", id: "175949148741914" },
+  { name: "Dr. Ajay Biju", id: "174297264958992" },
+  { name: "Dr. Renjith A.", id: "174306005828928" },
+  { name: "Dr. K.Y.Sanjay", id: "175931864615485" },
+  { name: "Dr. Reshma K.R.", id: "175949173084453" },
 ];
 
 export default function BookingDialog({ children }: { children: React.ReactNode }) {
     const [open, setOpen] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
 
     const form = useForm<BookingFormValues>({
         resolver: zodResolver(bookingFormSchema),
@@ -67,17 +68,67 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
             fullName: "",
             phone: "",
             email: "",
+            doctor: "any"
         },
     });
 
-    function onSubmit(data: BookingFormValues) {
-        console.log(data);
-        toast({
-            title: "Appointment Request Submitted!",
-            description: `Thank you, ${data.fullName}. We will contact you shortly to confirm your appointment.`,
-        });
-        form.reset();
-        setOpen(false);
+    async function onSubmit(data: BookingFormValues) {
+        setIsLoading(true);
+        try {
+            const appointmentTime = data.appointmentDate;
+            appointmentTime.setHours(10, 0, 0, 0); // Default to 10:00 AM
+
+            const [firstName, ...lastNameParts] = data.fullName.split(' ');
+            const lastName = lastNameParts.join(' ');
+
+            const payload = {
+                partner_appointment_id: `preventify-${new Date().getTime()}`,
+                partner_clinic_id: data.clinic,
+                partner_doctor_id: data.doctor,
+                partner_patient_id: `patient-${data.phone}`,
+                appointment_details: {
+                    start_time: Math.floor(appointmentTime.getTime() / 1000),
+                    end_time: Math.floor(appointmentTime.getTime() / 1000) + 900, // 15 min slot
+                    mode: "INCLINIC",
+                },
+                patient_details: {
+                    designation: "Mr.",
+                    first_name: firstName,
+                    last_name: lastName || firstName,
+                    mobile: data.phone,
+                    dob: "1990-01-01", // Placeholder DOB
+                    gender: "M", // Placeholder gender
+                    partner_patient_id: `patient-${data.phone}`,
+                },
+            };
+            
+            const response = await fetch('/api/book-appointment', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(payload),
+            });
+
+            if (!response.ok) {
+                throw new Error('Failed to submit appointment request.');
+            }
+
+            const result = await response.json();
+
+            toast.success("Appointment Request Submitted!", {
+                description: `Thank you, ${data.fullName}. We will contact you shortly to confirm your booking.`,
+            });
+            form.reset();
+            setOpen(false);
+
+        } catch (error) {
+             toast.error("Submission Failed", {
+                description: "There was a problem submitting your request. Please try again later.",
+            });
+        } finally {
+            setIsLoading(false);
+        }
     }
 
     return (
@@ -150,7 +201,7 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
                                             </SelectTrigger>
                                             </FormControl>
                                             <SelectContent>
-                                                {clinics.map(clinic => <SelectItem key={clinic} value={clinic}>{clinic}</SelectItem>)}
+                                                {clinics.map(clinic => <SelectItem key={clinic.id} value={clinic.id}>{clinic.name}</SelectItem>)}
                                             </SelectContent>
                                         </Select>
                                         <FormMessage />
@@ -162,15 +213,15 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
                                     name="doctor"
                                     render={({ field }) => (
                                         <FormItem>
-                                        <FormLabel>Doctor (Optional)</FormLabel>
-                                        <Select onValuechange={field.onChange} defaultValue={field.value}>
+                                        <FormLabel>Doctor</FormLabel>
+                                        <Select onValueChange={field.onChange} defaultValue={field.value}>
                                             <FormControl>
                                             <SelectTrigger>
                                                 <SelectValue placeholder="Select a doctor" />
                                             </SelectTrigger>
                                             </FormControl>
                                             <SelectContent>
-                                                {doctors.map(doctor => <SelectItem key={doctor} value={doctor}>{doctor}</SelectItem>)}
+                                                {doctors.map(doctor => <SelectItem key={doctor.id} value={doctor.id}>{doctor.name}</SelectItem>)}
                                             </SelectContent>
                                         </Select>
                                         <FormMessage />
@@ -220,7 +271,8 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
                                 )}
                                 />
                             <DialogFooter>
-                                <Button type="submit" className="w-full bg-preventify-blue hover:bg-preventify-dark-blue text-white" size="lg">
+                                <Button type="submit" className="w-full bg-preventify-blue hover:bg-preventify-dark-blue text-white" size="lg" disabled={isLoading}>
+                                     {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                                     Submit Request
                                 </Button>
                             </DialogFooter>

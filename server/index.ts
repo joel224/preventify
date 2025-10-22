@@ -2,7 +2,7 @@
 import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
-import { getPatientDetails, getBusinessEntitiesAndDoctors, _loginAndGetTokens } from './eka-api';
+import { getPatientDetails, getBusinessEntitiesAndDoctors, _loginAndGetTokens, bookAppointment } from './eka-api';
 
 dotenv.config();
 
@@ -50,6 +50,16 @@ app.get('/api/doctors-and-clinics', async (req, res) => {
      console.error('Error in /api/doctors-and-clinics endpoint:', error);
      res.status(500).json({ message: 'Failed to get doctors and clinics', error: error.message });
   }
+});
+
+app.post('/api/book-appointment', async (req, res) => {
+    try {
+        const result = await bookAppointment(req.body);
+        res.status(201).json(result);
+    } catch (error: any) {
+        console.error('Error in /api/book-appointment endpoint:', error);
+        res.status(500).json({ message: 'Failed to process booking request', error: error.message });
+    }
 });
 
 
