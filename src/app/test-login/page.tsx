@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useState } from 'react';
@@ -18,18 +17,28 @@ export default function TestLoginPage() {
     try {
       const response = await fetch('/api/doctors-and-clinics');
       const responseData = await response.json();
+      
+      // This is the critical fix:
+      // We only throw an error if the entire response failed (e.g., 500 error from the server).
+      // If the response is OK but contains an error message inside (e.g. from one failed doctor),
+      // we can still display the data that was successfully fetched.
       if (!response.ok) {
-        // Now we expect the backend to always return a 200, but we might get an error message inside
-        if (responseData.error) {
-             throw new Error(responseData.error);
-        } else {
-            // Handle cases where the response is not ok but doesn't have a specific error message
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
+        // The message will be in responseData.message if the backend sent a structured error
+        throw new Error(responseData.message || `HTTP error! status: ${response.status}`);
       }
+
+      // If the backend sends an error property even on a 200 response, handle it here.
+      if (responseData.error) {
+        setError(responseData.error);
+      }
+      
+      // Always set the data so we can see what was successfully processed.
       setData(responseData);
+
     } catch (error: any) {
       setError(error.message);
+      // Clear data if the whole request fails
+      setData(null);
     } finally {
       setIsLoading(false);
     }

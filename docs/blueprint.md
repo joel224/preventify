@@ -1,7 +1,7 @@
 # **App Name**: SimplyStart
 
 ## Core Features:
-
+DEBUGGING IS THE MOST IMPORTANT .
 - Note Creation: Allow users to create and save text notes.
 - Basic Formatting: Implement simple formatting options like bold, italics, and underline.
 - Local Storage: Store notes locally in the browser using local storage.

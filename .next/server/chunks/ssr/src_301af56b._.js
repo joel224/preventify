@@ -172,18 +172,24 @@ function TestLoginPage() {
         try {
             const response = await fetch('/api/doctors-and-clinics');
             const responseData = await response.json();
+            // This is the critical fix:
+            // We only throw an error if the entire response failed (e.g., 500 error from the server).
+            // If the response is OK but contains an error message inside (e.g. from one failed doctor),
+            // we can still display the data that was successfully fetched.
             if (!response.ok) {
-                // Now we expect the backend to always return a 200, but we might get an error message inside
-                if (responseData.error) {
-                    throw new Error(responseData.error);
-                } else {
-                    // Handle cases where the response is not ok but doesn't have a specific error message
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
+                // The message will be in responseData.message if the backend sent a structured error
+                throw new Error(responseData.message || `HTTP error! status: ${response.status}`);
             }
+            // If the backend sends an error property even on a 200 response, handle it here.
+            if (responseData.error) {
+                setError(responseData.error);
+            }
+            // Always set the data so we can see what was successfully processed.
             setData(responseData);
         } catch (error) {
             setError(error.message);
+            // Clear data if the whole request fails
+            setData(null);
         } finally{
             setIsLoading(false);
         }
@@ -195,7 +201,7 @@ function TestLoginPage() {
                 subtitle: "Click the button to fetch doctors and clinics."
             }, void 0, false, {
                 fileName: "[project]/src/app/test-login/page.tsx",
-                lineNumber: 40,
+                lineNumber: 49,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -211,7 +217,7 @@ function TestLoginPage() {
                             children: isLoading ? 'Fetching Data...' : 'Fetch Doctors & Clinics'
                         }, void 0, false, {
                             fileName: "[project]/src/app/test-login/page.tsx",
-                            lineNumber: 46,
+                            lineNumber: 55,
                             columnNumber: 11
                         }, this),
                         error && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$card$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Card"], {
@@ -223,12 +229,12 @@ function TestLoginPage() {
                                         children: "API Error"
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/test-login/page.tsx",
-                                        lineNumber: 58,
+                                        lineNumber: 67,
                                         columnNumber: 17
                                     }, this)
                                 }, void 0, false, {
                                     fileName: "[project]/src/app/test-login/page.tsx",
-                                    lineNumber: 57,
+                                    lineNumber: 66,
                                     columnNumber: 15
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$card$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["CardContent"], {
@@ -237,18 +243,18 @@ function TestLoginPage() {
                                         children: error
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/test-login/page.tsx",
-                                        lineNumber: 61,
+                                        lineNumber: 70,
                                         columnNumber: 17
                                     }, this)
                                 }, void 0, false, {
                                     fileName: "[project]/src/app/test-login/page.tsx",
-                                    lineNumber: 60,
+                                    lineNumber: 69,
                                     columnNumber: 15
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/src/app/test-login/page.tsx",
-                            lineNumber: 56,
+                            lineNumber: 65,
                             columnNumber: 13
                         }, this),
                         data && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$card$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Card"], {
@@ -258,12 +264,12 @@ function TestLoginPage() {
                                         children: "API Response (Successfully Fetched Data)"
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/test-login/page.tsx",
-                                        lineNumber: 71,
+                                        lineNumber: 80,
                                         columnNumber: 17
                                     }, this)
                                 }, void 0, false, {
                                     fileName: "[project]/src/app/test-login/page.tsx",
-                                    lineNumber: 70,
+                                    lineNumber: 79,
                                     columnNumber: 15
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$card$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["CardContent"], {
@@ -273,29 +279,29 @@ function TestLoginPage() {
                                         children: JSON.stringify(data, null, 2)
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/test-login/page.tsx",
-                                        lineNumber: 74,
+                                        lineNumber: 83,
                                         columnNumber: 17
                                     }, this)
                                 }, void 0, false, {
                                     fileName: "[project]/src/app/test-login/page.tsx",
-                                    lineNumber: 73,
+                                    lineNumber: 82,
                                     columnNumber: 15
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/src/app/test-login/page.tsx",
-                            lineNumber: 69,
+                            lineNumber: 78,
                             columnNumber: 13
                         }, this)
                     ]
                 }, void 0, true, {
                     fileName: "[project]/src/app/test-login/page.tsx",
-                    lineNumber: 45,
+                    lineNumber: 54,
                     columnNumber: 9
                 }, this)
             }, void 0, false, {
                 fileName: "[project]/src/app/test-login/page.tsx",
-                lineNumber: 44,
+                lineNumber: 53,
                 columnNumber: 7
             }, this)
         ]
