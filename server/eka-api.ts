@@ -54,8 +54,8 @@ async function _refreshAccessToken() {
   console.log('Refreshing access token...');
   const tokens = await getTokens();
   if (!tokens?.refresh_token) {
-    console.log('No refresh token found. Falling back to full login.');
-    throw new Error("Cannot refresh without a user context for login.");
+    console.log('No refresh token found. A full login is required.');
+    return null;
   }
 
   const client = getApiClient();
@@ -73,14 +73,15 @@ async function _refreshAccessToken() {
     console.log('Token refresh successful. New tokens saved.');
     return access_token;
   } catch (error) {
-    console.error('Failed to refresh token. Error:', error);
-    throw new Error("Could not refresh token. A full login may be required.");
+    console.error('Failed to refresh token. A full login may be required.', error);
+    return null;
   }
 }
 
-async function makeApiRequest(apiCall: (client: any) => Promise<any>, userToken: string, retry = true) {
+async function makeApiRequest(apiCall: (client: any) => Promise<any>, userToken: string) {
   let tokens = await getTokens();
 
+  // If no tokens, perform a full login first.
   if (!tokens?.access_token) {
     console.log('No access token found. Logging in...');
     tokens = await _loginAndGetTokens(userToken);
@@ -89,25 +90,36 @@ async function makeApiRequest(apiCall: (client: any) => Promise<any>, userToken:
   const apiClient = getApiClient(tokens.access_token);
 
   try {
+    // First attempt
     return await apiCall(apiClient);
   } catch (error: any) {
-    if (error.response?.status === 401 && retry) {
-      console.log('Access token expired. Refreshing...');
-      try {
-        const newAccessToken = await _refreshAccessToken();
+    // If the first attempt fails with a 401, try to refresh the token.
+    if (error.response?.status === 401) {
+      console.log('Access token may be expired. Attempting to refresh...');
+      const newAccessToken = await _refreshAccessToken();
+      
+      // If refresh was successful, retry the API call with the new token.
+      if (newAccessToken) {
+        console.log('Retrying API call with new refreshed token.');
         const newApiClient = getApiClient(newAccessToken);
-        console.log('Retrying API call with new token.');
         return await apiCall(newApiClient);
-      } catch (refreshError) {
-        console.error('API call failed after token refresh:', refreshError);
-        throw refreshError;
       }
+      
+      // If refresh failed, perform a full login and then retry.
+      console.log('Token refresh failed. Performing a full login...');
+      const freshTokens = await _loginAndGetTokens(userToken);
+      console.log('Retrying API call with new login token.');
+      const freshApiClient = getApiClient(freshTokens.access_token);
+      return await apiCall(freshApiClient);
+
     } else {
-      console.error('An error occurred during API call:', error.message);
+      // For any other error, rethrow it.
+      console.error('An unrecoverable error occurred during API call:', error.message);
       throw error;
     }
   }
 }
+
 
 export async function getPatientDetails(mobileNumber: string, userToken: string): Promise<any> {
   return makeApiRequest(async (client) => {
