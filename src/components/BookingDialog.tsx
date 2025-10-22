@@ -27,7 +27,7 @@ import { toast } from "@/components/ui/sonner";
 const bookingFormSchema = z.object({
   fullName: z.string().min(2, { message: "Full name must be at least 2 characters." }),
   phone: z.string().regex(/^\+?[0-9]{10,14}$/, { message: "Please enter a valid phone number." }),
-  email: z.string().email({ message: "Please enter a valid email address." }).optional(),
+  email: z.string().email({ message: "Please enter a valid email address." }).optional().or(z.literal('')),
   dob: z.date({ required_error: "Please select your date of birth." }),
   gender: z.enum(["M", "F", "O"], { required_error: "Please select a gender." }),
   clinic: z.string().min(1, { message: "Please select a clinic." }),
@@ -308,7 +308,7 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
                                                     <FormControl>
                                                     <SelectTrigger>
                                                         <SelectValue placeholder="Select a doctor" />
-                                                    </SelectTrigger>
+                                                    </Trigger>
                                                     </FormControl>
                                                     <SelectContent>
                                                         {doctors.map(doctor => <SelectItem key={doctor.id} value={doctor.id}>{doctor.name}</SelectItem>)}
