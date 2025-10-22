@@ -16,10 +16,7 @@ app.use(express.json());
 // New endpoint specifically for testing the login
 app.get('/api/test-login', async (req, res) => {
   try {
-    // In a real app, the user_token would be dynamic per user.
-    // For this test, we use a placeholder as the backend doesn't depend on it for this specific test.
-    const placeholderUserToken = 'studio-test-token';
-    await _loginAndGetTokens(placeholderUserToken);
+    await _loginAndGetTokens();
     res.json({ message: 'Login successful. Tokens saved.' });
   } catch (error: any) {
     console.error('Error in /api/test-login endpoint:', error);
@@ -37,10 +34,8 @@ app.get('/api/message', (req, res) => {
 
 app.get('/api/patient', async (req, res) => {
   try {
-    // This is a placeholder user token. In a real app, this would be dynamically obtained.
-    const userToken = "some-user-token"; 
     // The mobile number would likely come from the request, e.g., req.query.mobile
-    const patientData = await getPatientDetails("9999999999", userToken);
+    const patientData = await getPatientDetails("9999999999");
     res.json(patientData);
   } catch (error: any) {
     res.status(500).json({ message: 'Failed to get patient details', error: error.message });
@@ -49,9 +44,7 @@ app.get('/api/patient', async (req, res) => {
 
 app.get('/api/doctors-and-clinics', async (req, res) => {
   try {
-    // This is a placeholder user token. In a real app, this would be dynamically obtained.
-    const userToken = "some-user-token";
-    const data = await getBusinessEntitiesAndDoctors(userToken);
+    const data = await getBusinessEntitiesAndDoctors();
     res.json(data);
   } catch (error: any) {
      console.error('Error in /api/doctors-and-clinics endpoint:', error);

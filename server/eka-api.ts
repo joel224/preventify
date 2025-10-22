@@ -18,7 +18,7 @@ const getApiClient = (accessToken?: string) => {
   });
 };
 
-export async function _loginAndGetTokens(userToken: string) {
+export async function _loginAndGetTokens() {
   console.log('Attempting full login...');
   const { EKA_API_KEY, EKA_CLIENT_ID, EKA_CLIENT_SECRET } = process.env;
 
@@ -33,7 +33,6 @@ export async function _loginAndGetTokens(userToken: string) {
       api_key: EKA_API_KEY,
       client_id: EKA_CLIENT_ID,
       client_secret: EKA_CLIENT_SECRET,
-      user_token: userToken,
     });
     
     const { access_token, refresh_token } = response.data;
@@ -79,13 +78,13 @@ async function _refreshAccessToken() {
   }
 }
 
-async function makeApiRequest(apiCall: (client: any) => Promise<any>, userToken: string) {
+async function makeApiRequest(apiCall: (client: any) => Promise<any>) {
   let tokens = await getTokens();
 
   // If no tokens, perform a full login first.
   if (!tokens?.access_token) {
     console.log('No access token found. Logging in...');
-    tokens = await _loginAndGetTokens(userToken);
+    tokens = await _loginAndGetTokens();
   }
 
   const apiClient = getApiClient(tokens.access_token);
@@ -108,7 +107,7 @@ async function makeApiRequest(apiCall: (client: any) => Promise<any>, userToken:
       
       // If refresh failed, perform a full login and then retry.
       console.log('Token refresh failed. Performing a full login...');
-      const freshTokens = await _loginAndGetTokens(userToken);
+      const freshTokens = await _loginAndGetTokens();
       console.log('Retrying API call with new login token.');
       const freshApiClient = getApiClient(freshTokens.access_token);
       return await apiCall(freshApiClient);
@@ -122,7 +121,7 @@ async function makeApiRequest(apiCall: (client: any) => Promise<any>, userToken:
 }
 
 
-export async function getPatientDetails(mobileNumber: string, userToken: string): Promise<any> {
+export async function getPatientDetails(mobileNumber: string): Promise<any> {
   return makeApiRequest(async (client) => {
     // This is a placeholder for the actual API call
     console.log('Attempting to get patient details with token.');
@@ -131,7 +130,7 @@ export async function getPatientDetails(mobileNumber: string, userToken: string)
     
     // Mocking a successful response for now
     return { "patientId": "12345", "name": "John Doe", "mobile": mobileNumber };
-  }, userToken);
+  });
 }
 
 const parseLocation = (line1: string) => {
@@ -149,16 +148,16 @@ const parseLocation = (line1: string) => {
     return parts[0]?.trim() || 'N/A';
 };
 
-export async function getBusinessEntitiesAndDoctors(userToken: string): Promise<any> {
+export async function getBusinessEntitiesAndDoctors(): Promise<any> {
     console.log("Calling getBusinessEntitiesAndDoctors...");
     const businessEntitiesResponse = await makeApiRequest(async (client) => {
         console.log('Fetching business entities...');
         const response = await client.get('/dr/v1/business/entities');
         console.log("Successfully fetched business entities.");
-        return response.data;
-    }, userToken);
+        return response;
+    });
 
-    const { doctors: doctorList, clinics: clinicList } = businessEntitiesResponse;
+    const { doctors: doctorList, clinics: clinicList } = businessEntitiesResponse.data;
 
     if (!doctorList || doctorList.length === 0) {
         console.log("No doctors found in the initial response.");
@@ -174,7 +173,7 @@ export async function getBusinessEntitiesAndDoctors(userToken: string): Promise<
                 const doctorDetailsResponse = await makeApiRequest(async (client) => {
                     // console.log(`Fetching details for doctor ${doctor.doctor_id}...`);
                     return client.get(`/dr/v1/doctor/${doctor.doctor_id}`);
-                }, userToken);
+                });
 
                 const details = doctorDetailsResponse.data.profile;
                 const professional = details?.professional;
