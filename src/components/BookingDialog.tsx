@@ -18,6 +18,7 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { CalendarIcon, Loader2 } from "lucide-react";
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
@@ -27,6 +28,8 @@ const bookingFormSchema = z.object({
   fullName: z.string().min(2, { message: "Full name must be at least 2 characters." }),
   phone: z.string().regex(/^\+?[0-9]{10,14}$/, { message: "Please enter a valid phone number." }),
   email: z.string().email({ message: "Please enter a valid email address." }),
+  dob: z.date({ required_error: "Please select your date of birth." }),
+  gender: z.enum(["M", "F", "O"], { required_error: "Please select a gender." }),
   clinic: z.string().min(1, { message: "Please select a clinic." }),
   doctor: z.string().min(1, { message: "Please select a doctor." }),
   appointmentDate: z.date({ required_error: "Please select a date." }),
@@ -84,6 +87,8 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
                     firstName,
                     lastName: lastName || firstName,
                     phone: data.phone,
+                    dob: format(data.dob, "yyyy-MM-dd"),
+                    gender: data.gender,
                 },
                 appointment: {
                     clinicId: data.clinic,
@@ -130,7 +135,7 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
                 <DialogHeader>
                     <DialogTitle>Book an Appointment</DialogTitle>
                     <DialogDescription>
-                        Fill out the form below to request an appointment. Our team will contact you to confirm.
+                        Fill out your details below to request an appointment. Our team will contact you to confirm.
                     </DialogDescription>
                 </DialogHeader>
                 <div className="py-4">
@@ -164,19 +169,101 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
                                     )}
                                 />
                             </div>
-                            <FormField
+                             <FormField
                                 control={form.control}
                                 name="email"
                                 render={({ field }) => (
                                     <FormItem>
                                         <FormLabel>Email Address</FormLabel>
                                         <FormControl>
-                                            <Input placeholder="you@example.com" {...field} />
+                                            <Input type="email" placeholder="you@example.com" {...field} />
                                         </FormControl>
                                         <FormMessage />
                                     </FormItem>
                                 )}
                             />
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                               <FormField
+                                    control={form.control}
+                                    name="dob"
+                                    render={({ field }) => (
+                                        <FormItem className="flex flex-col">
+                                        <FormLabel>Date of Birth</FormLabel>
+                                        <Popover>
+                                            <PopoverTrigger asChild>
+                                            <FormControl>
+                                                <Button
+                                                variant={"outline"}
+                                                className={cn(
+                                                    "w-full pl-3 text-left font-normal",
+                                                    !field.value && "text-muted-foreground"
+                                                )}
+                                                >
+                                                {field.value ? (
+                                                    format(field.value, "PPP")
+                                                ) : (
+                                                    <span>Pick a date</span>
+                                                )}
+                                                <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                                                </Button>
+                                            </FormControl>
+                                            </PopoverTrigger>
+                                            <PopoverContent className="w-auto p-0" align="start">
+                                            <Calendar
+                                                mode="single"
+                                                selected={field.value}
+                                                onSelect={field.onChange}
+                                                captionLayout="dropdown-buttons"
+                                                fromYear={1930}
+                                                toYear={new Date().getFullYear()}
+                                                disabled={(date) =>
+                                                    date > new Date()
+                                                }
+                                                initialFocus
+                                            />
+                                            </PopoverContent>
+                                        </Popover>
+                                        <FormMessage />
+                                        </FormItem>
+                                    )}
+                                />
+                                <FormField
+                                    control={form.control}
+                                    name="gender"
+                                    render={({ field }) => (
+                                        <FormItem className="space-y-3">
+                                            <FormLabel>Gender</FormLabel>
+                                            <FormControl>
+                                                <RadioGroup
+                                                onValueChange={field.onChange}
+                                                defaultValue={field.value}
+                                                className="flex items-center space-x-4 pt-2"
+                                                >
+                                                <FormItem className="flex items-center space-x-2 space-y-0">
+                                                    <FormControl>
+                                                    <RadioGroupItem value="M" />
+                                                    </FormControl>
+                                                    <FormLabel className="font-normal">Male</FormLabel>
+                                                </FormItem>
+                                                <FormItem className="flex items-center space-x-2 space-y-0">
+                                                    <FormControl>
+                                                    <RadioGroupItem value="F" />
+                                                    </FormControl>
+                                                    <FormLabel className="font-normal">Female</FormLabel>
+                                                </FormItem>
+                                                <FormItem className="flex items-center space-x-2 space-y-0">
+                                                    <FormControl>
+                                                    <RadioGroupItem value="O" />
+                                                    </FormControl>
+                                                    <FormLabel className="font-normal">Other</FormLabel>
+                                                </FormItem>
+                                                </RadioGroup>
+                                            </FormControl>
+                                            <FormMessage />
+                                        </FormItem>
+                                    )}
+                                />
+                            </div>
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <FormField
                                     control={form.control}
@@ -224,7 +311,7 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
                                 name="appointmentDate"
                                 render={({ field }) => (
                                     <FormItem className="flex flex-col">
-                                    <FormLabel>Preferred Date</FormLabel>
+                                    <FormLabel>Preferred Appointment Date</FormLabel>
                                     <Popover>
                                         <PopoverTrigger asChild>
                                         <FormControl>

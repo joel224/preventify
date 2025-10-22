@@ -181,7 +181,6 @@ export async function getBusinessEntitiesAndDoctors(): Promise<any> {
     const validDoctors = [];
     for (const result of settledDoctorDetails) {
         if (result.status === 'fulfilled' && result.value.status === 'fulfilled') {
-            console.log(`Successfully processed doctor details for ID: ${result.value.doctor_id}`);
             const doctorDetails = result.value.value;
             const personal = doctorDetails.profile?.personal;
             const professional = doctorDetails.profile?.professional;
@@ -208,7 +207,7 @@ export async function getBusinessEntitiesAndDoctors(): Promise<any> {
                 }
             }
             
-
+            console.log(`Successfully processed doctor details for ID: ${result.value.doctor_id}`);
             validDoctors.push({
                 id: result.value.doctor_id,
                 name: `${personal.first_name} ${personal.last_name}`.trim(),
@@ -236,10 +235,9 @@ async function addPatient(patientDetails: any) {
         first_name: patientDetails.firstName,
         last_name: patientDetails.lastName,
         mobile: patientDetails.phone,
-        // Minimal required fields
-        dob: "1990-01-01", 
-        gender: "M", 
-        designation: "Mr.",
+        dob: patientDetails.dob, 
+        gender: patientDetails.gender, 
+        designation: patientDetails.gender === "F" ? "Ms." : "Mr.",
     };
 
     console.log("--- Step 1: Add Patient (Placeholder) ---");
@@ -272,12 +270,12 @@ export async function bookAppointment(data: any): Promise<any> {
             mode: "INCLINIC",
         },
         patient_details: {
-            designation: "Mr.",
+            designation: data.patient.gender === "F" ? "Ms." : "Mr.",
             first_name: data.patient.firstName,
             last_name: data.patient.lastName,
             mobile: data.patient.phone,
-            dob: "1990-01-01", 
-            gender: "M", 
+            dob: data.patient.dob, 
+            gender: data.patient.gender, 
             partner_patient_id: partnerPatientId,
         },
     };
