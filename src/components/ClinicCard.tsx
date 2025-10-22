@@ -3,6 +3,7 @@ import { MapPin } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import Link from "next/link";
+import WhatsAppBooking from "./WhatsAppBooking";
 
 interface ClinicCardProps {
   name: string;
@@ -33,11 +34,11 @@ const ClinicCard = ({ name, location, address, phone, image }: ClinicCardProps) 
         </div>
         <p className="text-preventify-dark-gray mb-4">{phone}</p>
         <div className="flex space-x-3">
-          <Link href="/test-login">
+          <WhatsAppBooking>
             <Button className="bg-preventify-blue hover:bg-preventify-dark-blue text-white">
               Book Appointment
             </Button>
-          </Link>
+          </WhatsAppBooking>
           <Button variant="outline" className="border-preventify-green text-preventify-green hover:bg-preventify-green/10">
             Directions
           </Button>

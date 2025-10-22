@@ -5,6 +5,7 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Menu, X } from "lucide-react";
 import { usePathname } from "next/navigation";
+import WhatsAppBooking from "./WhatsAppBooking";
 
 const Navbar = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -61,11 +62,11 @@ const Navbar = () => {
                 <span className="relative">Find a Doctor</span>
               </Button>
             </Link>
-             <Link href="/test-login">
+             <WhatsAppBooking>
               <Button className="bg-preventify-purple hover:bg-preventify-dark-purple text-white">
                 Book Appointment
               </Button>
-            </Link>
+            </WhatsAppBooking>
           </div>
 
           {/* Mobile menu button */}
@@ -107,11 +108,11 @@ const Navbar = () => {
                     <span className="relative">Find a Doctor</span>
                   </Button>
                 </Link>
-                <Link href="/test-login">
+                <WhatsAppBooking>
                   <Button className="bg-preventify-purple hover:bg-preventify-dark-purple text-white w-full">
                     Book Appointment
                   </Button>
-                </Link>
+                </WhatsAppBooking>
               </div>
             </div>
           </div>
