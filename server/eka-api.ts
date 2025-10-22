@@ -149,23 +149,29 @@ const parseLocation = (line1: string) => {
 };
 
 export async function getBusinessEntitiesAndDoctors(userToken: string): Promise<any> {
+    console.log("Calling getBusinessEntitiesAndDoctors...");
     const businessEntitiesResponse = await makeApiRequest(async (client) => {
         console.log('Fetching business entities...');
         const response = await client.get('/dr/v1/business/entities');
+        console.log("Successfully fetched business entities.");
         return response.data;
     }, userToken);
 
     const { doctors: doctorList, clinics: clinicList } = businessEntitiesResponse;
 
     if (!doctorList || doctorList.length === 0) {
+        console.log("No doctors found in the initial response.");
         return { doctors: [], clinics: [] };
     }
+
+    console.log(`Found ${doctorList.length} doctors and ${clinicList.length} clinics. Fetching details...`);
 
     const doctorDetailsPromises = doctorList
         .filter((doc: any) => doc && doc.doctor_id)
         .map(async (doctor: any) => {
             try {
                 const doctorDetailsResponse = await makeApiRequest(async (client) => {
+                    // console.log(`Fetching details for doctor ${doctor.doctor_id}...`);
                     return client.get(`/dr/v1/doctor/${doctor.doctor_id}`);
                 }, userToken);
 
@@ -175,7 +181,6 @@ export async function getBusinessEntitiesAndDoctors(userToken: string): Promise<
 
                 const specialty = professional?.speciality?.[0]?.name || professional?.major_speciality?.name || 'General';
                 
-                // Find the clinic that is marked as default
                 const defaultClinic = professional?.clinics?.find((c: any) => c.id === professional.default_clinic);
                 const location = defaultClinic ? parseLocation(defaultClinic.address?.line1) : 'N/A';
 
@@ -188,7 +193,7 @@ export async function getBusinessEntitiesAndDoctors(userToken: string): Promise<
                 };
             } catch (error: any) {
                 console.error(`Failed to fetch details for doctor ${doctor.doctor_id}:`, error.message);
-                return null; // Return null if a single doctor fetch fails
+                return null;
             }
         });
 
@@ -196,6 +201,7 @@ export async function getBusinessEntitiesAndDoctors(userToken: string): Promise<
     const validDoctors = settledDoctorDetails.filter(details => details !== null);
 
     const clinics = clinicList.map((c: any) => ({id: c.clinic_id, name: c.name}));
-
+    
+    console.log(`Returning ${validDoctors.length} processed doctors and ${clinics.length} clinics.`);
     return { doctors: validDoctors, clinics };
 }

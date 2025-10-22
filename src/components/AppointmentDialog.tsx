@@ -66,14 +66,19 @@ export default function AppointmentDialog({
     if (isOpen) {
       setIsLoading(true);
       fetch("http://localhost:3001/api/doctors-and-clinics")
-        .then((res) => res.json())
+        .then((res) => {
+          if (!res.ok) {
+            throw new Error(`HTTP error! status: ${res.status}`);
+          }
+          return res.json();
+        })
         .then((data) => {
           if(data.doctors) setDoctors(data.doctors);
           if(data.clinics) setClinics(data.clinics);
           setIsLoading(false);
         })
         .catch((error) => {
-          console.error("Failed to fetch doctors and clinics", error);
+          console.error("Failed to fetch doctors and clinics:", error);
           setIsLoading(false);
         });
     }

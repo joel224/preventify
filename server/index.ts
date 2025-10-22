@@ -1,3 +1,4 @@
+
 import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
@@ -34,6 +35,7 @@ app.get('/api/doctors-and-clinics', async (req, res) => {
     const data = await getBusinessEntitiesAndDoctors(userToken);
     res.json(data);
   } catch (error: any) {
+     console.error('Error in /api/doctors-and-clinics endpoint:', error);
      res.status(500).json({ message: 'Failed to get doctors and clinics', error: error.message });
   }
 });
