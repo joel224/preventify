@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState } from 'react';
@@ -13,7 +14,8 @@ export default function TestLoginPage() {
     setIsLoading(true);
     setMessage('');
     try {
-      const response = await fetch('http://localhost:3001/api/test-login');
+      // Use the relative path which will be proxied by Next.js
+      const response = await fetch('/api/test-login');
       const data = await response.json();
       if (!response.ok) {
         throw new Error(data.error || 'An unknown error occurred.');
