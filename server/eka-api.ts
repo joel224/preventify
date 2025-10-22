@@ -123,28 +123,12 @@ export async function getPatientDetails(mobileNumber: string): Promise<any> {
 
 const parseLocation = (line1: string) => {
     if (!line1) return 'N/A';
-    const parts = line1.split(',');
-    const keywords = ['PADINJARANGADI', 'PALAKKAD', 'VATTAMKULAM', 'KANJIRATHANI'];
-    for (const keyword of keywords) {
-        const foundPart = parts.find(part => part.toUpperCase().includes(keyword));
-        if (foundPart) {
-            return foundPart.split('(')[0].trim();
-        }
-    }
-    return parts[0]?.trim() || 'N/A';
+    return line1.split('\r\n')[0].trim();
 };
 
 export async function getBusinessEntitiesAndDoctors(): Promise<any> {
     console.log("Calling getBusinessEntitiesAndDoctors...");
     
-    // Step 1: Get an access token, logging in if necessary.
-    let tokens = await getTokens();
-    if (!tokens?.access_token) {
-        tokens = await _loginAndGetTokens();
-    }
-    let accessToken = tokens.access_token;
-
-    // Step 2: Fetch the initial list of business entities
     const businessEntitiesResponse = await makeApiRequest(async (client) => {
         console.log('Fetching business entities...');
         const response = await client.get('/dr/v1/business/entities');
@@ -158,29 +142,34 @@ export async function getBusinessEntitiesAndDoctors(): Promise<any> {
         console.log("No doctors found in the initial response.");
         return { doctors: [], clinics: [] };
     }
+    
+    let tokens = await getTokens();
+    if (!tokens) {
+      tokens = await _loginAndGetTokens();
+    }
+    let accessToken = tokens.access_token;
+
 
     console.log(`Found ${doctorList.length} doctors and ${clinicList.length} clinics. Fetching details...`);
 
-    // Step 3: Fetch details for each doctor concurrently
     const doctorDetailsPromises = doctorList
         .filter((doc: any) => doc && doc.doctor_id)
         .map(async (doctor: any) => {
             const detailApiClient = getApiClient(accessToken);
             try {
                 const response = await detailApiClient.get(`/dr/v1/doctor/${doctor.doctor_id}`);
-                return { status: 'fulfilled', value: response, doctor_id: doctor.doctor_id };
+                return { status: 'fulfilled', value: { ...response.data, base_name: doctor.name }, doctor_id: doctor.doctor_id };
             } catch (error: any) {
-                 // If we get a 401, it means our token expired mid-loop. Refresh it.
                  if (error.response?.status === 401) {
                     console.log(`Token expired while fetching doctor ${doctor.doctor_id}. Refreshing...`);
                     const newAccessToken = await _refreshAccessToken();
                     if (newAccessToken) {
-                        accessToken = newAccessToken; // Update accessToken for subsequent calls
+                        accessToken = newAccessToken; 
                         const newDetailApiClient = getApiClient(accessToken);
                         try {
                             console.log(`Retrying fetch for doctor ${doctor.doctor_id} with new token.`);
                             const response = await newDetailApiClient.get(`/dr/v1/doctor/${doctor.doctor_id}`);
-                            return { status: 'fulfilled', value: response, doctor_id: doctor.doctor_id };
+                            return { status: 'fulfilled', value: { ...response.data, base_name: doctor.name }, doctor_id: doctor.doctor_id };
                         } catch (retryError: any) {
                              return { status: 'rejected', reason: retryError, doctor_id: doctor.doctor_id };
                         }
@@ -190,15 +179,15 @@ export async function getBusinessEntitiesAndDoctors(): Promise<any> {
             }
         });
 
-    const settledDoctorDetails = await Promise.all(doctorDetailsPromises);
+    const settledDoctorDetails = await Promise.allSettled(doctorDetailsPromises);
 
     const validDoctors = [];
     for (const result of settledDoctorDetails) {
-        if (result.status === 'fulfilled') {
-            const doctorDetailsResponse = result.value;
-            const details = doctorDetailsResponse.data.profile;
-            const professional = details?.professional;
-            const personal = details?.personal;
+        if (result.status === 'fulfilled' && result.value.status === 'fulfilled') {
+            const doctorDetails = result.value.value;
+            const { profile, base_name } = doctorDetails;
+            const professional = profile?.professional;
+            const personal = profile?.personal;
 
             const specialty = professional?.speciality?.[0]?.name || professional?.major_speciality?.name || 'General';
             
@@ -206,14 +195,15 @@ export async function getBusinessEntitiesAndDoctors(): Promise<any> {
             const location = defaultClinic ? parseLocation(defaultClinic.address?.line1) : 'N/A';
 
             validDoctors.push({
-                id: result.doctor_id,
-                name: `${personal?.first_name || ''} ${personal?.last_name || ''}`.trim(),
+                id: result.value.doctor_id,
+                name: base_name,
                 specialty,
                 location,
                 image: personal?.pic || 'https://res.cloudinary.com/dyf8umlda/image/upload/v1748260270/Dr_Abdurahiman_mct6bx.jpg'
             });
-        } else {
-             console.error(`Failed to fetch details for doctor ${result.doctor_id}:`, result.reason?.message);
+        } else if(result.status === 'rejected' || result.value.status === 'rejected') {
+             const rejectedResult = result.status === 'rejected' ? result : result.value;
+             console.error(`Failed to fetch details for doctor ${rejectedResult.doctor_id}:`, rejectedResult.reason?.message);
         }
     }
     
