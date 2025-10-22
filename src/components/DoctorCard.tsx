@@ -2,7 +2,6 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import WhatsAppBooking from "./WhatsAppBooking";
 
 interface DoctorCardProps {
   name: string;
@@ -33,11 +32,11 @@ const DoctorCard = ({
         <p className="text-preventify-green font-medium">{specialty}</p>
         <p className="text-preventify-dark-gray text-sm mb-3">{qualification}</p>
         {location && <p className="text-preventify-gray mb-3">{location}</p>}
-        <WhatsAppBooking>
+        <Link href="/booking">
           <Button className="w-full bg-preventify-blue hover:bg-preventify-dark-blue text-white">
             Book Appointment
           </Button>
-        </WhatsAppBooking>
+        </Link>
       </CardContent>
     </Card>
   );

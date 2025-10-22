@@ -3,7 +3,6 @@ import { MapPin } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import Link from "next/link";
-import WhatsAppBooking from "./WhatsAppBooking";
 
 interface ClinicCardProps {
   name: string;
@@ -14,6 +13,8 @@ interface ClinicCardProps {
 }
 
 const ClinicCard = ({ name, location, address, phone, image }: ClinicCardProps) => {
+  const gmapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(address)}`;
+  
   return (
     <Card className="overflow-hidden h-full transition-all hover:shadow-lg">
       <div className="aspect-video relative overflow-hidden">
@@ -34,14 +35,16 @@ const ClinicCard = ({ name, location, address, phone, image }: ClinicCardProps) 
         </div>
         <p className="text-preventify-dark-gray mb-4">{phone}</p>
         <div className="flex space-x-3">
-          <WhatsAppBooking>
+          <Link href="/booking">
             <Button className="bg-preventify-blue hover:bg-preventify-dark-blue text-white">
               Book Appointment
             </Button>
-          </WhatsAppBooking>
-          <Button variant="outline" className="border-preventify-green text-preventify-green hover:bg-preventify-green/10">
-            Directions
-          </Button>
+          </Link>
+          <a href={gmapsUrl} target="_blank" rel="noopener noreferrer">
+            <Button variant="outline" className="border-preventify-green text-preventify-green hover:bg-preventify-green/10">
+              Directions
+            </Button>
+          </a>
         </div>
       </CardContent>
     </Card>

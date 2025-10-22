@@ -2024,6 +2024,10 @@ h1, h2, h3, h4, h5, h6 {
   padding-top: 2rem;
 }
 
+.pl-3 {
+  padding-left: .75rem;
+}
+
 .text-left {
   text-align: left;
 }
@@ -3763,6 +3767,14 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 @media (width >= 1024px) {
+  .lg\:flex {
+    display: flex;
+  }
+
+  .lg\:hidden {
+    display: none;
+  }
+
   .lg\:h-\[60px\] {
     height: 60px;
   }

@@ -5,7 +5,6 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Menu, X } from "lucide-react";
 import { usePathname } from "next/navigation";
-import WhatsAppBooking from "./WhatsAppBooking";
 
 const Navbar = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -23,6 +22,7 @@ const Navbar = () => {
     { name: "Programs", path: "/programs" },
     { name: "Savings", path: "/savings" },
     { name: "Blog", path: "/blog" },
+    { name: "Booking", path: "/booking"},
     { name: "Partner with Us", path: "/partners" },
     { name: "Contact", path: "/contact" },
   ];
@@ -40,19 +40,19 @@ const Navbar = () => {
           </div>
 
           {/* Desktop Navigation */}
-          <nav className="hidden md:flex space-x-6">
+          <nav className="hidden lg:flex space-x-6">
             {navLinks.map((link) => (
               <Link
                 key={link.name}
                 href={link.path}
-                className={`font-medium transition-colors ${pathname === link.path ? 'text-preventify-purple' : 'text-gray-700 hover:text-preventify-purple'}`}
+                className={`font-medium transition-colors text-sm ${pathname === link.path ? 'text-preventify-purple' : 'text-gray-700 hover:text-preventify-purple'}`}
               >
                 {link.name}
               </Link>
             ))}
           </nav>
 
-          <div className="hidden md:flex items-center space-x-4">
+          <div className="hidden lg:flex items-center space-x-4">
             <Link href="/doctors">
               <Button 
                 variant="outline" 
@@ -62,15 +62,15 @@ const Navbar = () => {
                 <span className="relative">Find a Doctor</span>
               </Button>
             </Link>
-             <WhatsAppBooking>
+             <Link href="/booking">
               <Button className="bg-preventify-purple hover:bg-preventify-dark-purple text-white">
                 Book Appointment
               </Button>
-            </WhatsAppBooking>
+            </Link>
           </div>
 
           {/* Mobile menu button */}
-          <div className="md:hidden">
+          <div className="lg:hidden">
             <button
               className="text-gray-700 hover:text-preventify-purple"
               onClick={toggleMenu}
@@ -86,7 +86,7 @@ const Navbar = () => {
 
         {/* Mobile Navigation */}
         {mobileMenuOpen && (
-          <div className="md:hidden mt-4 pb-4 animate-fade-in">
+          <div className="lg:hidden mt-4 pb-4 animate-fade-in">
             <div className="flex flex-col space-y-3">
               {navLinks.map((link) => (
                 <Link
@@ -108,11 +108,11 @@ const Navbar = () => {
                     <span className="relative">Find a Doctor</span>
                   </Button>
                 </Link>
-                <WhatsAppBooking>
+                <Link href="/booking">
                   <Button className="bg-preventify-purple hover:bg-preventify-dark-purple text-white w-full">
                     Book Appointment
                   </Button>
-                </WhatsAppBooking>
+                </Link>
               </div>
             </div>
           </div>
