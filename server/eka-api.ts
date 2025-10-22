@@ -180,7 +180,7 @@ export async function getBusinessEntitiesAndDoctors(): Promise<any> {
             }
         });
 
-    const settledDoctorDetails = await Promise.allSettled(doctorDetailsPromises);
+    const settledDoctorDetails = await Promise.all(doctorDetailsPromises);
 
     const validDoctors = [];
     for (const result of settledDoctorDetails) {
