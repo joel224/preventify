@@ -107,7 +107,7 @@ async function makeApiRequest(apiCall: (client: any) => Promise<any>) {
       return await apiCall(freshApiClient);
 
     } else {
-      console.error('An unrecoverable error occurred during API call:', error.message);
+      console.error('An unrecoverable error occurred during API call:', error.response?.data || error.message);
       throw error;
     }
   }
@@ -240,7 +240,7 @@ async function addPatient(patientDetails: any): Promise<string> {
         designation: patientDetails.gender === "F" ? "Ms." : "Mr.",
     };
 
-    console.log("--- Step 1: Adding Patient via API ---");
+    console.log("--- Step 1(b): Adding New Patient via API ---");
     console.log("Patient Payload:", JSON.stringify(patientPayload, null, 2));
     
     await makeApiRequest(async (client) => {
@@ -256,10 +256,38 @@ async function addPatient(patientDetails: any): Promise<string> {
 export async function bookAppointment(data: any): Promise<any> {
     console.log("--- Starting Live Booking Process ---");
     
-    // Step 1: Create the patient via API
-    const partnerPatientId = await addPatient(data.patient);
+    // Step 1: Search for the patient by mobile number
+    console.log(`--- Step 1(a): Searching for patient with mobile: ${data.patient.phone} ---`);
+    let partnerPatientId = '';
 
-    // Step 2: Book the appointment
+    const searchResponse = await makeApiRequest(async (client) => {
+        const response = await client.get(`/dr/v1/business/patients/search?mobile=${data.patient.phone}`);
+        return response.data;
+    });
+
+    if (searchResponse?.data?.profiles?.length > 0) {
+        console.log("--- Patient found. Getting details. ---");
+        const patientProfile = searchResponse.data.profiles[0];
+        const ekaPatientId = patientProfile.patient_profile.patient_id;
+
+        const patientDetailsResponse = await makeApiRequest(async (client) => {
+            const response = await client.get(`/dr/v1/patient/${ekaPatientId}`);
+            return response.data;
+        });
+        
+        partnerPatientId = patientDetailsResponse.partner_patient_id;
+        console.log(`--- Existing Partner Patient ID found: ${partnerPatientId} ---`);
+
+    } else {
+        console.log("--- Patient not found. Creating new patient. ---");
+        partnerPatientId = await addPatient(data.patient);
+    }
+
+    if (!partnerPatientId) {
+        throw new Error("Could not retrieve or create a partner patient ID.");
+    }
+
+    // Step 2: Book the appointment with the retrieved/created partner_patient_id
     const appointmentDate = new Date(data.appointment.date);
     const startTime = Math.floor(appointmentDate.getTime() / 1000);
     
@@ -295,5 +323,3 @@ export async function bookAppointment(data: any): Promise<any> {
 
     return bookingResponse;
 }
-
-    
