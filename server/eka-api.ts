@@ -180,7 +180,7 @@ export async function getBusinessEntitiesAndDoctors(): Promise<any> {
             }
         });
 
-    const settledDoctorDetails = await Promise.all(doctorDetailsPromises);
+    const settledDoctorDetails = await Promise.allSettled(doctorDetailsPromises);
 
     const validDoctors = [];
     for (const result of settledDoctorDetails) {
@@ -202,8 +202,8 @@ export async function getBusinessEntitiesAndDoctors(): Promise<any> {
                 location,
                 image: personal?.pic || 'https://res.cloudinary.com/dyf8umlda/image/upload/v1748260270/Dr_Abdurahiman_mct6bx.jpg'
             });
-        } else if(result.status === 'rejected' || (result.status === 'fulfilled' && result.value.status === 'rejected')) {
-             const rejectedResult = result.status === 'rejected' ? result : result.value;
+        } else if (result.status === 'rejected' || (result.status === 'fulfilled' && result.value.status === 'rejected')) {
+             const rejectedResult = result.status === 'rejected' ? result.reason : result.value;
              console.error(`Failed to fetch details for doctor ${rejectedResult.doctor_id}:`, rejectedResult.reason?.message);
         }
     }
