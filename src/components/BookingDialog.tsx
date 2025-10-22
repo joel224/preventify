@@ -3,9 +3,16 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
-import PageHeader from "@/components/PageHeader";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -23,7 +30,6 @@ const bookingFormSchema = z.object({
   clinic: z.string().min(1, { message: "Please select a clinic." }),
   doctor: z.string().optional(),
   appointmentDate: z.date({ required_error: "Please select a date." }),
-  reason: z.string().optional(),
 });
 
 type BookingFormValues = z.infer<typeof bookingFormSchema>;
@@ -52,42 +58,44 @@ const doctors = [
   "Dr. Reshma K.R.",
 ];
 
-export default function BookingPage() {
-  const form = useForm<BookingFormValues>({
-    resolver: zodResolver(bookingFormSchema),
-    defaultValues: {
-      fullName: "",
-      phone: "",
-      email: "",
-    },
-  });
+export default function BookingDialog({ children }: { children: React.ReactNode }) {
+    const [open, setOpen] = useState(false);
 
-  function onSubmit(data: BookingFormValues) {
-    console.log(data);
-    toast({
-        title: "Appointment Request Submitted!",
-        description: `Thank you, ${data.fullName}. We will contact you shortly to confirm your appointment.`,
+    const form = useForm<BookingFormValues>({
+        resolver: zodResolver(bookingFormSchema),
+        defaultValues: {
+            fullName: "",
+            phone: "",
+            email: "",
+        },
     });
-    form.reset();
-  }
 
-  return (
-    <>
-      <PageHeader
-        title="Book an Appointment"
-        subtitle="Fill out the form below to request an appointment with one of our healthcare professionals."
-      />
-      <div className="container mx-auto px-4 py-16">
-        <div className="max-w-3xl mx-auto">
-            <Card>
-                <CardHeader>
-                    <CardTitle>Appointment Request Form</CardTitle>
-                    <CardDescription>Please provide your details and preferences. Our team will contact you to confirm.</CardDescription>
-                </CardHeader>
-                <CardContent>
+    function onSubmit(data: BookingFormValues) {
+        console.log(data);
+        toast({
+            title: "Appointment Request Submitted!",
+            description: `Thank you, ${data.fullName}. We will contact you shortly to confirm your appointment.`,
+        });
+        form.reset();
+        setOpen(false);
+    }
+
+    return (
+        <Dialog open={open} onOpenChange={setOpen}>
+            <DialogTrigger asChild>
+                {children}
+            </DialogTrigger>
+            <DialogContent className="sm:max-w-[625px]">
+                <DialogHeader>
+                    <DialogTitle>Book an Appointment</DialogTitle>
+                    <DialogDescription>
+                        Fill out the form below to request an appointment. Our team will contact you to confirm.
+                    </DialogDescription>
+                </DialogHeader>
+                <div className="py-4">
                     <Form {...form}>
-                        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <FormField
                                     control={form.control}
                                     name="fullName"
@@ -128,7 +136,7 @@ export default function BookingPage() {
                                     </FormItem>
                                 )}
                             />
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <FormField
                                     control={form.control}
                                     name="clinic"
@@ -154,8 +162,8 @@ export default function BookingPage() {
                                     name="doctor"
                                     render={({ field }) => (
                                         <FormItem>
-                                        <FormLabel>Preferred Doctor (Optional)</FormLabel>
-                                        <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                        <FormLabel>Doctor (Optional)</FormLabel>
+                                        <Select onValuechange={field.onChange} defaultValue={field.value}>
                                             <FormControl>
                                             <SelectTrigger>
                                                 <SelectValue placeholder="Select a doctor" />
@@ -211,16 +219,15 @@ export default function BookingPage() {
                                     </FormItem>
                                 )}
                                 />
-
-                            <Button type="submit" className="w-full bg-preventify-blue hover:bg-preventify-dark-blue text-white" size="lg">
-                                Submit Appointment Request
-                            </Button>
+                            <DialogFooter>
+                                <Button type="submit" className="w-full bg-preventify-blue hover:bg-preventify-dark-blue text-white" size="lg">
+                                    Submit Request
+                                </Button>
+                            </DialogFooter>
                         </form>
                     </Form>
-                </CardContent>
-            </Card>
-        </div>
-      </div>
-    </>
-  );
+                </div>
+            </DialogContent>
+        </Dialog>
+    )
 }
