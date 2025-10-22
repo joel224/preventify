@@ -123,8 +123,13 @@ export async function getPatientDetails(mobileNumber: string): Promise<any> {
 
 const parseLocation = (line1: string) => {
     if (!line1) return 'N/A';
-    // Simple parsing, takes the first part before a comma or newline
-    return line1.split(/[\r\n,]+/)[0].trim();
+    const parts = line1.split(',').map(p => p.trim());
+    const districtIndex = parts.findIndex(p => p.includes('(DISTRICT)'));
+    if (districtIndex > 0) {
+        return `${parts[districtIndex - 1]}, ${parts[districtIndex]}`;
+    }
+    // Fallback to simpler parsing if the hint doesn't match
+    return parts[parts.length - 3] || parts[0] || 'N/A';
 };
 
 export async function getBusinessEntitiesAndDoctors(): Promise<any> {
