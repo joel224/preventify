@@ -387,5 +387,3 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
         </Dialog>
     )
 }
-
-    
