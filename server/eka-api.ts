@@ -10,7 +10,6 @@ const getApiClient = (accessToken?: string) => {
   // The 'auth' header is expected for doctor APIs
   if (accessToken) {
     headers['auth'] = accessToken;
-    headers['Authorization'] = `Bearer ${accessToken}`;
   }
   return axios.create({
     baseURL: EKA_API_BASE_URL,
