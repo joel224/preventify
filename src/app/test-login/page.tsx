@@ -7,22 +7,24 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import PageHeader from '@/components/PageHeader';
 
 export default function TestLoginPage() {
-  const [message, setMessage] = useState('');
+  const [data, setData] = useState<any>(null);
+  const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleLoginTest = async () => {
+  const handleTest = async () => {
     setIsLoading(true);
-    setMessage('');
+    setData(null);
+    setError('');
     try {
       // Use the relative path which will be proxied by Next.js
-      const response = await fetch('/api/test-login');
-      const data = await response.json();
+      const response = await fetch('/api/doctors-and-clinics');
+      const responseData = await response.json();
       if (!response.ok) {
-        throw new Error(data.error || 'An unknown error occurred.');
+        throw new Error(responseData.error || 'An unknown error occurred.');
       }
-      setMessage(`Success: ${data.message}`);
+      setData(responseData);
     } catch (error: any) {
-      setMessage(`Error: ${error.message}`);
+      setError(error.message);
     } finally {
       setIsLoading(false);
     }
@@ -31,34 +33,40 @@ export default function TestLoginPage() {
   return (
     <>
       <PageHeader
-        title="Eka Care Login Test"
-        subtitle="Click the button to test the login credentials."
+        title="Eka Care API Test"
+        subtitle="Click the button to fetch doctors and clinics."
       />
       <div className="container mx-auto px-4 py-16 text-center">
-        <div className="max-w-2xl mx-auto">
+        <div className="max-w-4xl mx-auto">
           <Button
-            onClick={handleLoginTest}
+            onClick={handleTest}
             disabled={isLoading}
             className="mb-8"
             size="lg"
           >
-            {isLoading ? 'Testing...' : 'Test Eka Care Login'}
+            {isLoading ? 'Fetching Data...' : 'Fetch Doctors & Clinics'}
           </Button>
-          {message && (
+          {error && (
+            <Card>
+              <CardHeader>
+                <CardTitle>API Error</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-lg font-mono text-red-500">
+                  {error}
+                </p>
+              </CardContent>
+            </Card>
+          )}
+          {data && (
             <Card>
               <CardHeader>
                 <CardTitle>API Response</CardTitle>
               </CardHeader>
-              <CardContent>
-                <p
-                  className={`text-lg font-mono ${
-                    message.startsWith('Error')
-                      ? 'text-red-500'
-                      : 'text-green-500'
-                  }`}
-                >
-                  {message}
-                </p>
+              <CardContent className="text-left">
+                <pre className="p-4 bg-gray-100 rounded-md overflow-x-auto text-sm">
+                  {JSON.stringify(data, null, 2)}
+                </pre>
               </CardContent>
             </Card>
           )}
