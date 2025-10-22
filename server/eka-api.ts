@@ -227,35 +227,39 @@ export async function getBusinessEntitiesAndDoctors(): Promise<any> {
     return { doctors: validDoctors, clinics };
 }
 
-async function addPatient(patientDetails: any) {
-    // This is a placeholder. It simulates adding a patient and returns a new ID.
-    const partner_patient_id = Math.random().toString(36).substr(2, 9);
+async function addPatient(patientDetails: any): Promise<string> {
+    const partner_patient_id = `preventify_${Math.random().toString(36).substr(2, 9)}`;
+    
     const patientPayload = {
         partner_patient_id: partner_patient_id,
         first_name: patientDetails.firstName,
         last_name: patientDetails.lastName,
         mobile: patientDetails.phone,
-        dob: patientDetails.dob, 
-        gender: patientDetails.gender, 
+        dob: patientDetails.dob,
+        gender: patientDetails.gender,
         designation: patientDetails.gender === "F" ? "Ms." : "Mr.",
     };
 
-    console.log("--- Step 1: Add Patient (Placeholder) ---");
+    console.log("--- Step 1: Adding Patient via API ---");
     console.log("Patient Payload:", JSON.stringify(patientPayload, null, 2));
-    // In a real scenario, this would be:
-    // await makeApiRequest(client => client.post('/dr/v1/patient', patientPayload));
     
-    return Promise.resolve(partner_patient_id);
+    await makeApiRequest(async (client) => {
+        const response = await client.post('/dr/v1/patient', patientPayload);
+        console.log("Patient added successfully:", response.data);
+        return response.data;
+    });
+    
+    return partner_patient_id;
 }
 
 
 export async function bookAppointment(data: any): Promise<any> {
-    console.log("--- Starting Booking Process ---");
+    console.log("--- Starting Live Booking Process ---");
     
-    // Step 1: Create the patient (placeholder)
+    // Step 1: Create the patient via API
     const partnerPatientId = await addPatient(data.patient);
 
-    // Step 2: Book the appointment (placeholder)
+    // Step 2: Book the appointment
     const appointmentDate = new Date(data.appointment.date);
     const startTime = Math.floor(appointmentDate.getTime() / 1000);
     
@@ -280,19 +284,16 @@ export async function bookAppointment(data: any): Promise<any> {
         },
     };
 
-    console.log("\n--- Step 2: Book Appointment (Placeholder) ---");
+    console.log("\n--- Step 2: Booking Appointment via API ---");
     console.log("Appointment Payload:", JSON.stringify(appointmentPayload, null, 2));
 
-    // In a real scenario, this would be:
-    // return makeApiRequest(client => client.post('/dr/v1/appointment', appointmentPayload));
-    
-    const mockResponse = {
-        appointment_id: `mock_appt_${new Date().getTime()}`,
-        status: "BOOKING_CONFIRMED",
-    };
-    
-    console.log("\n--- Mock Success Response ---");
-    console.log(mockResponse);
+    const bookingResponse = await makeApiRequest(async (client) => {
+        const response = await client.post('/dr/v1/appointment', appointmentPayload);
+        console.log("Appointment booked successfully:", response.data);
+        return response.data;
+    });
 
-    return Promise.resolve(mockResponse);
+    return bookingResponse;
 }
+
+    
