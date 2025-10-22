@@ -75,31 +75,21 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
     async function onSubmit(data: BookingFormValues) {
         setIsLoading(true);
         try {
-            const appointmentTime = data.appointmentDate;
-            appointmentTime.setHours(10, 0, 0, 0); // Default to 10:00 AM
-
             const [firstName, ...lastNameParts] = data.fullName.split(' ');
             const lastName = lastNameParts.join(' ');
 
             const payload = {
-                partner_appointment_id: `preventify-${new Date().getTime()}`,
-                partner_clinic_id: data.clinic,
-                partner_doctor_id: data.doctor,
-                partner_patient_id: `patient-${data.phone}`,
-                appointment_details: {
-                    start_time: Math.floor(appointmentTime.getTime() / 1000),
-                    end_time: Math.floor(appointmentTime.getTime() / 1000) + 900, // 15 min slot
-                    mode: "INCLINIC",
+                patient: {
+                    fullName: data.fullName,
+                    firstName,
+                    lastName: lastName || firstName,
+                    phone: data.phone,
                 },
-                patient_details: {
-                    designation: "Mr.",
-                    first_name: firstName,
-                    last_name: lastName || firstName,
-                    mobile: data.phone,
-                    dob: "1990-01-01", // Placeholder DOB
-                    gender: "M", // Placeholder gender
-                    partner_patient_id: `patient-${data.phone}`,
-                },
+                appointment: {
+                    clinicId: data.clinic,
+                    doctorId: data.doctor,
+                    date: data.appointmentDate.toISOString(),
+                }
             };
             
             const response = await fetch('/api/book-appointment', {

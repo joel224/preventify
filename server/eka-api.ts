@@ -228,17 +228,73 @@ export async function getBusinessEntitiesAndDoctors(): Promise<any> {
     return { doctors: validDoctors, clinics };
 }
 
-export async function bookAppointment(bookingData: any): Promise<any> {
-    console.log("Received booking data. This is a placeholder and does not connect to the actual API yet.");
-    console.log("Booking Payload:", JSON.stringify(bookingData, null, 2));
-
-    // In the future, this is where the `makeApiRequest` call would go to post to /dr/v1/appointment
-    // For now, just return a mock success response
-    const mockResponse = {
-        appointment_id: `mock_${new Date().getTime()}`,
-        status: "BOOKING_PENDING_CONFIRMATION",
+async function addPatient(patientDetails: any) {
+    // This is a placeholder. It simulates adding a patient and returns a new ID.
+    const partner_patient_id = Math.random().toString(36).substr(2, 9);
+    const patientPayload = {
+        partner_patient_id: partner_patient_id,
+        first_name: patientDetails.firstName,
+        last_name: patientDetails.lastName,
+        mobile: patientDetails.phone,
+        // Minimal required fields
+        dob: "1990-01-01", 
+        gender: "M", 
+        designation: "Mr.",
     };
 
-    console.log("Returning mock success response:", mockResponse);
+    console.log("--- Step 1: Add Patient (Placeholder) ---");
+    console.log("Patient Payload:", JSON.stringify(patientPayload, null, 2));
+    // In a real scenario, this would be:
+    // await makeApiRequest(client => client.post('/dr/v1/patient', patientPayload));
+    
+    return Promise.resolve(partner_patient_id);
+}
+
+
+export async function bookAppointment(data: any): Promise<any> {
+    console.log("--- Starting Booking Process ---");
+    
+    // Step 1: Create the patient (placeholder)
+    const partnerPatientId = await addPatient(data.patient);
+
+    // Step 2: Book the appointment (placeholder)
+    const appointmentDate = new Date(data.appointment.date);
+    const startTime = Math.floor(appointmentDate.getTime() / 1000);
+    
+    const appointmentPayload = {
+        partner_appointment_id: `preventify_appt_${new Date().getTime()}`,
+        partner_clinic_id: data.appointment.clinicId,
+        partner_doctor_id: data.appointment.doctorId,
+        partner_patient_id: partnerPatientId,
+        appointment_details: {
+            start_time: startTime,
+            end_time: startTime + 900, // 15-minute slot
+            mode: "INCLINIC",
+        },
+        patient_details: {
+            designation: "Mr.",
+            first_name: data.patient.firstName,
+            last_name: data.patient.lastName,
+            mobile: data.patient.phone,
+            dob: "1990-01-01", 
+            gender: "M", 
+            partner_patient_id: partnerPatientId,
+        },
+    };
+
+    console.log("\n--- Step 2: Book Appointment (Placeholder) ---");
+    console.log("Appointment Payload:", JSON.stringify(appointmentPayload, null, 2));
+
+    // In a real scenario, this would be:
+    // return makeApiRequest(client => client.post('/dr/v1/appointment', appointmentPayload));
+    
+    const mockResponse = {
+        appointment_id: `mock_appt_${new Date().getTime()}`,
+        status: "BOOKING_CONFIRMED",
+    };
+    
+    console.log("\n--- Mock Success Response ---");
+    console.log(mockResponse);
+
     return Promise.resolve(mockResponse);
 }

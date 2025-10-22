@@ -54,6 +54,9 @@ app.get('/api/doctors-and-clinics', async (req, res) => {
 
 app.post('/api/book-appointment', async (req, res) => {
     try {
+        if (!req.body || !req.body.patient || !req.body.appointment) {
+            return res.status(400).json({ message: 'Invalid booking data provided.' });
+        }
         const result = await bookAppointment(req.body);
         res.status(201).json(result);
     } catch (error: any) {
