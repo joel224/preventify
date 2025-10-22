@@ -1574,6 +1574,11 @@ h1, h2, h3, h4, h5, h6 {
   border-color: rgb(255 255 255 / var(--tw-border-opacity, 1));
 }
 
+.border-red-500 {
+  --tw-border-opacity: 1;
+  border-color: rgb(239 68 68 / var(--tw-border-opacity, 1));
+}
+
 .border-l-transparent {
   border-left-color: #0000;
 }
@@ -2176,6 +2181,11 @@ h1, h2, h3, h4, h5, h6 {
 
 .text-white\/80 {
   color: #fffc;
+}
+
+.text-red-600 {
+  --tw-text-opacity: 1;
+  color: rgb(220 38 38 / var(--tw-text-opacity, 1));
 }
 
 .underline {

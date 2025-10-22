@@ -16,11 +16,16 @@ export default function TestLoginPage() {
     setData(null);
     setError('');
     try {
-      // Use the relative path which will be proxied by Next.js
       const response = await fetch('/api/doctors-and-clinics');
       const responseData = await response.json();
       if (!response.ok) {
-        throw new Error(responseData.error || 'An unknown error occurred.');
+        // Now we expect the backend to always return a 200, but we might get an error message inside
+        if (responseData.error) {
+             throw new Error(responseData.error);
+        } else {
+            // Handle cases where the response is not ok but doesn't have a specific error message
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
       }
       setData(responseData);
     } catch (error: any) {
@@ -46,10 +51,11 @@ export default function TestLoginPage() {
           >
             {isLoading ? 'Fetching Data...' : 'Fetch Doctors & Clinics'}
           </Button>
+          
           {error && (
-            <Card>
+            <Card className="mb-8 border-red-500">
               <CardHeader>
-                <CardTitle>API Error</CardTitle>
+                <CardTitle className="text-red-600">API Error</CardTitle>
               </CardHeader>
               <CardContent>
                 <p className="text-lg font-mono text-red-500">
@@ -58,10 +64,11 @@ export default function TestLoginPage() {
               </CardContent>
             </Card>
           )}
+
           {data && (
             <Card>
               <CardHeader>
-                <CardTitle>API Response</CardTitle>
+                <CardTitle>API Response (Successfully Fetched Data)</CardTitle>
               </CardHeader>
               <CardContent className="text-left">
                 <pre className="p-4 bg-gray-100 rounded-md overflow-x-auto text-sm">
