@@ -309,7 +309,7 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
                                                     <FormControl>
                                                     <SelectTrigger>
                                                         <SelectValue placeholder="Select a doctor" />
-                                                    </Trigger>
+                                                    </SelectTrigger>
                                                     </FormControl>
                                                     <SelectContent>
                                                         {doctors.map(doctor => <SelectItem key={doctor.id} value={doctor.id}>{doctor.name}</SelectItem>)}
@@ -388,3 +388,5 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
         </Dialog>
     );
 }
+
+    
