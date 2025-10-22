@@ -121,20 +121,43 @@ export async function getPatientDetails(mobileNumber: string): Promise<any> {
   });
 }
 
-const parseLocation = (line1: string) => {
-    if (!line1) return 'N/A';
-    const parts = line1.split(',').map(p => p.trim());
-    const districtIndex = parts.findIndex(p => p.includes('(DISTRICT)'));
-    if (districtIndex > 0) {
-        // Handle cases like "PADINJARANGADI,PALAKKAD(DISTRICT)"
-        return `${parts[districtIndex - 1]}, ${parts[districtIndex]}`;
+const parseLocation = (clinics: any[]): string => {
+    if (!clinics || clinics.length === 0) {
+        return 'Not Specified';
     }
-     // Fallback for simpler addresses like "Vattamkulam, Edappal, Kerala"
+
+    // Prioritize the location from the first clinic in the list
+    const fullAddress = clinics[0].address?.line1;
+    if (!fullAddress) {
+        return 'Not Specified';
+    }
+
+    const startKeyword = "PADINJARANGADI";
+    const startIndex = fullAddress.indexOf(startKeyword);
+
+    if (startIndex !== -1) {
+        let truncatedAddress = fullAddress.substring(startIndex);
+        const pinIndex = truncatedAddress.lastIndexOf(',PIN-');
+        if (pinIndex !== -1) {
+            return truncatedAddress.substring(0, pinIndex);
+        }
+        return truncatedAddress;
+    } else if (fullAddress.includes('(DISTRICT)')) {
+        const parts = fullAddress.split(',').map((p: string) => p.trim());
+        const districtIndex = parts.findIndex((p: string) => p.includes('(DISTRICT)'));
+         if (districtIndex > 0) {
+            return `${parts[districtIndex - 1]}, ${parts[districtIndex]}`;
+        }
+    }
+    
+    // Fallback for simpler addresses
+    const parts = fullAddress.split(',').map((p: string) => p.trim());
     if (parts.length >= 2) {
-        return `${parts[parts.length - 3] || parts[0]}`;
+        return `${parts[0]}`;
     }
-    return parts[0] || 'N/A';
+    return parts[0] || 'Not Specified';
 };
+
 
 export async function getBusinessEntitiesAndDoctors(): Promise<any> {
     console.log("Calling getBusinessEntitiesAndDoctors...");
@@ -198,21 +221,26 @@ export async function getBusinessEntitiesAndDoctors(): Promise<any> {
         if (result.status === 'fulfilled' && result.value.status === 'fulfilled') {
             console.log(`Successfully processed doctor details for ID: ${result.value.doctor_id}`);
             const doctorDetails = result.value.value;
-            const { profile, base_name } = doctorDetails;
-            const professional = profile?.professional;
-            const personal = profile?.personal;
+            const personal = doctorDetails.profile?.personal;
+            const professional = doctorDetails.profile?.professional;
 
-            const specialty = professional?.speciality?.[0]?.name || professional?.major_speciality?.name || 'General';
+            if (!personal || !professional) {
+                console.error(`Skipping doctor ${result.value.doctor_id} due to missing profile data.`);
+                continue;
+            }
+
+            const specialty = (professional.speciality && professional.speciality.length > 0)
+                ? professional.speciality[0].name
+                : professional.major_speciality?.name || 'General';
             
-            const defaultClinic = professional?.clinics?.find((c: any) => c.id === professional.default_clinic);
-            const location = defaultClinic ? parseLocation(defaultClinic.address?.line1) : 'N/A';
+            const location = parseLocation(professional.clinics);
 
             validDoctors.push({
                 id: result.value.doctor_id,
-                name: base_name || `${personal?.first_name} ${personal?.last_name}`.trim(),
+                name: `${personal.first_name} ${personal.last_name}`.trim(),
                 specialty,
                 location,
-                image: personal?.pic || 'https://res.cloudinary.com/dyf8umlda/image/upload/v1748260270/Dr_Abdurahiman_mct6bx.jpg'
+                image: personal.pic || 'https://res.cloudinary.com/dyf8umlda/image/upload/v1748260270/Dr_Abdurahiman_mct6bx.jpg'
             });
         } else if (result.status === 'rejected' || (result.status === 'fulfilled' && result.value.status === 'rejected')) {
              const rejectedResult = result.status === 'rejected' ? result.reason : result.value;
