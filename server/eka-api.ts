@@ -1,13 +1,15 @@
 import axios from 'axios';
 import { getTokens, saveTokens } from './token-storage';
 
-const EKA_API_BASE_URL = 'https://api.eka.care/connect-auth/v1';
+const EKA_API_BASE_URL = 'https://api.eka.care';
 
 const getApiClient = (accessToken?: string) => {
   const headers: { [key: string]: string } = {
     'Content-Type': 'application/json',
   };
+  // The 'auth' header is expected for doctor APIs
   if (accessToken) {
+    headers['auth'] = accessToken;
     headers['Authorization'] = `Bearer ${accessToken}`;
   }
   return axios.create({
@@ -26,11 +28,11 @@ async function _loginAndGetTokens(userToken: string) {
 
   const client = getApiClient();
   try {
-    const response = await client.post('/account/login', {
+    const response = await client.post('/connect-auth/v1/account/login', {
       api_key: EKA_API_KEY,
       client_id: EKA_CLIENT_ID,
       client_secret: EKA_CLIENT_SECRET,
-      user_token: userToken, // This would be the token for the specific user
+      user_token: userToken,
     });
     
     const { access_token, refresh_token } = response.data;
@@ -53,14 +55,12 @@ async function _refreshAccessToken() {
   const tokens = await getTokens();
   if (!tokens?.refresh_token) {
     console.log('No refresh token found. Falling back to full login.');
-    // In a real app, you'd need user context to get a userToken here.
-    // For this example, we cannot proceed without it.
     throw new Error("Cannot refresh without a user context for login.");
   }
 
   const client = getApiClient();
   try {
-    const response = await client.post('/account/refresh', {
+    const response = await client.post('/connect-auth/v1/account/refresh', {
       access_token: tokens.access_token,
       refresh_token: tokens.refresh_token,
     });
@@ -74,14 +74,11 @@ async function _refreshAccessToken() {
     return access_token;
   } catch (error) {
     console.error('Failed to refresh token. Error:', error);
-    // If refresh fails, we might need to log in again.
-    // This depends on the user context being available.
     throw new Error("Could not refresh token. A full login may be required.");
   }
 }
 
-// Example function showing the full authentication flow
-export async function getPatientDetails(mobileNumber: string, userToken: string, retry = true): Promise<any> {
+async function makeApiRequest(apiCall: (client: any) => Promise<any>, userToken: string, retry = true) {
   let tokens = await getTokens();
 
   if (!tokens?.access_token) {
@@ -92,32 +89,102 @@ export async function getPatientDetails(mobileNumber: string, userToken: string,
   const apiClient = getApiClient(tokens.access_token);
 
   try {
-    // This is a placeholder for the actual API call
-    console.log('Attempting to get patient details with token.');
-    // const response = await apiClient.get(`/patients?mobile=${mobileNumber}`);
-    // return response.data;
-    
-    // Mocking a successful response for now
-    return { "patientId": "12345", "name": "John Doe", "mobile": mobileNumber };
-
+    return await apiCall(apiClient);
   } catch (error: any) {
     if (error.response?.status === 401 && retry) {
       console.log('Access token expired. Refreshing...');
       try {
         const newAccessToken = await _refreshAccessToken();
-        // Retry the request with the new token
-        console.log('Retrying API call with new token.');
         const newApiClient = getApiClient(newAccessToken);
-        // const response = await newApiClient.get(`/patients?mobile=${mobileNumber}`);
-        // return response.data;
-         return { "patientId": "12345", "name": "John Doe", "mobile": mobileNumber, "retried": true };
+        console.log('Retrying API call with new token.');
+        return await apiCall(newApiClient);
       } catch (refreshError) {
-        console.error('Failed to get patient details after token refresh:', refreshError);
+        console.error('API call failed after token refresh:', refreshError);
         throw refreshError;
       }
     } else {
-      console.error('An error occurred while getting patient details:', error.message);
+      console.error('An error occurred during API call:', error.message);
       throw error;
     }
   }
+}
+
+export async function getPatientDetails(mobileNumber: string, userToken: string): Promise<any> {
+  return makeApiRequest(async (client) => {
+    // This is a placeholder for the actual API call
+    console.log('Attempting to get patient details with token.');
+    // const response = await client.get(`/patients?mobile=${mobileNumber}`);
+    // return response.data;
+    
+    // Mocking a successful response for now
+    return { "patientId": "12345", "name": "John Doe", "mobile": mobileNumber };
+  }, userToken);
+}
+
+const parseLocation = (line1: string) => {
+    if (!line1) return 'N/A';
+    const parts = line1.split(',');
+    // Attempt to find PADINJARANGADI, PALAKKAD, etc.
+    const relevantParts = parts.filter(part => 
+        part.toUpperCase().includes('PADINJARANGADI') || 
+        part.toUpperCase().includes('PALAKKAD') ||
+        part.toUpperCase().includes('VATTAMKULAM') ||
+        part.toUpperCase().includes('KANJIRATHANI')
+    );
+    if (relevantParts.length > 0) {
+        // Take the first one found, clean it up.
+        return relevantParts[0].split('(')[0].trim();
+    }
+    // Fallback to the first part of the address if no specific keywords are found
+    return parts[0] || 'N/A';
+};
+
+export async function getBusinessEntitiesAndDoctors(userToken: string): Promise<any> {
+    const businessEntitiesResponse = await makeApiRequest(async (client) => {
+        console.log('Fetching business entities...');
+        const response = await client.get('/dr/v1/business/entities');
+        return response.data;
+    }, userToken);
+
+    const { doctors: doctorList } = businessEntitiesResponse;
+
+    if (!doctorList || doctorList.length === 0) {
+        return [];
+    }
+
+    const doctorDetailsPromises = doctorList
+        .filter((doc: any) => doc && doc.doctor_id)
+        .map(async (doctor: any) => {
+            try {
+                const doctorDetailsResponse = await makeApiRequest(async (client) => {
+                    return client.get(`/dr/v1/doctor/${doctor.doctor_id}`);
+                }, userToken);
+
+                const details = doctorDetailsResponse.data.profile;
+                const professional = details?.professional;
+                const personal = details?.personal;
+
+                const specialty = professional?.speciality?.[0]?.name || professional?.major_speciality?.name || 'N/A';
+                
+                // Find the clinic that is marked as default
+                const defaultClinic = professional?.clinics?.find((c: any) => c.id === professional.default_clinic);
+                const location = defaultClinic ? parseLocation(defaultClinic.address?.line1) : 'N/A';
+
+                return {
+                    id: doctor.doctor_id,
+                    name: `${personal?.first_name || ''} ${personal?.last_name || ''}`.trim(),
+                    specialty,
+                    location,
+                    image: personal?.pic || 'https://res.cloudinary.com/dyf8umlda/image/upload/v1748260270/Dr_Abdurahiman_mct6bx.jpg' // default image
+                };
+            } catch (error: any) {
+                console.error(`Failed to fetch details for doctor ${doctor.doctor_id}:`, error.message);
+                return null; // Return null if a single doctor fetch fails
+            }
+        });
+
+    const settledDoctorDetails = await Promise.all(doctorDetailsPromises);
+
+    // Filter out any null results from failed API calls
+    return settledDoctorDetails.filter(details => details !== null);
 }

@@ -1,7 +1,7 @@
 import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
-import { getPatientDetails } from './eka-api';
+import { getPatientDetails, getBusinessEntitiesAndDoctors } from './eka-api';
 
 dotenv.config();
 
@@ -24,6 +24,17 @@ app.get('/api/patient', async (req, res) => {
     res.json(patientData);
   } catch (error: any) {
     res.status(500).json({ message: 'Failed to get patient details', error: error.message });
+  }
+});
+
+app.get('/api/doctors-and-clinics', async (req, res) => {
+  try {
+    // This is a placeholder user token. In a real app, this would be dynamically obtained.
+    const userToken = "some-user-token";
+    const data = await getBusinessEntitiesAndDoctors(userToken);
+    res.json(data);
+  } catch (error: any) {
+     res.status(500).json({ message: 'Failed to get doctors and clinics', error: error.message });
   }
 });
 
