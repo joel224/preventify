@@ -212,7 +212,7 @@ export async function getBusinessEntitiesAndDoctors(): Promise<any> {
             });
         } else if (result.status === 'rejected' || (result.status === 'fulfilled' && result.value.status === 'rejected')) {
              const rejectedResult = result.status === 'rejected' ? result.reason : result.value;
-             console.error(`Failed to fetch details for doctor ${rejectedResult.doctor_id}:`, rejectedResult.reason?.message);
+             console.error(`Failed to fetch details for doctor ${rejectedResult.doctor_id}:`, rejectedResult.reason?.response?.data || rejectedResult.reason?.message);
         }
     }
     
