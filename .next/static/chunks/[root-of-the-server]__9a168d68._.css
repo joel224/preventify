@@ -1716,6 +1716,14 @@ h1, h2, h3, h4, h5, h6 {
   background-color: rgb(46 59 151 / var(--tw-bg-opacity, 1));
 }
 
+.bg-preventify-blue\/10 {
+  background-color: #2e3b971a;
+}
+
+.bg-preventify-blue\/5 {
+  background-color: #2e3b970d;
+}
+
 .bg-preventify-dark-gray {
   --tw-bg-opacity: 1;
   background-color: rgb(75 75 75 / var(--tw-bg-opacity, 1));
@@ -1762,14 +1770,6 @@ h1, h2, h3, h4, h5, h6 {
 .bg-white {
   --tw-bg-opacity: 1;
   background-color: rgb(255 255 255 / var(--tw-bg-opacity, 1));
-}
-
-.bg-preventify-blue\/10 {
-  background-color: #2e3b971a;
-}
-
-.bg-preventify-blue\/5 {
-  background-color: #2e3b970d;
 }
 
 .bg-gradient-to-r {
@@ -2630,6 +2630,10 @@ h1, h2, h3, h4, h5, h6 {
   background-color: hsl(var(--muted) / .5);
 }
 
+.hover\:bg-preventify-blue\/10:hover {
+  background-color: #2e3b971a;
+}
+
 .hover\:bg-preventify-dark-blue:hover {
   --tw-bg-opacity: 1;
   background-color: rgb(30 38 101 / var(--tw-bg-opacity, 1));
@@ -2680,10 +2684,6 @@ h1, h2, h3, h4, h5, h6 {
 
 .hover\:bg-white\/10:hover {
   background-color: #ffffff1a;
-}
-
-.hover\:bg-preventify-blue\/10:hover {
-  background-color: #2e3b971a;
 }
 
 .hover\:text-accent-foreground:hover {
