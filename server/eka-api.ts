@@ -123,7 +123,8 @@ export async function getPatientDetails(mobileNumber: string): Promise<any> {
 
 const parseLocation = (line1: string) => {
     if (!line1) return 'N/A';
-    return line1.split('\r\n')[0].trim();
+    // Simple parsing, takes the first part before a comma or newline
+    return line1.split(/[\r\n,]+/)[0].trim();
 };
 
 export async function getBusinessEntitiesAndDoctors(): Promise<any> {
@@ -143,11 +144,11 @@ export async function getBusinessEntitiesAndDoctors(): Promise<any> {
         return { doctors: [], clinics: [] };
     }
     
-    let tokens = await getTokens();
-    if (!tokens) {
-      tokens = await _loginAndGetTokens();
+    let initialTokens = await getTokens();
+    if (!initialTokens) {
+      initialTokens = await _loginAndGetTokens();
     }
-    let accessToken = tokens.access_token;
+    let accessToken = initialTokens.access_token;
 
 
     console.log(`Found ${doctorList.length} doctors and ${clinicList.length} clinics. Fetching details...`);
@@ -164,7 +165,7 @@ export async function getBusinessEntitiesAndDoctors(): Promise<any> {
                     console.log(`Token expired while fetching doctor ${doctor.doctor_id}. Refreshing...`);
                     const newAccessToken = await _refreshAccessToken();
                     if (newAccessToken) {
-                        accessToken = newAccessToken; 
+                        accessToken = newAccessToken; // Update the shared token
                         const newDetailApiClient = getApiClient(accessToken);
                         try {
                             console.log(`Retrying fetch for doctor ${doctor.doctor_id} with new token.`);
@@ -196,12 +197,12 @@ export async function getBusinessEntitiesAndDoctors(): Promise<any> {
 
             validDoctors.push({
                 id: result.value.doctor_id,
-                name: base_name,
+                name: base_name || `${personal?.first_name} ${personal?.last_name}`.trim(),
                 specialty,
                 location,
                 image: personal?.pic || 'https://res.cloudinary.com/dyf8umlda/image/upload/v1748260270/Dr_Abdurahiman_mct6bx.jpg'
             });
-        } else if(result.status === 'rejected' || result.value.status === 'rejected') {
+        } else if(result.status === 'rejected' || (result.status === 'fulfilled' && result.value.status === 'rejected')) {
              const rejectedResult = result.status === 'rejected' ? result : result.value;
              console.error(`Failed to fetch details for doctor ${rejectedResult.doctor_id}:`, rejectedResult.reason?.message);
         }
