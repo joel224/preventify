@@ -1,3 +1,4 @@
+
 import axios from 'axios';
 import { getTokens, saveTokens } from './token-storage';
 
@@ -43,8 +44,8 @@ async function _loginAndGetTokens(userToken: string) {
     console.log('Login successful. Tokens saved.');
     return { access_token, refresh_token };
 
-  } catch(error) {
-      console.error("Error during login:", error);
+  } catch(error: any) {
+      console.error("Error during login:", error.response ? error.response.data : error.message);
       throw error;
   }
 }
