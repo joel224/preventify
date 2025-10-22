@@ -121,44 +121,6 @@ export async function getPatientDetails(mobileNumber: string): Promise<any> {
   });
 }
 
-const parseLocation = (clinics: any[]): string => {
-    if (!clinics || clinics.length === 0) {
-        return 'Not Specified';
-    }
-
-    // Prioritize the location from the first clinic in the list
-    const fullAddress = clinics[0].address?.line1;
-    if (!fullAddress) {
-        return 'Not Specified';
-    }
-
-    const startKeyword = "PADINJARANGADI";
-    const startIndex = fullAddress.indexOf(startKeyword);
-
-    if (startIndex !== -1) {
-        let truncatedAddress = fullAddress.substring(startIndex);
-        const pinIndex = truncatedAddress.lastIndexOf(',PIN-');
-        if (pinIndex !== -1) {
-            return truncatedAddress.substring(0, pinIndex);
-        }
-        return truncatedAddress;
-    } else if (fullAddress.includes('(DISTRICT)')) {
-        const parts = fullAddress.split(',').map((p: string) => p.trim());
-        const districtIndex = parts.findIndex((p: string) => p.includes('(DISTRICT)'));
-         if (districtIndex > 0) {
-            return `${parts[districtIndex - 1]}, ${parts[districtIndex]}`;
-        }
-    }
-    
-    // Fallback for simpler addresses
-    const parts = fullAddress.split(',').map((p: string) => p.trim());
-    if (parts.length >= 2) {
-        return `${parts[0]}`;
-    }
-    return parts[0] || 'Not Specified';
-};
-
-
 export async function getBusinessEntitiesAndDoctors(): Promise<any> {
     console.log("Calling getBusinessEntitiesAndDoctors...");
     
@@ -228,12 +190,24 @@ export async function getBusinessEntitiesAndDoctors(): Promise<any> {
                 console.error(`Skipping doctor ${result.value.doctor_id} due to missing profile data.`);
                 continue;
             }
-
+            
             const specialty = (professional.speciality && professional.speciality.length > 0)
                 ? professional.speciality[0].name
                 : professional.major_speciality?.name || 'General';
+
+            let location = 'Not Specified';
+            if (professional.default_clinic) {
+                try {
+                    const clinicApiClient = getApiClient(accessToken);
+                    const clinicUrl = `/dr/v1/business/clinic/${professional.default_clinic}`;
+                    console.log(`Fetching location for doctor ${result.value.doctor_id} from URL: ${EKA_API_BASE_URL}${clinicUrl}`);
+                    const clinicResponse = await clinicApiClient.get(clinicUrl);
+                    location = clinicResponse.data?.data?.clinic?.address?.line1 || 'Not Specified';
+                } catch(clinicError: any) {
+                    console.error(`Failed to fetch clinic details for doctor ${result.value.doctor_id}:`, clinicError.message);
+                }
+            }
             
-            const location = parseLocation(professional.clinics);
 
             validDoctors.push({
                 id: result.value.doctor_id,
