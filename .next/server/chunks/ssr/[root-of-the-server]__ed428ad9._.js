@@ -758,12 +758,8 @@ function AppointmentDialog({ children }) {
         if (isOpen) {
             setIsLoading(true);
             fetch("http://localhost:3001/api/doctors-and-clinics").then((res)=>res.json()).then((data)=>{
-                const uniqueClinics = Array.from(new Set(data.map((doc)=>doc.location))).map((location)=>({
-                        id: location,
-                        name: location
-                    }));
-                setDoctors(data);
-                setClinics(uniqueClinics);
+                if (data.doctors) setDoctors(data.doctors);
+                if (data.clinics) setClinics(data.clinics);
                 setIsLoading(false);
             }).catch((error)=>{
                 console.error("Failed to fetch doctors and clinics", error);
@@ -788,7 +784,7 @@ function AppointmentDialog({ children }) {
                 children: children
             }, void 0, false, {
                 fileName: "[project]/src/components/AppointmentDialog.tsx",
-                lineNumber: 99,
+                lineNumber: 93,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$dialog$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["DialogContent"], {
@@ -800,20 +796,20 @@ function AppointmentDialog({ children }) {
                                 children: "Book an Appointment"
                             }, void 0, false, {
                                 fileName: "[project]/src/components/AppointmentDialog.tsx",
-                                lineNumber: 102,
+                                lineNumber: 96,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$dialog$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["DialogDescription"], {
                                 children: "Fill out the form below and we'll get back to you to confirm your appointment."
                             }, void 0, false, {
                                 fileName: "[project]/src/components/AppointmentDialog.tsx",
-                                lineNumber: 103,
+                                lineNumber: 97,
                                 columnNumber: 11
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/components/AppointmentDialog.tsx",
-                        lineNumber: 101,
+                        lineNumber: 95,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("form", {
@@ -828,7 +824,7 @@ function AppointmentDialog({ children }) {
                                         children: "Full Name"
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/AppointmentDialog.tsx",
-                                        lineNumber: 110,
+                                        lineNumber: 104,
                                         columnNumber: 13
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$input$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Input"], {
@@ -836,7 +832,7 @@ function AppointmentDialog({ children }) {
                                         ...register("name")
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/AppointmentDialog.tsx",
-                                        lineNumber: 111,
+                                        lineNumber: 105,
                                         columnNumber: 13
                                     }, this),
                                     errors.name && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -844,13 +840,13 @@ function AppointmentDialog({ children }) {
                                         children: errors.name.message
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/AppointmentDialog.tsx",
-                                        lineNumber: 113,
+                                        lineNumber: 107,
                                         columnNumber: 15
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/components/AppointmentDialog.tsx",
-                                lineNumber: 109,
+                                lineNumber: 103,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -861,7 +857,7 @@ function AppointmentDialog({ children }) {
                                         children: "Phone Number"
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/AppointmentDialog.tsx",
-                                        lineNumber: 117,
+                                        lineNumber: 111,
                                         columnNumber: 13
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$input$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Input"], {
@@ -869,7 +865,7 @@ function AppointmentDialog({ children }) {
                                         ...register("phone")
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/AppointmentDialog.tsx",
-                                        lineNumber: 118,
+                                        lineNumber: 112,
                                         columnNumber: 13
                                     }, this),
                                     errors.phone && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -877,13 +873,13 @@ function AppointmentDialog({ children }) {
                                         children: errors.phone.message
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/AppointmentDialog.tsx",
-                                        lineNumber: 120,
+                                        lineNumber: 114,
                                         columnNumber: 15
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/components/AppointmentDialog.tsx",
-                                lineNumber: 116,
+                                lineNumber: 110,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -894,7 +890,7 @@ function AppointmentDialog({ children }) {
                                         children: "Email"
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/AppointmentDialog.tsx",
-                                        lineNumber: 124,
+                                        lineNumber: 118,
                                         columnNumber: 13
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$input$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Input"], {
@@ -903,7 +899,7 @@ function AppointmentDialog({ children }) {
                                         ...register("email")
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/AppointmentDialog.tsx",
-                                        lineNumber: 125,
+                                        lineNumber: 119,
                                         columnNumber: 13
                                     }, this),
                                     errors.email && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -911,13 +907,13 @@ function AppointmentDialog({ children }) {
                                         children: errors.email.message
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/AppointmentDialog.tsx",
-                                        lineNumber: 127,
+                                        lineNumber: 121,
                                         columnNumber: 15
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/components/AppointmentDialog.tsx",
-                                lineNumber: 123,
+                                lineNumber: 117,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -928,21 +924,21 @@ function AppointmentDialog({ children }) {
                                         children: "Preferred Clinic"
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/AppointmentDialog.tsx",
-                                        lineNumber: 131,
+                                        lineNumber: 125,
                                         columnNumber: 13
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("select", {
                                         id: "clinic",
                                         ...register("clinic"),
                                         className: "w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-preventify-purple",
-                                        disabled: isLoading,
+                                        disabled: isLoading || clinics.length === 0,
                                         children: [
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
                                                 value: "",
                                                 children: isLoading ? "Loading..." : "Select a clinic"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/components/AppointmentDialog.tsx",
-                                                lineNumber: 138,
+                                                lineNumber: 132,
                                                 columnNumber: 15
                                             }, this),
                                             clinics.map((clinic)=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
@@ -950,13 +946,13 @@ function AppointmentDialog({ children }) {
                                                     children: clinic.name
                                                 }, clinic.id, false, {
                                                     fileName: "[project]/src/components/AppointmentDialog.tsx",
-                                                    lineNumber: 140,
+                                                    lineNumber: 134,
                                                     columnNumber: 17
                                                 }, this))
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/components/AppointmentDialog.tsx",
-                                        lineNumber: 132,
+                                        lineNumber: 126,
                                         columnNumber: 13
                                     }, this),
                                     errors.clinic && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -964,13 +960,13 @@ function AppointmentDialog({ children }) {
                                         children: errors.clinic.message
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/AppointmentDialog.tsx",
-                                        lineNumber: 146,
+                                        lineNumber: 140,
                                         columnNumber: 15
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/components/AppointmentDialog.tsx",
-                                lineNumber: 130,
+                                lineNumber: 124,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -981,7 +977,7 @@ function AppointmentDialog({ children }) {
                                         children: "Doctor"
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/AppointmentDialog.tsx",
-                                        lineNumber: 150,
+                                        lineNumber: 144,
                                         columnNumber: 13
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("select", {
@@ -995,7 +991,7 @@ function AppointmentDialog({ children }) {
                                                 children: isLoading ? "Loading..." : "Select a doctor"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/components/AppointmentDialog.tsx",
-                                                lineNumber: 157,
+                                                lineNumber: 151,
                                                 columnNumber: 15
                                             }, this),
                                             doctors.map((doctor)=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
@@ -1007,13 +1003,13 @@ function AppointmentDialog({ children }) {
                                                     ]
                                                 }, doctor.id, true, {
                                                     fileName: "[project]/src/components/AppointmentDialog.tsx",
-                                                    lineNumber: 159,
+                                                    lineNumber: 153,
                                                     columnNumber: 17
                                                 }, this))
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/components/AppointmentDialog.tsx",
-                                        lineNumber: 151,
+                                        lineNumber: 145,
                                         columnNumber: 13
                                     }, this),
                                     errors.doctorId && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -1021,13 +1017,13 @@ function AppointmentDialog({ children }) {
                                         children: errors.doctorId.message
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/AppointmentDialog.tsx",
-                                        lineNumber: 165,
+                                        lineNumber: 159,
                                         columnNumber: 15
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/components/AppointmentDialog.tsx",
-                                lineNumber: 149,
+                                lineNumber: 143,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1038,7 +1034,7 @@ function AppointmentDialog({ children }) {
                                         children: "Reason for Visit (Optional)"
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/AppointmentDialog.tsx",
-                                        lineNumber: 169,
+                                        lineNumber: 163,
                                         columnNumber: 13
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$textarea$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Textarea"], {
@@ -1047,13 +1043,13 @@ function AppointmentDialog({ children }) {
                                         ...register("message")
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/AppointmentDialog.tsx",
-                                        lineNumber: 170,
+                                        lineNumber: 164,
                                         columnNumber: 13
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/components/AppointmentDialog.tsx",
-                                lineNumber: 168,
+                                lineNumber: 162,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$dialog$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["DialogFooter"], {
@@ -1066,12 +1062,12 @@ function AppointmentDialog({ children }) {
                                             children: "Cancel"
                                         }, void 0, false, {
                                             fileName: "[project]/src/components/AppointmentDialog.tsx",
-                                            lineNumber: 178,
+                                            lineNumber: 172,
                                             columnNumber: 15
                                         }, this)
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/AppointmentDialog.tsx",
-                                        lineNumber: 177,
+                                        lineNumber: 171,
                                         columnNumber: 13
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$button$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Button"], {
@@ -1080,31 +1076,31 @@ function AppointmentDialog({ children }) {
                                         children: "Request Appointment"
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/AppointmentDialog.tsx",
-                                        lineNumber: 182,
+                                        lineNumber: 176,
                                         columnNumber: 13
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/components/AppointmentDialog.tsx",
-                                lineNumber: 176,
+                                lineNumber: 170,
                                 columnNumber: 11
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/components/AppointmentDialog.tsx",
-                        lineNumber: 108,
+                        lineNumber: 102,
                         columnNumber: 9
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/components/AppointmentDialog.tsx",
-                lineNumber: 100,
+                lineNumber: 94,
                 columnNumber: 7
             }, this)
         ]
     }, void 0, true, {
         fileName: "[project]/src/components/AppointmentDialog.tsx",
-        lineNumber: 98,
+        lineNumber: 92,
         columnNumber: 5
     }, this);
 }

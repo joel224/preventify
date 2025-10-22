@@ -136,19 +136,16 @@ export async function getPatientDetails(mobileNumber: string, userToken: string)
 const parseLocation = (line1: string) => {
     if (!line1) return 'N/A';
     const parts = line1.split(',');
-    // Attempt to find PADINJARANGADI, PALAKKAD, etc.
-    const relevantParts = parts.filter(part => 
-        part.toUpperCase().includes('PADINJARANGADI') || 
-        part.toUpperCase().includes('PALAKKAD') ||
-        part.toUpperCase().includes('VATTAMKULAM') ||
-        part.toUpperCase().includes('KANJIRATHANI')
-    );
-    if (relevantParts.length > 0) {
-        // Take the first one found, clean it up.
-        return relevantParts[0].split('(')[0].trim();
+    // Attempt to find specific keywords
+    const keywords = ['PADINJARANGADI', 'PALAKKAD', 'VATTAMKULAM', 'KANJIRATHANI'];
+    for (const keyword of keywords) {
+        const foundPart = parts.find(part => part.toUpperCase().includes(keyword));
+        if (foundPart) {
+            return foundPart.split('(')[0].trim();
+        }
     }
     // Fallback to the first part of the address if no specific keywords are found
-    return parts[0] || 'N/A';
+    return parts[0]?.trim() || 'N/A';
 };
 
 export async function getBusinessEntitiesAndDoctors(userToken: string): Promise<any> {
@@ -158,10 +155,10 @@ export async function getBusinessEntitiesAndDoctors(userToken: string): Promise<
         return response.data;
     }, userToken);
 
-    const { doctors: doctorList } = businessEntitiesResponse;
+    const { doctors: doctorList, clinics: clinicList } = businessEntitiesResponse;
 
     if (!doctorList || doctorList.length === 0) {
-        return [];
+        return { doctors: [], clinics: [] };
     }
 
     const doctorDetailsPromises = doctorList
@@ -176,7 +173,7 @@ export async function getBusinessEntitiesAndDoctors(userToken: string): Promise<
                 const professional = details?.professional;
                 const personal = details?.personal;
 
-                const specialty = professional?.speciality?.[0]?.name || professional?.major_speciality?.name || 'N/A';
+                const specialty = professional?.speciality?.[0]?.name || professional?.major_speciality?.name || 'General';
                 
                 // Find the clinic that is marked as default
                 const defaultClinic = professional?.clinics?.find((c: any) => c.id === professional.default_clinic);
@@ -196,7 +193,9 @@ export async function getBusinessEntitiesAndDoctors(userToken: string): Promise<
         });
 
     const settledDoctorDetails = await Promise.all(doctorDetailsPromises);
+    const validDoctors = settledDoctorDetails.filter(details => details !== null);
 
-    // Filter out any null results from failed API calls
-    return settledDoctorDetails.filter(details => details !== null);
+    const clinics = clinicList.map((c: any) => ({id: c.clinic_id, name: c.name}));
+
+    return { doctors: validDoctors, clinics };
 }

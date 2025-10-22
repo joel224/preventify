@@ -68,14 +68,8 @@ export default function AppointmentDialog({
       fetch("http://localhost:3001/api/doctors-and-clinics")
         .then((res) => res.json())
         .then((data) => {
-          const uniqueClinics: Clinic[] = Array.from(new Set(data.map((doc: Doctor) => doc.location)))
-            .map(location => ({
-              id: location,
-              name: location,
-            }));
-
-          setDoctors(data);
-          setClinics(uniqueClinics);
+          if(data.doctors) setDoctors(data.doctors);
+          if(data.clinics) setClinics(data.clinics);
           setIsLoading(false);
         })
         .catch((error) => {
@@ -133,7 +127,7 @@ export default function AppointmentDialog({
               id="clinic"
               {...register("clinic")}
               className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-preventify-purple"
-              disabled={isLoading}
+              disabled={isLoading || clinics.length === 0}
             >
               <option value="">{isLoading ? "Loading..." : "Select a clinic"}</option>
               {clinics.map((clinic) => (
