@@ -229,12 +229,13 @@ export async function getBusinessEntitiesAndDoctors(): Promise<any> {
 
 async function addPatient(patientDetails: any): Promise<string> {
     const partner_patient_id = `preventify_${Math.random().toString(36).substr(2, 9)}`;
-    
+    const sanitizedMobile = patientDetails.phone.startsWith('+') ? patientDetails.phone.substring(1) : patientDetails.phone;
+
     const patientPayload = {
         partner_patient_id: partner_patient_id,
         first_name: patientDetails.firstName,
         last_name: patientDetails.lastName,
-        mobile: patientDetails.phone,
+        mobile: sanitizedMobile,
         dob: patientDetails.dob,
         gender: patientDetails.gender,
         designation: patientDetails.gender === "F" ? "Ms." : "Mr.",
@@ -256,12 +257,14 @@ async function addPatient(patientDetails: any): Promise<string> {
 export async function bookAppointment(data: any): Promise<any> {
     console.log("--- Starting Live Booking Process ---");
     
+    const sanitizedMobile = data.patient.phone.startsWith('+') ? data.patient.phone.substring(1) : data.patient.phone;
+    
     // Step 1: Search for the patient by mobile number
-    console.log(`--- Step 1(a): Searching for patient with mobile: ${data.patient.phone} ---`);
+    console.log(`--- Step 1(a): Searching for patient with mobile: ${sanitizedMobile} ---`);
     let partnerPatientId = '';
 
     const searchResponse = await makeApiRequest(async (client) => {
-        const response = await client.get(`/dr/v1/business/patients/search?mobile=${data.patient.phone}`);
+        const response = await client.get(`/dr/v1/business/patients/search?mobile=${sanitizedMobile}`);
         return response.data;
     });
 
@@ -275,7 +278,7 @@ export async function bookAppointment(data: any): Promise<any> {
             return response.data;
         });
         
-        partnerPatientId = patientDetailsResponse.partner_patient_id;
+        partnerPatientId = patientDetailsResponse.data.partner_patient_id;
         console.log(`--- Existing Partner Patient ID found: ${partnerPatientId} ---`);
 
     } else {
@@ -305,7 +308,7 @@ export async function bookAppointment(data: any): Promise<any> {
             designation: data.patient.gender === "F" ? "Ms." : "Mr.",
             first_name: data.patient.firstName,
             last_name: data.patient.lastName,
-            mobile: data.patient.phone,
+            mobile: sanitizedMobile,
             dob: data.patient.dob, 
             gender: data.patient.gender, 
             partner_patient_id: partnerPatientId,
