@@ -157,8 +157,10 @@ export async function getBusinessEntitiesAndDoctors(): Promise<any> {
         .filter((doc: any) => doc && doc.doctor_id)
         .map(async (doctor: any) => {
             const detailApiClient = getApiClient(accessToken);
+            const url = `/dr/v1/doctor/${doctor.doctor_id}`;
+            console.log(`Fetching details for doctor ${doctor.doctor_id} from URL: ${EKA_API_BASE_URL}${url}`);
             try {
-                const response = await detailApiClient.get(`/dr/v1/doctor/${doctor.doctor_id}`);
+                const response = await detailApiClient.get(url);
                 return { status: 'fulfilled', value: { ...response.data, base_name: doctor.name }, doctor_id: doctor.doctor_id };
             } catch (error: any) {
                  if (error.response?.status === 401) {
@@ -169,7 +171,7 @@ export async function getBusinessEntitiesAndDoctors(): Promise<any> {
                         const newDetailApiClient = getApiClient(accessToken);
                         try {
                             console.log(`Retrying fetch for doctor ${doctor.doctor_id} with new token.`);
-                            const response = await newDetailApiClient.get(`/dr/v1/doctor/${doctor.doctor_id}`);
+                            const response = await newDetailApiClient.get(url);
                             return { status: 'fulfilled', value: { ...response.data, base_name: doctor.name }, doctor_id: doctor.doctor_id };
                         } catch (retryError: any) {
                              return { status: 'rejected', reason: retryError, doctor_id: doctor.doctor_id };
