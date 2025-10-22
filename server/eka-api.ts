@@ -168,38 +168,41 @@ export async function getBusinessEntitiesAndDoctors(): Promise<any> {
 
     const doctorDetailsPromises = doctorList
         .filter((doc: any) => doc && doc.doctor_id)
-        .map(async (doctor: any) => {
-            try {
-                const doctorDetailsResponse = await makeApiRequest(async (client) => {
-                    // console.log(`Fetching details for doctor ${doctor.doctor_id}...`);
-                    return client.get(`/dr/v1/doctor/${doctor.doctor_id}`);
-                });
-
-                const details = doctorDetailsResponse.data.profile;
-                const professional = details?.professional;
-                const personal = details?.personal;
-
-                const specialty = professional?.speciality?.[0]?.name || professional?.major_speciality?.name || 'General';
-                
-                const defaultClinic = professional?.clinics?.find((c: any) => c.id === professional.default_clinic);
-                const location = defaultClinic ? parseLocation(defaultClinic.address?.line1) : 'N/A';
-
-                return {
-                    id: doctor.doctor_id,
-                    name: `${personal?.first_name || ''} ${personal?.last_name || ''}`.trim(),
-                    specialty,
-                    location,
-                    image: personal?.pic || 'https://res.cloudinary.com/dyf8umlda/image/upload/v1748260270/Dr_Abdurahiman_mct6bx.jpg' // default image
-                };
-            } catch (error: any) {
-                console.error(`Failed to fetch details for doctor ${doctor.doctor_id}:`, error.message);
-                return null;
-            }
+        .map((doctor: any) => {
+             return makeApiRequest(async (client) => {
+                // console.log(`Fetching details for doctor ${doctor.doctor_id}...`);
+                return client.get(`/dr/v1/doctor/${doctor.doctor_id}`);
+            }).then(response => ({ status: 'fulfilled', value: response, doctor_id: doctor.doctor_id }))
+              .catch(error => ({ status: 'rejected', reason: error, doctor_id: doctor.doctor_id }));
         });
 
     const settledDoctorDetails = await Promise.all(doctorDetailsPromises);
-    const validDoctors = settledDoctorDetails.filter(details => details !== null);
+    const validDoctors = [];
 
+    for (const result of settledDoctorDetails) {
+        if (result.status === 'fulfilled') {
+            const doctorDetailsResponse = result.value;
+            const details = doctorDetailsResponse.data.profile;
+            const professional = details?.professional;
+            const personal = details?.personal;
+
+            const specialty = professional?.speciality?.[0]?.name || professional?.major_speciality?.name || 'General';
+            
+            const defaultClinic = professional?.clinics?.find((c: any) => c.id === professional.default_clinic);
+            const location = defaultClinic ? parseLocation(defaultClinic.address?.line1) : 'N/A';
+
+            validDoctors.push({
+                id: result.doctor_id,
+                name: `${personal?.first_name || ''} ${personal?.last_name || ''}`.trim(),
+                specialty,
+                location,
+                image: personal?.pic || 'https://res.cloudinary.com/dyf8umlda/image/upload/v1748260270/Dr_Abdurahiman_mct6bx.jpg' // default image
+            });
+        } else {
+             console.error(`Failed to fetch details for doctor ${result.doctor_id}:`, result.reason?.message);
+        }
+    }
+    
     const clinics = clinicList.map((c: any) => ({id: c.clinic_id, name: c.name}));
     
     console.log(`Returning ${validDoctors.length} processed doctors and ${clinics.length} clinics.`);
