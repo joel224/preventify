@@ -126,10 +126,14 @@ const parseLocation = (line1: string) => {
     const parts = line1.split(',').map(p => p.trim());
     const districtIndex = parts.findIndex(p => p.includes('(DISTRICT)'));
     if (districtIndex > 0) {
+        // Handle cases like "PADINJARANGADI,PALAKKAD(DISTRICT)"
         return `${parts[districtIndex - 1]}, ${parts[districtIndex]}`;
     }
-    // Fallback to simpler parsing if the hint doesn't match
-    return parts[parts.length - 3] || parts[0] || 'N/A';
+     // Fallback for simpler addresses like "Vattamkulam, Edappal, Kerala"
+    if (parts.length >= 2) {
+        return `${parts[parts.length - 3] || parts[0]}`;
+    }
+    return parts[0] || 'N/A';
 };
 
 export async function getBusinessEntitiesAndDoctors(): Promise<any> {
