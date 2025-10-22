@@ -185,6 +185,7 @@ export async function getBusinessEntitiesAndDoctors(): Promise<any> {
     const validDoctors = [];
     for (const result of settledDoctorDetails) {
         if (result.status === 'fulfilled' && result.value.status === 'fulfilled') {
+            console.log(`Successfully processed doctor details for ID: ${result.value.doctor_id}`);
             const doctorDetails = result.value.value;
             const { profile, base_name } = doctorDetails;
             const professional = profile?.professional;
