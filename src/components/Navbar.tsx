@@ -5,7 +5,7 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Menu, X } from "lucide-react";
 import { usePathname } from "next/navigation";
-import WhatsAppBooking from "./WhatsAppBooking";
+import AppointmentDialog from "./AppointmentDialog";
 
 const Navbar = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -60,11 +60,11 @@ const Navbar = () => {
               <span className="absolute inset-0 bg-gradient-to-r from-transparent via-preventify-light-gray to-transparent animate-shimmer group-hover:animate-shimmer" />
               <span className="relative">Find a Doctor</span>
             </Button>
-            <WhatsAppBooking>
+            <AppointmentDialog>
               <Button className="bg-preventify-purple hover:bg-preventify-dark-purple text-white">
                 Book Appointment
               </Button>
-            </WhatsAppBooking>
+            </AppointmentDialog>
           </div>
 
           {/* Mobile menu button */}
@@ -104,11 +104,11 @@ const Navbar = () => {
                   <span className="absolute inset-0 bg-gradient-to-r from-transparent via-preventify-light-gray to-transparent animate-shimmer group-hover:animate-shimmer" />
                   <span className="relative">Find a Doctor</span>
                 </Button>
-                <WhatsAppBooking>
+                <AppointmentDialog>
                   <Button className="bg-preventify-purple hover:bg-preventify-dark-purple text-white w-full">
                     Book Appointment
                   </Button>
-                </WhatsAppBooking>
+                </AppointmentDialog>
               </div>
             </div>
           </div>
