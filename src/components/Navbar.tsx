@@ -5,6 +5,7 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Menu, X } from "lucide-react";
 import { usePathname } from "next/navigation";
+import AppointmentDialog from "./AppointmentDialog";
 
 const Navbar = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -52,16 +53,20 @@ const Navbar = () => {
           </nav>
 
           <div className="hidden md:flex items-center space-x-4">
-            <Button 
-              variant="outline" 
-              className="border-preventify-purple text-preventify-purple hover:bg-preventify-soft-purple relative overflow-hidden group"
-            >
-              <span className="absolute inset-0 bg-gradient-to-r from-transparent via-preventify-light-gray to-transparent animate-shimmer group-hover:animate-shimmer" />
-              <span className="relative">Find a Doctor</span>
-            </Button>
-            <Button className="bg-preventify-purple hover:bg-preventify-dark-purple text-white">
-              Book Appointment
-            </Button>
+            <AppointmentDialog>
+              <Button 
+                variant="outline" 
+                className="border-preventify-purple text-preventify-purple hover:bg-preventify-soft-purple relative overflow-hidden group"
+              >
+                <span className="absolute inset-0 bg-gradient-to-r from-transparent via-preventify-light-gray to-transparent animate-shimmer group-hover:animate-shimmer" />
+                <span className="relative">Find a Doctor</span>
+              </Button>
+            </AppointmentDialog>
+            <AppointmentDialog>
+              <Button className="bg-preventify-purple hover:bg-preventify-dark-purple text-white">
+                Book Appointment
+              </Button>
+            </AppointmentDialog>
           </div>
 
           {/* Mobile menu button */}
@@ -94,16 +99,20 @@ const Navbar = () => {
                 </Link>
               ))}
               <div className="flex flex-col space-y-2 pt-3">
-                <Button 
-                  variant="outline" 
-                  className="border-preventify-purple text-preventify-purple hover:bg-preventify-soft-purple w-full relative overflow-hidden group"
-                >
-                  <span className="absolute inset-0 bg-gradient-to-r from-transparent via-preventify-light-gray to-transparent animate-shimmer group-hover:animate-shimmer" />
-                  <span className="relative">Find a Doctor</span>
-                </Button>
-                <Button className="bg-preventify-purple hover:bg-preventify-dark-purple text-white w-full">
-                  Book Appointment
-                </Button>
+                <AppointmentDialog>
+                  <Button 
+                    variant="outline" 
+                    className="border-preventify-purple text-preventify-purple hover:bg-preventify-soft-purple w-full relative overflow-hidden group"
+                  >
+                    <span className="absolute inset-0 bg-gradient-to-r from-transparent via-preventify-light-gray to-transparent animate-shimmer group-hover:animate-shimmer" />
+                    <span className="relative">Find a Doctor</span>
+                  </Button>
+                </AppointmentDialog>
+                <AppointmentDialog>
+                  <Button className="bg-preventify-purple hover:bg-preventify-dark-purple text-white w-full">
+                    Book Appointment
+                  </Button>
+                </AppointmentDialog>
               </div>
             </div>
           </div>

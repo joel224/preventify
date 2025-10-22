@@ -1,5 +1,6 @@
 
 import { Button } from "@/components/ui/button";
+import AppointmentDialog from "../AppointmentDialog";
 
 const CtaSection = () => {
   return (
@@ -13,9 +14,11 @@ const CtaSection = () => {
             Schedule your appointment today and start your journey towards better health with Preventify.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button className="bg-white text-preventify-blue hover:bg-preventify-light-gray text-lg py-6 px-8">
-              Book an Appointment
-            </Button>
+            <AppointmentDialog>
+              <Button className="bg-white text-preventify-blue hover:bg-preventify-light-gray text-lg py-6 px-8">
+                Book an Appointment
+              </Button>
+            </AppointmentDialog>
             <Button variant="outline" className="border-white text-white hover:bg-white/10 text-lg py-6 px-8">
               Contact Us
             </Button>
