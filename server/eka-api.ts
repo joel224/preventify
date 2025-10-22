@@ -18,11 +18,12 @@ const getApiClient = (accessToken?: string) => {
   });
 };
 
-async function _loginAndGetTokens(userToken: string) {
-  console.log('Performing full login...');
+export async function _loginAndGetTokens(userToken: string) {
+  console.log('Attempting full login...');
   const { EKA_API_KEY, EKA_CLIENT_ID, EKA_CLIENT_SECRET } = process.env;
 
   if (!EKA_API_KEY || !EKA_CLIENT_ID || !EKA_CLIENT_SECRET) {
+    console.error('Missing Eka Care API credentials in .env file');
     throw new Error('Missing Eka Care API credentials in .env file');
   }
 

@@ -2,7 +2,7 @@
 import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
-import { getPatientDetails, getBusinessEntitiesAndDoctors } from './eka-api';
+import { getPatientDetails, getBusinessEntitiesAndDoctors, _loginAndGetTokens } from './eka-api';
 
 dotenv.config();
 
@@ -11,6 +11,25 @@ const port = process.env.PORT || 3001;
 
 app.use(cors());
 app.use(express.json());
+
+
+// New endpoint specifically for testing the login
+app.get('/api/test-login', async (req, res) => {
+  try {
+    // In a real app, the user_token would be dynamic per user.
+    // For this test, we use a placeholder as the backend doesn't depend on it for this specific test.
+    const placeholderUserToken = 'studio-test-token';
+    await _loginAndGetTokens(placeholderUserToken);
+    res.json({ message: 'Login successful. Tokens saved.' });
+  } catch (error: any) {
+    console.error('Error in /api/test-login endpoint:', error);
+    res.status(500).json({ 
+        message: 'Failed to login to Eka Care API', 
+        error: error.response ? JSON.stringify(error.response.data) : error.message 
+    });
+  }
+});
+
 
 app.get('/api/message', (req, res) => {
   res.json({ message: 'Hello from the decoupled backend!' });
