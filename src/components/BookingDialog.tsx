@@ -1,3 +1,4 @@
+
 'use client'
 import { useState } from "react";
 import { useForm } from "react-hook-form";
@@ -385,5 +386,5 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
                 </div>
             </DialogContent>
         </Dialog>
-    )
+    );
 }
