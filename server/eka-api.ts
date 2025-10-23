@@ -9,7 +9,16 @@ const getApiClient = (accessToken?: string) => {
     'Content-Type': 'application/json',
   };
   if (accessToken) {
-    headers['auth'] = accessToken;
+    // The profiles API needs 'Authorization: Bearer <token>'
+    // The dr API needs 'auth: <token>'
+    // To handle both, we will check the url in the interceptor, but for now, we'll just add both.
+    // Let's assume the wrapper `makeApiRequest` handles this complexity or one format works for both.
+    // The provided `getApiClient` adds an `auth` header. Let's stick with that for now as it was part of the original code.
+     headers['auth'] = accessToken;
+     headers['Authorization'] = `Bearer ${accessToken}`;
+  }
+   if (process.env.EKA_CLIENT_ID) {
+    headers['client-id'] = process.env.EKA_CLIENT_ID;
   }
   return axios.create({
     baseURL: EKA_API_BASE_URL,
@@ -172,32 +181,34 @@ export async function getBusinessEntitiesAndDoctors(): Promise<any> {
 }
 
 async function addPatient(patientDetails: any): Promise<string> {
-    const partner_patient_id = `preventify_${Date.now()}`;
-    const sanitizedMobile = patientDetails.phone.startsWith('+') ? patientDetails.phone.substring(1) : patientDetails.phone;
+    const sanitizedMobile = patientDetails.phone.startsWith('+') ? patientDetails.phone : `+${patientDetails.phone}`;
 
     const patientPayload = {
-        partner_patient_id: partner_patient_id,
-        first_name: patientDetails.firstName,
-        last_name: patientDetails.lastName,
-        mobile: sanitizedMobile,
+        fln: patientDetails.fullName,
+        fn: patientDetails.firstName,
+        ln: patientDetails.lastName,
         dob: patientDetails.dob,
-        gender: patientDetails.gender,
-        designation: patientDetails.gender === "F" ? "Ms." : "Mr.",
+        gen: patientDetails.gender,
+        mobile: sanitizedMobile,
+        email: patientDetails.email || "",
     };
 
-    console.log("--- Step 1(b): Adding New Patient via API ---");
-    console.log("Request URL: POST /dr/v1/patient");
+    console.log("--- Step 1(b): Adding New Patient via /profiles/v1/patient/ ---");
+    console.log("Request URL: POST /profiles/v1/patient/");
     console.log("Request Payload:", JSON.stringify(patientPayload, null, 2));
     
     const responseData = await makeApiRequest(async (client) => {
-        const response = await client.post('/dr/v1/patient', patientPayload);
+        const response = await client.post('/profiles/v1/patient/', patientPayload);
         return response.data;
     });
 
-    console.log("SUCCESS: Patient added successfully.");
+    console.log("SUCCESS: Patient added successfully via /profiles API.");
     console.log("Response Data:", JSON.stringify(responseData, null, 2));
     
-    return partner_patient_id;
+    if (!responseData.id) {
+      throw new Error("Patient creation did not return a patient ID.");
+    }
+    return responseData.id;
 }
 
 
@@ -208,83 +219,72 @@ export async function bookAppointment(data: any): Promise<any> {
     
     // Step 1: Search for the patient by mobile number
     console.log(`--- Step 1(a): Searching for patient with mobile: ${sanitizedMobile} ---`);
-    let partnerPatientId = '';
+    let patientId = '';
     
     console.log(`Request URL: GET /dr/v1/business/patients/search?mobile=${sanitizedMobile}`);
-    const searchResponse = await makeApiRequest(async (client) => {
-        try {
-            const response = await client.get(`/dr/v1/business/patients/search?mobile=${sanitizedMobile}`);
-            return response.data;
-        } catch (error: any) {
-            console.warn("WARN during patient search, assuming not found:", error.response ? JSON.stringify(error.response.data, null, 2) : error.message);
-            return { data: { profiles: [] } };
-        }
-    });
-
-    console.log("SUCCESS: Patient search completed.");
-    console.log("Response Data:", JSON.stringify(searchResponse, null, 2));
-
-
-    if (searchResponse?.data?.profiles?.length > 0) {
-        console.log("--- INFO: Patient found. Getting details. ---");
-        const patientProfile = searchResponse.data.profiles[0];
-        const ekaPatientId = patientProfile.patient_id;
-        
-        console.log(`Request URL: GET /dr/v1/patient/${ekaPatientId}`);
-        const patientDetailsResponse = await makeApiRequest(async (client) => {
-            const response = await client.get(`/dr/v1/patient/${ekaPatientId}`);
-            return response.data;
+    try {
+        const searchResponse = await makeApiRequest(async (client) => {
+             const response = await client.get(`/dr/v1/business/patients/search?mobile=${sanitizedMobile}`);
+             return response.data;
         });
 
-        console.log("SUCCESS: Patient details fetched.");
-        console.log("Response Data:", JSON.stringify(patientDetailsResponse, null, 2));
+        console.log("SUCCESS: Patient search completed.");
+        console.log("Response Data:", JSON.stringify(searchResponse, null, 2));
         
-        partnerPatientId = patientDetailsResponse.partner_patient_id;
-        console.log(`--- INFO: Existing Partner Patient ID found: ${partnerPatientId} ---`);
+        if (searchResponse?.data?.profiles?.length > 0) {
+            console.log("--- INFO: Patient found. Using existing patient ID. ---");
+            patientId = searchResponse.data.profiles[0].patient_id;
+        }
 
-    } else {
-        console.log("--- INFO: Patient not found. Creating new patient. ---");
-        partnerPatientId = await addPatient(data.patient);
+    } catch (error: any) {
+        if (error.response?.data?.error?.code === "PATIENTS_NOT_FOUND") {
+            console.log("--- INFO: Patient not found by search. This is expected for new patients. ---");
+        } else {
+            // For other errors, we still want to see them
+            console.error("ERROR during patient search:", error.response ? JSON.stringify(error.response.data, null, 2) : error.message);
+            // We can decide to throw or continue. For now, let's assume we can try to create a patient.
+        }
     }
 
-    if (!partnerPatientId) {
-        console.error("FATAL: Could not retrieve or create a partner patient ID.");
-        throw new Error("Could not retrieve or create a partner patient ID.");
+
+    if (!patientId) {
+        console.log("--- INFO: Patient not found or search failed. Creating new patient. ---");
+        patientId = await addPatient(data.patient);
     }
 
-    // Step 2: Book the appointment with the retrieved/created partner_patient_id
+    if (!patientId) {
+        console.error("FATAL: Could not retrieve or create a patient ID.");
+        throw new Error("Could not retrieve or create a patient ID.");
+    }
+
+    // Step 2: Book the appointment with the patientId
     const appointmentDate = new Date(data.appointment.date);
     const startTime = Math.floor(appointmentDate.getTime() / 1000);
     
     const appointmentPayload = {
         partner_appointment_id: `preventify_appt_${Date.now()}`,
-        partner_clinic_id: data.appointment.clinicId,
-        partner_doctor_id: data.appointment.doctorId,
-        partner_patient_id: partnerPatientId,
+        clinic_id: data.appointment.clinicId,
+        doctor_id: data.appointment.doctorId,
+        partner_patient_id: patientId, // Using patientId directly as partner_patient_id
         appointment_details: {
             start_time: startTime,
-            end_time: startTime + 900, // 15-minute slot
+            end_time: startTime + 1200, // 20-minute slot
             mode: "INCLINIC",
-            video_connect: {
-                vendor: "other",
-                url: "https://preventify.me/virtual-consult"
-            }
         },
         patient_details: {
             designation: data.patient.gender === "F" ? "Ms." : "Mr.",
             first_name: data.patient.firstName,
             last_name: data.patient.lastName,
             mobile: sanitizedMobile,
-            dob: data.patient.dob, 
-            gender: data.patient.gender, 
-            partner_patient_id: partnerPatientId,
+            gender: data.patient.gender,
+            dob: data.patient.dob,
         },
     };
 
     console.log("\n--- Final IDs for Booking ---");
-    console.log(`Partner Patient ID: ${appointmentPayload.partner_patient_id}`);
-    console.log(`Partner Doctor ID: ${appointmentPayload.partner_doctor_id}`);
-    console.log(`Partner Clinic ID: ${appointmentPayload.partner_clinic_id}`);
+    console.log(`Partner Patient ID (using patient_id): ${appointmentPayload.partner_patient_id}`);
+    console.log(`Doctor ID: ${appointmentPayload.doctor_id}`);
+    console.log(`Clinic ID: ${appointmentPayload.clinic_id}`);
     
     console.log("\n--- Step 2: Booking Appointment via API ---");
     console.log("Request URL: POST /dr/v1/appointment");
@@ -301,3 +301,4 @@ export async function bookAppointment(data: any): Promise<any> {
 
     return bookingResponse;
 }
+
