@@ -244,7 +244,7 @@ export async function bookAppointment(data: any): Promise<any> {
         console.log("SUCCESS: Patient details fetched.");
         console.log("Response Data:", JSON.stringify(patientDetailsResponse, null, 2));
         
-        partnerPatientId = patientDetailsResponse.data.partner_patient_id;
+        partnerPatientId = patientDetailsResponse.partner_patient_id;
         console.log(`--- INFO: Existing Partner Patient ID found: ${partnerPatientId} ---`);
 
     } else {
