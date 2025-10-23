@@ -240,7 +240,7 @@ export async function bookAppointment(data: any): Promise<any> {
             patientId = searchResponse.data.profiles[0].patient_id;
         }
 
-    } catch (error: any) => {
+    } catch (error: any) {
         if (error.response?.data?.error?.code === "PATIENTS_NOT_FOUND") {
             console.log("--- INFO: Patient not found by search. This is expected for new patients. ---");
         } else {
@@ -305,3 +305,6 @@ export async function bookAppointment(data: any): Promise<any> {
     return bookingResponse;
 }
 
+
+
+    
