@@ -62,7 +62,7 @@ const doctors = [
   { name: "Dr. Ijas V. I.", id: "175931883083616" },
   { name: "Dr. Husna V.", id: "175949169261621" },
   { name: "Dr. Md. Abdurahiman", id: "174306088551114" },
-  { name: "Dr. Neeharika V.", idd: "173771631358722" },
+  { name: "Dr. Neeharika V.", id: "173771631358722" },
   { name: "Dr. Ashwin T.R.", id: "175949162376135" },
   { name: "Dr. Sreedev N", id: "175949148741914" },
   { name: "Dr. Ajay Biju", id: "174297264958992" },
@@ -192,7 +192,7 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
                     <FormField control={form.control} name="phone" render={({ field }) => ( <FormItem> <FormLabel>Phone Number</FormLabel> <FormControl> <Input placeholder="+91 98765 43210" {...field} /> </FormControl> <FormMessage /> </FormItem> )}/>
                     <FormField control={form.control} name="email" render={({ field }) => ( <FormItem> <FormLabel>Email Address (Optional)</FormLabel> <FormControl> <Input type="email" placeholder="you@example.com" {...field} /> </FormControl> <FormMessage /> </FormItem> )}/>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <FormField control={form.control} name="dob" render={({ field }) => ( <FormItem className="flex flex-col"> <FormLabel>Date of Birth</FormLabel> <Popover> <PopoverTrigger asChild> <FormControl> <Button variant={"outline"} className={cn( "w-full pl-3 text-left font-normal", !field.value && "text-muted-foreground" )}> {field.value ? format(field.value, "PPP") : <span>Pick a date</span>} <CalendarIcon className="ml-auto h-4 w-4 opacity-50" /> </Button> </FormControl> </PopoverTrigger> <PopoverContent className="w-auto p-0" align="start"> <Calendar mode="single" selected={field.value} onSelect={field.onChange} captionLayout="dropdown-buttons" fromYear={1930} toYear={new Date().getFullYear()} disabled={(date) => date > new Date()} initialFocus /> </PopoverContent> </Popover> <FormMessage /> </FormItem> )}/>
+                        <FormField control={form.control} name="dob" render={({ field }) => ( <FormItem className="flex flex-col"> <FormLabel>Date of Birth</FormLabel> <Popover> <PopoverTrigger asChild> <Button variant={"outline"} className={cn( "w-full pl-3 text-left font-normal", !field.value && "text-muted-foreground" )}> {field.value ? format(field.value, "PPP") : <span>Pick a date</span>} <CalendarIcon className="ml-auto h-4 w-4 opacity-50" /> </Button> </PopoverTrigger> <PopoverContent className="w-auto p-0" align="start"> <Calendar mode="single" selected={field.value} onSelect={field.onChange} captionLayout="dropdown-buttons" fromYear={1930} toYear={new Date().getFullYear()} disabled={(date) => date > new Date()} initialFocus /> </PopoverContent> </Popover> <FormMessage /> </FormItem> )}/>
                         <FormField control={form.control} name="gender" render={({ field }) => ( <FormItem className="space-y-3"> <FormLabel>Gender</FormLabel> <FormControl> <RadioGroup onValueChange={field.onChange} defaultValue={field.value} className="flex items-center space-x-4 pt-2"> <FormItem className="flex items-center space-x-2 space-y-0"> <FormControl> <RadioGroupItem value="M" /> </FormControl> <FormLabel className="font-normal">Male</FormLabel> </FormItem> <FormItem className="flex items-center space-x-2 space-y-0"> <FormControl> <RadioGroupItem value="F" /> </FormControl> <FormLabel className="font-normal">Female</FormLabel> </FormItem> <FormItem className="flex items-center space-x-2 space-y-0"> <FormControl> <RadioGroupItem value="O" /> </FormControl> <FormLabel className="font-normal">Other</FormLabel> </FormItem> </RadioGroup> </FormControl> <FormMessage /> </FormItem> )}/>
                     </div>
                 </>;
@@ -202,100 +202,89 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
                         <FormField control={form.control} name="clinic" render={({ field }) => ( <FormItem> <FormLabel>Preferred Clinic</FormLabel> <Select onValueChange={field.onChange} defaultValue={field.value}> <FormControl> <SelectTrigger> <SelectValue placeholder="Select a clinic" /> </SelectTrigger> </FormControl> <SelectContent> {clinics.map(clinic => <SelectItem key={clinic.id} value={clinic.id}>{clinic.name}</SelectItem>)} </SelectContent> </Select> <FormMessage /> </FormItem> )}/>
                         <FormField control={form.control} name="doctor" render={({ field }) => ( <FormItem> <FormLabel>Doctor</FormLabel> <Select onValueChange={field.onChange} defaultValue={field.value}> <FormControl> <SelectTrigger> <SelectValue placeholder="Select a doctor" /> </SelectTrigger> </FormControl> <SelectContent> {doctors.map(doctor => <SelectItem key={doctor.id} value={doctor.id}>{doctor.name}</SelectItem>)} </SelectContent> </Select> <FormMessage /> </FormItem> )}/>
                     </div>
-                     <FormField control={form.control} name="appointmentDate" render={({ field }) => ( <FormItem className="flex flex-col"> <FormLabel>Preferred Appointment Date</FormLabel> <Popover> <PopoverTrigger asChild> <FormControl> <Button variant={"outline"} className={cn( "w-full pl-3 text-left font-normal", !field.value && "text-muted-foreground" )}> {field.value ? format(field.value, "PPP") : <span>Pick a date</span>} <CalendarIcon className="ml-auto h-4 w-4 opacity-50" /> </Button> </FormControl> </PopoverTrigger> <PopoverContent className="w-auto p-0" align="start"> <Calendar mode="single" selected={field.value} onSelect={field.onChange} disabled={(date) => date < new Date(new Date().setDate(new Date().getDate() - 1)) } initialFocus /> </PopoverContent> </Popover> <FormMessage /> </FormItem> )}/>
+                    <FormField control={form.control} name="appointmentDate" render={({ field }) => ( <FormItem className="flex flex-col"> <FormLabel>Appointment Date</FormLabel> <Popover> <PopoverTrigger asChild> <Button variant={"outline"} className={cn( "w-full pl-3 text-left font-normal", !field.value && "text-muted-foreground" )}> {field.value ? format(field.value, "PPP") : <span>Pick a date</span>} <CalendarIcon className="ml-auto h-4 w-4 opacity-50" /> </Button> </PopoverTrigger> <PopoverContent className="w-auto p-0" align="start"> <Calendar mode="single" selected={field.value} onSelect={field.onChange} disabled={(date) => date < new Date(new Date().setDate(new Date().getDate() -1))} initialFocus /> </PopoverContent> </Popover> <FormMessage /> </FormItem> )}/>
                 </>;
             case 3:
-                if (isFetchingSlots) {
-                    return <div className="flex items-center justify-center h-40"><Loader2 className="h-8 w-8 animate-spin" /></div>;
+                 if (isFetchingSlots) {
+                    return <div className="flex items-center justify-center h-40"><Loader2 className="h-8 w-8 animate-spin text-preventify-purple" /></div>;
                 }
                 if (availableSlots.length === 0) {
-                    return <p className="text-sm text-muted-foreground text-center py-10">No available slots for this day. Please select a different date, doctor, or clinic.</p>
+                    return <div className="text-center h-40 flex flex-col justify-center"><p>No available slots for this date.</p><p className="text-sm text-preventify-gray">Please select a different date or doctor.</p></div>;
                 }
-                return (
-                    <FormField
-                      control={form.control}
-                      name="startTime"
-                      render={({ field }) => (
+                return <FormField
+                    control={form.control}
+                    name="startTime"
+                    render={({ field }) => (
                         <FormItem className="space-y-3">
-                          <FormLabel>Available Time Slots</FormLabel>
+                            <FormLabel>Available Time Slots</FormLabel>
                             <FormControl>
-                                <ScrollArea className="h-40 rounded-md border">
-                                    <RadioGroup
-                                        onValueChange={field.onChange}
-                                        defaultValue={field.value}
-                                        className="grid grid-cols-3 gap-2 p-4"
-                                    >
-                                        {availableSlots.map((slot) => (
-                                        <FormItem key={slot.s} className="flex items-center">
-                                            <FormControl>
-                                                <RadioGroupItem value={slot.s} id={slot.s} className="sr-only" />
-                                            </FormControl>
-                                            <Label
-                                                htmlFor={slot.s}
-                                                className="w-full cursor-pointer rounded-md border-2 border-muted bg-popover p-2 text-center hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary peer-data-[state=checked]:bg-primary peer-data-[state=checked]:text-primary-foreground [&:has([data-state=checked])]:border-primary"
-                                            >
-                                                {format(new Date(slot.s), 'hh:mm a')}
-                                            </Label>
-                                        </FormItem>
-                                        ))}
-                                    </RadioGroup>
-                                </ScrollArea>
+                                <RadioGroup
+                                    onValueChange={field.onChange}
+                                    defaultValue={field.value}
+                                    className="grid grid-cols-3 gap-2"
+                                >
+                                    <ScrollArea className="h-40 col-span-3">
+                                        <div className="grid grid-cols-3 gap-2 pr-4">
+                                            {availableSlots.map(slot => (
+                                                <FormItem key={slot.s} className="flex-1">
+                                                    <FormControl>
+                                                        <RadioGroupItem value={slot.s} className="sr-only" />
+                                                    </FormControl>
+                                                    <Label
+                                                        htmlFor={slot.s}
+                                                        className={cn(
+                                                            "flex flex-col items-center justify-center rounded-md border-2 border-muted bg-popover p-4 hover:bg-accent hover:text-accent-foreground",
+                                                            field.value === slot.s && "border-preventify-purple"
+                                                        )}
+                                                    >
+                                                        {format(new Date(slot.s), "h:mm a")}
+                                                    </Label>
+                                                </FormItem>
+                                            ))}
+                                        </div>
+                                    </ScrollArea>
+                                </RadioGroup>
                             </FormControl>
-                          <FormMessage />
+                            <FormMessage />
                         </FormItem>
-                      )}
-                    />
-                );
+                    )}
+                />;
+            default:
+                return null;
         }
     };
-    
+
     const getDialogDescription = () => {
         switch (step) {
-            case 1: return "Step 1 of 3: Your contact details.";
-            case 2: return "Step 2 of 3: Appointment details.";
-            case 3: return "Step 3 of 3: Select an available time slot.";
+            case 1: return "Please enter your personal details.";
+            case 2: return "Select your preferred clinic, doctor, and date.";
+            case 3: return "Choose an available time slot for your appointment.";
             default: return "";
         }
-    }
-
+    };
 
     return (
-        <Dialog open={open} onOpenChange={(isOpen) => { setOpen(isOpen); if (!isOpen) { form.reset(); setStep(1); setAvailableSlots([]); }}}>
+        <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
                 {children}
             </DialogTrigger>
-            <DialogContent className="sm:max-w-[625px]">
+            <DialogContent className="sm:max-w-[425px] md:max-w-lg">
                 <DialogHeader>
-                    <DialogTitle>Book an Appointment</DialogTitle>
+                    <DialogTitle>Book an Appointment - Step {step} of 3</DialogTitle>
                     <DialogDescription>{getDialogDescription()}</DialogDescription>
                 </DialogHeader>
-                <div className="py-4">
-                    <Form {...form}>
-                        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+                <Form {...form}>
+                    <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+                        <div className="space-y-4">
                             {renderStepContent()}
-                             <DialogFooter className="pt-4">
-                                <div className="flex w-full gap-4">
-                                    {step > 1 && (
-                                         <Button type="button" variant="outline" onClick={() => setStep(prev => prev - 1)} className="w-1/3">
-                                            Back
-                                        </Button>
-                                    )}
-                                    {step < 3 && (
-                                        <Button type="button" onClick={handleNextStep} className="w-full bg-preventify-blue hover:bg-preventify-dark-blue text-white" size="lg">
-                                            Next
-                                        </Button>
-                                    )}
-                                    {step === 3 && (
-                                        <Button type="submit" className="w-full bg-preventify-blue hover:bg-preventify-dark-blue text-white" size="lg" disabled={isLoading || !form.getValues('startTime')}>
-                                            {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                                            Submit Request
-                                        </Button>
-                                    )}
-                                </div>
-                            </DialogFooter>
-                        </form>
-                    </Form>
-                </div>
+                        </div>
+                        <DialogFooter className="pt-4">
+                            {step > 1 && <Button type="button" variant="ghost" onClick={() => setStep(prev => prev - 1)}>Back</Button>}
+                            {step < 3 && <Button type="button" onClick={handleNextStep}>Next</Button>}
+                            {step === 3 && <Button type="submit" disabled={isLoading}>{isLoading ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Submitting...</> : "Submit Appointment"}</Button>}
+                        </DialogFooter>
+                    </form>
+                </Form>
             </DialogContent>
         </Dialog>
     );

@@ -536,6 +536,10 @@ h1, h2, h3, h4, h5, h6 {
   order: 2;
 }
 
+.col-span-3 {
+  grid-column: span 3 / span 3;
+}
+
 .-mx-1 {
   margin-left: -.25rem;
   margin-right: -.25rem;
@@ -3498,6 +3502,10 @@ h1, h2, h3, h4, h5, h6 {
     max-width: 24rem;
   }
 
+  .sm\:max-w-\[425px\] {
+    max-width: 425px;
+  }
+
   .sm\:grid-cols-2 {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
@@ -3639,6 +3647,10 @@ h1, h2, h3, h4, h5, h6 {
 
   .md\:max-w-\[420px\] {
     max-width: 420px;
+  }
+
+  .md\:max-w-lg {
+    max-width: 32rem;
   }
 
   .md\:grid-cols-2 {
