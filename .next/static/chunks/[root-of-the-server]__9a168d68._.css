@@ -952,6 +952,10 @@ h1, h2, h3, h4, h5, h6 {
   max-height: 100vh;
 }
 
+.max-h-80 {
+  max-height: 20rem;
+}
+
 .min-h-0 {
   min-height: 0;
 }
@@ -1350,6 +1354,10 @@ h1, h2, h3, h4, h5, h6 {
 
 .list-none {
   list-style-type: none;
+}
+
+.list-disc {
+  list-style-type: disc;
 }
 
 .appearance-none {
@@ -2070,6 +2078,10 @@ h1, h2, h3, h4, h5, h6 {
 
 .pt-8 {
   padding-top: 2rem;
+}
+
+.pl-5 {
+  padding-left: 1.25rem;
 }
 
 .text-left {

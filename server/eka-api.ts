@@ -1,17 +1,19 @@
 
 import axios from 'axios';
 import { getTokens, saveTokens } from './token-storage';
-import { format } from "date-fns";
+import { format, addDays } from "date-fns";
 
 const EKA_API_BASE_URL = 'https://api.eka.care';
 
 const getApiClient = (accessToken?: string) => {
+  console.log('Creating API client...');
   const headers: { [key: string]: string } = {
     'Content-Type': 'application/json',
   };
   if (accessToken) {
      headers['auth'] = accessToken;
      headers['Authorization'] = `Bearer ${accessToken}`;
+     console.log('API client using existing access token.');
   }
    if (process.env.EKA_CLIENT_ID) {
     headers['client-id'] = process.env.EKA_CLIENT_ID;
@@ -78,8 +80,8 @@ async function _refreshAccessToken() {
     await saveTokens({ access_token, refresh_token });
     console.log('SUCCESS: Token refresh successful. New tokens saved.');
     return access_token;
-  } catch (error) {
-    console.error('ERROR: Failed to refresh token. A full login may be required.', error);
+  } catch (error: any) {
+    console.error('ERROR: Failed to refresh token. A full login may be required.', error.response ? JSON.stringify(error.response.data) : error.message);
     return null;
   }
 }
@@ -132,57 +134,157 @@ async function makeApiRequest(apiCall: (client: any) => Promise<any>) {
   }
 }
 
-export async function getAvailableSlots(doctorId: string, clinicId: string, date: string): Promise<any> {
+export async function getAvailableSlots(doctorId: string, clinicId: string, date: string): Promise<any[]> {
     console.log(`--- Fetching available slots for doctor: ${doctorId}, clinic: ${clinicId}, date: ${date} ---`);
 
     const formattedDate = format(new Date(date), 'yyyy-MM-dd');
 
-    return makeApiRequest(async (client) => {
-        const response = await client.get(`/dr/v1/doctor/${doctorId}/clinic/${clinicId}/appointment/slot`, {
-            params: {
-                start_date: formattedDate,
-                end_date: formattedDate
-            }
+    try {
+        const responseData = await makeApiRequest(async (client) => {
+            const response = await client.get(`/dr/v1/doctor/${doctorId}/clinic/${clinicId}/appointment/slot`, {
+                params: {
+                    start_date: formattedDate,
+                    end_date: formattedDate
+                }
+            });
+            return response.data;
         });
-        console.log("SUCCESS: Fetched available slots.");
-        // We only care about the schedule data for the frontend
-        return response.data.data.schedule;
-    });
+
+        if (!responseData.data || !responseData.data.schedule) {
+            console.log(`INFO: No schedule object found for ${doctorId}/${clinicId} on ${formattedDate}.`);
+            return [];
+        }
+
+        const schedule = responseData.data.schedule;
+        const availableSlots: any[] = [];
+        
+        // The schedule object keys can be dynamic, so we iterate over them
+        for (const scheduleKey in schedule) {
+            const scheduleItems = schedule[scheduleKey];
+            for (const item of scheduleItems) {
+                if (item.slots && Array.isArray(item.slots)) {
+                    item.slots.forEach((slot: any) => {
+                        if (slot.available) {
+                            availableSlots.push({
+                                startTime: slot.s,
+                                endTime: slot.e,
+                                doctorId,
+                                clinicId,
+                            });
+                        }
+                    });
+                }
+            }
+        }
+        
+        if (availableSlots.length > 0) {
+            console.log(`SUCCESS: Found ${availableSlots.length} available slots for ${doctorId}/${clinicId} on ${formattedDate}.`);
+        } else {
+            console.log(`INFO: No available slots found for ${doctorId}/${clinicId} on ${formattedDate}.`);
+        }
+
+        return availableSlots;
+
+    } catch (error: any) {
+        console.error(`ERROR fetching slots for ${doctorId}/${clinicId} on ${formattedDate}:`, error.message);
+        return []; // Return empty array on error to not block the whole process
+    }
 }
 
 
 export async function getBusinessEntitiesAndDoctors(): Promise<any> {
     console.log("--- Starting getBusinessEntitiesAndDoctors ---");
     
-    const businessEntitiesResponse = await makeApiRequest(async (client) => {
+    const response = await makeApiRequest(async (client) => {
         console.log('INFO: Fetching business entities (/dr/v1/business/entities)...');
-        const response = await client.get('/dr/v1/business/entities');
+        const res = await client.get('/dr/v1/business/entities');
         console.log("SUCCESS: Fetched business entities.");
-        return response.data;
+        return res.data;
     });
 
-    const { doctors: doctorList, clinics: clinicList } = businessEntitiesResponse;
+    const { doctors: doctorList, clinics: clinicList } = response;
 
     if (!doctorList || doctorList.length === 0) {
-        console.log("INFO: No doctors found in business entities response.");
+        console.warn("WARN: No doctors found in business entities response.");
+        return { doctors: [], clinics: [] };
+    }
+     if (!clinicList || clinicList.length === 0) {
+        console.warn("WARN: No clinics found in business entities response.");
         return { doctors: [], clinics: [] };
     }
     
-    console.log(`INFO: Found ${doctorList.length} doctors and ${clinicList.length} clinics. Fetching details...`);
+    console.log(`INFO: Found ${doctorList.length} doctors and ${clinicList.length} clinics. Processing data...`);
     
-    const simplifiedDoctors = doctorList.map((doc: any) => ({
-      id: doc.doctor_id,
-      name: doc.name,
-      specialty: 'General', // Placeholder
-      location: 'Not Specified', // Placeholder
-      image: 'https://res.cloudinary.com/dyf8umlda/image/upload/v1748260270/Dr_Abdurahiman_mct6bx.jpg'
-    }));
+    // Create a map for quick doctor lookup
+    const doctorMap = new Map(doctorList.map((doc: any) => [doc.doctor_id, doc.name]));
+    
+    const processedClinics = clinicList.map((clinic: any) => {
+        const clinicDoctors = clinic.doctors
+            .map((docId: string) => {
+                if (!docId || !doctorMap.has(docId)) return null;
+                return {
+                    id: docId,
+                    name: doctorMap.get(docId)
+                };
+            })
+            .filter(Boolean); // Remove null entries for invalid/missing doctor IDs
 
-    const clinics = clinicList.map((c: any) => ({id: c.clinic_id, name: c.name}));
-    
-    console.log(`--- Finished getBusinessEntitiesAndDoctors. Returning ${simplifiedDoctors.length} doctors and ${clinics.length} clinics. ---`);
-    return { doctors: simplifiedDoctors, clinics };
+        return {
+            id: clinic.clinic_id,
+            name: clinic.name,
+            doctors: clinicDoctors
+        };
+    });
+
+    const processedDoctors = Array.from(doctorMap.entries()).map(([id, name]) => ({ id, name }));
+
+    console.log(`--- Finished getBusinessEntitiesAndDoctors. Returning ${processedDoctors.length} doctors and ${processedClinics.length} clinics. ---`);
+    return { doctors: processedDoctors, clinics: processedClinics };
 }
+
+export async function getAllAvailableSlotsForPeriod(days: number = 30): Promise<string[]> {
+    console.log(`--- Fetching all available slots for the next ${days} days ---`);
+
+    const { clinics } = await getBusinessEntitiesAndDoctors();
+    if (!clinics || clinics.length === 0) {
+        console.warn("WARN: No clinics found, cannot fetch slots.");
+        return [];
+    }
+
+    const today = new Date();
+    const dateRange = Array.from({ length: days }, (_, i) => addDays(today, i));
+    const allPromises: Promise<any[]>[] = [];
+
+    console.log(`INFO: Checking for ${clinics.length} clinics and their doctors across ${days} days.`);
+
+    for (const clinic of clinics) {
+        if (!clinic.doctors || clinic.doctors.length === 0) continue;
+        for (const doctor of clinic.doctors) {
+            for (const date of dateRange) {
+                const dateString = format(date, 'yyyy-MM-dd');
+                // Create a promise for each API call
+                allPromises.push(getAvailableSlots(doctor.id, clinic.id, dateString));
+            }
+        }
+    }
+
+    console.log(`INFO: Created ${allPromises.length} promises to fetch slot availability.`);
+
+    // Wait for all promises to resolve
+    const results = await Promise.all(allPromises);
+
+    // Flatten the results and extract unique dates
+    const availableDates = new Set<string>();
+    results.flat().forEach(slot => {
+        const datePart = slot.startTime.split('T')[0];
+        availableDates.add(datePart);
+    });
+
+    const uniqueDates = Array.from(availableDates).sort();
+    console.log(`SUCCESS: Found ${uniqueDates.length} unique dates with available slots:`, uniqueDates);
+    return uniqueDates;
+}
+
 
 async function addPatient(patientDetails: any): Promise<string> {
     const sanitizedMobile = patientDetails.phone.startsWith('+') ? patientDetails.phone : `+${patientDetails.phone}`;
@@ -304,7 +406,5 @@ export async function bookAppointment(data: any): Promise<any> {
 
     return bookingResponse;
 }
-
-
 
     

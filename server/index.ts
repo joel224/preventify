@@ -2,7 +2,13 @@
 import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
-import { getBusinessEntitiesAndDoctors, _loginAndGetTokens, bookAppointment, getAvailableSlots } from './eka-api';
+import { 
+    getBusinessEntitiesAndDoctors, 
+    _loginAndGetTokens, 
+    bookAppointment, 
+    getAvailableSlots,
+    getAllAvailableSlotsForPeriod 
+} from './eka-api';
 
 dotenv.config();
 
@@ -34,10 +40,11 @@ app.get('/api/message', (req, res) => {
 
 app.get('/api/doctors-and-clinics', async (req, res) => {
   try {
+    console.log('API Endpoint: /api/doctors-and-clinics called');
     const data = await getBusinessEntitiesAndDoctors();
     res.json(data);
   } catch (error: any) {
-     console.error('Error in /api/doctors-and-clinics endpoint:', error);
+     console.error('Error in /api/doctors-and-clinics endpoint:', error.message);
      res.status(500).json({ message: 'Failed to get doctors and clinics', error: error.message });
   }
 });
@@ -48,23 +55,36 @@ app.get('/api/available-slots', async (req, res) => {
         return res.status(400).json({ message: 'Missing or invalid query parameters: doctorId, clinicId, date' });
     }
     try {
+        console.log(`API Endpoint: /api/available-slots called with doctorId=${doctorId}, clinicId=${clinicId}, date=${date}`);
         const slots = await getAvailableSlots(doctorId, clinicId, date);
         res.json(slots);
     } catch (error: any) {
-        console.error('Error in /api/available-slots endpoint:', error);
+        console.error('Error in /api/available-slots endpoint:', error.message);
         res.status(500).json({ message: 'Failed to get available slots', error: error.message });
+    }
+});
+
+app.get('/api/all-available-slots', async (req, res) => {
+    try {
+        console.log('API Endpoint: /api/all-available-slots called');
+        const dates = await getAllAvailableSlotsForPeriod(30); // Check for the next 30 days
+        res.json({ availableDates: dates });
+    } catch (error: any) {
+        console.error('Error in /api/all-available-slots endpoint:', error.message);
+        res.status(500).json({ message: 'Failed to get all available slots', error: error.message });
     }
 });
 
 app.post('/api/book-appointment', async (req, res) => {
     try {
+        console.log('API Endpoint: /api/book-appointment called');
         if (!req.body || !req.body.patient || !req.body.appointment) {
             return res.status(400).json({ message: 'Invalid booking data provided.' });
         }
         const result = await bookAppointment(req.body);
         res.status(201).json(result);
     } catch (error: any) {
-        console.error('Error in /api/book-appointment endpoint:', error);
+        console.error('Error in /api/book-appointment endpoint:', error.message);
         res.status(500).json({ message: 'Failed to process booking request', error: error.message });
     }
 });
@@ -74,3 +94,4 @@ app.listen(port, () => {
   console.log(`[server]: Server is running at http://localhost:${port}`);
 });
 
+    
