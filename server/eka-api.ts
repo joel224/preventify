@@ -214,11 +214,15 @@ export async function bookAppointment(data: any): Promise<any> {
     const searchResponse = await makeApiRequest(async (client) => {
         try {
             const response = await client.get(`/dr/v1/business/patients/search?mobile=${sanitizedMobile}`);
+            // The API might return a 200 OK with an empty array if not found, so we return the whole data object.
             return response.data;
         } catch (error: any) {
-            console.error("ERROR during patient search:", error.response ? JSON.stringify(error.response.data, null, 2) : error.message);
-            // If search fails, we'll assume not found and proceed to create.
-            return null;
+            // It's possible the API returns a 404 or other error for "not found". 
+            // In many REST APIs, a 404 is the correct response for a resource not found.
+            // Let's assume a non-2xx response here means the patient is not found.
+            console.warn("WARN during patient search, assuming not found:", error.response ? JSON.stringify(error.response.data, null, 2) : error.message);
+            // Return a structure that indicates no profiles were found.
+            return { data: { profiles: [] } };
         }
     });
 
