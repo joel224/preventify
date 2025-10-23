@@ -242,49 +242,6 @@ export async function getBusinessEntitiesAndDoctors(): Promise<any> {
     return { doctors: processedDoctors, clinics: processedClinics };
 }
 
-export async function getAllAvailableSlotsForPeriod(days: number = 30): Promise<string[]> {
-    console.log(`--- Fetching all available slots for the next ${days} days ---`);
-
-    const { clinics } = await getBusinessEntitiesAndDoctors();
-    if (!clinics || clinics.length === 0) {
-        console.warn("WARN: No clinics found, cannot fetch slots.");
-        return [];
-    }
-
-    const today = new Date();
-    const dateRange = Array.from({ length: days }, (_, i) => addDays(today, i));
-    const allPromises: Promise<any[]>[] = [];
-
-    console.log(`INFO: Checking for ${clinics.length} clinics and their doctors across ${days} days.`);
-
-    for (const clinic of clinics) {
-        if (!clinic.doctors || clinic.doctors.length === 0) continue;
-        for (const doctor of clinic.doctors) {
-            for (const date of dateRange) {
-                const dateString = format(date, 'yyyy-MM-dd');
-                // Create a promise for each API call
-                allPromises.push(getAvailableSlots(doctor.id, clinic.id, dateString));
-            }
-        }
-    }
-
-    console.log(`INFO: Created ${allPromises.length} promises to fetch slot availability.`);
-
-    // Wait for all promises to resolve
-    const results = await Promise.all(allPromises);
-
-    // Flatten the results and extract unique dates
-    const availableDates = new Set<string>();
-    results.flat().forEach(slot => {
-        const datePart = slot.startTime.split('T')[0];
-        availableDates.add(datePart);
-    });
-
-    const uniqueDates = Array.from(availableDates).sort();
-    console.log(`SUCCESS: Found ${uniqueDates.length} unique dates with available slots:`, uniqueDates);
-    return uniqueDates;
-}
-
 
 async function addPatient(patientDetails: any): Promise<string> {
     const sanitizedMobile = patientDetails.phone.startsWith('+') ? patientDetails.phone : `+${patientDetails.phone}`;

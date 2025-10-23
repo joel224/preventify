@@ -2313,6 +2313,11 @@ h1, h2, h3, h4, h5, h6 {
   color: #fffc;
 }
 
+.text-green-500 {
+  --tw-text-opacity: 1;
+  color: rgb(34 197 94 / var(--tw-text-opacity, 1));
+}
+
 .underline {
   text-decoration-line: underline;
 }
@@ -3600,6 +3605,10 @@ h1, h2, h3, h4, h5, h6 {
 
   .sm\:max-w-\[425px\] {
     max-width: 425px;
+  }
+
+  .sm\:max-w-lg {
+    max-width: 32rem;
   }
 
   .sm\:grid-cols-2 {

@@ -7,7 +7,6 @@ import {
     _loginAndGetTokens, 
     bookAppointment, 
     getAvailableSlots,
-    getAllAvailableSlotsForPeriod 
 } from './eka-api';
 
 dotenv.config();
@@ -64,16 +63,6 @@ app.get('/api/available-slots', async (req, res) => {
     }
 });
 
-app.get('/api/all-available-slots', async (req, res) => {
-    try {
-        console.log('API Endpoint: /api/all-available-slots called');
-        const dates = await getAllAvailableSlotsForPeriod(30); // Check for the next 30 days
-        res.json({ availableDates: dates });
-    } catch (error: any) {
-        console.error('Error in /api/all-available-slots endpoint:', error.message);
-        res.status(500).json({ message: 'Failed to get all available slots', error: error.message });
-    }
-});
 
 app.post('/api/book-appointment', async (req, res) => {
     try {
