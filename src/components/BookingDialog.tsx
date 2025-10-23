@@ -62,7 +62,7 @@ const doctors = [
   { name: "Dr. Ijas V. I.", id: "175931883083616" },
   { name: "Dr. Husna V.", id: "175949169261621" },
   { name: "Dr. Md. Abdurahiman", id: "174306088551114" },
-  { name: "Dr. Neeharika V.", id: "173771631358722" },
+  { name: "Dr. Neeharika V.", idd: "173771631358722" },
   { name: "Dr. Ashwin T.R.", id: "175949162376135" },
   { name: "Dr. Sreedev N", id: "175949148741914" },
   { name: "Dr. Ajay Biju", id: "174297264958992" },
@@ -221,13 +221,13 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
                                         >
                                             {availableSlots.map(slot => (
                                                 <FormItem key={slot.s} className="flex items-center">
-                                                    <RadioGroupItem value={slot.s} id={slot.s} className="sr-only" />
-                                                    <Label
-                                                        htmlFor={slot.s}
-                                                        className="w-full cursor-pointer rounded-md border-2 border-muted bg-popover p-2 text-center hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary peer-data-[state=checked]:bg-primary peer-data-[state=checked]:text-primary-foreground [&:has([data-state=checked])]:border-primary"
-                                                    >
-                                                        {format(new Date(slot.s), 'hh:mm a')}
-                                                    </Label>
+                                                     <RadioGroupItem value={slot.s} id={slot.s} className="sr-only" />
+                                                     <Label
+                                                         htmlFor={slot.s}
+                                                         className="w-full cursor-pointer rounded-md border-2 border-muted bg-popover p-2 text-center hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary peer-data-[state=checked]:bg-primary peer-data-[state=checked]:text-primary-foreground [&:has([data-state=checked])]:border-primary"
+                                                     >
+                                                         {format(new Date(slot.s), 'hh:mm a')}
+                                                     </Label>
                                                 </FormItem>
                                             ))}
                                         </RadioGroup>
@@ -294,3 +294,5 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
         </Dialog>
     );
 }
+
+    
