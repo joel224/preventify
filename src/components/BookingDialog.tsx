@@ -203,26 +203,34 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
                      <FormField control={form.control} name="appointmentDate" render={({ field }) => ( <FormItem className="flex flex-col"> <FormLabel>Preferred Appointment Date</FormLabel> <Popover> <PopoverTrigger asChild> <FormControl> <Button variant={"outline"} className={cn( "w-full pl-3 text-left font-normal", !field.value && "text-muted-foreground" )}> {field.value ? format(field.value, "PPP") : <span>Pick a date</span>} <CalendarIcon className="ml-auto h-4 w-4 opacity-50" /> </Button> </FormControl> </PopoverTrigger> <PopoverContent className="w-auto p-0" align="start"> <Calendar mode="single" selected={field.value} onSelect={field.onChange} disabled={(date) => date < new Date(new Date().setDate(new Date().getDate() - 1)) } initialFocus /> </PopoverContent> </Popover> <FormMessage /> </FormItem> )}/>
                 </>;
             case 3:
-                return <FormField control={form.control} name="startTime" render={({ field }) => ( <FormItem> <FormLabel>Available Time Slots</FormLabel>
-                        {isFetchingSlots ? <div className="flex items-center justify-center h-32"><Loader2 className="h-8 w-8 animate-spin" /></div>
-                        : availableSlots.length > 0 ? (
-                            <ScrollArea className="h-40 rounded-md border p-4">
-                                <RadioGroup onValueChange={field.onChange} defaultValue={field.value} className="grid grid-cols-3 gap-2">
-                                {availableSlots.map(slot => (
-                                    <FormItem key={slot.s} className="flex items-center">
-                                        <FormControl>
-                                            <RadioGroupItem value={slot.s} id={slot.s} className="sr-only" />
-                                        </FormControl>
-                                        <FormLabel htmlFor={slot.s} className="w-full cursor-pointer rounded-md border-2 border-muted bg-popover p-2 text-center hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary peer-data-[state=checked]:bg-primary peer-data-[state=checked]:text-primary-foreground [&:has([data-state=checked])]:border-primary">
-                                            {format(new Date(slot.s), 'hh:mm a')}
-                                        </FormLabel>
-                                    </FormItem>
-                                ))}
-                                </RadioGroup>
+                return <FormField control={form.control} name="startTime" render={({ field }) => (
+                    <FormItem>
+                        <FormLabel>Available Time Slots</FormLabel>
+                        {isFetchingSlots ? (
+                            <div className="flex items-center justify-center h-32"><Loader2 className="h-8 w-8 animate-spin" /></div>
+                        ) : availableSlots.length > 0 ? (
+                            <ScrollArea className="h-40 rounded-md border">
+                                <FormControl>
+                                    <RadioGroup onValueChange={field.onChange} defaultValue={field.value} className="grid grid-cols-3 gap-2 p-4">
+                                        {availableSlots.map(slot => (
+                                            <FormItem key={slot.s} className="flex items-center">
+                                                <FormControl>
+                                                    <RadioGroupItem value={slot.s} id={slot.s} className="sr-only" />
+                                                </FormControl>
+                                                <FormLabel htmlFor={slot.s} className="w-full cursor-pointer rounded-md border-2 border-muted bg-popover p-2 text-center hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary peer-data-[state=checked]:bg-primary peer-data-[state=checked]:text-primary-foreground [&:has([data-state=checked])]:border-primary">
+                                                    {format(new Date(slot.s), 'hh:mm a')}
+                                                </FormLabel>
+                                            </FormItem>
+                                        ))}
+                                    </RadioGroup>
+                                </FormControl>
                             </ScrollArea>
-                        ) : (<p className="text-sm text-muted-foreground text-center py-10">No available slots for this day. Please select a different date, doctor, or clinic.</p>)
-                        }
-                    <FormMessage /> </FormItem> )}/>
+                        ) : (
+                            <p className="text-sm text-muted-foreground text-center py-10">No available slots for this day. Please select a different date, doctor, or clinic.</p>
+                        )}
+                        <FormMessage />
+                    </FormItem>
+                )} />;
         }
     };
     
@@ -278,3 +286,5 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
     );
 }
 
+
+    
