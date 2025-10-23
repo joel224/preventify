@@ -258,7 +258,7 @@ export async function bookAppointment(data: any): Promise<any> {
     const startTime = Math.floor(appointmentDate.getTime() / 1000);
     
     const appointmentPayload = {
-        partner_appointment_id: `preventify_appt_${new Date().getTime()}`,
+        partner_appointment_id: `preventify_appt_${Date.now()}`,
         partner_clinic_id: data.appointment.clinicId,
         partner_doctor_id: data.appointment.doctorId,
         partner_patient_id: partnerPatientId,
@@ -266,6 +266,10 @@ export async function bookAppointment(data: any): Promise<any> {
             start_time: startTime,
             end_time: startTime + 900, // 15-minute slot
             mode: "INCLINIC",
+            video_connect: { // As requested, we'll try including this
+                vendor: "other",
+                url: "https://preventify.me/virtual-consult"
+            }
         },
         patient_details: {
             designation: data.patient.gender === "F" ? "Ms." : "Mr.",
