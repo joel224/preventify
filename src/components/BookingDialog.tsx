@@ -25,6 +25,7 @@ import { format } from "date-fns";
 import { cn } from "@/lib/utils";
 import { toast } from "@/components/ui/sonner";
 import { ScrollArea } from "./ui/scroll-area";
+import { Label } from "./ui/label";
 
 const bookingFormSchema = z.object({
   fullName: z.string().min(2, { message: "Full name must be at least 2 characters." }),
@@ -212,13 +213,20 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
                         ) : availableSlots.length > 0 ? (
                             <ScrollArea className="h-40 rounded-md border">
                                 <FormControl>
-                                    <RadioGroup onValueChange={field.onChange} defaultValue={field.value} className="grid grid-cols-3 gap-2 p-4">
+                                    <RadioGroup
+                                        onValueChange={field.onChange}
+                                        defaultValue={field.value}
+                                        className="grid grid-cols-3 gap-2 p-4"
+                                    >
                                         {availableSlots.map(slot => (
                                             <FormItem key={slot.s} className="flex items-center">
                                                 <RadioGroupItem value={slot.s} id={slot.s} className="sr-only" />
-                                                <FormLabel htmlFor={slot.s} className="w-full cursor-pointer rounded-md border-2 border-muted bg-popover p-2 text-center hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary peer-data-[state=checked]:bg-primary peer-data-[state=checked]:text-primary-foreground [&:has([data-state=checked])]:border-primary">
+                                                <Label
+                                                    htmlFor={slot.s}
+                                                    className="w-full cursor-pointer rounded-md border-2 border-muted bg-popover p-2 text-center hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary peer-data-[state=checked]:bg-primary peer-data-[state=checked]:text-primary-foreground [&:has([data-state=checked])]:border-primary"
+                                                >
                                                     {format(new Date(slot.s), 'hh:mm a')}
-                                                </FormLabel>
+                                                </Label>
                                             </FormItem>
                                         ))}
                                     </RadioGroup>
@@ -286,4 +294,3 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
 }
 
     
-
