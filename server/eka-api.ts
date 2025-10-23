@@ -214,14 +214,9 @@ export async function bookAppointment(data: any): Promise<any> {
     const searchResponse = await makeApiRequest(async (client) => {
         try {
             const response = await client.get(`/dr/v1/business/patients/search?mobile=${sanitizedMobile}`);
-            // The API might return a 200 OK with an empty array if not found, so we return the whole data object.
             return response.data;
         } catch (error: any) {
-            // It's possible the API returns a 404 or other error for "not found". 
-            // In many REST APIs, a 404 is the correct response for a resource not found.
-            // Let's assume a non-2xx response here means the patient is not found.
             console.warn("WARN during patient search, assuming not found:", error.response ? JSON.stringify(error.response.data, null, 2) : error.message);
-            // Return a structure that indicates no profiles were found.
             return { data: { profiles: [] } };
         }
     });
@@ -233,7 +228,7 @@ export async function bookAppointment(data: any): Promise<any> {
     if (searchResponse?.data?.profiles?.length > 0) {
         console.log("--- INFO: Patient found. Getting details. ---");
         const patientProfile = searchResponse.data.profiles[0];
-        const ekaPatientId = patientProfile.patient_profile.patient_id;
+        const ekaPatientId = patientProfile.patient_id;
         
         console.log(`Request URL: GET /dr/v1/patient/${ekaPatientId}`);
         const patientDetailsResponse = await makeApiRequest(async (client) => {
@@ -270,7 +265,7 @@ export async function bookAppointment(data: any): Promise<any> {
             start_time: startTime,
             end_time: startTime + 900, // 15-minute slot
             mode: "INCLINIC",
-            video_connect: { // As requested, we'll try including this
+            video_connect: {
                 vendor: "other",
                 url: "https://preventify.me/virtual-consult"
             }
@@ -286,6 +281,11 @@ export async function bookAppointment(data: any): Promise<any> {
         },
     };
 
+    console.log("\n--- Final IDs for Booking ---");
+    console.log(`Partner Patient ID: ${appointmentPayload.partner_patient_id}`);
+    console.log(`Partner Doctor ID: ${appointmentPayload.partner_doctor_id}`);
+    console.log(`Partner Clinic ID: ${appointmentPayload.partner_clinic_id}`);
+    
     console.log("\n--- Step 2: Booking Appointment via API ---");
     console.log("Request URL: POST /dr/v1/appointment");
     console.log("Request Payload:", JSON.stringify(appointmentPayload, null, 2));
