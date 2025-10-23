@@ -218,29 +218,29 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
                       render={({ field }) => (
                         <FormItem className="space-y-3">
                           <FormLabel>Available Time Slots</FormLabel>
-                          <FormControl>
-                            <ScrollArea className="h-40 rounded-md border">
-                                <RadioGroup
-                                    onValueChange={field.onChange}
-                                    defaultValue={field.value}
-                                    className="grid grid-cols-3 gap-2 p-4"
-                                >
-                                    {availableSlots.map((slot) => (
-                                    <FormItem key={slot.s} className="flex items-center">
-                                        <FormControl>
-                                            <RadioGroupItem value={slot.s} id={slot.s} className="sr-only" />
-                                        </FormControl>
-                                        <Label
-                                            htmlFor={slot.s}
-                                            className="w-full cursor-pointer rounded-md border-2 border-muted bg-popover p-2 text-center hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary peer-data-[state=checked]:bg-primary peer-data-[state=checked]:text-primary-foreground [&:has([data-state=checked])]:border-primary"
-                                        >
-                                            {format(new Date(slot.s), 'hh:mm a')}
-                                        </Label>
-                                    </FormItem>
-                                    ))}
-                                </RadioGroup>
-                            </ScrollArea>
-                          </FormControl>
+                            <FormControl>
+                                <ScrollArea className="h-40 rounded-md border">
+                                    <RadioGroup
+                                        onValueChange={field.onChange}
+                                        defaultValue={field.value}
+                                        className="grid grid-cols-3 gap-2 p-4"
+                                    >
+                                        {availableSlots.map((slot) => (
+                                        <FormItem key={slot.s} className="flex items-center">
+                                            <FormControl>
+                                                <RadioGroupItem value={slot.s} id={slot.s} className="sr-only" />
+                                            </FormControl>
+                                            <Label
+                                                htmlFor={slot.s}
+                                                className="w-full cursor-pointer rounded-md border-2 border-muted bg-popover p-2 text-center hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary peer-data-[state=checked]:bg-primary peer-data-[state=checked]:text-primary-foreground [&:has([data-state=checked])]:border-primary"
+                                            >
+                                                {format(new Date(slot.s), 'hh:mm a')}
+                                            </Label>
+                                        </FormItem>
+                                        ))}
+                                    </RadioGroup>
+                                </ScrollArea>
+                            </FormControl>
                           <FormMessage />
                         </FormItem>
                       )}
