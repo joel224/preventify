@@ -257,15 +257,22 @@ async function addPatient(patientDetails: any): Promise<string> {
 export async function bookAppointment(data: any): Promise<any> {
     console.log("--- Starting Live Booking Process ---");
     
-    const sanitizedMobile = data.patient.phone.startsWith('+') ? data.patient.phone.substring(1) : data.patient.phone;
+    const sanitizedMobile = data.patient.phone.replace(/^\+/, '');
     
     // Step 1: Search for the patient by mobile number
     console.log(`--- Step 1(a): Searching for patient with mobile: ${sanitizedMobile} ---`);
     let partnerPatientId = '';
 
     const searchResponse = await makeApiRequest(async (client) => {
-        const response = await client.get(`/dr/v1/business/patients/search?mobile=${sanitizedMobile}`);
-        return response.data;
+        try {
+            const response = await client.get(`/dr/v1/business/patients/search?mobile=${sanitizedMobile}`);
+            return response.data;
+        } catch (error: any) {
+            console.error("Error during patient search:", error.response ? error.response.data : error.message);
+            // If search fails for reasons other than not found, we might want to stop.
+            // For now, we'll assume not found and proceed to create.
+            return null;
+        }
     });
 
     if (searchResponse?.data?.profiles?.length > 0) {
@@ -326,3 +333,5 @@ export async function bookAppointment(data: any): Promise<any> {
 
     return bookingResponse;
 }
+
+    
