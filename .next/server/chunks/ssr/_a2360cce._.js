@@ -10,12 +10,22 @@ __turbopack_context__.s({
 });
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/next/dist/server/route-modules/app-page/vendored/ssr/react-jsx-dev-runtime.js [app-ssr] (ecmascript)");
 ;
-const PageHeader = ({ title, subtitle, backgroundClass = "bg-preventify-light-gray", size = "default" })=>{
+const PageHeader = ({ title, subtitle, backgroundClass = "bg-preventify-light-gray", size = "default", children })=>{
     const paddingClasses = {
         default: "py-12 md:py-20",
         large: "py-16 md:py-24",
         small: "py-8 md:py-12"
     };
+    if (children) {
+        return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+            className: `${backgroundClass} ${paddingClasses[size]}`,
+            children: children
+        }, void 0, false, {
+            fileName: "[project]/src/components/PageHeader.tsx",
+            lineNumber: 25,
+            columnNumber: 9
+        }, this);
+    }
     return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
         className: `${backgroundClass} ${paddingClasses[size]}`,
         children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -26,7 +36,7 @@ const PageHeader = ({ title, subtitle, backgroundClass = "bg-preventify-light-gr
                     children: title
                 }, void 0, false, {
                     fileName: "[project]/src/components/PageHeader.tsx",
-                    lineNumber: 24,
+                    lineNumber: 34,
                     columnNumber: 9
                 }, this),
                 subtitle && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -34,18 +44,18 @@ const PageHeader = ({ title, subtitle, backgroundClass = "bg-preventify-light-gr
                     children: subtitle
                 }, void 0, false, {
                     fileName: "[project]/src/components/PageHeader.tsx",
-                    lineNumber: 26,
+                    lineNumber: 36,
                     columnNumber: 11
                 }, this)
             ]
         }, void 0, true, {
             fileName: "[project]/src/components/PageHeader.tsx",
-            lineNumber: 23,
+            lineNumber: 33,
             columnNumber: 7
         }, this)
     }, void 0, false, {
         fileName: "[project]/src/components/PageHeader.tsx",
-        lineNumber: 22,
+        lineNumber: 32,
         columnNumber: 5
     }, this);
 };
