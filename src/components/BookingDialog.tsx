@@ -96,6 +96,7 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
             const fetchSlots = async () => {
                 setIsFetchingSlots(true);
                 setAvailableSlots([]);
+                form.resetField("startTime");
                 try {
                     const dateString = format(appointmentDate, "yyyy-MM-dd");
                     const response = await fetch(`/api/available-slots?doctorId=${doctorId}&clinicId=${clinicId}&date=${dateString}`);
@@ -116,7 +117,7 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
             };
             fetchSlots();
         }
-    }, [clinicId, doctorId, appointmentDate]);
+    }, [clinicId, doctorId, appointmentDate, form]);
 
     async function handleNextStep() {
         let fieldsToValidate: (keyof BookingFormValues)[] = [];
@@ -271,7 +272,7 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
                                         </Button>
                                     )}
                                     {step === 3 && (
-                                        <Button type="submit" className="w-full bg-preventify-blue hover:bg-preventify-dark-blue text-white" size="lg" disabled={isLoading || form.getValues('startTime') === ''}>
+                                        <Button type="submit" className="w-full bg-preventify-blue hover:bg-preventify-dark-blue text-white" size="lg" disabled={isLoading || !form.getValues('startTime')}>
                                             {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                                             Submit Request
                                         </Button>
@@ -285,6 +286,5 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
         </Dialog>
     );
 }
-
 
     
