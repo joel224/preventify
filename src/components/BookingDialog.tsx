@@ -206,41 +206,45 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
                 </>;
             case 3:
                 if (isFetchingSlots) {
-                    return <div className="flex items-center justify-center h-32"><Loader2 className="h-8 w-8 animate-spin" /></div>;
+                    return <div className="flex items-center justify-center h-40"><Loader2 className="h-8 w-8 animate-spin" /></div>;
                 }
                 if (availableSlots.length === 0) {
                     return <p className="text-sm text-muted-foreground text-center py-10">No available slots for this day. Please select a different date, doctor, or clinic.</p>
                 }
                 return (
-                    <FormField control={form.control} name="startTime" render={({ field }) => (
-                        <FormItem>
-                            <FormLabel>Available Time Slots</FormLabel>
-                             <FormControl>
-                                <ScrollArea className="h-40 rounded-md border">
-                                    <RadioGroup
-                                        onValueChange={field.onChange}
-                                        defaultValue={field.value}
-                                        className="grid grid-cols-3 gap-2 p-4"
-                                    >
-                                        {availableSlots.map(slot => (
-                                            <FormItem key={slot.s} className="flex items-center">
-                                                 <FormControl>
-                                                    <RadioGroupItem value={slot.s} id={slot.s} className="sr-only" />
-                                                 </FormControl>
-                                                 <Label
-                                                     htmlFor={slot.s}
-                                                     className="w-full cursor-pointer rounded-md border-2 border-muted bg-popover p-2 text-center hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary peer-data-[state=checked]:bg-primary peer-data-[state=checked]:text-primary-foreground [&:has([data-state=checked])]:border-primary"
-                                                 >
-                                                     {format(new Date(slot.s), 'hh:mm a')}
-                                                 </Label>
-                                            </FormItem>
-                                        ))}
-                                    </RadioGroup>
-                                </ScrollArea>
-                            </FormControl>
-                            <FormMessage />
+                    <FormField
+                      control={form.control}
+                      name="startTime"
+                      render={({ field }) => (
+                        <FormItem className="space-y-3">
+                          <FormLabel>Available Time Slots</FormLabel>
+                          <FormControl>
+                            <ScrollArea className="h-40 rounded-md border">
+                                <RadioGroup
+                                    onValueChange={field.onChange}
+                                    defaultValue={field.value}
+                                    className="grid grid-cols-3 gap-2 p-4"
+                                >
+                                    {availableSlots.map((slot) => (
+                                    <FormItem key={slot.s} className="flex items-center">
+                                        <FormControl>
+                                            <RadioGroupItem value={slot.s} id={slot.s} className="sr-only" />
+                                        </FormControl>
+                                        <Label
+                                            htmlFor={slot.s}
+                                            className="w-full cursor-pointer rounded-md border-2 border-muted bg-popover p-2 text-center hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary peer-data-[state=checked]:bg-primary peer-data-[state=checked]:text-primary-foreground [&:has([data-state=checked])]:border-primary"
+                                        >
+                                            {format(new Date(slot.s), 'hh:mm a')}
+                                        </Label>
+                                    </FormItem>
+                                    ))}
+                                </RadioGroup>
+                            </ScrollArea>
+                          </FormControl>
+                          <FormMessage />
                         </FormItem>
-                    )} />
+                      )}
+                    />
                 );
         }
     };
@@ -296,7 +300,5 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
         </Dialog>
     );
 }
-
-    
 
     
