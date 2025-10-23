@@ -928,6 +928,14 @@ h1, h2, h3, h4, h5, h6 {
   height: 100svh;
 }
 
+.h-32 {
+  height: 8rem;
+}
+
+.h-40 {
+  height: 10rem;
+}
+
 .max-h-96 {
   max-height: 24rem;
 }
@@ -1348,6 +1356,10 @@ h1, h2, h3, h4, h5, h6 {
   grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
+.grid-cols-3 {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
 .flex-row {
   flex-direction: row;
 }
@@ -1670,6 +1682,10 @@ h1, h2, h3, h4, h5, h6 {
   border-color: rgb(255 255 255 / var(--tw-border-opacity, 1));
 }
 
+.border-muted {
+  border-color: hsl(var(--muted));
+}
+
 .border-l-transparent {
   border-left-color: #0000;
 }
@@ -1961,6 +1977,11 @@ h1, h2, h3, h4, h5, h6 {
 .py-8 {
   padding-top: 2rem;
   padding-bottom: 2rem;
+}
+
+.py-10 {
+  padding-top: 2.5rem;
+  padding-bottom: 2.5rem;
 }
 
 .pb-2 {
@@ -3500,8 +3521,20 @@ h1, h2, h3, h4, h5, h6 {
   min-height: calc(100svh - 1rem);
 }
 
+.peer[data-state="checked"] ~ .peer-data-\[state\=checked\]\:border-primary {
+  border-color: hsl(var(--primary));
+}
+
+.peer[data-state="checked"] ~ .peer-data-\[state\=checked\]\:bg-primary {
+  background-color: hsl(var(--primary));
+}
+
 .peer\/menu-button[data-active="true"] ~ .peer-data-\[active\=true\]\/menu-button\:text-sidebar-accent-foreground {
   color: hsl(var(--sidebar-accent-foreground));
+}
+
+.peer[data-state="checked"] ~ .peer-data-\[state\=checked\]\:text-primary-foreground {
+  color: hsl(var(--primary-foreground));
 }
 
 .dark\:border-destructive:is(.dark *) {
@@ -3852,6 +3885,10 @@ h1, h2, h3, h4, h5, h6 {
 .\[\&\:has\(\[aria-selected\]\.day-range-end\)\]\:rounded-r-md:has([aria-selected].day-range-end) {
   border-top-right-radius: calc(var(--radius)  - 2px);
   border-bottom-right-radius: calc(var(--radius)  - 2px);
+}
+
+.\[\&\:has\(\[data-state\=checked\]\)\]\:border-primary:has([data-state="checked"]) {
+  border-color: hsl(var(--primary));
 }
 
 .\[\&\:has\(\[role\=checkbox\]\)\]\:pr-0:has([role="checkbox"]) {

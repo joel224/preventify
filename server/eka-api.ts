@@ -1,6 +1,7 @@
 
 import axios from 'axios';
 import { getTokens, saveTokens } from './token-storage';
+import { format } from "date-fns";
 
 const EKA_API_BASE_URL = 'https://api.eka.care';
 
@@ -9,11 +10,6 @@ const getApiClient = (accessToken?: string) => {
     'Content-Type': 'application/json',
   };
   if (accessToken) {
-    // The profiles API needs 'Authorization: Bearer <token>'
-    // The dr API needs 'auth: <token>'
-    // To handle both, we will check the url in the interceptor, but for now, we'll just add both.
-    // Let's assume the wrapper `makeApiRequest` handles this complexity or one format works for both.
-    // The provided `getApiClient` adds an `auth` header. Let's stick with that for now as it was part of the original code.
      headers['auth'] = accessToken;
      headers['Authorization'] = `Bearer ${accessToken}`;
   }
@@ -136,14 +132,24 @@ async function makeApiRequest(apiCall: (client: any) => Promise<any>) {
   }
 }
 
+export async function getAvailableSlots(doctorId: string, clinicId: string, date: string): Promise<any> {
+    console.log(`--- Fetching available slots for doctor: ${doctorId}, clinic: ${clinicId}, date: ${date} ---`);
 
-export async function getPatientDetails(mobileNumber: string): Promise<any> {
-  return makeApiRequest(async (client) => {
-    console.log(`INFO: Getting patient details for mobile: ${mobileNumber}`);
-    // This is a mock. Replace with a real API call if needed.
-    return { "patientId": "12345", "name": "John Doe", "mobile": mobileNumber };
-  });
+    const formattedDate = format(new Date(date), 'yyyy-MM-dd');
+
+    return makeApiRequest(async (client) => {
+        const response = await client.get(`/dr/v1/doctor/${doctorId}/clinic/${clinicId}/appointment/slot`, {
+            params: {
+                start_date: formattedDate,
+                end_date: formattedDate
+            }
+        });
+        console.log("SUCCESS: Fetched available slots.");
+        // We only care about the schedule data for the frontend
+        return response.data.data.schedule;
+    });
 }
+
 
 export async function getBusinessEntitiesAndDoctors(): Promise<any> {
     console.log("--- Starting getBusinessEntitiesAndDoctors ---");
@@ -152,10 +158,10 @@ export async function getBusinessEntitiesAndDoctors(): Promise<any> {
         console.log('INFO: Fetching business entities (/dr/v1/business/entities)...');
         const response = await client.get('/dr/v1/business/entities');
         console.log("SUCCESS: Fetched business entities.");
-        return response;
+        return response.data;
     });
 
-    const { doctors: doctorList, clinics: clinicList } = businessEntitiesResponse.data;
+    const { doctors: doctorList, clinics: clinicList } = businessEntitiesResponse;
 
     if (!doctorList || doctorList.length === 0) {
         console.log("INFO: No doctors found in business entities response.");
@@ -164,8 +170,6 @@ export async function getBusinessEntitiesAndDoctors(): Promise<any> {
     
     console.log(`INFO: Found ${doctorList.length} doctors and ${clinicList.length} clinics. Fetching details...`);
     
-    // This part of the code for fetching individual doctor details is complex and seems out of scope
-    // of the booking flow. We will return a simplified list for now.
     const simplifiedDoctors = doctorList.map((doc: any) => ({
       id: doc.doctor_id,
       name: doc.name,
@@ -236,13 +240,12 @@ export async function bookAppointment(data: any): Promise<any> {
             patientId = searchResponse.data.profiles[0].patient_id;
         }
 
-    } catch (error: any) {
+    } catch (error: any) => {
         if (error.response?.data?.error?.code === "PATIENTS_NOT_FOUND") {
             console.log("--- INFO: Patient not found by search. This is expected for new patients. ---");
         } else {
             // For other errors, we still want to see them
             console.error("ERROR during patient search:", error.response ? JSON.stringify(error.response.data, null, 2) : error.message);
-            // We can decide to throw or continue. For now, let's assume we can try to create a patient.
         }
     }
 
@@ -258,17 +261,17 @@ export async function bookAppointment(data: any): Promise<any> {
     }
 
     // Step 2: Book the appointment with the patientId
-    const appointmentDate = new Date(data.appointment.date);
-    const startTime = Math.floor(appointmentDate.getTime() / 1000);
+    const startTime = Math.floor(new Date(data.appointment.startTime).getTime() / 1000);
+    const endTime = startTime + 1200; // Assuming 20 minute slot
     
     const appointmentPayload = {
         partner_appointment_id: `preventify_appt_${Date.now()}`,
         clinic_id: data.appointment.clinicId,
         doctor_id: data.appointment.doctorId,
-        partner_patient_id: patientId, // Using patientId directly as partner_patient_id
+        partner_patient_id: patientId,
         appointment_details: {
             start_time: startTime,
-            end_time: startTime + 1200, // 20-minute slot
+            end_time: endTime,
             mode: "INCLINIC",
         },
         patient_details: {

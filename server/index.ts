@@ -2,7 +2,7 @@
 import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
-import { getPatientDetails, getBusinessEntitiesAndDoctors, _loginAndGetTokens, bookAppointment } from './eka-api';
+import { getBusinessEntitiesAndDoctors, _loginAndGetTokens, bookAppointment, getAvailableSlots } from './eka-api';
 
 dotenv.config();
 
@@ -32,16 +32,6 @@ app.get('/api/message', (req, res) => {
   res.json({ message: 'Hello from the decoupled backend!' });
 });
 
-app.get('/api/patient', async (req, res) => {
-  try {
-    // The mobile number would likely come from the request, e.g., req.query.mobile
-    const patientData = await getPatientDetails("9999999999");
-    res.json(patientData);
-  } catch (error: any) {
-    res.status(500).json({ message: 'Failed to get patient details', error: error.message });
-  }
-});
-
 app.get('/api/doctors-and-clinics', async (req, res) => {
   try {
     const data = await getBusinessEntitiesAndDoctors();
@@ -50,6 +40,20 @@ app.get('/api/doctors-and-clinics', async (req, res) => {
      console.error('Error in /api/doctors-and-clinics endpoint:', error);
      res.status(500).json({ message: 'Failed to get doctors and clinics', error: error.message });
   }
+});
+
+app.get('/api/available-slots', async (req, res) => {
+    const { doctorId, clinicId, date } = req.query;
+    if (typeof doctorId !== 'string' || typeof clinicId !== 'string' || typeof date !== 'string') {
+        return res.status(400).json({ message: 'Missing or invalid query parameters: doctorId, clinicId, date' });
+    }
+    try {
+        const slots = await getAvailableSlots(doctorId, clinicId, date);
+        res.json(slots);
+    } catch (error: any) {
+        console.error('Error in /api/available-slots endpoint:', error);
+        res.status(500).json({ message: 'Failed to get available slots', error: error.message });
+    }
 });
 
 app.post('/api/book-appointment', async (req, res) => {
@@ -69,3 +73,4 @@ app.post('/api/book-appointment', async (req, res) => {
 app.listen(port, () => {
   console.log(`[server]: Server is running at http://localhost:${port}`);
 });
+
