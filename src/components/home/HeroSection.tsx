@@ -1,7 +1,6 @@
 
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import BookingDialog from "../BookingDialog";
 
 const HeroSection = () => {
   return (
@@ -27,11 +26,11 @@ const HeroSection = () => {
                on prevention, early intervention, and better health outcomes for you and your family.
             </p>
             <div className="flex flex-col sm:flex-row gap-4">
-              <BookingDialog>
+              <Link href="/book">
                 <Button className="bg-preventify-blue hover:bg-preventify-dark-blue text-white text-lg py-6 px-8">
                   Book an Appointment
                 </Button>
-              </BookingDialog>
+              </Link>
               <Link href="/programs">
                 <Button variant="outline" className="border-preventify-green text-preventify-green hover:bg-preventify-green/10 text-lg py-6 px-8">
                   Our Services
