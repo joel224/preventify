@@ -1,3 +1,4 @@
+
 'use client'
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -13,6 +14,13 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import {
+    Dialog,
+    DialogContent,
+    DialogHeader,
+    DialogTitle,
+    DialogTrigger,
+  } from "@/components/ui/dialog";
 import { Loader2 } from "lucide-react";
 import { useState } from "react";
 import { toast } from "./ui/sonner";
@@ -25,7 +33,7 @@ const bookingFormSchema = z.object({
 
 type BookingFormValues = z.infer<typeof bookingFormSchema>;
 
-export default function BookingForm() {
+export default function BookingDialog({ children }: { children: React.ReactNode }) {
     const [isLoading, setIsLoading] = useState(false);
 
     const form = useForm<BookingFormValues>({
@@ -43,18 +51,20 @@ export default function BookingForm() {
         toast.info("Proceeding to the next step...", {
             description: "This is where we would navigate to the clinic/doctor selection."
         });
-        // In a real multi-page flow, you would navigate to the next step here
-        // e.g., router.push('/book/step-2')
+        // In a real multi-page flow, this would advance the dialog state
         setTimeout(() => setIsLoading(false), 1000);
     }
 
     return (
-        <Card>
-            <CardHeader>
-                <CardTitle>Your Details</CardTitle>
-                <CardDescription>Please provide your contact information to proceed.</CardDescription>
-            </CardHeader>
-            <CardContent>
+        <Dialog>
+            <DialogTrigger asChild>
+                {children}
+            </DialogTrigger>
+            <DialogContent className="sm:max-w-md">
+                 <DialogHeader>
+                    <DialogTitle>Book an Appointment</DialogTitle>
+                    <CardDescription>Step 1: Tell us about yourself.</CardDescription>
+                </DialogHeader>
                 <Form {...form}>
                     <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
                         <FormField
@@ -101,7 +111,7 @@ export default function BookingForm() {
                         </Button>
                     </form>
                 </Form>
-            </CardContent>
-        </Card>
+            </DialogContent>
+        </Dialog>
     );
 }
