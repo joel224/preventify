@@ -250,8 +250,8 @@ export async function getBusinessEntitiesAndDoctors(): Promise<any> {
 }
 
 async function _searchPatientByMobile(mobile: string): Promise<string | null> {
-    const sanitizedMobile = mobile.replace(/^\+/, '');
-    const searchMobile = `+91${sanitizedMobile.slice(-10)}`; // Ensure +91 format
+    const plainNumber = mobile.replace(/\D/g, '');
+    const searchMobile = `91${plainNumber.slice(-10)}`; 
 
     console.log(`--- Searching for patient with mobile: ${searchMobile} ---`);
 
@@ -286,10 +286,11 @@ export async function bookAppointment(data: any): Promise<any> {
     console.log("--- [DEBUG] BACKEND eka-api.ts: bookAppointment function started ---");
     console.log("--- [DEBUG] BACKEND eka-api.ts: Received data from index.ts:", JSON.stringify(data, null, 2));
 
-    const sanitizedMobile = data.patient.phone.replace(/^\+/, '');
+    const plainNumber = data.patient.phone.replace(/\D/g, '');
+    const sanitizedMobile = `91${plainNumber.slice(-10)}`;
     
     // Search for patient first
-    const existingPatientId = await _searchPatientByMobile(sanitizedMobile);
+    const existingPatientId = await _searchPatientByMobile(data.patient.phone);
 
     let partnerPatientId;
     if (existingPatientId) {
