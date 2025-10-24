@@ -107,7 +107,7 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
 
             setIsFetchingSlots(true);
             setAvailableSlots([]);
-            form.resetField("startTime");
+            form.setValue("startTime", "");
             setSelectedSlotObj(null);
 
             const dateString = format(new Date(), 'yyyy-MM-dd');
