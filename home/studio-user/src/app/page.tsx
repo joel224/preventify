@@ -9,9 +9,6 @@ import CtaSection from "@/components/home/CtaSection";
 export default function HomePage() {
   return (
     <>
-      <div className="bg-yellow-200 text-yellow-800 text-center p-2 text-sm">
-        DEBUG: New deployment to clear cache. If you see this, the files are updated.
-      </div>
       <HeroSection />
       <ServicesSection />
       <FeaturesSection />
