@@ -1,3 +1,4 @@
+
 'use client';
 
 import {
@@ -29,14 +30,13 @@ import {
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Calendar } from '@/components/ui/calendar';
-import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { toast } from 'sonner';
 import { z } from 'zod';
 import { useForm, useWatch } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useState, useEffect, useMemo } from 'react';
 import { format, parseISO } from 'date-fns';
-import { Loader2, CalendarIcon, CheckCircle, XCircle } from 'lucide-react';
+import { Loader2, CheckCircle, XCircle } from 'lucide-react';
 
 // Types
 interface Doctor {
@@ -119,7 +119,6 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
           const { doctors, clinics } = await res.json();
           setDoctors(doctors);
           setClinics(clinics);
-          // Pre-select the clinic
           form.setValue('clinicId', PADINJARANGADI_CLINIC_ID);
         } catch (error) {
           console.error(error);
@@ -178,14 +177,10 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
   
   const doctorsForSelectedClinic = useMemo(() => {
     const clinic = clinics.find(c => c.id === PADINJARANGADI_CLINIC_ID);
-    if (!clinic) return [];
-    // The business logic is that all doctors can operate from any clinic, so we just return all doctors.
-    // If this needs to be filtered by clinic, the logic below can be used.
-    // const doctorIds = new Set(clinic.doctors.map(d => d.id));
-    // return doctors.filter(d => doctorIds.has(d.id));
-    return doctors;
+    if (!clinic || !clinic.doctors) return [];
+    const doctorIdsForClinic = new Set(clinic.doctors.map(d => d.id));
+    return doctors.filter(doctor => doctorIdsForClinic.has(doctor.id));
   }, [doctors, clinics]);
-
 
   const handleNextStep = async () => {
     let result;
