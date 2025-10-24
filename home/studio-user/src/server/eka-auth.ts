@@ -1,20 +1,22 @@
 
-import axios from 'axios';
+'use server';
+
+import axios, { AxiosInstance } from 'axios';
 import { getTokens, saveTokens } from './token-storage';
 
 const EKA_API_BASE_URL = 'https://api.eka.care';
 
-const getApiClient = (accessToken?: string) => {
-  console.log('Creating API client...');
+const getApiClient = (accessToken?: string): AxiosInstance => {
   const headers: { [key: string]: string } = {
     'Content-Type': 'application/json',
   };
   if (accessToken) {
      headers['Authorization'] = `Bearer ${accessToken}`;
-     console.log('API client using existing access token.');
   }
    if (process.env.EKA_CLIENT_ID) {
     headers['client-id'] = process.env.EKA_CLIENT_ID;
+  } else {
+    console.error("CRITICAL: EKA_CLIENT_ID is not set in environment variables.");
   }
   return axios.create({
     baseURL: EKA_API_BASE_URL,
@@ -84,7 +86,7 @@ async function _refreshAccessToken() {
   }
 }
 
-export async function makeApiRequest(apiCall: (client: any) => Promise<any>) {
+export async function makeApiRequest(apiCall: (client: AxiosInstance) => Promise<any>): Promise<any> {
   let tokens = await getTokens();
   let accessToken: string | undefined = tokens?.access_token;
 
@@ -94,7 +96,7 @@ export async function makeApiRequest(apiCall: (client: any) => Promise<any>) {
     accessToken = newTokens.access_token;
   }
 
-  const apiClient = getApiClient(accessToken);
+  let apiClient = getApiClient(accessToken);
 
   try {
     console.log('INFO: Making API call with current token.');

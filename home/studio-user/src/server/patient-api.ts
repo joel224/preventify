@@ -1,4 +1,6 @@
 
+'use server';
+
 import { makeApiRequest } from './eka-auth';
 
 /**
@@ -9,30 +11,30 @@ import { makeApiRequest } from './eka-auth';
 export async function searchPatientByPhone(phone: string): Promise<any | null> {
     const sanitizedMobile = phone.replace(/^\+/, '');
 
-    console.log(`--- [DEBUG] BACKEND patient-api.ts: Starting patient search for mobile: ${sanitizedMobile}`);
+    console.log(`--- [DEBUG] SERVER ACTION patient-api.ts: Starting patient search for mobile: ${sanitizedMobile}`);
 
     try {
-        const response = await makeApiRequest(async (client) => {
-            return client.get(`/dr/v1/business/patients/search`, {
+        const responseData = await makeApiRequest(async (client) => {
+            const response = await client.get(`/dr/v1/business/patients/search`, {
                 params: {
                     mobile: sanitizedMobile
                 }
             });
+            return response.data;
         });
 
-        const responseData = response.data;
-        console.log(`--- [DEBUG] BACKEND patient-api.ts: Raw patient search API response for ${sanitizedMobile}:`, JSON.stringify(responseData, null, 2));
+        console.log(`--- [DEBUG] SERVER ACTION patient-api.ts: Raw patient search API response for ${sanitizedMobile}:`, JSON.stringify(responseData, null, 2));
 
         if (responseData && responseData.data && responseData.data.length > 0) {
-            console.log(`--- [DEBUG] BACKEND patient-api.ts: SUCCESS: Found ${responseData.data.length} patient record(s).`);
+            console.log(`--- [DEBUG] SERVER ACTION patient-api.ts: SUCCESS: Found ${responseData.data.length} patient record(s).`);
             return responseData.data;
         } else {
-            console.log(`--- [DEBUG] BACKEND patient-api.ts: INFO: No patient found for mobile ${sanitizedMobile}.`);
+            console.log(`--- [DEBUG] SERVER ACTION patient-api.ts: INFO: No patient found for mobile ${sanitizedMobile}.`);
             return null;
         }
 
     } catch (error: any) {
-        console.error(`--- [DEBUG] BACKEND patient-api.ts: ERROR searching for patient ${sanitizedMobile}:`, error.message);
+        console.error(`--- [DEBUG] SERVER ACTION patient-api.ts: ERROR searching for patient ${sanitizedMobile}:`, error.message);
         if (error.response) {
             console.error("Eka API Error Response Status:", error.response.status);
             console.error("Eka API Error Response Data:", JSON.stringify(error.response.data, null, 2));

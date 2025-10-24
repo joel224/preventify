@@ -1,4 +1,6 @@
 
+'use server';
+
 import { makeApiRequest } from './eka-auth';
 import { format, addDays, isBefore, startOfDay } from "date-fns";
 import { processBusinessEntities } from './data-processing';
@@ -10,16 +12,16 @@ async function fetchSlotsForDate(doctorId: string, clinicId: string, startDate: 
     console.log(`--- Fetching available slots for doctor: ${doctorId}, clinic: ${clinicId}, from: ${formattedStartDate} to ${formattedEndDate} ---`);
 
     try {
-        const response = await makeApiRequest(async (client) => {
-            return client.get(`/dr/v1/doctor/${doctorId}/clinic/${clinicId}/appointment/slot`, {
+        const responseData = await makeApiRequest(async (client) => {
+            const res = await client.get(`/dr/v1/doctor/${doctorId}/clinic/${clinicId}/appointment/slot`, {
                 params: {
                     start_date: formattedStartDate,
                     end_date: formattedEndDate
                 }
             });
+            return res.data;
         });
         
-        const responseData = response.data;
         console.log(`RAW SLOT API RESPONSE for ${doctorId}/${clinicId} on ${formattedStartDate}:`, JSON.stringify(responseData, null, 2));
 
         if (!responseData?.data?.schedule) {
@@ -99,10 +101,11 @@ export async function getBusinessEntitiesAndDoctors(): Promise<any> {
     
     const response = await makeApiRequest(async (client) => {
         console.log('INFO: Fetching business entities (/dr/v1/business/entities)...');
-        return client.get('/dr/v1/business/entities');
+        const res = await client.get('/dr/v1/business/entities');
+        return res.data;
     });
 
-    const { doctors: doctorList, clinics: clinicList } = response.data;
+    const { doctors: doctorList, clinics: clinicList } = response.data.data;
 
     if (!doctorList || doctorList.length === 0) {
         console.warn("WARN: No doctors found in business entities response.");

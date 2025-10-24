@@ -20,7 +20,7 @@ import { CalendarIcon, Loader2 } from "lucide-react";
 import { useState, useEffect, useMemo } from "react";
 import { toast } from "@/components/ui/sonner";
 import axios from "axios";
-import { format }s from "date-fns";
+import { format } from "date-fns";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import PageHeader from "@/components/PageHeader";
 import { Card, CardContent } from "@/components/ui/card";
@@ -202,9 +202,9 @@ export default function BookAppointmentPage() {
                                     <section>
                                         <h3 className="text-xl font-semibold mb-4">Step 1: Your Details</h3>
                                         <div className="space-y-4">
-                                            <FormField control={form.control} name="fullName" render={({ field }) => ( <FormItem> <FormLabel>Full Name</FormLabel> <FormControl><Input placeholder="John Doe" {...field} value={field.value ?? ''} /></FormControl> <FormMessage /> </FormItem> )}/>
-                                            <FormField control={form.control} name="phone" render={({ field }) => ( <FormItem> <FormLabel>Phone</FormLabel> <FormControl><Input placeholder="+91 98765 43210" {...field} value={field.value ?? ''} /></FormControl> <FormMessage /> </FormItem> )}/>
-                                            <FormField control={form.control} name="email" render={({ field }) => ( <FormItem> <FormLabel>Email (Optional)</FormLabel> <FormControl><Input placeholder="you@example.com" {...field} value={field.value ?? ''} /></FormControl> <FormMessage /> </FormItem> )}/>
+                                            <FormField control={form.control} name="fullName" render={({ field }) => ( <FormItem> <FormLabel>Full Name</FormLabel> <FormControl><Input placeholder="John Doe" {...field} /></FormControl> <FormMessage /> </FormItem> )}/>
+                                            <FormField control={form.control} name="phone" render={({ field }) => ( <FormItem> <FormLabel>Phone</FormLabel> <FormControl><Input placeholder="+91 98765 43210" {...field} /></FormControl> <FormMessage /> </FormItem> )}/>
+                                            <FormField control={form.control} name="email" render={({ field }) => ( <FormItem> <FormLabel>Email (Optional)</FormLabel> <FormControl><Input placeholder="you@example.com" {...field} /></FormControl> <FormMessage /> </FormItem> )}/>
                                         </div>
                                         <div className="mt-6 flex justify-end">
                                             <Button type="button" onClick={() => nextStep(['fullName', 'phone', 'email'])}>Next</Button>

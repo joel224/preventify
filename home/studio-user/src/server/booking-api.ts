@@ -1,10 +1,12 @@
 
+'use server';
+
 import { makeApiRequest } from './eka-auth';
 import { searchPatientByPhone } from './patient-api';
 
 export async function bookAppointment(data: any): Promise<any> {
-    console.log("--- [DEBUG] BACKEND booking-api.ts: bookAppointment function started ---");
-    console.log("--- [DEBUG] BACKEND booking-api.ts: Received data from index.ts:", JSON.stringify(data, null, 2));
+    console.log("--- [DEBUG] SERVER ACTION booking-api.ts: bookAppointment function started ---");
+    console.log("--- [DEBUG] SERVER ACTION booking-api.ts: Received data:", JSON.stringify(data, null, 2));
 
     // Step 1: Search for the patient by phone number
     const searchResult = await searchPatientByPhone(data.patient.phone);
@@ -14,11 +16,11 @@ export async function bookAppointment(data: any): Promise<any> {
     // Step 2: Check if patient was found and get the ID
     if (searchResult && searchResult.length > 0 && searchResult[0].patient_id) {
         partnerPatientId = searchResult[0].patient_id;
-        console.log(`--- [DEBUG] BACKEND booking-api.ts: Patient FOUND. Using existing patient_id: ${partnerPatientId}`);
+        console.log(`--- [DEBUG] SERVER ACTION booking-api.ts: Patient FOUND. Using existing patient_id: ${partnerPatientId}`);
     } else {
         // Step 2b: If not found, generate a new unique ID
         partnerPatientId = `preventify_patient_${data.patient.phone}_${Date.now()}`;
-        console.log(`--- [DEBUG] BACKEND booking-api.ts: Patient NOT FOUND. Generated new partner_patient_id: ${partnerPatientId}`);
+        console.log(`--- [DEBUG] SERVER ACTION booking-api.ts: Patient NOT FOUND. Generated new partner_patient_id: ${partnerPatientId}`);
     }
 
     // Step 3: Prepare the final appointment payload
@@ -50,11 +52,12 @@ export async function bookAppointment(data: any): Promise<any> {
             mobile: sanitizedMobile,
             gender: data.patient.gender,
             dob: data.patient.dob,
+            email: data.patient.email || undefined,
         },
     };
     
-    console.log("\n--- [DEBUG] BACKEND booking-api.ts: Booking Appointment via /dr/v1/appointment ---");
-    console.log("--- [DEBUG] BACKEND booking-api.ts: Full Request Payload to Eka API ---");
+    console.log("\n--- [DEBUG] SERVER ACTION booking-api.ts: Booking Appointment via /dr/v1/appointment ---");
+    console.log("--- [DEBUG] SERVER ACTION booking-api.ts: Full Request Payload to Eka API ---");
     console.log(JSON.stringify(appointmentPayload, null, 2));
     console.log("------------------------------------");
 
@@ -65,14 +68,14 @@ export async function bookAppointment(data: any): Promise<any> {
             return response.data;
         });
 
-        console.log("--- [DEBUG] BACKEND booking-api.ts: SUCCESS: API responded to booking request. ---");
-        console.log("--- [DEBUG] BACKEND booking-api.ts: Full API Response ---");
+        console.log("--- [DEBUG] SERVER ACTION booking-api.ts: SUCCESS: API responded to booking request. ---");
+        console.log("--- [DEBUG] SERVER ACTION booking-api.ts: Full API Response ---");
         console.log(JSON.stringify(bookingResponse, null, 2));
         console.log("---------------------------------");
         
         return bookingResponse;
     } catch(error: any) {
-        console.error("--- [DEBUG] BACKEND booking-api.ts: ERROR during Eka API booking call ---");
+        console.error("--- [DEBUG] SERVER ACTION booking-api.ts: ERROR during Eka API booking call ---");
         if (error.response) {
             console.error("Eka API Error Response Status:", error.response.status);
             console.error("Eka API Error Response Data:", JSON.stringify(error.response.data, null, 2));
