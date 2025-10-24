@@ -35,7 +35,7 @@ import { z } from 'zod';
 import { useForm, useWatch } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useState, useEffect, useMemo } from 'react';
-import { format, parseISO } from 'date-fns';
+import { format, parseISO, addMinutes, getHours, setHours, startOfHour, getMinutes } from 'date-fns';
 import { Loader2, CheckCircle, XCircle } from 'lucide-react';
 
 // Types
@@ -55,6 +55,11 @@ interface Clinic {
 interface Slot {
   startTime: string;
   endTime: string;
+}
+
+interface HourlySlot {
+  hour: number; // 0-23
+  firstAvailableSlot: string;
 }
 
 // Zod Schemas
@@ -164,6 +169,53 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
   
   const selectedDoctor = useMemo(() => doctors.find(d => d.id === selectedDoctorId), [doctors, selectedDoctorId]);
   
+  const hourlySlots = useMemo((): HourlySlot[] => {
+    if (!availableSlots.length) return [];
+    
+    const slotsByHour: { [hour: number]: string } = {};
+
+    for (const slot of availableSlots) {
+      const slotDate = parseISO(slot.startTime);
+      const hour = getHours(slotDate);
+
+      if (!slotsByHour[hour]) {
+        slotsByHour[hour] = slot.startTime;
+      }
+    }
+    
+    return Object.entries(slotsByHour).map(([hour, firstAvailableSlot]) => ({
+      hour: parseInt(hour, 10),
+      firstAvailableSlot,
+    }));
+  }, [availableSlots]);
+
+  const handleHourSelect = (firstAvailableSlot: string) => {
+    const slotTime = parseISO(firstAvailableSlot);
+    let targetTime = addMinutes(slotTime, 20);
+
+    // If adding 20 mins pushes it to the next hour, only proceed if the new time is available or just use original
+    const targetHour = getHours(targetTime);
+    const originalHour = getHours(slotTime);
+    const originalMinutes = getMinutes(slotTime);
+    
+    // If original slot is too late in the hour (e.g., 11:50), buffer might not work.
+    if (originalMinutes >= 45) {
+      form.setValue('time', firstAvailableSlot, { shouldValidate: true });
+      return;
+    }
+
+    // Check if the buffered time is actually available. If not, just use the original.
+    const isBufferedTimeAvailable = availableSlots.some(slot => slot.startTime === targetTime.toISOString());
+
+    if (targetHour === originalHour && isBufferedTimeAvailable) {
+        form.setValue('time', targetTime.toISOString(), { shouldValidate: true });
+    } else {
+        // Fallback to the first available slot if buffered time is not available or in next hour
+        form.setValue('time', firstAvailableSlot, { shouldValidate: true });
+    }
+  };
+
+
   const handleNextStep = async () => {
     let result;
     if (step === 1) {
@@ -393,18 +445,23 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
                         <div className="col-span-3 flex justify-center items-center h-24">
                           <Loader2 className="h-8 w-8 animate-spin text-primary" />
                         </div>
-                      ) : availableSlots.length > 0 ? (
-                        availableSlots.map((slot) => (
+                      ) : hourlySlots.length > 0 ? (
+                        hourlySlots.map((slot) => {
+                          const selectedSlotDate = form.getValues('time') ? parseISO(form.getValues('time')) : null;
+                          const isSelected = selectedSlotDate && getHours(selectedSlotDate) === slot.hour;
+
+                          return (
                             <Button
-                                key={slot.startTime}
-                                variant={field.value === slot.startTime ? 'default' : 'outline'}
-                                onClick={() => field.onChange(slot.startTime)}
+                                key={slot.hour}
+                                variant={isSelected ? 'default' : 'outline'}
+                                onClick={() => handleHourSelect(slot.firstAvailableSlot)}
                                 className="w-full"
                                 type="button"
                             >
-                                {format(parseISO(slot.startTime), 'hh:mm a')}
+                                {format(setHours(new Date(), slot.hour), 'ha')}
                             </Button>
-                        ))
+                          );
+                        })
                       ) : (
                          <p className="col-span-3 text-sm text-muted-foreground text-center py-4">
                            {selectedDate ? 'No slots available. Please select another date.' : 'Please select a date to see available slots.'}
