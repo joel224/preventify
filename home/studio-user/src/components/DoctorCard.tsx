@@ -1,7 +1,6 @@
 
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import Link from "next/link";
 import BookingDialog from "./BookingDialog";
 
 interface DoctorCardProps {
