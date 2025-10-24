@@ -76,7 +76,7 @@ const AboutPage = () => {
                 description: "We ground all our medical practices in scientific research and established clinical guidelines.",
               },
               {
-                icon: "https://cdn-icons-png.flaticon.com/512/3176/3176349.png",
+                icon: "https://cdn-icons-png.flaticon.com/512/10015/10015422.png",
                 title: "Patient-Centered Care",
                 description: "Our patients are at the heart of everything we do, with care tailored to individual needs.",
               },
