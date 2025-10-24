@@ -19,7 +19,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { Calendar } from '@/components/ui/calendar';
-import { format }s from 'date-fns';
+import { format } from 'date-fns';
 import { toast } from 'sonner';
 import { Loader2 } from 'lucide-react';
 import {
