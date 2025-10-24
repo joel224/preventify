@@ -83,6 +83,7 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
             email: "",
         },
     });
+
      // We need to re-initialize the resolver when the step changes
     useEffect(() => {
         form.reset(undefined, { keepValues: true }); // Keep values between steps
@@ -210,7 +211,22 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
                         </DialogHeader>
                         {isLoading ? ( <div className="flex items-center justify-center h-40"><Loader2 className="h-8 w-8 animate-spin" /></div> ) : (
                         <div className="space-y-4 py-4">
-                            <FormField control={form.control} name="doctor" render={({ field }) => ( <FormItem> <FormLabel>Doctor</FormLabel> <Select onValueChange={field.onChange} defaultValue={field.value}> <FormControl> <SelectTrigger> <SelectValue placeholder="Select a doctor" /> </SelectTrigger> </FormControl> <SelectContent> {doctors.map(doctor => <SelectItem key={doctor.id} value={doctor.id}>{doctor.name} - {doctor.clinicName}</SelectItem>)} </SelectContent> </Select> <FormMessage /> </FormItem> )}/>
+                            <FormField control={form.control} name="doctor" render={({ field }) => ( 
+                                <FormItem> 
+                                    <FormLabel>Doctor</FormLabel> 
+                                    <Select onValueChange={field.onChange} defaultValue={field.value}> 
+                                        <FormControl> 
+                                            <SelectTrigger> 
+                                                <SelectValue placeholder="Select a doctor" /> 
+                                            </SelectTrigger> 
+                                        </FormControl> 
+                                        <SelectContent> 
+                                            {doctors.map(doctor => <SelectItem key={doctor.id} value={doctor.id}>{doctor.name} - {doctor.clinicName}</SelectItem>)} 
+                                        </SelectContent> 
+                                    </Select> 
+                                    <FormMessage /> 
+                                </FormItem> 
+                            )}/>
                         </div>
                         )}
                         <div className="flex gap-2">
@@ -220,64 +236,62 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
                     </>
                 );
             case 3: // Time Slot
-                let timeSlotContent;
-                if (isFetchingSlots) {
-                   timeSlotContent = (
-                       <div className="flex items-center justify-center h-40">
-                           <Loader2 className="mr-2 h-8 w-8 animate-spin" />
-                           <p>Finding open slots...</p>
-                       </div>
-                   );
-                } else if (availableSlots.length > 0) {
-                    timeSlotContent = (
-                        <FormField
-                            control={form.control}
-                            name="startTime"
-                            render={({ field }) => (
-                                <FormItem className="space-y-3 py-4">
-                                    <FormLabel>Available Slots for {selectedDoctor?.name}</FormLabel>
-                                    <FormControl>
-                                        <RadioGroup
-                                            onValueChange={field.onChange}
-                                            defaultValue={field.value}
-                                            className="grid grid-cols-3 gap-2"
-                                        >
-                                            {availableSlots.map((slot) => (
-                                                <FormItem key={slot.startTime} className="flex items-center">
-                                                    <FormControl>
-                                                        <RadioGroupItem value={slot.startTime} id={slot.startTime} className="sr-only" />
-                                                    </FormControl>
-                                                    <Label
-                                                        htmlFor={slot.startTime}
-                                                        className="flex w-full cursor-pointer flex-col items-center justify-center rounded-md border-2 border-muted bg-popover p-2 text-center hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary [&:has([data-state=checked])]:border-primary"
-                                                    >
-                                                        <span className="font-semibold">{format(new Date(slot.startTime), "p")}</span>
-                                                        <span className="text-xs text-muted-foreground">{format(new Date(slot.startTime), "MMM d")}</span>
-                                                    </Label>
-                                                </FormItem>
-                                            ))}
-                                        </RadioGroup>
-                                    </FormControl>
-                                    <FormMessage />
-                                </FormItem>
-                            )}
-                        />
-                    );
-                } else {
-                   timeSlotContent = (
-                       <div className="text-center text-muted-foreground py-16">
-                           <p>No available slots for the selected provider.</p>
-                           <p className="text-sm">Please try a different doctor or check back later.</p>
-                       </div>
-                   );
-                }
                 return (
                     <>
                         <DialogHeader>
                             <DialogTitle>Book an Appointment: Time Slot</DialogTitle>
                             <DialogDescription>Step 3 of 3: Choose an available time.</DialogDescription>
                         </DialogHeader>
-                        {timeSlotContent}
+
+                        {isFetchingSlots && (
+                            <div className="flex items-center justify-center h-40">
+                                <Loader2 className="mr-2 h-8 w-8 animate-spin" />
+                                <p>Finding open slots...</p>
+                            </div>
+                        )}
+
+                        {!isFetchingSlots && availableSlots.length > 0 && (
+                             <FormField
+                                control={form.control}
+                                name="startTime"
+                                render={({ field }) => (
+                                    <FormItem className="space-y-3 py-4">
+                                        <FormLabel>Available Slots for {selectedDoctor?.name}</FormLabel>
+                                        <FormControl>
+                                            <RadioGroup
+                                                onValueChange={field.onChange}
+                                                defaultValue={field.value}
+                                                className="grid grid-cols-3 gap-2"
+                                            >
+                                                {availableSlots.map((slot) => (
+                                                    <FormItem key={slot.startTime} className="flex items-center">
+                                                        <FormControl>
+                                                            <RadioGroupItem value={slot.startTime} id={slot.startTime} className="sr-only" />
+                                                        </FormControl>
+                                                        <Label
+                                                            htmlFor={slot.startTime}
+                                                            className="flex w-full cursor-pointer flex-col items-center justify-center rounded-md border-2 border-muted bg-popover p-2 text-center hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary [&:has([data-state=checked])]:border-primary"
+                                                        >
+                                                            <span className="font-semibold">{format(new Date(slot.startTime), "p")}</span>
+                                                            <span className="text-xs text-muted-foreground">{format(new Date(slot.startTime), "MMM d")}</span>
+                                                        </Label>
+                                                    </FormItem>
+                                                ))}
+                                            </RadioGroup>
+                                        </FormControl>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+                        )}
+
+                        {!isFetchingSlots && availableSlots.length === 0 && (
+                             <div className="text-center text-muted-foreground py-16">
+                                <p>No available slots for the selected provider.</p>
+                                <p className="text-sm">Please try a different doctor or check back later.</p>
+                            </div>
+                        )}
+                        
                         <div className="flex gap-2">
                            <Button onClick={() => setStep(2)} variant="outline" className="w-1/3">Back</Button>
                            <Button onClick={form.handleSubmit(processBooking)} disabled={isSubmitting || isFetchingSlots || !form.watch('startTime')} className="w-2/3">
