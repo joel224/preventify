@@ -24,6 +24,7 @@ app.post('/api/save-step', (req, res) => {
     
     if (step === 1) {
         if (!data || !data.fullName || !data.phone) {
+             console.error('--- [DEBUG] SERVER index.ts: Missing data for step 1. ---');
              return res.status(400).json({ message: 'Missing data for step 1.' });
         }
         const newSessionId = crypto.randomUUID();
@@ -39,6 +40,7 @@ app.post('/api/save-step', (req, res) => {
 
     if (step === 2) {
         if (!data) {
+             console.error('--- [DEBUG] SERVER index.ts: Missing data for step 2. ---');
              return res.status(400).json({ message: 'Missing data for step 2.' });
         }
         bookingSessions[sessionId].step2 = data;
@@ -62,7 +64,7 @@ app.post('/api/create-appointment', async (req, res) => {
     if (!sessionData.step1 || !sessionData.step2) {
         return res.status(400).json({ message: 'Incomplete booking data in session.' });
     }
-
+    
     // Combine all data
     const nameParts = sessionData.step1.fullName.split(" ");
     const fullPayload = {
@@ -75,9 +77,9 @@ app.post('/api/create-appointment', async (req, res) => {
             dob: step3Data.dob,
         },
         appointment: {
-            clinicId: sessionData.step2.doctor.clinicId,
-            doctorId: sessionData.step2.doctor.id,
-            startTime: sessionData.step2.slot.startTime,
+            clinicId: sessionData.step2.clinicId,
+            doctorId: sessionData.step2.doctor,
+            startTime: sessionData.step2.startTime,
         }
     };
 
@@ -124,8 +126,7 @@ app.get('/api/doctors-and-clinics', async (req, res) => {
     console.log('API Endpoint: /api/doctors-and-clinics called');
     const data = await getBusinessEntitiesAndDoctors();
     res.json(data);
-  } catch (error: any) {
-     console.error('Error in /api/doctors-and-clinics endpoint:', error.message);
+  } catch (error: any)     console.error('Error in /api/doctors-and-clinics endpoint:', error.message);
      res.status(500).json({ message: 'Failed to get doctors and clinics', error: error.message });
   }
 });

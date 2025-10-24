@@ -24,7 +24,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { Calendar } from "@/components/ui/calendar";
 import { cn } from "@/lib/utils";
 import { CalendarIcon, Loader2 } from "lucide-react";
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect } from "react";
 import { toast } from "@/components/ui/sonner";
 import axios from "axios";
 import { format } from "date-fns";
@@ -36,10 +36,12 @@ const Step1Schema = z.object({
   phone: z.string().regex(/^\+?[0-9]{10,14}$/, "Please enter a valid phone number."),
   email: z.string().email("Please enter a valid email address.").optional().or(z.literal("")),
 });
+
 const Step2Schema = z.object({
   doctor: z.string({ required_error: "Please select a doctor." }).min(1, "Please select a doctor."),
   startTime: z.string({ required_error: "Please select a time slot." }).min(1, "Please select a time slot."),
 });
+
 const Step3Schema = z.object({
   gender: z.enum(["M", "F", "O"], { required_error: "Please select a gender." }),
   dob: z.date({ required_error: "Date of birth is required." }),
@@ -53,7 +55,6 @@ type Step3Values = z.infer<typeof Step3Schema>;
 type Doctor = { id: string; name: string; clinicId: string; clinicName: string; };
 type Slot = { startTime: string; endTime: string; doctorId: string; clinicId: string; };
 type GroupedSlots = { [hour: string]: Slot[] };
-
 
 // ####################
 // ## Step Components
@@ -82,21 +83,21 @@ function Step1Form({ onNext, onDialogClose }: { onNext: (data: Step1Values) => v
                     <FormField control={form.control} name="fullName" render={({ field }) => ( 
                         <FormItem> 
                             <FormLabel>Full Name</FormLabel> 
-                            <FormControl><Input placeholder="John Doe" {...field} /></FormControl> 
+                            <FormControl><Input placeholder="John Doe" {...field} value={field.value ?? ""} /></FormControl> 
                             <FormMessage /> 
                         </FormItem> 
                     )}/>
                     <FormField control={form.control} name="phone" render={({ field }) => ( 
                         <FormItem> 
                             <FormLabel>Phone</FormLabel> 
-                            <FormControl><Input placeholder="+91 98765 43210" {...field} /></FormControl> 
+                            <FormControl><Input placeholder="+91 98765 43210" {...field} value={field.value ?? ""} /></FormControl> 
                             <FormMessage /> 
                         </FormItem> 
                     )}/>
                     <FormField control={form.control} name="email" render={({ field }) => ( 
                         <FormItem> 
                             <FormLabel>Email (Optional)</FormLabel> 
-                            <FormControl><Input placeholder="you@example.com" {...field} /></FormControl> 
+                            <FormControl><Input placeholder="you@example.com" {...field} value={field.value ?? ""} /></FormControl> 
                             <FormMessage /> 
                         </FormItem> 
                     )}/>
@@ -201,7 +202,7 @@ function Step2Form({ onNext, onBack, onDialogClose }: { onNext: (data: Step2Valu
                         <FormField control={form.control} name="doctor" render={({ field }) => ( 
                             <FormItem> 
                                 <FormLabel>Doctor</FormLabel> 
-                                <Select onValueChange={field.onChange} value={field.value}> 
+                                <Select onValueChange={field.onChange} value={field.value || ""}> 
                                     <FormControl><SelectTrigger><SelectValue placeholder="Select a doctor" /></SelectTrigger></FormControl> 
                                     <SelectContent> 
                                         {doctors.map(doc => <SelectItem key={doc.id} value={doc.id}>{doc.name} - {doc.clinicName}</SelectItem>)} 
@@ -216,7 +217,7 @@ function Step2Form({ onNext, onBack, onDialogClose }: { onNext: (data: Step2Valu
                         <div>
                         {isFetchingSlots ? (<div className="flex items-center justify-center pt-8"><Loader2 className="mr-2 h-6 w-6 animate-spin" /> <p>Finding open slots...</p></div>) 
                         : Object.keys(groupedSlots).length > 0 ? (
-                            <FormField control={form.control} name="startTime" render={() => (
+                            <FormField control={form.control} name="startTime" render={({ field }) => (
                                 <FormItem>
                                     <FormLabel>Select an hour</FormLabel>
                                     <div className="grid grid-cols-4 gap-2 pt-2">
@@ -253,7 +254,7 @@ function Step3Form({ onBack, onSubmit }: { onBack: () => void; onSubmit: (data: 
     const form = useForm<Step3Values>({
         resolver: zodResolver(Step3Schema),
         mode: "onChange",
-        defaultValues: { gender: undefined, dob: undefined }
+        defaultValues: { gender: "" as "M" | "F" | "O", dob: undefined }
     });
     
     return (
@@ -267,7 +268,7 @@ function Step3Form({ onBack, onSubmit }: { onBack: () => void; onSubmit: (data: 
                     <FormField control={form.control} name="gender" render={({ field }) => (
                         <FormItem>
                             <FormLabel>Gender</FormLabel>
-                            <Select onValueChange={field.onChange} value={field.value}>
+                            <Select onValueChange={field.onChange} value={field.value || ""}>
                                 <FormControl><SelectTrigger><SelectValue placeholder="Select your gender" /></SelectTrigger></FormControl>
                                 <SelectContent>
                                     <SelectItem value="M">Male</SelectItem>
@@ -316,7 +317,7 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
     const [step, setStep] = useState(0); // 0=closed, 1=step1, 2=step2, 3=step3, 4=success
     const [sessionId, setSessionId] = useState<string | null>(null);
     const [isStepLoading, setIsStepLoading] = useState(false);
-    const [finalBookingData, setFinalBookingData] = useState<any>(null); // To show success message
+    const [finalBookingData, setFinalBookingData] = useState<any>(null);
 
     const resetFlow = () => {
         setStep(0);
@@ -342,16 +343,17 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
 
     const handleNextStep2 = async (data: Step2Values) => {
         setIsStepLoading(true);
-        // The data object from Step2Form now contains the full doctor and slot objects
-        const { doctor, slot, ...step2Data } = data as any;
+        const { doctor, slot } = data as any;
         
-        setFinalBookingData({ doctor, slot }); // Stash the full objects for the final submission
+        setFinalBookingData({ doctor, slot }); 
 
         try {
-            // We only need to send the IDs to the backend for session storage
             const payload = {
                 doctor: doctor.id,
                 startTime: slot.startTime,
+                clinicId: doctor.clinicId, // Pass clinicId as well
+                slot: slot, // Pass full slot and doctor object
+                doctorObj: doctor
             };
             await axios.post('/api/save-step', { step: 2, sessionId, data: payload });
             setStep(3);
@@ -373,11 +375,12 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
                     dob: format(data.dob, 'yyyy-MM-dd'),
                 },
             };
-            await axios.post('/api/create-appointment', payload);
+            const response = await axios.post('/api/create-appointment', payload);
+            setFinalBookingData(prev => ({...prev, bookingDetails: response.data}));
             setStep(4);
         } catch (error: any) {
             console.error("[DEBUG] Frontend: Booking request failed.", error);
-            const errorMessage = (error as any).response?.data?.message || "Something went wrong. Please try again.";
+            const errorMessage = error.response?.data?.message || "Something went wrong. Please try again.";
             toast.error("Booking Failed", { description: errorMessage });
         } finally {
             setIsStepLoading(false);
@@ -388,9 +391,9 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
 
     const handleOpenChange = (isOpen: boolean) => {
         if (isOpen) {
-            if (step === 0) setStep(1); // Start flow only if it's not already started
+            if (step === 0) setStep(1); 
         } else {
-            resetFlow(); // Reset on close
+            resetFlow();
         }
     }
     
@@ -419,7 +422,10 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
                         </DialogHeader>
                         <div className="py-8 text-center space-y-4">
                             <svg className="w-16 h-16 mx-auto text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                            <p className="text-sm text-muted-foreground">Your appointment details have been confirmed. You will receive a confirmation message shortly.</p>
+                            {finalBookingData?.doctor && finalBookingData?.slot && (
+                                <p>Your appointment with <span className="font-bold">{finalBookingData.doctor.name}</span> on <span className="font-bold">{format(new Date(finalBookingData.slot.startTime), 'PPP')}</span> at <span className="font-bold">{format(new Date(finalBookingData.slot.startTime), 'p')}</span> is confirmed.</p>
+                            )}
+                            <p className="text-sm text-muted-foreground">You will receive a confirmation message shortly.</p>
                         </div>
                         <Button onClick={resetFlow} className="w-full">Close</Button>
                     </>
