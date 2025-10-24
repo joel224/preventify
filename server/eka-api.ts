@@ -168,8 +168,7 @@ async function fetchSlotsForDate(doctorId: string, clinicId: string, startDate: 
             for (const item of scheduleItemsForClinic) {
                 if (item.slots && Array.isArray(item.slots)) {
                     item.slots.forEach((slot: any) => {
-                        // We only care about the primary availability flag from the API here.
-                        // Detailed business logic filtering will happen in getAvailableSlots.
+                        // The primary source of truth for a slot is its "available" flag.
                         if (slot.available) {
                             availableSlots.push({
                                 startTime: slot.s,
@@ -208,42 +207,24 @@ export async function getAvailableSlots(doctorId: string, clinicId: string, date
     // Fetch all available slots for the requested day from the API
     let slots = await fetchSlotsForDate(doctorId, clinicId, apiStartDate, apiEndDate);
 
-    // Filter the results to only include slots that are valid based on our business logic.
+    // NEW, SIMPLIFIED FILTERING LOGIC
     const finalFilteredSlots = slots.filter(slot => {
         const slotStartTime = new Date(slot.startTime);
-        
-        // 1. Ensure the slot is on the originally requested date. The API might return slots for D+1 as well.
-        if (format(slotStartTime, 'yyyy-MM-dd') !== format(requestedDate, 'yyyy-MM-dd')) {
+
+        // 1. Ensure the slot is on the originally requested date.
+        // The API might return slots for the next day as well, which we don't want in this step.
+        const isOnRequestedDate = format(slotStartTime, 'yyyy-MM-dd') === format(requestedDate, 'yyyy-MM-dd');
+        if (!isOnRequestedDate) {
             return false;
         }
 
-        // 2. Define doctor-specific start times or a default.
-        // ID for "Muhammed Faisal OS"
-        const DR_FAISAL_ID = "173208610763786"; 
-        
-        // Default working hours
-        const generalWorkDayStart = setHours(startOfDay(slotStartTime), 8);
-        const workDayEnd = setHours(startOfDay(slotStartTime), 19); // 7 PM
-
-        let effectiveWorkDayStart = generalWorkDayStart;
-
-        if (doctorId === DR_FAISAL_ID) {
-            // Dr. Faisal's session starts at 1:30 PM IST
-            effectiveWorkDayStart = setMinutes(setHours(startOfDay(slotStartTime), 13), 30);
-        }
-        
-        // 3. Ensure the slot is within the determined working hours.
-        if (isBefore(slotStartTime, effectiveWorkDayStart) || !isBefore(slotStartTime, workDayEnd)) {
+        // 2. If the requested date is today, ensure the slot is in the future.
+        const isToday = format(requestedDate, 'yyyy-MM-dd') === format(now, 'yyyy-MM-dd');
+        if (isToday && isBefore(slotStartTime, now)) {
             return false;
         }
 
-        // 4. If the requested date is today, ensure the slot is in the future.
-        if (format(requestedDate, 'yyyy-MM-dd') === format(now, 'yyyy-MM-dd')) {
-            if (isBefore(slotStartTime, now)) {
-                return false;
-            }
-        }
-
+        // If it passes the above checks, the slot is considered valid.
         return true;
     });
 
