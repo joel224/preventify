@@ -253,3 +253,4 @@ export async function getBusinessEntitiesAndDoctors(): Promise<any> {
     
     return { doctors: processedDoctors, clinics: processedClinics };
 }
+
