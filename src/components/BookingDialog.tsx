@@ -30,7 +30,6 @@ import axios from "axios";
 import { format, startOfHour, addMinutes } from "date-fns";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./ui/select";
 
-// Define schemas for each step
 const stepOneSchema = z.object({
   fullName: z.string().min(3, "Full name must be at least 3 characters."),
   phone: z.string().regex(/^\+?[0-9]{10,14}$/, "Please enter a valid phone number."),
@@ -38,8 +37,8 @@ const stepOneSchema = z.object({
 });
 
 const stepTwoSchema = z.object({
-    doctor: z.string({ required_error: "Please select a doctor."}),
-    startTime: z.string({ required_error: "Please select a time slot."}),
+    doctor: z.string({ required_error: "Please select a doctor." }),
+    startTime: z.string({ required_error: "Please select a time slot." }),
 });
 
 const stepThreeSchema = z.object({
@@ -47,14 +46,12 @@ const stepThreeSchema = z.object({
     dob: z.date({ required_error: "Date of birth is required." }),
 });
 
-// A combined schema for the final submission
 const combinedSchema = stepOneSchema.merge(stepTwoSchema).merge(stepThreeSchema);
 type BookingFormValues = z.infer<typeof combinedSchema>;
 
 type Doctor = { id: string; name: string; clinicId: string; clinicName: string; };
 type Slot = { startTime: string; endTime: string; doctorId: string; clinicId: string; };
 type GroupedSlots = { [hour: string]: Slot[] };
-
 
 export default function BookingDialog({ children }: { children: React.ReactNode }) {
     const [isOpen, setIsOpen] = useState(false);
@@ -65,8 +62,12 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
     const [doctors, setDoctors] = useState<Doctor[]>([]);
     const [availableSlots, setAvailableSlots] = useState<Slot[]>([]);
     const [isFetchingSlots, setIsFetchingSlots] = useState(false);
-
     const [selectedHour, setSelectedHour] = useState<string | null>(null);
+
+    // State to hold the full selected objects
+    const [selectedDoctorObj, setSelectedDoctorObj] = useState<Doctor | null>(null);
+    const [selectedSlotObj, setSelectedSlotObj] = useState<Slot | null>(null);
+
 
     const getCurrentSchema = () => {
         switch(step) {
@@ -89,7 +90,7 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
     const selectedDoctorId = form.watch("doctor");
     
     useEffect(() => {
-        if (isOpen && step === 2 && doctors.length === 0) {
+        if (isOpen && (step === 2 || step === 3) && doctors.length === 0) {
             setIsLoading(true);
             axios.get('/api/doctors-and-clinics')
                 .then(response => {
@@ -103,15 +104,17 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
         }
     }, [isOpen, step, doctors.length]);
 
-    useEffect(() => {
+     useEffect(() => {
         if (selectedDoctorId) {
             const doctor = doctors.find(d => d.id === selectedDoctorId);
+            setSelectedDoctorObj(doctor || null); // Store the full doctor object
             if (!doctor) return;
 
             setIsFetchingSlots(true);
             setAvailableSlots([]);
             setSelectedHour(null);
             form.resetField("startTime");
+            setSelectedSlotObj(null);
 
             const dateString = format(new Date(), 'yyyy-MM-dd');
             axios.get(`/api/available-slots?doctorId=${selectedDoctorId}&clinicId=${doctor.clinicId}&date=${dateString}`)
@@ -125,8 +128,10 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
                 .finally(() => setIsFetchingSlots(false));
         } else {
              setAvailableSlots([]);
+             setSelectedDoctorObj(null);
         }
     }, [selectedDoctorId, doctors, form]);
+
 
     const groupedSlots = useMemo(() => {
         return availableSlots.reduce((acc, slot) => {
@@ -137,8 +142,6 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
         }, {} as GroupedSlots);
     }, [availableSlots]);
     
-    const selectedSlotValue = form.watch("startTime");
-
     const handleHourClick = (hourKey: string) => {
         setSelectedHour(hourKey);
         const slotsInHour = groupedSlots[hourKey];
@@ -151,16 +154,17 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
         if (!bestSlot) {
             bestSlot = slotsInHour[slotsInHour.length - 1];
         }
+        
         form.setValue("startTime", bestSlot.startTime, { shouldValidate: true });
+        setSelectedSlotObj(bestSlot); // Store the full slot object
     };
+    
+    const selectedSlotValue = form.watch("startTime");
 
     const processBooking = async (data: BookingFormValues) => {
         setIsSubmitting(true);
         try {
-            const selectedDoctor = doctors.find(d => d.id === data.doctor);
-            const selectedSlot = availableSlots.find(s => s.startTime === data.startTime);
-
-            if (!selectedSlot || !selectedDoctor) {
+            if (!selectedSlotObj || !selectedDoctorObj) {
                 toast.error("Invalid slot or doctor selected");
                 setIsSubmitting(false);
                 return;
@@ -175,19 +179,19 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
                     firstName,
                     lastName,
                     phone: data.phone,
-                    email: data.email,
+                    email: data.email || "",
                     gender: data.gender,
                     dob: format(data.dob, 'yyyy-MM-dd'),
                 },
                 appointment: {
-                    clinicId: selectedSlot.clinicId,
-                    doctorId: selectedSlot.doctorId,
-                    startTime: selectedSlot.startTime,
+                    clinicId: selectedSlotObj.clinicId,
+                    doctorId: selectedSlotObj.doctorId,
+                    startTime: selectedSlotObj.startTime,
                 }
             };
             
             await axios.post('/api/book-appointment', payload);
-            toast.success("Appointment Booked!", { description: `Your appointment with ${selectedDoctor?.name} on ${format(new Date(selectedSlot.startTime), "PPP")} at ${format(new Date(selectedSlot.startTime), "p")} is confirmed.` });
+            toast.success("Appointment Booked!", { description: `Your appointment with ${selectedDoctorObj?.name} on ${format(new Date(selectedSlotObj.startTime), "PPP")} at ${format(new Date(selectedSlotObj.startTime), "p")} is confirmed.` });
             setStep(4);
 
         } catch (error: any) {
@@ -207,6 +211,8 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
                 setAvailableSlots([]);
                 setIsFetchingSlots(false);
                 setSelectedHour(null);
+                setSelectedDoctorObj(null);
+                setSelectedSlotObj(null);
                 form.reset();
             }, 300);
         }
@@ -352,8 +358,6 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
                     </>
                 );
              case 4:
-                const { doctor: finalDoctorId, startTime: finalStartTime } = form.getValues();
-                const finalDoctor = doctors.find(d => d.id === finalDoctorId);
                 return (
                     <>
                         <DialogHeader>
@@ -362,8 +366,8 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
                         </DialogHeader>
                         <div className="py-8 text-center space-y-4">
                             <svg className="w-16 h-16 mx-auto text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                            {finalDoctor && finalStartTime && (
-                                <p>Your appointment with <span className="font-bold">{finalDoctor?.name}</span> on <span className="font-bold">{format(new Date(finalStartTime), 'PPP')}</span> at <span className="font-bold">{format(new Date(finalStartTime), 'p')}</span> is confirmed.</p>
+                            {selectedDoctorObj && selectedSlotObj && (
+                                <p>Your appointment with <span className="font-bold">{selectedDoctorObj.name}</span> on <span className="font-bold">{format(new Date(selectedSlotObj.startTime), 'PPP')}</span> at <span className="font-bold">{format(new Date(selectedSlotObj.startTime), 'p')}</span> is confirmed.</p>
                             )}
                             <p className="text-sm text-muted-foreground">You will also receive a confirmation message shortly.</p>
                         </div>

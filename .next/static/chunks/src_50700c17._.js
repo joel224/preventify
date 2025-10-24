@@ -1359,7 +1359,6 @@ var _s = __turbopack_context__.k.signature();
 ;
 ;
 ;
-// Define schemas for each step
 const stepOneSchema = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$zod$2f$lib$2f$index$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["object"])({
     fullName: (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$zod$2f$lib$2f$index$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["string"])().min(3, "Full name must be at least 3 characters."),
     phone: (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$zod$2f$lib$2f$index$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["string"])().regex(/^\+?[0-9]{10,14}$/, "Please enter a valid phone number."),
@@ -1385,7 +1384,6 @@ const stepThreeSchema = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node
         required_error: "Date of birth is required."
     })
 });
-// A combined schema for the final submission
 const combinedSchema = stepOneSchema.merge(stepTwoSchema).merge(stepThreeSchema);
 function BookingDialog({ children }) {
     _s();
@@ -1397,6 +1395,9 @@ function BookingDialog({ children }) {
     const [availableSlots, setAvailableSlots] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])([]);
     const [isFetchingSlots, setIsFetchingSlots] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(false);
     const [selectedHour, setSelectedHour] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(null);
+    // State to hold the full selected objects
+    const [selectedDoctorObj, setSelectedDoctorObj] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(null);
+    const [selectedSlotObj, setSelectedSlotObj] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(null);
     const getCurrentSchema = ()=>{
         switch(step){
             case 1:
@@ -1424,7 +1425,7 @@ function BookingDialog({ children }) {
     const selectedDoctorId = form.watch("doctor");
     (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useEffect"])({
         "BookingDialog.useEffect": ()=>{
-            if (isOpen && step === 2 && doctors.length === 0) {
+            if (isOpen && (step === 2 || step === 3) && doctors.length === 0) {
                 setIsLoading(true);
                 __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$axios$2f$lib$2f$axios$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["default"].get('/api/doctors-and-clinics').then({
                     "BookingDialog.useEffect": (response)=>{
@@ -1453,11 +1454,13 @@ function BookingDialog({ children }) {
                 const doctor = doctors.find({
                     "BookingDialog.useEffect.doctor": (d)=>d.id === selectedDoctorId
                 }["BookingDialog.useEffect.doctor"]);
+                setSelectedDoctorObj(doctor || null); // Store the full doctor object
                 if (!doctor) return;
                 setIsFetchingSlots(true);
                 setAvailableSlots([]);
                 setSelectedHour(null);
                 form.resetField("startTime");
+                setSelectedSlotObj(null);
                 const dateString = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$date$2d$fns$2f$format$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$locals$3e$__["format"])(new Date(), 'yyyy-MM-dd');
                 __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$axios$2f$lib$2f$axios$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["default"].get(`/api/available-slots?doctorId=${selectedDoctorId}&clinicId=${doctor.clinicId}&date=${dateString}`).then({
                     "BookingDialog.useEffect": (response)=>{
@@ -1475,6 +1478,7 @@ function BookingDialog({ children }) {
                 }["BookingDialog.useEffect"]);
             } else {
                 setAvailableSlots([]);
+                setSelectedDoctorObj(null);
             }
         }
     }["BookingDialog.useEffect"], [
@@ -1496,7 +1500,6 @@ function BookingDialog({ children }) {
     }["BookingDialog.useMemo[groupedSlots]"], [
         availableSlots
     ]);
-    const selectedSlotValue = form.watch("startTime");
     const handleHourClick = (hourKey)=>{
         setSelectedHour(hourKey);
         const slotsInHour = groupedSlots[hourKey];
@@ -1510,13 +1513,13 @@ function BookingDialog({ children }) {
         form.setValue("startTime", bestSlot.startTime, {
             shouldValidate: true
         });
+        setSelectedSlotObj(bestSlot); // Store the full slot object
     };
+    const selectedSlotValue = form.watch("startTime");
     const processBooking = async (data)=>{
         setIsSubmitting(true);
         try {
-            const selectedDoctor = doctors.find((d)=>d.id === data.doctor);
-            const selectedSlot = availableSlots.find((s)=>s.startTime === data.startTime);
-            if (!selectedSlot || !selectedDoctor) {
+            if (!selectedSlotObj || !selectedDoctorObj) {
                 __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$sonner$2f$dist$2f$index$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["toast"].error("Invalid slot or doctor selected");
                 setIsSubmitting(false);
                 return;
@@ -1529,19 +1532,19 @@ function BookingDialog({ children }) {
                     firstName,
                     lastName,
                     phone: data.phone,
-                    email: data.email,
+                    email: data.email || "",
                     gender: data.gender,
                     dob: (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$date$2d$fns$2f$format$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$locals$3e$__["format"])(data.dob, 'yyyy-MM-dd')
                 },
                 appointment: {
-                    clinicId: selectedSlot.clinicId,
-                    doctorId: selectedSlot.doctorId,
-                    startTime: selectedSlot.startTime
+                    clinicId: selectedSlotObj.clinicId,
+                    doctorId: selectedSlotObj.doctorId,
+                    startTime: selectedSlotObj.startTime
                 }
             };
             await __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$axios$2f$lib$2f$axios$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["default"].post('/api/book-appointment', payload);
             __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$sonner$2f$dist$2f$index$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["toast"].success("Appointment Booked!", {
-                description: `Your appointment with ${selectedDoctor?.name} on ${(0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$date$2d$fns$2f$format$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$locals$3e$__["format"])(new Date(selectedSlot.startTime), "PPP")} at ${(0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$date$2d$fns$2f$format$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$locals$3e$__["format"])(new Date(selectedSlot.startTime), "p")} is confirmed.`
+                description: `Your appointment with ${selectedDoctorObj?.name} on ${(0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$date$2d$fns$2f$format$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$locals$3e$__["format"])(new Date(selectedSlotObj.startTime), "PPP")} at ${(0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$date$2d$fns$2f$format$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$locals$3e$__["format"])(new Date(selectedSlotObj.startTime), "p")} is confirmed.`
             });
             setStep(4);
         } catch (error) {
@@ -1564,6 +1567,8 @@ function BookingDialog({ children }) {
                         setAvailableSlots([]);
                         setIsFetchingSlots(false);
                         setSelectedHour(null);
+                        setSelectedDoctorObj(null);
+                        setSelectedSlotObj(null);
                         form.reset();
                     }
                 }["BookingDialog.useEffect"], 300);
@@ -1591,20 +1596,20 @@ function BookingDialog({ children }) {
                                     children: "Step 1: Your Details"
                                 }, void 0, false, {
                                     fileName: "[project]/src/components/BookingDialog.tsx",
-                                    lineNumber: 230,
+                                    lineNumber: 236,
                                     columnNumber: 29
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$dialog$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["DialogDescription"], {
                                     children: "Please provide your name and contact information."
                                 }, void 0, false, {
                                     fileName: "[project]/src/components/BookingDialog.tsx",
-                                    lineNumber: 231,
+                                    lineNumber: 237,
                                     columnNumber: 29
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/src/components/BookingDialog.tsx",
-                            lineNumber: 229,
+                            lineNumber: 235,
                             columnNumber: 25
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1620,7 +1625,7 @@ function BookingDialog({ children }) {
                                                     children: "Full Name"
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/components/BookingDialog.tsx",
-                                                    lineNumber: 234,
+                                                    lineNumber: 240,
                                                     columnNumber: 114
                                                 }, void 0),
                                                 " ",
@@ -1630,30 +1635,30 @@ function BookingDialog({ children }) {
                                                         ...field
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/components/BookingDialog.tsx",
-                                                        lineNumber: 234,
+                                                        lineNumber: 240,
                                                         columnNumber: 160
                                                     }, void 0)
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/components/BookingDialog.tsx",
-                                                    lineNumber: 234,
+                                                    lineNumber: 240,
                                                     columnNumber: 147
                                                 }, void 0),
                                                 " ",
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$form$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["FormMessage"], {}, void 0, false, {
                                                     fileName: "[project]/src/components/BookingDialog.tsx",
-                                                    lineNumber: 234,
+                                                    lineNumber: 240,
                                                     columnNumber: 218
                                                 }, void 0),
                                                 " "
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/src/components/BookingDialog.tsx",
-                                            lineNumber: 234,
+                                            lineNumber: 240,
                                             columnNumber: 103
                                         }, void 0)
                                 }, void 0, false, {
                                     fileName: "[project]/src/components/BookingDialog.tsx",
-                                    lineNumber: 234,
+                                    lineNumber: 240,
                                     columnNumber: 28
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$form$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["FormField"], {
@@ -1666,7 +1671,7 @@ function BookingDialog({ children }) {
                                                     children: "Phone"
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/components/BookingDialog.tsx",
-                                                    lineNumber: 235,
+                                                    lineNumber: 241,
                                                     columnNumber: 111
                                                 }, void 0),
                                                 " ",
@@ -1676,30 +1681,30 @@ function BookingDialog({ children }) {
                                                         ...field
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/components/BookingDialog.tsx",
-                                                        lineNumber: 235,
+                                                        lineNumber: 241,
                                                         columnNumber: 153
                                                     }, void 0)
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/components/BookingDialog.tsx",
-                                                    lineNumber: 235,
+                                                    lineNumber: 241,
                                                     columnNumber: 140
                                                 }, void 0),
                                                 " ",
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$form$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["FormMessage"], {}, void 0, false, {
                                                     fileName: "[project]/src/components/BookingDialog.tsx",
-                                                    lineNumber: 235,
+                                                    lineNumber: 241,
                                                     columnNumber: 218
                                                 }, void 0),
                                                 " "
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/src/components/BookingDialog.tsx",
-                                            lineNumber: 235,
+                                            lineNumber: 241,
                                             columnNumber: 100
                                         }, void 0)
                                 }, void 0, false, {
                                     fileName: "[project]/src/components/BookingDialog.tsx",
-                                    lineNumber: 235,
+                                    lineNumber: 241,
                                     columnNumber: 28
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$form$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["FormField"], {
@@ -1712,7 +1717,7 @@ function BookingDialog({ children }) {
                                                     children: "Email (Optional)"
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/components/BookingDialog.tsx",
-                                                    lineNumber: 236,
+                                                    lineNumber: 242,
                                                     columnNumber: 111
                                                 }, void 0),
                                                 " ",
@@ -1722,36 +1727,36 @@ function BookingDialog({ children }) {
                                                         ...field
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/components/BookingDialog.tsx",
-                                                        lineNumber: 236,
+                                                        lineNumber: 242,
                                                         columnNumber: 164
                                                     }, void 0)
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/components/BookingDialog.tsx",
-                                                    lineNumber: 236,
+                                                    lineNumber: 242,
                                                     columnNumber: 151
                                                 }, void 0),
                                                 " ",
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$form$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["FormMessage"], {}, void 0, false, {
                                                     fileName: "[project]/src/components/BookingDialog.tsx",
-                                                    lineNumber: 236,
+                                                    lineNumber: 242,
                                                     columnNumber: 229
                                                 }, void 0),
                                                 " "
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/src/components/BookingDialog.tsx",
-                                            lineNumber: 236,
+                                            lineNumber: 242,
                                             columnNumber: 100
                                         }, void 0)
                                 }, void 0, false, {
                                     fileName: "[project]/src/components/BookingDialog.tsx",
-                                    lineNumber: 236,
+                                    lineNumber: 242,
                                     columnNumber: 28
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/src/components/BookingDialog.tsx",
-                            lineNumber: 233,
+                            lineNumber: 239,
                             columnNumber: 25
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$button$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Button"], {
@@ -1764,7 +1769,7 @@ function BookingDialog({ children }) {
                             children: "Next"
                         }, void 0, false, {
                             fileName: "[project]/src/components/BookingDialog.tsx",
-                            lineNumber: 238,
+                            lineNumber: 244,
                             columnNumber: 25
                         }, this)
                     ]
@@ -1778,20 +1783,20 @@ function BookingDialog({ children }) {
                                     children: "Step 2: Select Doctor & Time"
                                 }, void 0, false, {
                                     fileName: "[project]/src/components/BookingDialog.tsx",
-                                    lineNumber: 245,
+                                    lineNumber: 251,
                                     columnNumber: 29
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$dialog$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["DialogDescription"], {
                                     children: "Choose a doctor and an available time slot for today."
                                 }, void 0, false, {
                                     fileName: "[project]/src/components/BookingDialog.tsx",
-                                    lineNumber: 246,
+                                    lineNumber: 252,
                                     columnNumber: 29
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/src/components/BookingDialog.tsx",
-                            lineNumber: 244,
+                            lineNumber: 250,
                             columnNumber: 25
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1803,12 +1808,12 @@ function BookingDialog({ children }) {
                                         className: "h-8 w-8 animate-spin"
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/BookingDialog.tsx",
-                                        lineNumber: 250,
+                                        lineNumber: 256,
                                         columnNumber: 90
                                     }, this)
                                 }, void 0, false, {
                                     fileName: "[project]/src/components/BookingDialog.tsx",
-                                    lineNumber: 250,
+                                    lineNumber: 256,
                                     columnNumber: 33
                                 }, this) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$form$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["FormField"], {
                                     control: form.control,
@@ -1819,7 +1824,7 @@ function BookingDialog({ children }) {
                                                     children: "Doctor"
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/components/BookingDialog.tsx",
-                                                    lineNumber: 254,
+                                                    lineNumber: 260,
                                                     columnNumber: 41
                                                 }, void 0),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$select$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Select"], {
@@ -1832,17 +1837,17 @@ function BookingDialog({ children }) {
                                                                     placeholder: "Select a doctor"
                                                                 }, void 0, false, {
                                                                     fileName: "[project]/src/components/BookingDialog.tsx",
-                                                                    lineNumber: 256,
+                                                                    lineNumber: 262,
                                                                     columnNumber: 73
                                                                 }, void 0)
                                                             }, void 0, false, {
                                                                 fileName: "[project]/src/components/BookingDialog.tsx",
-                                                                lineNumber: 256,
+                                                                lineNumber: 262,
                                                                 columnNumber: 58
                                                             }, void 0)
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/components/BookingDialog.tsx",
-                                                            lineNumber: 256,
+                                                            lineNumber: 262,
                                                             columnNumber: 45
                                                         }, void 0),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$select$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["SelectContent"], {
@@ -1855,34 +1860,34 @@ function BookingDialog({ children }) {
                                                                     ]
                                                                 }, doc.id, true, {
                                                                     fileName: "[project]/src/components/BookingDialog.tsx",
-                                                                    lineNumber: 258,
+                                                                    lineNumber: 264,
                                                                     columnNumber: 69
                                                                 }, void 0))
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/components/BookingDialog.tsx",
-                                                            lineNumber: 257,
+                                                            lineNumber: 263,
                                                             columnNumber: 45
                                                         }, void 0)
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "[project]/src/components/BookingDialog.tsx",
-                                                    lineNumber: 255,
+                                                    lineNumber: 261,
                                                     columnNumber: 41
                                                 }, void 0),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$form$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["FormMessage"], {}, void 0, false, {
                                                     fileName: "[project]/src/components/BookingDialog.tsx",
-                                                    lineNumber: 261,
+                                                    lineNumber: 267,
                                                     columnNumber: 41
                                                 }, void 0)
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/src/components/BookingDialog.tsx",
-                                            lineNumber: 253,
+                                            lineNumber: 259,
                                             columnNumber: 37
                                         }, void 0)
                                 }, void 0, false, {
                                     fileName: "[project]/src/components/BookingDialog.tsx",
-                                    lineNumber: 252,
+                                    lineNumber: 258,
                                     columnNumber: 33
                                 }, this),
                                 selectedDoctorId && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1893,7 +1898,7 @@ function BookingDialog({ children }) {
                                                 className: "mr-2 h-6 w-6 animate-spin"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/components/BookingDialog.tsx",
-                                                lineNumber: 269,
+                                                lineNumber: 275,
                                                 columnNumber: 92
                                             }, this),
                                             " ",
@@ -1901,13 +1906,13 @@ function BookingDialog({ children }) {
                                                 children: "Finding open slots..."
                                             }, void 0, false, {
                                                 fileName: "[project]/src/components/BookingDialog.tsx",
-                                                lineNumber: 269,
+                                                lineNumber: 275,
                                                 columnNumber: 142
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/components/BookingDialog.tsx",
-                                        lineNumber: 269,
+                                        lineNumber: 275,
                                         columnNumber: 37
                                     }, this) : Object.keys(groupedSlots).length > 0 ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$form$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["FormField"], {
                                         control: form.control,
@@ -1918,7 +1923,7 @@ function BookingDialog({ children }) {
                                                         children: "Select an hour"
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/components/BookingDialog.tsx",
-                                                        lineNumber: 273,
+                                                        lineNumber: 279,
                                                         columnNumber: 45
                                                     }, void 0),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1931,12 +1936,12 @@ function BookingDialog({ children }) {
                                                                 children: hourKey
                                                             }, hourKey, false, {
                                                                 fileName: "[project]/src/components/BookingDialog.tsx",
-                                                                lineNumber: 276,
+                                                                lineNumber: 282,
                                                                 columnNumber: 53
                                                             }, void 0))
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/components/BookingDialog.tsx",
-                                                        lineNumber: 274,
+                                                        lineNumber: 280,
                                                         columnNumber: 45
                                                     }, void 0),
                                                     selectedSlotValue && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1950,34 +1955,34 @@ function BookingDialog({ children }) {
                                                                     children: (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$date$2d$fns$2f$format$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$locals$3e$__["format"])(new Date(selectedSlotValue), "p")
                                                                 }, void 0, false, {
                                                                     fileName: "[project]/src/components/BookingDialog.tsx",
-                                                                    lineNumber: 283,
+                                                                    lineNumber: 289,
                                                                     columnNumber: 113
                                                                 }, void 0)
                                                             ]
                                                         }, void 0, true, {
                                                             fileName: "[project]/src/components/BookingDialog.tsx",
-                                                            lineNumber: 283,
+                                                            lineNumber: 289,
                                                             columnNumber: 53
                                                         }, void 0)
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/components/BookingDialog.tsx",
-                                                        lineNumber: 282,
+                                                        lineNumber: 288,
                                                         columnNumber: 49
                                                     }, void 0),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$form$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["FormMessage"], {}, void 0, false, {
                                                         fileName: "[project]/src/components/BookingDialog.tsx",
-                                                        lineNumber: 286,
+                                                        lineNumber: 292,
                                                         columnNumber: 45
                                                     }, void 0)
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/src/components/BookingDialog.tsx",
-                                                lineNumber: 272,
+                                                lineNumber: 278,
                                                 columnNumber: 41
                                             }, void 0)
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/BookingDialog.tsx",
-                                        lineNumber: 271,
+                                        lineNumber: 277,
                                         columnNumber: 37
                                     }, this) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                         className: "text-center text-muted-foreground py-8 h-full flex flex-col justify-center items-center",
@@ -1986,7 +1991,7 @@ function BookingDialog({ children }) {
                                                 children: "No available slots for the selected provider today."
                                             }, void 0, false, {
                                                 fileName: "[project]/src/components/BookingDialog.tsx",
-                                                lineNumber: 291,
+                                                lineNumber: 297,
                                                 columnNumber: 41
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -1994,24 +1999,24 @@ function BookingDialog({ children }) {
                                                 children: "Please try a different doctor."
                                             }, void 0, false, {
                                                 fileName: "[project]/src/components/BookingDialog.tsx",
-                                                lineNumber: 292,
+                                                lineNumber: 298,
                                                 columnNumber: 41
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/components/BookingDialog.tsx",
-                                        lineNumber: 290,
+                                        lineNumber: 296,
                                         columnNumber: 37
                                     }, this)
                                 }, void 0, false, {
                                     fileName: "[project]/src/components/BookingDialog.tsx",
-                                    lineNumber: 267,
+                                    lineNumber: 273,
                                     columnNumber: 33
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/src/components/BookingDialog.tsx",
-                            lineNumber: 248,
+                            lineNumber: 254,
                             columnNumber: 25
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2024,7 +2029,7 @@ function BookingDialog({ children }) {
                                     children: "Back"
                                 }, void 0, false, {
                                     fileName: "[project]/src/components/BookingDialog.tsx",
-                                    lineNumber: 299,
+                                    lineNumber: 305,
                                     columnNumber: 29
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$button$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Button"], {
@@ -2037,13 +2042,13 @@ function BookingDialog({ children }) {
                                     children: "Next"
                                 }, void 0, false, {
                                     fileName: "[project]/src/components/BookingDialog.tsx",
-                                    lineNumber: 300,
+                                    lineNumber: 306,
                                     columnNumber: 29
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/src/components/BookingDialog.tsx",
-                            lineNumber: 298,
+                            lineNumber: 304,
                             columnNumber: 25
                         }, this)
                     ]
@@ -2057,20 +2062,20 @@ function BookingDialog({ children }) {
                                     children: "Step 3: Final Details"
                                 }, void 0, false, {
                                     fileName: "[project]/src/components/BookingDialog.tsx",
-                                    lineNumber: 308,
+                                    lineNumber: 314,
                                     columnNumber: 29
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$dialog$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["DialogDescription"], {
                                     children: "Please provide these last details to confirm your identity."
                                 }, void 0, false, {
                                     fileName: "[project]/src/components/BookingDialog.tsx",
-                                    lineNumber: 309,
+                                    lineNumber: 315,
                                     columnNumber: 29
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/src/components/BookingDialog.tsx",
-                            lineNumber: 307,
+                            lineNumber: 313,
                             columnNumber: 25
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2085,7 +2090,7 @@ function BookingDialog({ children }) {
                                                     children: "Gender"
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/components/BookingDialog.tsx",
-                                                    lineNumber: 314,
+                                                    lineNumber: 320,
                                                     columnNumber: 37
                                                 }, void 0),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$select$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Select"], {
@@ -2098,17 +2103,17 @@ function BookingDialog({ children }) {
                                                                     placeholder: "Select your gender"
                                                                 }, void 0, false, {
                                                                     fileName: "[project]/src/components/BookingDialog.tsx",
-                                                                    lineNumber: 316,
+                                                                    lineNumber: 322,
                                                                     columnNumber: 69
                                                                 }, void 0)
                                                             }, void 0, false, {
                                                                 fileName: "[project]/src/components/BookingDialog.tsx",
-                                                                lineNumber: 316,
+                                                                lineNumber: 322,
                                                                 columnNumber: 54
                                                             }, void 0)
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/components/BookingDialog.tsx",
-                                                            lineNumber: 316,
+                                                            lineNumber: 322,
                                                             columnNumber: 41
                                                         }, void 0),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$select$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["SelectContent"], {
@@ -2118,7 +2123,7 @@ function BookingDialog({ children }) {
                                                                     children: "Male"
                                                                 }, void 0, false, {
                                                                     fileName: "[project]/src/components/BookingDialog.tsx",
-                                                                    lineNumber: 318,
+                                                                    lineNumber: 324,
                                                                     columnNumber: 45
                                                                 }, void 0),
                                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$select$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["SelectItem"], {
@@ -2126,7 +2131,7 @@ function BookingDialog({ children }) {
                                                                     children: "Female"
                                                                 }, void 0, false, {
                                                                     fileName: "[project]/src/components/BookingDialog.tsx",
-                                                                    lineNumber: 319,
+                                                                    lineNumber: 325,
                                                                     columnNumber: 45
                                                                 }, void 0),
                                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$select$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["SelectItem"], {
@@ -2134,35 +2139,35 @@ function BookingDialog({ children }) {
                                                                     children: "Other"
                                                                 }, void 0, false, {
                                                                     fileName: "[project]/src/components/BookingDialog.tsx",
-                                                                    lineNumber: 320,
+                                                                    lineNumber: 326,
                                                                     columnNumber: 45
                                                                 }, void 0)
                                                             ]
                                                         }, void 0, true, {
                                                             fileName: "[project]/src/components/BookingDialog.tsx",
-                                                            lineNumber: 317,
+                                                            lineNumber: 323,
                                                             columnNumber: 41
                                                         }, void 0)
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "[project]/src/components/BookingDialog.tsx",
-                                                    lineNumber: 315,
+                                                    lineNumber: 321,
                                                     columnNumber: 37
                                                 }, void 0),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$form$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["FormMessage"], {}, void 0, false, {
                                                     fileName: "[project]/src/components/BookingDialog.tsx",
-                                                    lineNumber: 323,
+                                                    lineNumber: 329,
                                                     columnNumber: 37
                                                 }, void 0)
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/src/components/BookingDialog.tsx",
-                                            lineNumber: 313,
+                                            lineNumber: 319,
                                             columnNumber: 33
                                         }, void 0)
                                 }, void 0, false, {
                                     fileName: "[project]/src/components/BookingDialog.tsx",
-                                    lineNumber: 312,
+                                    lineNumber: 318,
                                     columnNumber: 29
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$form$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["FormField"], {
@@ -2175,7 +2180,7 @@ function BookingDialog({ children }) {
                                                     children: "Date of Birth"
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/components/BookingDialog.tsx",
-                                                    lineNumber: 328,
+                                                    lineNumber: 334,
                                                     columnNumber: 37
                                                 }, void 0),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$popover$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Popover"], {
@@ -2191,30 +2196,30 @@ function BookingDialog({ children }) {
                                                                             children: "Pick a date"
                                                                         }, void 0, false, {
                                                                             fileName: "[project]/src/components/BookingDialog.tsx",
-                                                                            lineNumber: 333,
+                                                                            lineNumber: 339,
                                                                             columnNumber: 97
                                                                         }, void 0),
                                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$calendar$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__CalendarIcon$3e$__["CalendarIcon"], {
                                                                             className: "ml-auto h-4 w-4 opacity-50"
                                                                         }, void 0, false, {
                                                                             fileName: "[project]/src/components/BookingDialog.tsx",
-                                                                            lineNumber: 334,
+                                                                            lineNumber: 340,
                                                                             columnNumber: 53
                                                                         }, void 0)
                                                                     ]
                                                                 }, void 0, true, {
                                                                     fileName: "[project]/src/components/BookingDialog.tsx",
-                                                                    lineNumber: 332,
+                                                                    lineNumber: 338,
                                                                     columnNumber: 49
                                                                 }, void 0)
                                                             }, void 0, false, {
                                                                 fileName: "[project]/src/components/BookingDialog.tsx",
-                                                                lineNumber: 331,
+                                                                lineNumber: 337,
                                                                 columnNumber: 45
                                                             }, void 0)
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/components/BookingDialog.tsx",
-                                                            lineNumber: 330,
+                                                            lineNumber: 336,
                                                             columnNumber: 41
                                                         }, void 0),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$popover$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["PopoverContent"], {
@@ -2228,40 +2233,40 @@ function BookingDialog({ children }) {
                                                                 initialFocus: true
                                                             }, void 0, false, {
                                                                 fileName: "[project]/src/components/BookingDialog.tsx",
-                                                                lineNumber: 339,
+                                                                lineNumber: 345,
                                                                 columnNumber: 45
                                                             }, void 0)
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/components/BookingDialog.tsx",
-                                                            lineNumber: 338,
+                                                            lineNumber: 344,
                                                             columnNumber: 41
                                                         }, void 0)
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "[project]/src/components/BookingDialog.tsx",
-                                                    lineNumber: 329,
+                                                    lineNumber: 335,
                                                     columnNumber: 37
                                                 }, void 0),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$form$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["FormMessage"], {}, void 0, false, {
                                                     fileName: "[project]/src/components/BookingDialog.tsx",
-                                                    lineNumber: 342,
+                                                    lineNumber: 348,
                                                     columnNumber: 37
                                                 }, void 0)
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/src/components/BookingDialog.tsx",
-                                            lineNumber: 327,
+                                            lineNumber: 333,
                                             columnNumber: 33
                                         }, void 0)
                                 }, void 0, false, {
                                     fileName: "[project]/src/components/BookingDialog.tsx",
-                                    lineNumber: 326,
+                                    lineNumber: 332,
                                     columnNumber: 29
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/src/components/BookingDialog.tsx",
-                            lineNumber: 311,
+                            lineNumber: 317,
                             columnNumber: 25
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2275,7 +2280,7 @@ function BookingDialog({ children }) {
                                     children: "Back"
                                 }, void 0, false, {
                                     fileName: "[project]/src/components/BookingDialog.tsx",
-                                    lineNumber: 347,
+                                    lineNumber: 353,
                                     columnNumber: 28
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$button$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Button"], {
@@ -2288,7 +2293,7 @@ function BookingDialog({ children }) {
                                                 className: "mr-2 h-4 w-4 animate-spin"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/components/BookingDialog.tsx",
-                                                lineNumber: 349,
+                                                lineNumber: 355,
                                                 columnNumber: 50
                                             }, this),
                                             "Booking..."
@@ -2296,20 +2301,18 @@ function BookingDialog({ children }) {
                                     }, void 0, true) : "Book Appointment"
                                 }, void 0, false, {
                                     fileName: "[project]/src/components/BookingDialog.tsx",
-                                    lineNumber: 348,
+                                    lineNumber: 354,
                                     columnNumber: 28
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/src/components/BookingDialog.tsx",
-                            lineNumber: 346,
+                            lineNumber: 352,
                             columnNumber: 25
                         }, this)
                     ]
                 }, void 0, true);
             case 4:
-                const { doctor: finalDoctorId, startTime: finalStartTime } = form.getValues();
-                const finalDoctor = doctors.find((d)=>d.id === finalDoctorId);
                 return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Fragment"], {
                     children: [
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$dialog$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["DialogHeader"], {
@@ -2318,20 +2321,20 @@ function BookingDialog({ children }) {
                                     children: "Appointment Confirmed!"
                                 }, void 0, false, {
                                     fileName: "[project]/src/components/BookingDialog.tsx",
-                                    lineNumber: 360,
+                                    lineNumber: 364,
                                     columnNumber: 29
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$dialog$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["DialogDescription"], {
                                     children: "Your booking was successful. We look forward to seeing you."
                                 }, void 0, false, {
                                     fileName: "[project]/src/components/BookingDialog.tsx",
-                                    lineNumber: 361,
+                                    lineNumber: 365,
                                     columnNumber: 29
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/src/components/BookingDialog.tsx",
-                            lineNumber: 359,
+                            lineNumber: 363,
                             columnNumber: 25
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2350,48 +2353,48 @@ function BookingDialog({ children }) {
                                         d: "M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/BookingDialog.tsx",
-                                        lineNumber: 364,
+                                        lineNumber: 368,
                                         columnNumber: 168
                                     }, this)
                                 }, void 0, false, {
                                     fileName: "[project]/src/components/BookingDialog.tsx",
-                                    lineNumber: 364,
+                                    lineNumber: 368,
                                     columnNumber: 29
                                 }, this),
-                                finalDoctor && finalStartTime && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
+                                selectedDoctorObj && selectedSlotObj && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
                                     children: [
                                         "Your appointment with ",
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
                                             className: "font-bold",
-                                            children: finalDoctor?.name
+                                            children: selectedDoctorObj.name
                                         }, void 0, false, {
                                             fileName: "[project]/src/components/BookingDialog.tsx",
-                                            lineNumber: 366,
+                                            lineNumber: 370,
                                             columnNumber: 58
                                         }, this),
                                         " on ",
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
                                             className: "font-bold",
-                                            children: (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$date$2d$fns$2f$format$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$locals$3e$__["format"])(new Date(finalStartTime), 'PPP')
+                                            children: (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$date$2d$fns$2f$format$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$locals$3e$__["format"])(new Date(selectedSlotObj.startTime), 'PPP')
                                         }, void 0, false, {
                                             fileName: "[project]/src/components/BookingDialog.tsx",
-                                            lineNumber: 366,
-                                            columnNumber: 116
+                                            lineNumber: 370,
+                                            columnNumber: 121
                                         }, this),
                                         " at ",
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
                                             className: "font-bold",
-                                            children: (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$date$2d$fns$2f$format$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$locals$3e$__["format"])(new Date(finalStartTime), 'p')
+                                            children: (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$date$2d$fns$2f$format$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$locals$3e$__["format"])(new Date(selectedSlotObj.startTime), 'p')
                                         }, void 0, false, {
                                             fileName: "[project]/src/components/BookingDialog.tsx",
-                                            lineNumber: 366,
-                                            columnNumber: 196
+                                            lineNumber: 370,
+                                            columnNumber: 212
                                         }, this),
                                         " is confirmed."
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/components/BookingDialog.tsx",
-                                    lineNumber: 366,
+                                    lineNumber: 370,
                                     columnNumber: 33
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -2399,13 +2402,13 @@ function BookingDialog({ children }) {
                                     children: "You will also receive a confirmation message shortly."
                                 }, void 0, false, {
                                     fileName: "[project]/src/components/BookingDialog.tsx",
-                                    lineNumber: 368,
+                                    lineNumber: 372,
                                     columnNumber: 29
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/src/components/BookingDialog.tsx",
-                            lineNumber: 363,
+                            lineNumber: 367,
                             columnNumber: 25
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$button$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Button"], {
@@ -2414,7 +2417,7 @@ function BookingDialog({ children }) {
                             children: "Close"
                         }, void 0, false, {
                             fileName: "[project]/src/components/BookingDialog.tsx",
-                            lineNumber: 370,
+                            lineNumber: 374,
                             columnNumber: 25
                         }, this)
                     ]
@@ -2424,7 +2427,7 @@ function BookingDialog({ children }) {
                     children: "Something went wrong."
                 }, void 0, false, {
                     fileName: "[project]/src/components/BookingDialog.tsx",
-                    lineNumber: 374,
+                    lineNumber: 378,
                     columnNumber: 24
                 }, this);
         }
@@ -2438,7 +2441,7 @@ function BookingDialog({ children }) {
                 children: children
             }, void 0, false, {
                 fileName: "[project]/src/components/BookingDialog.tsx",
-                lineNumber: 380,
+                lineNumber: 384,
                 columnNumber: 13
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$dialog$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["DialogContent"], {
@@ -2451,27 +2454,27 @@ function BookingDialog({ children }) {
                         children: renderStepContent()
                     }, void 0, false, {
                         fileName: "[project]/src/components/BookingDialog.tsx",
-                        lineNumber: 385,
+                        lineNumber: 389,
                         columnNumber: 21
                     }, this)
                 }, void 0, false, {
                     fileName: "[project]/src/components/BookingDialog.tsx",
-                    lineNumber: 384,
+                    lineNumber: 388,
                     columnNumber: 17
                 }, this)
             }, void 0, false, {
                 fileName: "[project]/src/components/BookingDialog.tsx",
-                lineNumber: 383,
+                lineNumber: 387,
                 columnNumber: 13
             }, this)
         ]
     }, void 0, true, {
         fileName: "[project]/src/components/BookingDialog.tsx",
-        lineNumber: 379,
+        lineNumber: 383,
         columnNumber: 9
     }, this);
 }
-_s(BookingDialog, "4OQkyU/We8NXSPQLkIHAszrUin4=", false, function() {
+_s(BookingDialog, "mxcUQztQ6HNkpEZsQ5P91c+3oFg=", false, function() {
     return [
         __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2d$hook$2d$form$2f$dist$2f$index$2e$esm$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useForm"]
     ];
