@@ -237,13 +237,15 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
             fieldsToValidate = ['fullName', 'phone', 'email'];
         } else if (step === 2) {
             fieldsToValidate = ['doctor', 'startTime'];
-        } else if (step === 3) {
-             fieldsToValidate = ['gender', 'dob'];
         }
 
         const isValid = await form.trigger(fieldsToValidate);
         if (isValid) {
-            setStep(prev => prev + 1);
+            if (step === 3) { // If on the final step, submit the form
+                await form.handleSubmit(processBooking)();
+            } else {
+                setStep(prev => prev + 1);
+            }
         }
     };
 
