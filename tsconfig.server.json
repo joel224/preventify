@@ -7,6 +7,6 @@
     "noEmit": false,
     "esModuleInterop": true
   },
-  "include": ["server/**/*.ts"],
+  "include": ["backend/**/*.ts"],
   "exclude": ["node_modules", "src"]
 }
