@@ -170,12 +170,11 @@ async function fetchSlotsForDate(doctorId: string, clinicId: string, startDate: 
                     for (const item of scheduleItems) {
                         if (item.slots && Array.isArray(item.slots)) {
                             item.slots.forEach((slot: any) => {
-                                // Filter slots based on work hours (8am to 7pm)
                                 const slotStartTime = new Date(slot.s);
-                                const dayStart = setHours(startOfDay(slotStartTime), 8);
-                                const dayEnd = setHours(startOfDay(slotStartTime), 19); // 7 PM
+                                const workDayStart = setHours(startOfDay(slotStartTime), 8);
+                                const workDayEnd = setHours(startOfDay(slotStartTime), 19); // 7 PM
                                 
-                                if (slot.available && isBefore(slotStartTime, dayEnd) && slotStartTime >= dayStart) {
+                                if (slot.available && slotStartTime >= workDayStart && isBefore(slotStartTime, workDayEnd)) {
                                     availableSlots.push({
                                         startTime: slot.s,
                                         endTime: slot.e,
@@ -193,7 +192,7 @@ async function fetchSlotsForDate(doctorId: string, clinicId: string, startDate: 
         if (availableSlots.length > 0) {
             console.log(`SUCCESS: Found ${availableSlots.length} available slots.`);
         } else {
-            console.log(`INFO: No available slots found in the given range.`);
+            console.log(`INFO: No available slots found for the requested date range.`);
         }
         return availableSlots;
 
@@ -207,33 +206,41 @@ async function fetchSlotsForDate(doctorId: string, clinicId: string, startDate: 
 export async function getAvailableSlots(doctorId: string, clinicId: string, date: string): Promise<any[]> {
     const requestedDate = new Date(date);
     const now = new Date();
+
+    // The start date for the API call should be the date requested by the user.
+    const apiStartDate = startOfDay(requestedDate);
     
-    // Define working hours
-    const todayWorkStart = setHours(startOfDay(now), 8);
-    const todayWorkEnd = setHours(startOfDay(now), 19); // 7 PM
+    // As per API requirements, the end date must be at least D+1.
+    const apiEndDate = addDays(apiStartDate, 1);
 
-    let slots: any[] = [];
+    // Fetch slots for the two-day range.
+    let slots = await fetchSlotsForDate(doctorId, clinicId, apiStartDate, apiEndDate);
 
-    // Check today first, but only if it's before 7 PM
-    if (isBefore(now, todayWorkEnd)) {
-        console.log("INFO: Checking for available slots for the rest of today.");
-        // If it's before 8 AM, check the whole day. Otherwise, check from the current time.
-        const startTime = isBefore(now, todayWorkStart) ? todayWorkStart : now;
-        slots = await fetchSlotsForDate(doctorId, clinicId, startTime, todayWorkEnd);
-    } else {
-        console.log("INFO: It's past 7 PM. Skipping today's slots check.");
-    }
+    // Filter the results to only include slots that are valid based on our business logic.
+    return slots.filter(slot => {
+        const slotStartTime = new Date(slot.startTime);
+        
+        // Ensure the slot is on the originally requested date.
+        if (format(slotStartTime, 'yyyy-MM-dd') !== format(requestedDate, 'yyyy-MM-dd')) {
+            return false;
+        }
 
-    // If no slots are found for today, check for tomorrow
-    if (slots.length === 0) {
-        console.log("INFO: No slots found for today. Checking for tomorrow's availability.");
-        const tomorrow = addDays(requestedDate, 1);
-        const tomorrowStart = setHours(startOfDay(tomorrow), 8);
-        const tomorrowEnd = setHours(startOfDay(tomorrow), 19);
-        slots = await fetchSlotsForDate(doctorId, clinicId, tomorrowStart, tomorrowEnd);
-    }
-    
-    return slots;
+        // Ensure the slot is within working hours (8am to 7pm).
+        const workDayStart = setHours(startOfDay(slotStartTime), 8);
+        const workDayEnd = setHours(startOfDay(slotStartTime), 19); // 7 PM
+        if (slotStartTime < workDayStart || slotStartTime >= workDayEnd) {
+            return false;
+        }
+
+        // If the requested date is today, ensure the slot is in the future.
+        if (format(requestedDate, 'yyyy-MM-dd') === format(now, 'yyyy-MM-dd')) {
+            if (slotStartTime < now) {
+                return false;
+            }
+        }
+
+        return true;
+    });
 }
 
 
