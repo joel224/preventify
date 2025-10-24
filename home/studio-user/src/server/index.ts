@@ -1,3 +1,4 @@
+
 import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
@@ -14,85 +15,23 @@ const port = process.env.PORT || 3001;
 app.use(cors());
 app.use(express.json());
 
-// In-memory session storage for the booking flow
-const bookingSessions: { [key: string]: any } = {};
-
-app.post('/api/save-step', (req, res) => {
-    const { step, sessionId, data } = req.body;
-    console.log(`\n--- [DEBUG] SERVER index.ts: /api/save-step called for step ${step} ---`);
-    console.log(`--- [DEBUG] SERVER index.ts: Received data:`, JSON.stringify(data, null, 2));
-    
-    if (step === 1) {
-        if (!data || !data.fullName || !data.phone) {
-             console.error('--- [DEBUG] SERVER index.ts: Missing data for step 1. ---');
-             return res.status(400).json({ message: 'Missing data for step 1.' });
-        }
-        const newSessionId = crypto.randomUUID();
-        bookingSessions[newSessionId] = { step1: data };
-        console.log(`--- [DEBUG] SERVER index.ts: New session created with ID: ${newSessionId} ---`);
-        return res.status(200).json({ sessionId: newSessionId });
-    }
-
-    if (!sessionId || !bookingSessions[sessionId]) {
-        console.error('--- [DEBUG] SERVER index.ts: Invalid or missing session ID for step > 1 ---');
-        return res.status(400).json({ message: 'Invalid or missing session ID.' });
-    }
-
-    if (step === 2) {
-        if (!data) {
-             console.error('--- [DEBUG] SERVER index.ts: Missing data for step 2. ---');
-             return res.status(400).json({ message: 'Missing data for step 2.' });
-        }
-        bookingSessions[sessionId].step2 = data;
-        console.log(`--- [DEBUG] SERVER index.ts: Session ${sessionId} updated with step 2 data. ---`);
-        return res.status(200).json({ message: 'Step 2 data saved.' });
-    }
-
-    return res.status(400).json({ message: 'Invalid step provided.' });
-});
+// In-memory session storage for the booking flow is no longer needed with the single-page approach.
+// We will receive all data in one go on the final submission.
 
 app.post('/api/create-appointment', async (req, res) => {
     console.log('\n--- [DEBUG] SERVER index.ts: Received request on /api/create-appointment endpoint ---');
-    const { sessionId, data: step3Data } = req.body;
     console.log('--- [DEBUG] SERVER index.ts: Request Body Received from Frontend:', JSON.stringify(req.body, null, 2));
 
-    if (!sessionId || !bookingSessions[sessionId]) {
-        return res.status(400).json({ message: 'Session not found or expired.' });
-    }
+    const { patient, appointment } = req.body;
 
-    const sessionData = bookingSessions[sessionId];
-    if (!sessionData.step1 || !sessionData.step2) {
-        return res.status(400).json({ message: 'Incomplete booking data in session.' });
+    if (!patient || !appointment || !patient.firstName || !patient.phone || !appointment.doctorId || !appointment.startTime) {
+        console.error('--- [DEBUG] SERVER index.ts: Invalid booking data. Missing required details. ---');
+        return res.status(400).json({ message: 'Invalid booking data provided. Patient or appointment details are missing.' });
     }
-    
-    // Combine all data
-    const nameParts = sessionData.step1.fullName.split(" ");
-    const fullPayload = {
-        patient: {
-            firstName: nameParts[0],
-            lastName: nameParts.length > 1 ? nameParts.slice(1).join(" ") : " ",
-            phone: sessionData.step1.phone,
-            email: sessionData.step1.email || "",
-            gender: step3Data.gender,
-            dob: step3Data.dob,
-        },
-        appointment: {
-            clinicId: sessionData.step2.clinicId,
-            doctorId: sessionData.step2.doctor,
-            startTime: sessionData.step2.startTime,
-        }
-    };
-
-    console.log('--- [DEBUG] SERVER index.ts: Assembled full payload for booking:', JSON.stringify(fullPayload, null, 2));
 
     try {
-        const result = await bookAppointment(fullPayload);
+        const result = await bookAppointment(req.body);
         console.log('--- [DEBUG] SERVER index.ts: bookAppointment was successful. Sending 201 response. ---');
-        
-        // Clean up the session
-        delete bookingSessions[sessionId];
-        console.log(`--- [DEBUG] SERVER index.ts: Session ${sessionId} cleaned up. ---`);
-        
         res.status(201).json(result);
     } catch (error: any) {
         console.error('--- [DEBUG] SERVER index.ts: Error in /api/create-appointment endpoint:', error.message);
@@ -126,7 +65,8 @@ app.get('/api/doctors-and-clinics', async (req, res) => {
     console.log('API Endpoint: /api/doctors-and-clinics called');
     const data = await getBusinessEntitiesAndDoctors();
     res.json(data);
-  } catch (error: any)     console.error('Error in /api/doctors-and-clinics endpoint:', error.message);
+  } catch (error: any) {
+     console.error('Error in /api/doctors-and-clinics endpoint:', error.message);
      res.status(500).json({ message: 'Failed to get doctors and clinics', error: error.message });
   }
 });
