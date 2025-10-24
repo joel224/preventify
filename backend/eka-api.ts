@@ -351,27 +351,46 @@ export async function bookAppointment(data: any): Promise<any> {
     console.log(JSON.stringify(appointmentPayload, null, 2));
     console.log("------------------------------------");
 
-    try {
-        const bookingResponse = await makeApiRequest(async (client) => {
+    const attemptBooking = async () => {
+        return makeApiRequest(async (client) => {
             const response = await client.post('/dr/v1/appointment', appointmentPayload);
             return response.data; // Return just the data part
         });
+    };
 
-        console.log("--- [DEBUG] BACKEND eka-api.ts: SUCCESS: API responded to booking request. ---");
-        console.log("--- [DEBUG] BACKEND eka-api.ts: Full API Response Data ---");
+    try {
+        const bookingResponse = await attemptBooking();
+        console.log("--- [DEBUG] BACKEND eka-api.ts: SUCCESS on first attempt. ---");
         console.log(JSON.stringify(bookingResponse, null, 2));
-        console.log("---------------------------------");
-        
         return bookingResponse;
     } catch(error: any) {
-        console.error("--- [DEBUG] BACKEND eka-api.ts: ERROR during Eka API booking call ---");
+        console.error("--- [DEBUG] BACKEND eka-api.ts: ERROR during first booking attempt ---");
         if (error.response) {
             console.error("Eka API Error Response Status:", error.response.status);
             console.error("Eka API Error Response Data:", JSON.stringify(error.response.data, null, 2));
         } else {
             console.error("Eka API Error Message:", error.message);
         }
-        console.log("---------------------------------");
-        throw error;
+        console.log("--- [INFO] Retrying booking after a fresh login... ---");
+
+        // Force a new login
+        await _loginAndGetTokens();
+
+        // Retry the booking
+        try {
+            const bookingResponse = await attemptBooking();
+            console.log("--- [DEBUG] BACKEND eka-api.ts: SUCCESS on second attempt. ---");
+            console.log(JSON.stringify(bookingResponse, null, 2));
+            return bookingResponse;
+        } catch (finalError: any) {
+            console.error("--- [DEBUG] BACKEND eka-api.ts: ERROR during second booking attempt ---");
+             if (finalError.response) {
+                console.error("Eka API Error Response Status:", finalError.response.status);
+                console.error("Eka API Error Response Data:", JSON.stringify(finalError.response.data, null, 2));
+            } else {
+                console.error("Eka API Error Message:", finalError.message);
+            }
+            throw finalError; // Throw the final error if the retry also fails
+        }
     }
 }
