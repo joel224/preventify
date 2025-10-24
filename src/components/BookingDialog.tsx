@@ -47,7 +47,7 @@ const stepThreeSchema = z.object({
     dob: z.date({ required_error: "Date of birth is required." }),
 });
 
-// A combined schema for progressive validation
+// A combined schema for the final submission
 const combinedSchema = stepOneSchema.merge(stepTwoSchema).merge(stepThreeSchema);
 type BookingFormValues = z.infer<typeof combinedSchema>;
 
@@ -73,7 +73,7 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
             case 1: return stepOneSchema;
             case 2: return stepTwoSchema;
             case 3: return stepThreeSchema;
-            default: return combinedSchema; // Fallback to the full schema
+            default: return combinedSchema;
         }
     }
 
@@ -81,18 +81,15 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
         resolver: zodResolver(getCurrentSchema()),
         mode: "onChange",
     });
-    
-    // This effect updates the resolver when the step changes
+
     useEffect(() => {
-        form.trigger(); // Re-validate with the new schema
+        form.trigger();
     }, [step, form]);
 
     const selectedDoctorId = form.watch("doctor");
-    const selectedDoctor = doctors.find(d => d.id === selectedDoctorId);
-
-    // Fetch doctors when dialog opens
+    
     useEffect(() => {
-        if (isOpen && doctors.length === 0) {
+        if (isOpen && step === 2 && doctors.length === 0) {
             setIsLoading(true);
             axios.get('/api/doctors-and-clinics')
                 .then(response => {
@@ -104,18 +101,20 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
                 })
                 .finally(() => setIsLoading(false));
         }
-    }, [isOpen, doctors.length]);
+    }, [isOpen, step, doctors.length]);
 
-    // Fetch slots when a doctor is selected
     useEffect(() => {
-        if (selectedDoctorId && selectedDoctor) {
+        if (selectedDoctorId) {
+            const doctor = doctors.find(d => d.id === selectedDoctorId);
+            if (!doctor) return;
+
             setIsFetchingSlots(true);
             setAvailableSlots([]);
             setSelectedHour(null);
             form.resetField("startTime");
 
             const dateString = format(new Date(), 'yyyy-MM-dd');
-            axios.get(`/api/available-slots?doctorId=${selectedDoctorId}&clinicId=${selectedDoctor.clinicId}&date=${dateString}`)
+            axios.get(`/api/available-slots?doctorId=${selectedDoctorId}&clinicId=${doctor.clinicId}&date=${dateString}`)
                 .then(response => {
                     setAvailableSlots(response.data || []);
                 })
@@ -127,7 +126,7 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
         } else {
              setAvailableSlots([]);
         }
-    }, [selectedDoctorId, selectedDoctor, form]);
+    }, [selectedDoctorId, doctors, form]);
 
     const groupedSlots = useMemo(() => {
         return availableSlots.reduce((acc, slot) => {
@@ -158,7 +157,9 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
     const processBooking = async (data: BookingFormValues) => {
         setIsSubmitting(true);
         try {
+            const selectedDoctor = doctors.find(d => d.id === data.doctor);
             const selectedSlot = availableSlots.find(s => s.startTime === data.startTime);
+
             if (!selectedSlot || !selectedDoctor) {
                 toast.error("Invalid slot or doctor selected");
                 setIsSubmitting(false);
@@ -187,7 +188,7 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
             
             await axios.post('/api/book-appointment', payload);
             toast.success("Appointment Booked!", { description: `Your appointment with ${selectedDoctor?.name} on ${format(new Date(selectedSlot.startTime), "PPP")} at ${format(new Date(selectedSlot.startTime), "p")} is confirmed.` });
-            setStep(4); // Move to confirmation screen
+            setStep(4);
 
         } catch (error: any) {
             console.error("Booking failed:", error);
@@ -199,13 +200,15 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
     
     useEffect(() => {
         if (!isOpen) {
-            setStep(1);
-            setIsLoading(false);
-            setIsSubmitting(false);
-            setAvailableSlots([]);
-            setIsFetchingSlots(false);
-            setSelectedHour(null);
-            form.reset();
+            setTimeout(() => {
+                setStep(1);
+                setIsLoading(false);
+                setIsSubmitting(false);
+                setAvailableSlots([]);
+                setIsFetchingSlots(false);
+                setSelectedHour(null);
+                form.reset();
+            }, 300);
         }
     }, [isOpen, form]);
 
@@ -240,7 +243,7 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
                     <>
                         <DialogHeader>
                             <DialogTitle>Step 2: Select Doctor & Time</DialogTitle>
-                            <DialogDescription>Choose a doctor and an available time slot.</DialogDescription>
+                            <DialogDescription>Choose a doctor and an available time slot for today.</DialogDescription>
                         </DialogHeader>
                         <div className="space-y-4 py-4 min-h-[250px]">
                             {isLoading ? (
@@ -349,8 +352,8 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
                     </>
                 );
              case 4:
-                const bookedDoctor = doctors.find(d => d.id === form.getValues('doctor'));
-                const bookedTime = form.getValues('startTime');
+                const { doctor: finalDoctorId, startTime: finalStartTime } = form.getValues();
+                const finalDoctor = doctors.find(d => d.id === finalDoctorId);
                 return (
                     <>
                         <DialogHeader>
@@ -359,7 +362,9 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
                         </DialogHeader>
                         <div className="py-8 text-center space-y-4">
                             <svg className="w-16 h-16 mx-auto text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                            <p>Your appointment with <span className="font-bold">{bookedDoctor?.name}</span> on <span className="font-bold">{format(new Date(bookedTime), 'PPP')}</span> at <span className="font-bold">{format(new Date(bookedTime), 'p')}</span> is confirmed.</p>
+                            {finalDoctor && finalStartTime && (
+                                <p>Your appointment with <span className="font-bold">{finalDoctor?.name}</span> on <span className="font-bold">{format(new Date(finalStartTime), 'PPP')}</span> at <span className="font-bold">{format(new Date(finalStartTime), 'p')}</span> is confirmed.</p>
+                            )}
                             <p className="text-sm text-muted-foreground">You will also receive a confirmation message shortly.</p>
                         </div>
                         <Button onClick={() => setIsOpen(false)} className="w-full">Close</Button>
