@@ -153,6 +153,8 @@ async function fetchSlotsForDate(doctorId: string, clinicId: string, startDate: 
             return response.data;
         });
 
+        console.log(`RAW SLOT API RESPONSE for ${doctorId}/${clinicId} on ${formattedStartDate}:`, JSON.stringify(responseData, null, 2));
+
         if (!responseData.data || !responseData.data.schedule) {
             console.log(`INFO: No schedule object found for ${doctorId}/${clinicId} on ${formattedStartDate}.`);
             return [];
