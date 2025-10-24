@@ -269,7 +269,7 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
                                <FormItem> 
                                    <FormLabel>Full Name</FormLabel> 
                                    <FormControl>
-                                       <Input placeholder="John Doe" {...field} />
+                                       <Input placeholder="John Doe" {...field} value={field.value ?? ""} />
                                    </FormControl> 
                                    <FormMessage /> 
                                </FormItem> 
@@ -278,7 +278,7 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
                                <FormItem> 
                                    <FormLabel>Phone</FormLabel> 
                                    <FormControl>
-                                       <Input placeholder="+91 98765 43210" {...field} />
+                                       <Input placeholder="+91 98765 43210" {...field} value={field.value ?? ""} />
                                    </FormControl> 
                                    <FormMessage /> 
                                </FormItem> 
@@ -287,7 +287,7 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
                                <FormItem> 
                                    <FormLabel>Email (Optional)</FormLabel> 
                                    <FormControl>
-                                       <Input placeholder="you@example.com" {...field} />
+                                       <Input placeholder="you@example.com" {...field} value={field.value ?? ""} />
                                    </FormControl> 
                                    <FormMessage /> 
                                </FormItem> 
