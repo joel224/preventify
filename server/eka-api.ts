@@ -1,7 +1,7 @@
 
 import axios from 'axios';
 import { getTokens, saveTokens } from './token-storage';
-import { format, addDays, setHours, setMinutes, setSeconds, isBefore, startOfDay, endOfDay } from "date-fns";
+import { format, addDays, setHours, isBefore, startOfDay } from "date-fns";
 import { processBusinessEntities } from './data-processing';
 
 const EKA_API_BASE_URL = 'https://api.eka.care';
@@ -135,7 +135,6 @@ async function makeApiRequest(apiCall: (client: any) => Promise<any>) {
   }
 }
 
-// Helper function to fetch slots for a given date range
 async function fetchSlotsForDate(doctorId: string, clinicId: string, startDate: Date, endDate: Date): Promise<any[]> {
     const formattedStartDate = format(startDate, 'yyyy-MM-dd');
     const formattedEndDate = format(endDate, 'yyyy-MM-dd');
@@ -155,44 +154,42 @@ async function fetchSlotsForDate(doctorId: string, clinicId: string, startDate: 
 
         console.log(`RAW SLOT API RESPONSE for ${doctorId}/${clinicId} on ${formattedStartDate}:`, JSON.stringify(responseData, null, 2));
 
-        if (!responseData.data || !responseData.data.schedule) {
+        if (!responseData?.data?.schedule) {
             console.log(`INFO: No schedule object found for ${doctorId}/${clinicId} on ${formattedStartDate}.`);
             return [];
         }
 
         const schedule = responseData.data.schedule;
-        const availableSlots: any[] = [];
+        let availableSlots: any[] = [];
         
-        // Correctly iterate through the nested structure
-        const scheduleItemsForClinic = schedule[clinicId];
-        if (scheduleItemsForClinic && Array.isArray(scheduleItemsForClinic)) {
-            for (const item of scheduleItemsForClinic) {
-                if (item.slots && Array.isArray(item.slots)) {
-                    item.slots.forEach((slot: any) => {
-                        // The primary source of truth for a slot is its "available" flag.
-                        if (slot.available) {
-                            availableSlots.push({
-                                startTime: slot.s,
-                                endTime: slot.e,
-                                doctorId,
-                                clinicId,
-                            });
-                        }
+        const clinicSchedule = schedule[clinicId];
+        if (clinicSchedule && Array.isArray(clinicSchedule)) {
+            clinicSchedule.forEach(scheduleItem => {
+                if (scheduleItem.slots && Array.isArray(scheduleItem.slots)) {
+                    scheduleItem.slots.forEach((slot: any) => {
+                        // Directly use the slot data from the API
+                        availableSlots.push({
+                            startTime: slot.s,
+                            endTime: slot.e,
+                            available: slot.available, // Keep the available flag
+                            doctorId,
+                            clinicId,
+                        });
                     });
                 }
-            }
+            });
         }
         
         if (availableSlots.length > 0) {
-            console.log(`SUCCESS: Found ${availableSlots.length} raw available slots from API.`);
+            console.log(`SUCCESS: Found ${availableSlots.length} raw slots from API.`);
         } else {
-            console.log(`INFO: No available slots found in API response for the requested date range.`);
+            console.log(`INFO: No slots found in API response for the requested date range.`);
         }
         return availableSlots;
 
     } catch (error: any) {
         console.error(`ERROR fetching slots for ${doctorId}/${clinicId}:`, error.message);
-        return []; // Return empty array on error
+        return [];
     }
 }
 
@@ -201,30 +198,26 @@ export async function getAvailableSlots(doctorId: string, clinicId: string, date
     const requestedDate = new Date(date);
     const now = new Date();
 
-    // Per API requirements, the end date must be at least D+1.
     const apiStartDate = startOfDay(requestedDate);
     const apiEndDate = addDays(apiStartDate, 1);
 
-    // Fetch all available slots for the requested day from the API
     let slots = await fetchSlotsForDate(doctorId, clinicId, apiStartDate, apiEndDate);
 
     const finalFilteredSlots = slots.filter(slot => {
-        const slotStartTime = new Date(slot.startTime);
-
-        // 1. Ensure the slot is on the originally requested date.
-        // The API might return slots for the next day as well, which we don't want in this step.
-        const isOnRequestedDate = format(slotStartTime, 'yyyy-MM-dd') === format(requestedDate, 'yyyy-MM-dd');
-        if (!isOnRequestedDate) {
+        // Condition 1: The slot must be marked as available by the API.
+        if (!slot.available) {
             return false;
         }
 
-        // 2. If the requested date is today, ensure the slot is in the future.
+        const slotStartTime = new Date(slot.startTime);
+
+        // Condition 2: If the requested date is today, the slot must be in the future.
         const isToday = format(requestedDate, 'yyyy-MM-dd') === format(now, 'yyyy-MM-dd');
         if (isToday && isBefore(slotStartTime, now)) {
             return false;
         }
-
-        // If it passes the above checks, the slot is considered valid.
+        
+        // If it passes all checks, it's a valid slot to show.
         return true;
     });
 
@@ -268,12 +261,12 @@ export async function getBusinessEntitiesAndDoctors(): Promise<any> {
 }
 
 export async function bookAppointment(data: any): Promise<any> {
-    console.log("--- Starting Simplified Booking Process ---");
+    console.log("--- [DEBUG] Starting Booking Process ---");
     
-    // Generate a unique partner_appointment_id
+    // Generate unique IDs for the appointment and patient from our system's perspective
     const partnerAppointmentId = `preventify_appt_${Date.now()}`;
-    // The partner_patient_id can also be a unique ID generated by us.
-    const partnerPatientId = `preventify_patient_${Date.now()}`;
+    // A unique patient ID for our system. The API will create/link the patient profile based on patient_details.
+    const partnerPatientId = `preventify_patient_${data.patient.phone}_${Date.now()}`;
 
     // Convert start time to a Unix timestamp in seconds
     const startTimeInSeconds = Math.floor(new Date(data.appointment.startTime).getTime() / 1000);
@@ -282,12 +275,12 @@ export async function bookAppointment(data: any): Promise<any> {
 
     const sanitizedMobile = data.patient.phone.replace(/^\+/, '');
 
-    // Construct the payload for the appointment booking
+    // Construct the payload exactly as specified in the curl command
     const appointmentPayload = {
         partner_appointment_id: partnerAppointmentId,
         clinic_id: data.appointment.clinicId,
         doctor_id: data.appointment.doctorId,
-        partner_patient_id: partnerPatientId, // Use our generated ID
+        partner_patient_id: partnerPatientId, // Our system's unique patient ID
         appointment_details: {
             start_time: startTimeInSeconds,
             end_time: endTimeInSeconds,
@@ -303,17 +296,22 @@ export async function bookAppointment(data: any): Promise<any> {
         },
     };
     
-    console.log("\n--- Booking Appointment via /dr/v1/appointment ---");
-    console.log("Request Payload:", JSON.stringify(appointmentPayload, null, 2));
+    console.log("\n--- [DEBUG] Booking Appointment via /dr/v1/appointment ---");
+    console.log("--- [DEBUG] Full Request Payload ---");
+    console.log(JSON.stringify(appointmentPayload, null, 2));
+    console.log("------------------------------------");
+
 
     const bookingResponse = await makeApiRequest(async (client) => {
         const response = await client.post('/dr/v1/appointment', appointmentPayload);
         return response.data;
     });
 
-    console.log("SUCCESS: Appointment booked successfully (or patient found/created).");
-    console.log("Response Data:", JSON.stringify(bookingResponse, null, 2));
-    console.log("--- Simplified Booking Process Finished ---");
+    console.log("--- [DEBUG] SUCCESS: API responded to booking request. ---");
+    console.log("--- [DEBUG] Full API Response ---");
+    console.log(JSON.stringify(bookingResponse, null, 2));
+    console.log("---------------------------------");
+    console.log("--- [DEBUG] Booking Process Finished ---");
 
     return bookingResponse;
 }
