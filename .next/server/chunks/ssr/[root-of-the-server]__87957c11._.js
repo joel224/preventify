@@ -1319,7 +1319,6 @@ function BookingDialog({ children }) {
     const [doctors, setDoctors] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])([]);
     const [availableSlots, setAvailableSlots] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])([]);
     const [isFetchingSlots, setIsFetchingSlots] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])(false);
-    const [selectedHour, setSelectedHour] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])(null);
     const [selectedDoctorObj, setSelectedDoctorObj] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])(null);
     const [selectedSlotObj, setSelectedSlotObj] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])(null);
     const stepOneSchema = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$zod$2f$lib$2f$index$2e$mjs__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["object"])({
@@ -1371,16 +1370,18 @@ function BookingDialog({ children }) {
     ]);
     const selectedDoctorId = form.watch("doctor");
     (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useEffect"])(()=>{
-        if (isOpen && step === 2 && doctors.length === 0) {
-            setIsLoading(true);
-            __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$axios$2f$lib$2f$axios$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["default"].get('/api/doctors-and-clinics').then((response)=>{
-                setDoctors(response.data.doctors || []);
-            }).catch((error)=>{
-                console.error("Failed to fetch doctors:", error);
-                __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$sonner$2f$dist$2f$index$2e$mjs__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["toast"].error("Failed to load doctor data", {
-                    description: "Please try again."
-                });
-            }).finally(()=>setIsLoading(false));
+        if (isOpen && step === 2) {
+            if (doctors.length === 0) {
+                setIsLoading(true);
+                __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$axios$2f$lib$2f$axios$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["default"].get('/api/doctors-and-clinics').then((response)=>{
+                    setDoctors(response.data.doctors || []);
+                }).catch((error)=>{
+                    console.error("Failed to fetch doctors:", error);
+                    __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$sonner$2f$dist$2f$index$2e$mjs__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["toast"].error("Failed to load doctor data", {
+                        description: "Please try again."
+                    });
+                }).finally(()=>setIsLoading(false));
+            }
         }
     }, [
         isOpen,
@@ -1394,8 +1395,8 @@ function BookingDialog({ children }) {
             if (!doctor) return;
             setIsFetchingSlots(true);
             setAvailableSlots([]);
-            setSelectedHour(null);
             form.resetField("startTime");
+            setSelectedSlotObj(null);
             const dateString = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$date$2d$fns$2f$format$2e$mjs__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$locals$3e$__["format"])(new Date(), 'yyyy-MM-dd');
             __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$axios$2f$lib$2f$axios$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["default"].get(`/api/available-slots?doctorId=${selectedDoctorId}&clinicId=${doctor.clinicId}&date=${dateString}`).then((response)=>{
                 setAvailableSlots(response.data || []);
@@ -1407,6 +1408,7 @@ function BookingDialog({ children }) {
             }).finally(()=>setIsFetchingSlots(false));
         } else {
             setAvailableSlots([]);
+            setSelectedDoctorObj(null);
         }
     }, [
         selectedDoctorId,
@@ -1424,7 +1426,6 @@ function BookingDialog({ children }) {
         availableSlots
     ]);
     const handleHourClick = (hourKey)=>{
-        setSelectedHour(hourKey);
         const slotsInHour = groupedSlots[hourKey];
         if (!slotsInHour || slotsInHour.length === 0) return;
         const hourStart = new Date(slotsInHour[0].startTime);
@@ -1441,12 +1442,9 @@ function BookingDialog({ children }) {
     const selectedSlotValue = form.watch("startTime");
     const processBooking = async (data)=>{
         setIsSubmitting(true);
-        console.log("[DEBUG] Frontend: processBooking started. Form data:", data);
+        console.log("[DEBUG] Frontend: processBooking started. Full form data:", data);
+        // Use the state objects that were set upon selection
         if (!selectedSlotObj || !selectedDoctorObj) {
-            console.error("[DEBUG] Frontend: Doctor or Slot object is missing.", {
-                selectedDoctorObj,
-                selectedSlotObj
-            });
             __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$sonner$2f$dist$2f$index$2e$mjs__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["toast"].error("Invalid slot or doctor selected");
             setIsSubmitting(false);
             return;
@@ -1465,20 +1463,20 @@ function BookingDialog({ children }) {
                     dob: (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$date$2d$fns$2f$format$2e$mjs__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$locals$3e$__["format"])(data.dob, 'yyyy-MM-dd')
                 },
                 appointment: {
-                    clinicId: selectedSlotObj.clinicId,
-                    doctorId: selectedSlotObj.doctorId,
+                    clinicId: selectedDoctorObj.clinicId,
+                    doctorId: selectedDoctorObj.id,
                     startTime: selectedSlotObj.startTime
                 }
             };
             console.log("[DEBUG] Frontend: Booking payload prepared:", payload);
-            await __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$axios$2f$lib$2f$axios$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["default"].post('/api/book-appointment', payload);
+            await __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$axios$2f$lib$2f$axios$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["default"].post('/api/create-appointment', payload); // Use the new endpoint
             console.log("[DEBUG] Frontend: Booking request successful.");
             __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$sonner$2f$dist$2f$index$2e$mjs__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["toast"].success("Appointment Booked!", {
                 description: `Your appointment with ${selectedDoctorObj?.name} on ${(0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$date$2d$fns$2f$format$2e$mjs__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$locals$3e$__["format"])(new Date(selectedSlotObj.startTime), "PPP")} at ${(0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$date$2d$fns$2f$format$2e$mjs__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$locals$3e$__["format"])(new Date(selectedSlotObj.startTime), "p")} is confirmed.`
             });
             setStep(4);
         } catch (error) {
-            console.error("[DEBUG] Frontend: Booking request failed.", error.response || error);
+            console.error("[DEBUG] Frontend: Booking request failed.", error);
             const errorMessage = error.response?.data?.message || "Something went wrong. Please try again.";
             __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$sonner$2f$dist$2f$index$2e$mjs__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["toast"].error("Booking Failed", {
                 description: errorMessage
@@ -1495,7 +1493,6 @@ function BookingDialog({ children }) {
                 setIsSubmitting(false);
                 setAvailableSlots([]);
                 setIsFetchingSlots(false);
-                setSelectedHour(null);
                 setSelectedDoctorObj(null);
                 setSelectedSlotObj(null);
                 form.reset();
@@ -1856,7 +1853,7 @@ function BookingDialog({ children }) {
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                                         className: "grid grid-cols-4 gap-2 pt-2",
                                                         children: Object.keys(groupedSlots).map((hourKey)=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$button$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Button"], {
-                                                                variant: selectedHour === hourKey ? "default" : "outline",
+                                                                variant: selectedSlotObj?.startTime && (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$date$2d$fns$2f$format$2e$mjs__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$locals$3e$__["format"])(new Date(selectedSlotObj.startTime), "ha").toLowerCase() === hourKey ? "default" : "outline",
                                                                 onClick: ()=>handleHourClick(hourKey),
                                                                 className: "uppercase",
                                                                 type: "button",

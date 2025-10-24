@@ -55,8 +55,7 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
     const [doctors, setDoctors] = useState<Doctor[]>([]);
     const [availableSlots, setAvailableSlots] = useState<Slot[]>([]);
     const [isFetchingSlots, setIsFetchingSlots] = useState(false);
-    const [selectedHour, setSelectedHour] = useState<string | null>(null);
-
+    
     const [selectedDoctorObj, setSelectedDoctorObj] = useState<Doctor | null>(null);
     const [selectedSlotObj, setSelectedSlotObj] = useState<Slot | null>(null);
 
@@ -97,17 +96,19 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
     const selectedDoctorId = form.watch("doctor");
     
     useEffect(() => {
-        if (isOpen && (step === 2) && doctors.length === 0) {
-            setIsLoading(true);
-            axios.get('/api/doctors-and-clinics')
-                .then(response => {
-                    setDoctors(response.data.doctors || []);
-                })
-                .catch(error => {
-                    console.error("Failed to fetch doctors:", error);
-                    toast.error("Failed to load doctor data", { description: "Please try again." });
-                })
-                .finally(() => setIsLoading(false));
+        if (isOpen && step === 2) {
+            if (doctors.length === 0) {
+                setIsLoading(true);
+                axios.get('/api/doctors-and-clinics')
+                    .then(response => {
+                        setDoctors(response.data.doctors || []);
+                    })
+                    .catch(error => {
+                        console.error("Failed to fetch doctors:", error);
+                        toast.error("Failed to load doctor data", { description: "Please try again." });
+                    })
+                    .finally(() => setIsLoading(false));
+            }
         }
     }, [isOpen, step, doctors.length]);
 
@@ -119,8 +120,8 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
 
             setIsFetchingSlots(true);
             setAvailableSlots([]);
-            setSelectedHour(null);
             form.resetField("startTime");
+            setSelectedSlotObj(null);
 
             const dateString = format(new Date(), 'yyyy-MM-dd');
             axios.get(`/api/available-slots?doctorId=${selectedDoctorId}&clinicId=${doctor.clinicId}&date=${dateString}`)
@@ -134,6 +135,7 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
                 .finally(() => setIsFetchingSlots(false));
         } else {
              setAvailableSlots([]);
+             setSelectedDoctorObj(null);
         }
     }, [selectedDoctorId, doctors, form]);
 
@@ -148,7 +150,6 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
     }, [availableSlots]);
     
     const handleHourClick = (hourKey: string) => {
-        setSelectedHour(hourKey);
         const slotsInHour = groupedSlots[hourKey];
         if (!slotsInHour || slotsInHour.length === 0) return;
         
@@ -169,10 +170,10 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
 
     const processBooking = async (data: BookingFormValues) => {
         setIsSubmitting(true);
-        console.log("[DEBUG] Frontend: processBooking started. Form data:", data);
+        console.log("[DEBUG] Frontend: processBooking started. Full form data:", data);
 
+        // Use the state objects that were set upon selection
         if (!selectedSlotObj || !selectedDoctorObj) {
-            console.error("[DEBUG] Frontend: Doctor or Slot object is missing.", { selectedDoctorObj, selectedSlotObj });
             toast.error("Invalid slot or doctor selected");
             setIsSubmitting(false);
             return;
@@ -193,21 +194,21 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
                     dob: format(data.dob, 'yyyy-MM-dd'),
                 },
                 appointment: {
-                    clinicId: selectedSlotObj.clinicId,
-                    doctorId: selectedSlotObj.doctorId,
+                    clinicId: selectedDoctorObj.clinicId,
+                    doctorId: selectedDoctorObj.id,
                     startTime: selectedSlotObj.startTime,
                 }
             };
             
             console.log("[DEBUG] Frontend: Booking payload prepared:", payload);
-            await axios.post('/api/book-appointment', payload);
+            await axios.post('/api/create-appointment', payload); // Use the new endpoint
             console.log("[DEBUG] Frontend: Booking request successful.");
 
             toast.success("Appointment Booked!", { description: `Your appointment with ${selectedDoctorObj?.name} on ${format(new Date(selectedSlotObj.startTime), "PPP")} at ${format(new Date(selectedSlotObj.startTime), "p")} is confirmed.` });
             setStep(4);
 
         } catch (error: any) {
-            console.error("[DEBUG] Frontend: Booking request failed.", error.response || error);
+            console.error("[DEBUG] Frontend: Booking request failed.", error);
             const errorMessage = error.response?.data?.message || "Something went wrong. Please try again.";
             toast.error("Booking Failed", { description: errorMessage });
         } finally {
@@ -223,7 +224,6 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
                 setIsSubmitting(false);
                 setAvailableSlots([]);
                 setIsFetchingSlots(false);
-                setSelectedHour(null);
                 setSelectedDoctorObj(null);
                 setSelectedSlotObj(null);
                 form.reset();
@@ -292,7 +292,7 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
                                             <FormLabel>Select an hour</FormLabel>
                                             <div className="grid grid-cols-4 gap-2 pt-2">
                                                 {Object.keys(groupedSlots).map((hourKey) => (
-                                                    <Button key={hourKey} variant={selectedHour === hourKey ? "default" : "outline"} onClick={() => handleHourClick(hourKey)} className="uppercase" type="button" >
+                                                    <Button key={hourKey} variant={selectedSlotObj?.startTime && format(new Date(selectedSlotObj.startTime), "ha").toLowerCase() === hourKey ? "default" : "outline"} onClick={() => handleHourClick(hourKey)} className="uppercase" type="button" >
                                                         {hourKey}
                                                     </Button>
                                                 ))}

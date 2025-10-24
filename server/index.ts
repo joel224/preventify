@@ -5,9 +5,9 @@ import dotenv from 'dotenv';
 import { 
     getBusinessEntitiesAndDoctors, 
     _loginAndGetTokens, 
-    bookAppointment, 
     getAvailableSlots,
 } from './eka-api';
+import { createAppointment } from './booking-api';
 
 dotenv.config();
 
@@ -64,19 +64,23 @@ app.get('/api/available-slots', async (req, res) => {
 });
 
 
-app.post('/api/book-appointment', async (req, res) => {
-    console.log('--- [DEBUG] SERVER: Received request on /api/book-appointment endpoint ---');
-    console.log('--- [DEBUG] SERVER: Request Body:', JSON.stringify(req.body, null, 2));
+app.post('/api/create-appointment', async (req, res) => {
+    // Robust logging to see exactly what the frontend is sending
+    console.log('\n--- [DEBUG] SERVER index.ts: Received request on /api/create-appointment endpoint ---');
+    console.log('--- [DEBUG] SERVER index.ts: Request Body Received from Frontend: ---');
+    console.log(JSON.stringify(req.body, null, 2));
+    console.log('-------------------------------------------------------------------\n');
+
     try {
         if (!req.body || !req.body.patient || !req.body.appointment) {
-            console.error('--- [DEBUG] SERVER: Invalid booking data provided. ---');
-            return res.status(400).json({ message: 'Invalid booking data provided.' });
+            console.error('--- [DEBUG] SERVER index.ts: Invalid booking data. Missing patient or appointment details. ---');
+            return res.status(400).json({ message: 'Invalid booking data provided. Patient or appointment details are missing.' });
         }
-        const result = await bookAppointment(req.body);
-        console.log('--- [DEBUG] SERVER: bookAppointment was successful. Sending 201 response. ---');
+        const result = await createAppointment(req.body);
+        console.log('--- [DEBUG] SERVER index.ts: createAppointment was successful. Sending 201 response. ---');
         res.status(201).json(result);
     } catch (error: any) {
-        console.error('--- [DEBUG] SERVER: Error in /api/book-appointment endpoint:', error.message);
+        console.error('--- [DEBUG] SERVER index.ts: Error in /api/create-appointment endpoint:', error.message);
         const statusCode = error.response?.status || 500;
         const errorMessage = error.response?.data?.message || 'Failed to process booking request';
         res.status(statusCode).json({ message: errorMessage, error: error.response?.data || error.message });

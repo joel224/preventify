@@ -86,21 +86,22 @@ async function _refreshAccessToken() {
   }
 }
 
-async function makeApiRequest(apiCall: (client: any) => Promise<any>) {
+// Export this function so it can be used in booking-api.ts
+export async function makeApiRequest(apiCall: (client: any) => Promise<any>) {
   let tokens = await getTokens();
-  let accessToken: string | undefined = tokens?.access_token;
 
-  if (!accessToken) {
+  if (!tokens?.access_token) {
     console.log('INFO: No access token found. Logging in...');
-    const newTokens = await _loginAndGetTokens();
-    accessToken = newTokens.access_token;
+    tokens = await _loginAndGetTokens();
   }
 
-  const apiClient = getApiClient(accessToken);
+  const apiClient = getApiClient(tokens.access_token);
 
   try {
     console.log('INFO: Making API call with current token.');
-    return await apiCall(apiClient);
+    const result = await apiCall(apiClient);
+    console.log(`SUCCESS: API call successful.`);
+    return result;
   } catch (error: any) {
     if (error.response?.status === 401) {
       console.log('WARN: Access token may be expired (401 Unauthorized). Attempting to refresh...');
@@ -137,16 +138,16 @@ async function fetchSlotsForDate(doctorId: string, clinicId: string, startDate: 
     console.log(`--- Fetching available slots for doctor: ${doctorId}, clinic: ${clinicId}, from: ${formattedStartDate} to ${formattedEndDate} ---`);
 
     try {
-        const response = await makeApiRequest(async (client) => {
-            return client.get(`/dr/v1/doctor/${doctorId}/clinic/${clinicId}/appointment/slot`, {
+        const responseData = await makeApiRequest(async (client) => {
+            const response = await client.get(`/dr/v1/doctor/${doctorId}/clinic/${clinicId}/appointment/slot`, {
                 params: {
                     start_date: formattedStartDate,
                     end_date: formattedEndDate
                 }
             });
+            return response.data; // Return the full data object from axios
         });
-        
-        const responseData = response.data;
+
         console.log(`RAW SLOT API RESPONSE for ${doctorId}/${clinicId} on ${formattedStartDate}:`, JSON.stringify(responseData, null, 2));
 
         if (!responseData?.data?.schedule) {
@@ -204,10 +205,12 @@ export async function getAvailableSlots(doctorId: string, clinicId: string, date
 
         const slotStartTime = new Date(slot.startTime);
 
+        // Ensure the slot is for the requested day
         if (format(slotStartTime, 'yyyy-MM-dd') !== format(requestedDate, 'yyyy-MM-dd')) {
             return false;
         }
         
+        // If the requested date is today, ensure the slot is in the future
         if (format(requestedDate, 'yyyy-MM-dd') === format(now, 'yyyy-MM-dd')) {
             if (isBefore(slotStartTime, now)) {
                 return false;
@@ -224,12 +227,14 @@ export async function getAvailableSlots(doctorId: string, clinicId: string, date
 export async function getBusinessEntitiesAndDoctors(): Promise<any> {
     console.log("--- Starting getBusinessEntitiesAndDoctors ---");
     
+    // makeApiRequest now consistently returns the full axios response object
     const response = await makeApiRequest(async (client) => {
         console.log('INFO: Fetching business entities (/dr/v1/business/entities)...');
         return client.get('/dr/v1/business/entities');
     });
 
-    const { doctors: doctorList, clinics: clinicList } = response.data;
+    // The actual data from Eka is nested under `response.data.data`
+    const { doctors: doctorList, clinics: clinicList } = response.data.data;
 
     if (!doctorList || doctorList.length === 0) {
         console.warn("WARN: No doctors found in business entities response.");
@@ -246,77 +251,5 @@ export async function getBusinessEntitiesAndDoctors(): Promise<any> {
 
     console.log(`--- Finished getBusinessEntitiesAndDoctors. Returning ${processedDoctors.length} doctors and ${processedClinics.length} clinics. ---`);
     
-    console.log("--- Returned Doctors List (DEBUG) ---");
-    console.log(JSON.stringify(processedDoctors, null, 2));
-    console.log("-------------------------------------");
-
     return { doctors: processedDoctors, clinics: processedClinics };
-}
-
-export async function bookAppointment(data: any): Promise<any> {
-    console.log("--- [DEBUG] BACKEND: bookAppointment function started ---");
-    console.log("--- [DEBUG] BACKEND: Received data from frontend:", JSON.stringify(data, null, 2));
-
-    const partnerAppointmentId = `preventify_appt_${Date.now()}`;
-    const partnerPatientId = `preventify_patient_${data.patient.phone}_${Date.now()}`;
-
-    const startTimeInSeconds = Math.floor(new Date(data.appointment.startTime).getTime() / 1000);
-    const endTimeInSeconds = startTimeInSeconds + 600; // 10 minute duration
-
-    const sanitizedMobile = data.patient.phone.replace(/^\+/, '');
-
-    const getDesignation = (gender: string) => {
-        if (gender === 'F') return 'Ms.';
-        if (gender === 'M') return 'Mr.';
-        return 'Mx.';
-    };
-
-    const appointmentPayload = {
-        partner_appointment_id: partnerAppointmentId,
-        clinic_id: data.appointment.clinicId,
-        doctor_id: data.appointment.doctorId,
-        partner_patient_id: partnerPatientId,
-        appointment_details: {
-            start_time: startTimeInSeconds,
-            end_time: endTimeInSeconds,
-            mode: "INCLINIC",
-        },
-        patient_details: {
-            designation: getDesignation(data.patient.gender),
-            first_name: data.patient.firstName,
-            last_name: data.patient.lastName,
-            mobile: sanitizedMobile,
-            gender: data.patient.gender,
-            dob: data.patient.dob,
-        },
-    };
-    
-    console.log("\n--- [DEBUG] BACKEND: Booking Appointment via /dr/v1/appointment ---");
-    console.log("--- [DEBUG] BACKEND: Full Request Payload to Eka API ---");
-    console.log(JSON.stringify(appointmentPayload, null, 2));
-    console.log("------------------------------------");
-
-    try {
-        const bookingResponse = await makeApiRequest(async (client) => {
-            const response = await client.post('/dr/v1/appointment', appointmentPayload);
-            return response.data;
-        });
-
-        console.log("--- [DEBUG] BACKEND: SUCCESS: API responded to booking request. ---");
-        console.log("--- [DEBUG] BACKEND: Full API Response ---");
-        console.log(JSON.stringify(bookingResponse, null, 2));
-        console.log("---------------------------------");
-        
-        return bookingResponse;
-    } catch(error: any) {
-        console.error("--- [DEBUG] BACKEND: ERROR during Eka API booking call ---");
-        if (error.response) {
-            console.error("Eka API Error Response Status:", error.response.status);
-            console.error("Eka API Error Response Data:", JSON.stringify(error.response.data, null, 2));
-        } else {
-            console.error("Eka API Error Message:", error.message);
-        }
-        console.log("---------------------------------");
-        throw error; // Re-throw the error to be caught by the endpoint handler
-    }
 }
