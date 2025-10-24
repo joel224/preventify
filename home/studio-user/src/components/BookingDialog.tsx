@@ -82,62 +82,53 @@ function Step1Form({ onNext, onDialogClose }: { onNext: (data: Step1Values) => v
                 </DialogHeader>
                 <div className="space-y-4 py-4">
                     
-                    {/* --- CHANGED FIELD --- */}
+                    {/* --- NEW FIX --- */}
                     <FormField 
                         control={form.control} 
                         name="fullName" 
-                        render={({ field: { onChange, onBlur, name, value } }) => ( // Destructure field, ignore ref
+                        render={({ field }) => (  // Use the full 'field' object
                         <FormItem> 
                             <FormLabel>Full Name</FormLabel> 
-                            <FormControl>
-                                <Input 
-                                    placeholder="John Doe" 
-                                    onChange={onChange}
-                                    onBlur={onBlur}
-                                    name={name}
-                                    value={value ?? ""} // Keep the patch
-                                />
-                            </FormControl> 
+                            {/* We removed <FormControl> here */}
+                            <Input 
+                                placeholder="John Doe" 
+                                {...field} // Spread all field props (ref, name, onChange, etc.)
+                                value={field.value ?? ""} // Override value to be safe
+                            />
                             <FormMessage /> 
                         </FormItem> 
                     )}/>
                     
-                    {/* --- CHANGED FIELD --- */}
+                    {/* --- NEW FIX --- */}
                     <FormField 
                         control={form.control} 
                         name="phone" 
-                        render={({ field: { onChange, onBlur, name, value } }) => ( // Destructure field, ignore ref
+                        render={({ field }) => ( // Use the full 'field' object
                         <FormItem> 
                             <FormLabel>Phone</FormLabel> 
-                            <FormControl>
-                                <Input 
-                                    placeholder="+91 98765 43210" 
-                                    onChange={onChange}
-                                    onBlur={onBlur}
-                                    name={name}
-                                    value={value ?? ""} // Keep the patch
-                                />
-                            </FormControl> 
+                            {/* We removed <FormControl> here */}
+                            <Input 
+                                placeholder="+91 98765 43210" 
+                                {...field} // Spread all field props
+                                value={field.value ?? ""} // Override value to be safe
+                            />
                             <FormMessage /> 
                         </FormItem> 
                     )}/>
 
-                    {/* --- CHANGED FIELD --- */}
+                    {/* --- NEW FIX --- */}
                     <FormField 
                         control={form.control} 
                         name="email" 
-                        render={({ field: { onChange, onBlur, name, value } }) => ( // Destructure field, ignore ref
+                        render={({ field }) => ( // Use the full 'field' object
                         <FormItem> 
                             <FormLabel>Email (Optional)</FormLabel> 
-                            <FormControl>
-                                <Input 
-                                    placeholder="you@example.com" 
-                                    onChange={onChange}
-                                    onBlur={onBlur}
-                                    name={name}
-                                    value={value ?? ""} // Keep the patch
-                                />
-                            </FormControl> 
+                            {/* We removed <FormControl> here */}
+                            <Input 
+                                placeholder="you@example.com" 
+                                {...field} // Spread all field props
+                                value={field.value ?? ""} // Override value to be safe
+                            />
                             <FormMessage /> 
                         </FormItem> 
                     )}/>
@@ -492,3 +483,4 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
 }
 
     
+
