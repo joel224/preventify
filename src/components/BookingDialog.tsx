@@ -27,8 +27,12 @@ import { CalendarIcon, Loader2 } from "lucide-react";
 import { useState, useEffect, useMemo } from "react";
 import { toast } from "./ui/sonner";
 import axios from "axios";
-import { format, startOfHour, addMinutes } from "date-fns";
+import { format } from "date-fns";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./ui/select";
+
+type Doctor = { id: string; name: string; clinicId: string; clinicName: string; };
+type Slot = { startTime: string; endTime: string; doctorId: string; clinicId: string; };
+type GroupedSlots = { [hour: string]: Slot[] };
 
 const FormSchema = z.object({
   fullName: z.string().min(3, "Full name must be at least 3 characters."),
@@ -41,10 +45,6 @@ const FormSchema = z.object({
 });
 
 type BookingFormValues = z.infer<typeof FormSchema>;
-
-type Doctor = { id: string; name: string; clinicId: string; clinicName: string; };
-type Slot = { startTime: string; endTime: string; doctorId: string; clinicId: string; };
-type GroupedSlots = { [hour: string]: Slot[] };
 
 export default function BookingDialog({ children }: { children: React.ReactNode }) {
     const [isOpen, setIsOpen] = useState(false);
@@ -61,9 +61,9 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
     const [selectedSlotObj, setSelectedSlotObj] = useState<Slot | null>(null);
 
     const stepOneSchema = z.object({
-      fullName: z.string().min(3, "Full name must be at least 3 characters."),
-      phone: z.string().regex(/^\+?[0-9]{10,14}$/, "Please enter a valid phone number."),
-      email: z.string().email("Please enter a valid email address.").optional().or(z.literal("")),
+        fullName: z.string().min(3, "Full name must be at least 3 characters."),
+        phone: z.string().regex(/^\+?[0-9]{10,14}$/, "Please enter a valid phone number."),
+        email: z.string().email("Please enter a valid email address.").optional().or(z.literal("")),
     });
 
     const stepTwoSchema = z.object({
@@ -121,7 +121,6 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
             setAvailableSlots([]);
             setSelectedHour(null);
             form.resetField("startTime");
-            setSelectedSlotObj(null);
 
             const dateString = format(new Date(), 'yyyy-MM-dd');
             axios.get(`/api/available-slots?doctorId=${selectedDoctorId}&clinicId=${doctor.clinicId}&date=${dateString}`)
@@ -135,14 +134,13 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
                 .finally(() => setIsFetchingSlots(false));
         } else {
              setAvailableSlots([]);
-             setSelectedDoctorObj(null);
         }
     }, [selectedDoctorId, doctors, form]);
 
 
     const groupedSlots = useMemo(() => {
         return availableSlots.reduce((acc, slot) => {
-            const hourKey = format(startOfHour(new Date(slot.startTime)), "ha").toLowerCase();
+            const hourKey = format(new Date(slot.startTime), "ha").toLowerCase();
             if (!acc[hourKey]) acc[hourKey] = [];
             acc[hourKey].push(slot);
             return acc;
@@ -153,11 +151,12 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
         setSelectedHour(hourKey);
         const slotsInHour = groupedSlots[hourKey];
         if (!slotsInHour || slotsInHour.length === 0) return;
+        
+        const hourStart = new Date(slotsInHour[0].startTime);
+        hourStart.setMinutes(0, 0, 0);
 
-        const hourStart = startOfHour(new Date(slotsInHour[0].startTime));
-        const targetTime = addMinutes(hourStart, 20);
+        let bestSlot = slotsInHour.find(slot => new Date(slot.startTime).getMinutes() >= 20);
 
-        let bestSlot = slotsInHour.find(slot => new Date(slot.startTime) >= targetTime);
         if (!bestSlot) {
             bestSlot = slotsInHour[slotsInHour.length - 1];
         }
@@ -170,13 +169,16 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
 
     const processBooking = async (data: BookingFormValues) => {
         setIsSubmitting(true);
-        try {
-            if (!selectedSlotObj || !selectedDoctorObj) {
-                toast.error("Invalid slot or doctor selected");
-                setIsSubmitting(false);
-                return;
-            }
+        console.log("[DEBUG] Frontend: processBooking started. Form data:", data);
 
+        if (!selectedSlotObj || !selectedDoctorObj) {
+            console.error("[DEBUG] Frontend: Doctor or Slot object is missing.", { selectedDoctorObj, selectedSlotObj });
+            toast.error("Invalid slot or doctor selected");
+            setIsSubmitting(false);
+            return;
+        }
+
+        try {
             const nameParts = data.fullName.split(" ");
             const firstName = nameParts[0];
             const lastName = nameParts.length > 1 ? nameParts.slice(1).join(" ") : " ";
@@ -197,12 +199,15 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
                 }
             };
             
+            console.log("[DEBUG] Frontend: Booking payload prepared:", payload);
             await axios.post('/api/book-appointment', payload);
+            console.log("[DEBUG] Frontend: Booking request successful.");
+
             toast.success("Appointment Booked!", { description: `Your appointment with ${selectedDoctorObj?.name} on ${format(new Date(selectedSlotObj.startTime), "PPP")} at ${format(new Date(selectedSlotObj.startTime), "p")} is confirmed.` });
             setStep(4);
 
         } catch (error: any) {
-            console.error("Booking failed:", error);
+            console.error("[DEBUG] Frontend: Booking request failed.", error.response || error);
             const errorMessage = error.response?.data?.message || "Something went wrong. Please try again.";
             toast.error("Booking Failed", { description: errorMessage });
         } finally {

@@ -1,7 +1,7 @@
 
 import axios from 'axios';
 import { getTokens, saveTokens } from './token-storage';
-import { format, addDays, setHours, isBefore, startOfDay } from "date-fns";
+import { format, addDays, isBefore, startOfDay } from "date-fns";
 import { processBusinessEntities } from './data-processing';
 
 const EKA_API_BASE_URL = 'https://api.eka.care';
@@ -12,7 +12,6 @@ const getApiClient = (accessToken?: string) => {
     'Content-Type': 'application/json',
   };
   if (accessToken) {
-     headers['auth'] = accessToken;
      headers['Authorization'] = `Bearer ${accessToken}`;
      console.log('API client using existing access token.');
   }
@@ -89,19 +88,19 @@ async function _refreshAccessToken() {
 
 async function makeApiRequest(apiCall: (client: any) => Promise<any>) {
   let tokens = await getTokens();
+  let accessToken: string | undefined = tokens?.access_token;
 
-  if (!tokens?.access_token) {
+  if (!accessToken) {
     console.log('INFO: No access token found. Logging in...');
-    tokens = await _loginAndGetTokens();
+    const newTokens = await _loginAndGetTokens();
+    accessToken = newTokens.access_token;
   }
 
-  const apiClient = getApiClient(tokens.access_token);
+  const apiClient = getApiClient(accessToken);
 
   try {
     console.log('INFO: Making API call with current token.');
-    const result = await apiCall(apiClient);
-    console.log(`SUCCESS: API call successful.`);
-    return result;
+    return await apiCall(apiClient);
   } catch (error: any) {
     if (error.response?.status === 401) {
       console.log('WARN: Access token may be expired (401 Unauthorized). Attempting to refresh...');
@@ -110,18 +109,14 @@ async function makeApiRequest(apiCall: (client: any) => Promise<any>) {
       if (newAccessToken) {
         console.log('INFO: Retrying API call with new refreshed token.');
         const newApiClient = getApiClient(newAccessToken);
-        const result = await apiCall(newApiClient);
-        console.log(`SUCCESS: API call successful on retry.`);
-        return result;
+        return await apiCall(newApiClient);
       }
       
       console.log('WARN: Token refresh failed. Performing a full login...');
       const freshTokens = await _loginAndGetTokens();
       console.log('INFO: Retrying API call with new login token.');
       const freshApiClient = getApiClient(freshTokens.access_token);
-      const result = await apiCall(freshApiClient);
-      console.log(`SUCCESS: API call successful on second retry.`);
-      return result;
+      return await apiCall(freshApiClient);
 
     } else {
       console.error('FATAL: An unrecoverable error occurred during API call.');
@@ -167,11 +162,10 @@ async function fetchSlotsForDate(doctorId: string, clinicId: string, startDate: 
             clinicSchedule.forEach(scheduleItem => {
                 if (scheduleItem.slots && Array.isArray(scheduleItem.slots)) {
                     scheduleItem.slots.forEach((slot: any) => {
-                        // Directly use the slot data from the API
                         availableSlots.push({
                             startTime: slot.s,
                             endTime: slot.e,
-                            available: slot.available, // Keep the available flag
+                            available: slot.available,
                             doctorId,
                             clinicId,
                         });
@@ -204,20 +198,21 @@ export async function getAvailableSlots(doctorId: string, clinicId: string, date
     let slots = await fetchSlotsForDate(doctorId, clinicId, apiStartDate, apiEndDate);
 
     const finalFilteredSlots = slots.filter(slot => {
-        // Condition 1: The slot must be marked as available by the API.
         if (!slot.available) {
             return false;
         }
 
         const slotStartTime = new Date(slot.startTime);
 
-        // Condition 2: If the requested date is today, the slot must be in the future.
-        const isToday = format(requestedDate, 'yyyy-MM-dd') === format(now, 'yyyy-MM-dd');
-        if (isToday && isBefore(slotStartTime, now)) {
+        if (format(slotStartTime, 'yyyy-MM-dd') !== format(requestedDate, 'yyyy-MM-dd')) {
             return false;
         }
         
-        // If it passes all checks, it's a valid slot to show.
+        if (format(requestedDate, 'yyyy-MM-dd') === format(now, 'yyyy-MM-dd')) {
+            if (isBefore(slotStartTime, now)) {
+                return false;
+            }
+        }
         return true;
     });
 
@@ -236,7 +231,7 @@ export async function getBusinessEntitiesAndDoctors(): Promise<any> {
         return res.data;
     });
 
-    const { doctors: doctorList, clinics: clinicList } = response;
+    const { doctors: doctorList, clinics: clinicList } = response.data;
 
     if (!doctorList || doctorList.length === 0) {
         console.warn("WARN: No doctors found in business entities response.");
@@ -261,33 +256,35 @@ export async function getBusinessEntitiesAndDoctors(): Promise<any> {
 }
 
 export async function bookAppointment(data: any): Promise<any> {
-    console.log("--- [DEBUG] Starting Booking Process ---");
-    
-    // Generate unique IDs for the appointment and patient from our system's perspective
+    console.log("--- [DEBUG] BACKEND: bookAppointment function started ---");
+    console.log("--- [DEBUG] BACKEND: Received data from frontend:", JSON.stringify(data, null, 2));
+
     const partnerAppointmentId = `preventify_appt_${Date.now()}`;
-    // A unique patient ID for our system. The API will create/link the patient profile based on patient_details.
     const partnerPatientId = `preventify_patient_${data.patient.phone}_${Date.now()}`;
 
-    // Convert start time to a Unix timestamp in seconds
     const startTimeInSeconds = Math.floor(new Date(data.appointment.startTime).getTime() / 1000);
-    // Calculate end time: start time + 10 minutes (600 seconds)
-    const endTimeInSeconds = startTimeInSeconds + 600;
+    const endTimeInSeconds = startTimeInSeconds + 600; // 10 minute duration
 
     const sanitizedMobile = data.patient.phone.replace(/^\+/, '');
 
-    // Construct the payload exactly as specified in the curl command
+    const getDesignation = (gender: string) => {
+        if (gender === 'F') return 'Ms.';
+        if (gender === 'M') return 'Mr.';
+        return 'Mx.';
+    };
+
     const appointmentPayload = {
         partner_appointment_id: partnerAppointmentId,
         clinic_id: data.appointment.clinicId,
         doctor_id: data.appointment.doctorId,
-        partner_patient_id: partnerPatientId, // Our system's unique patient ID
+        partner_patient_id: partnerPatientId,
         appointment_details: {
             start_time: startTimeInSeconds,
             end_time: endTimeInSeconds,
             mode: "INCLINIC",
         },
         patient_details: {
-            designation: data.patient.gender === "F" ? "Ms." : "Mr.",
+            designation: getDesignation(data.patient.gender),
             first_name: data.patient.firstName,
             last_name: data.patient.lastName,
             mobile: sanitizedMobile,
@@ -296,22 +293,32 @@ export async function bookAppointment(data: any): Promise<any> {
         },
     };
     
-    console.log("\n--- [DEBUG] Booking Appointment via /dr/v1/appointment ---");
-    console.log("--- [DEBUG] Full Request Payload ---");
+    console.log("\n--- [DEBUG] BACKEND: Booking Appointment via /dr/v1/appointment ---");
+    console.log("--- [DEBUG] BACKEND: Full Request Payload to Eka API ---");
     console.log(JSON.stringify(appointmentPayload, null, 2));
     console.log("------------------------------------");
 
+    try {
+        const bookingResponse = await makeApiRequest(async (client) => {
+            const response = await client.post('/dr/v1/appointment', appointmentPayload);
+            return response.data;
+        });
 
-    const bookingResponse = await makeApiRequest(async (client) => {
-        const response = await client.post('/dr/v1/appointment', appointmentPayload);
-        return response.data;
-    });
-
-    console.log("--- [DEBUG] SUCCESS: API responded to booking request. ---");
-    console.log("--- [DEBUG] Full API Response ---");
-    console.log(JSON.stringify(bookingResponse, null, 2));
-    console.log("---------------------------------");
-    console.log("--- [DEBUG] Booking Process Finished ---");
-
-    return bookingResponse;
+        console.log("--- [DEBUG] BACKEND: SUCCESS: API responded to booking request. ---");
+        console.log("--- [DEBUG] BACKEND: Full API Response ---");
+        console.log(JSON.stringify(bookingResponse, null, 2));
+        console.log("---------------------------------");
+        
+        return bookingResponse;
+    } catch(error: any) {
+        console.error("--- [DEBUG] BACKEND: ERROR during Eka API booking call ---");
+        if (error.response) {
+            console.error("Eka API Error Response Status:", error.response.status);
+            console.error("Eka API Error Response Data:", JSON.stringify(error.response.data, null, 2));
+        } else {
+            console.error("Eka API Error Message:", error.message);
+        }
+        console.log("---------------------------------");
+        throw error; // Re-throw the error to be caught by the endpoint handler
+    }
 }
