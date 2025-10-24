@@ -24,10 +24,9 @@ import { Loader2 } from "lucide-react";
 import { useState, useEffect, useMemo } from "react";
 import { toast } from "./ui/sonner";
 import axios from "axios";
-import { format, getHours, startOfHour } from "date-fns";
+import { format, startOfHour, addMinutes, getMinutes } from "date-fns";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./ui/select";
 import { Label } from "./ui/label";
-import { Slider } from "./ui/slider";
 
 // Define schemas for each step
 const patientDetailsSchema = z.object({
@@ -66,17 +65,8 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
     // State for the new UI
     const [selectedHour, setSelectedHour] = useState<string | null>(null);
 
-    const getCurrentSchema = () => {
-        switch (step) {
-            case 1: return patientDetailsSchema;
-            case 2: return doctorSelectionSchema;
-            case 3: return slotSelectionSchema;
-            default: return patientDetailsSchema;
-        }
-    };
-    
     const form = useForm<BookingFormValues>({
-        resolver: zodResolver(getCurrentSchema()),
+        resolver: zodResolver(step === 1 ? patientDetailsSchema : step === 2 ? doctorSelectionSchema : slotSelectionSchema),
         mode: "onChange",
         defaultValues: {
             fullName: "",
@@ -140,22 +130,27 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
         }, {} as GroupedSlots);
     }, [availableSlots]);
     
-    const slotsInSelectedHour = selectedHour ? groupedSlots[selectedHour] : [];
     const selectedSlotValue = form.watch("startTime");
-    const selectedSlotIndex = slotsInSelectedHour.findIndex(s => s.startTime === selectedSlotValue);
 
     const handleHourClick = (hourKey: string) => {
         setSelectedHour(hourKey);
-        // Set the form value to the first slot of that hour
-        const firstSlot = groupedSlots[hourKey][0];
-        form.setValue("startTime", firstSlot.startTime, { shouldValidate: true });
-    };
+        
+        const slotsInHour = groupedSlots[hourKey];
+        if (!slotsInHour || slotsInHour.length === 0) return;
 
-    const handleSliderChange = (value: number[]) => {
-        const newSlot = slotsInSelectedHour[value[0]];
-        if (newSlot) {
-            form.setValue("startTime", newSlot.startTime, { shouldValidate: true });
+        // Automated selection logic
+        const hourStart = startOfHour(new Date(slotsInHour[0].startTime));
+        const targetTime = addMinutes(hourStart, 20); // Aim for 20 minutes past the hour
+
+        // Find the first available slot that is 20+ minutes past the hour
+        let bestSlot = slotsInHour.find(slot => new Date(slot.startTime) >= targetTime);
+
+        // If no such slot exists, fall back to the last available slot in that hour
+        if (!bestSlot) {
+            bestSlot = slotsInHour[slotsInHour.length - 1];
         }
+
+        form.setValue("startTime", bestSlot.startTime, { shouldValidate: true });
     };
 
     const processBooking = async (data: BookingFormValues) => {
@@ -168,15 +163,20 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
                 return;
             }
 
+            const nameParts = data.fullName.split(' ');
+            const firstName = nameParts[0];
+            const lastName = nameParts.length > 1 ? nameParts.slice(1).join(' ') : nameParts[0];
+
+
             const payload = {
                 patient: {
                     fullName: data.fullName,
-                    firstName: data.fullName.split(' ')[0],
-                    lastName: data.fullName.split(' ').slice(1).join(' ') || data.fullName.split(' ')[0],
+                    firstName: firstName,
+                    lastName: lastName,
                     phone: data.phone,
                     email: data.email,
-                    dob: '1990-01-01', 
-                    gender: 'O',
+                    dob: '1990-01-01', // Placeholder DOB
+                    gender: 'O', // Placeholder for 'Other'
                 },
                 appointment: {
                     clinicId: selectedSlot.clinicId,
@@ -233,9 +233,10 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
                             <DialogTitle>Book an Appointment: Choose a Doctor</DialogTitle>
                             <DialogDescription>Step 2 of 3: Who would you like to see?</DialogDescription>
                         </DialogHeader>
+                        <div className="py-4">
                         {isLoading ? ( <div className="flex items-center justify-center h-40"><Loader2 className="h-8 w-8 animate-spin" /></div> ) : (
                             <FormField control={form.control} name="doctor" render={({ field }) => ( 
-                                <FormItem className="py-4"> 
+                                <FormItem> 
                                     <FormLabel>Doctor</FormLabel> 
                                     <Select onValueChange={field.onChange} defaultValue={field.value}> 
                                         <FormControl> 
@@ -251,6 +252,7 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
                                 </FormItem> 
                             )}/>
                         )}
+                        </div>
                         <div className="flex gap-2">
                             <Button onClick={() => setStep(1)} variant="outline" className="w-1/3">Back</Button>
                             <Button onClick={async () => { const isValid = await form.trigger(["doctor"]); if (isValid) setStep(3); }} className="w-2/3" disabled={!form.watch('doctor')}>Next: Select Time</Button>
@@ -272,44 +274,41 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
                             </div>
                         )}
 
-                        {!isFetchingSlots && availableSlots.length > 0 && (
-                            <div className="py-4">
-                                <Label>Select an hour</Label>
-                                <div className="grid grid-cols-4 gap-2 pt-2">
-                                    {Object.keys(groupedSlots).map((hourKey) => (
-                                        <Button
-                                            key={hourKey}
-                                            variant={selectedHour === hourKey ? "default" : "outline"}
-                                            onClick={() => handleHourClick(hourKey)}
-                                            className="uppercase"
-                                        >
-                                            {hourKey}
-                                        </Button>
-                                    ))}
-                                </div>
-                                
-                                {selectedHour && slotsInSelectedHour.length > 0 && (
-                                    <div className="pt-6">
-                                        <div className="flex justify-between items-center">
-                                            <Label>Fine-tune the time</Label>
-                                            <p className="text-sm font-medium text-primary">
-                                                Selected: {selectedSlotValue ? format(new Date(selectedSlotValue), "p") : "None"}
-                                            </p>
+                        {!isFetchingSlots && Object.keys(groupedSlots).length > 0 && (
+                             <FormField
+                                control={form.control}
+                                name="startTime"
+                                render={() => (
+                                    <FormItem className="py-4">
+                                        <Label>Select an hour</Label>
+                                        <div className="grid grid-cols-4 gap-2 pt-2">
+                                            {Object.keys(groupedSlots).map((hourKey) => (
+                                                <Button
+                                                    key={hourKey}
+                                                    variant={selectedHour === hourKey ? "default" : "outline"}
+                                                    onClick={() => handleHourClick(hourKey)}
+                                                    className="uppercase"
+                                                    type="button"
+                                                >
+                                                    {hourKey}
+                                                </Button>
+                                            ))}
                                         </div>
-                                        <Slider
-                                            value={[selectedSlotIndex]}
-                                            onValueChange={handleSliderChange}
-                                            max={slotsInSelectedHour.length - 1}
-                                            step={1}
-                                            className="my-4"
-                                        />
-                                        <FormField control={form.control} name="startTime" render={() => <FormMessage />} />
-                                    </div>
+                                        {selectedSlotValue && (
+                                            <div className="text-center pt-4">
+                                                <p className="text-sm text-muted-foreground">
+                                                    Selected time: 
+                                                    <span className="font-bold text-primary"> {format(new Date(selectedSlotValue), "p")}</span>
+                                                </p>
+                                            </div>
+                                        )}
+                                        <FormMessage />
+                                    </FormItem>
                                 )}
-                            </div>
+                            />
                         )}
 
-                        {!isFetchingSlots && availableSlots.length === 0 && (
+                        {!isFetchingSlots && Object.keys(groupedSlots).length === 0 && (
                              <div className="text-center text-muted-foreground py-16 h-64 flex flex-col justify-center items-center">
                                 <p>No available slots for the selected provider.</p>
                                 <p className="text-sm">Please try a different doctor or check back later.</p>
@@ -317,7 +316,7 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
                         )}
                         
                         <div className="flex gap-2">
-                           <Button onClick={() => setStep(2)} variant="outline" className="w-1/3">Back</Button>
+                           <Button onClick={() => setStep(2)} variant="outline" className="w-1/3" type="button">Back</Button>
                            <Button onClick={form.handleSubmit(processBooking)} disabled={isSubmitting || isFetchingSlots || !form.watch('startTime')} className="w-2/3">
                                {isSubmitting ? <><Loader2 className="mr-2 h-4 w-4 animate-spin"/>Booking...</> : "Confirm Appointment"}
                            </Button>
@@ -350,7 +349,9 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
             </DialogTrigger>
             <DialogContent className="sm:max-w-lg">
                 <Form {...form}>
-                    {renderStepContent()}
+                    <form onSubmit={e => e.preventDefault()}>
+                        {renderStepContent()}
+                    </form>
                 </Form>
             </DialogContent>
         </Dialog>
