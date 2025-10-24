@@ -32,7 +32,7 @@ const DoctorCard = ({
         <p className="text-preventify-green font-medium">{specialty}</p>
         <p className="text-preventify-dark-gray text-sm mb-3">{qualification}</p>
         {location && <p className="text-preventify-gray mb-3">{location}</p>}
-        <Link href="/book-appointment" className="w-full">
+        <Link href="/book-appointment">
           <Button className="w-full bg-preventify-blue hover:bg-preventify-dark-blue text-white">
             Book Appointment
           </Button>
