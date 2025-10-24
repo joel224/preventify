@@ -17,7 +17,6 @@ import {
   DialogDescription,
   DialogFooter,
   DialogTrigger,
-  DialogClose,
 } from '@/components/ui/dialog';
 import {
   Form,
@@ -34,6 +33,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import { Input } from '@/components/ui/input';
 import { Calendar } from '@/components/ui/calendar';
 import {
   Popover,
@@ -41,8 +41,7 @@ import {
   PopoverTrigger,
 } from '@/components/ui/popover';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
-import { useToast } from '@/hooks/use-toast';
-import { Toaster } from '@/components/ui/toaster';
+import { useToast } from '@/components/ui/use-toast';
 
 const patientDetailsSchema = z.object({
   firstName: z.string().min(1, 'First name is required'),
@@ -88,7 +87,7 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
     async function fetchDoctorsAndClinics() {
       try {
         setLoading(true);
-        const response = await fetch('/api/doctors-and-clinics');
+        const response = await fetch('http://localhost:3001/api/doctors-and-clinics');
         if (!response.ok) throw new Error('Failed to fetch initial data');
         const data = await response.json();
         setDoctors(data.doctors || []);
@@ -113,7 +112,7 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
         setSelectedSlot(null);
         try {
           const dateString = format(selectedDate, 'yyyy-MM-dd');
-          const response = await fetch(`/api/available-slots?doctorId=${selectedDoctorId}&clinicId=${selectedClinicId}&date=${dateString}`);
+          const response = await fetch(`http://localhost:3001/api/available-slots?doctorId=${selectedDoctorId}&clinicId=${selectedClinicId}&date=${dateString}`);
           if (!response.ok) throw new Error('Failed to fetch slots');
           const data = await response.json();
           setAvailableSlots(data);
@@ -159,7 +158,7 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
     };
     
     try {
-        const response = await fetch('/api/create-appointment', {
+        const response = await fetch('http://localhost:3001/api/create-appointment', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(bookingData),
@@ -197,7 +196,7 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
   };
   
   const Step1 = () => (
-    <>
+    <DialogContent className="sm:max-w-md">
       <DialogHeader>
         <DialogTitle>Step 1: Select Doctor and Clinic</DialogTitle>
         <DialogDescription>Choose your preferred doctor and clinic for the appointment.</DialogDescription>
@@ -229,11 +228,11 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
       <DialogFooter>
         <Button onClick={() => setStep(2)} disabled={!selectedDoctorId || !selectedClinicId}>Next</Button>
       </DialogFooter>
-    </>
+    </DialogContent>
   );
 
   const Step2 = () => (
-    <>
+    <DialogContent className="sm:max-w-lg">
       <DialogHeader>
         <DialogTitle>Step 2: Select Date and Time</DialogTitle>
         <DialogDescription>Pick an available date and time for your consultation.</DialogDescription>
@@ -277,11 +276,11 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
         <Button variant="outline" onClick={() => setStep(1)}>Back</Button>
         <Button onClick={() => setStep(3)} disabled={!selectedSlot}>Next</Button>
       </DialogFooter>
-    </>
+    </DialogContent>
   );
 
   const Step3 = () => (
-    <>
+    <DialogContent className="sm:max-w-md">
       <DialogHeader>
         <DialogTitle>Step 3: Patient Details</DialogTitle>
         <DialogDescription>Please provide your information to complete the booking.</DialogDescription>
@@ -320,7 +319,7 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
           </DialogFooter>
         </form>
       </Form>
-    </>
+    </DialogContent>
   );
 
   return (
@@ -329,11 +328,13 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
         setIsOpen(open)
     }}>
       <DialogTrigger asChild>{children}</DialogTrigger>
-      <DialogContent className="sm:max-w-md">
+      
         {step === 1 && <Step1 />}
         {step === 2 && <Step2 />}
         {step === 3 && <Step3 />}
-      </DialogContent>
+      
     </Dialog>
   );
 }
+
+    
