@@ -20,13 +20,10 @@ import {
     DialogDescription,
     DialogTrigger,
 } from "@/components/ui/dialog";
-import { Loader2, Calendar as CalendarIcon } from "lucide-react";
+import { Loader2 } from "lucide-react";
 import { useState, useEffect } from "react";
 import { toast } from "./ui/sonner";
 import axios from "axios";
-import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
-import { Calendar } from "./ui/calendar";
-import { cn } from "@/lib/utils";
 import { format } from "date-fns";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./ui/select";
 import { RadioGroup, RadioGroupItem } from "./ui/radio-group";
@@ -39,18 +36,18 @@ const patientDetailsSchema = z.object({
   email: z.string().email({ message: "Please enter a valid email address." }).optional().or(z.literal('')),
 });
 
-const appointmentDetailsSchema = z.object({
-    appointmentDate: z.date({ required_error: "Please select a date."}),
-    clinic: z.string({ required_error: "Please select a clinic."}),
+const doctorSelectionSchema = z.object({
     doctor: z.string({ required_error: "Please select a doctor."}),
+});
+
+const slotSelectionSchema = z.object({
     startTime: z.string({ required_error: "Please select a time slot."}),
 });
 
-const bookingSchema = patientDetailsSchema.merge(appointmentDetailsSchema);
+const bookingSchema = patientDetailsSchema.merge(doctorSelectionSchema).merge(slotSelectionSchema);
 type BookingFormValues = z.infer<typeof bookingSchema>;
 
-type Clinic = { id: string; name: string; doctors: { id: string; name: string }[] };
-type Doctor = { id: string; name: string };
+type Doctor = { id: string; name: string; clinicId: string; clinicName: string; };
 type Slot = { startTime: string; endTime: string; doctorId: string; clinicId: string; };
 
 export default function BookingDialog({ children }: { children: React.ReactNode }) {
@@ -60,11 +57,9 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
     const [isSubmitting, setIsSubmitting] = useState(false);
     
     // Data states
-    const [clinics, setClinics] = useState<Clinic[]>([]);
     const [doctors, setDoctors] = useState<Doctor[]>([]);
     const [availableSlots, setAvailableSlots] = useState<Slot[]>([]);
     const [isFetchingSlots, setIsFetchingSlots] = useState(false);
-
 
     const form = useForm<BookingFormValues>({
         resolver: zodResolver(patientDetailsSchema), // Start with patient schema
@@ -75,62 +70,56 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
         },
     });
     
-    const selectedClinicId = form.watch("clinic");
     const selectedDoctorId = form.watch("doctor");
-    const selectedDate = form.watch("appointmentDate");
+    const selectedDoctor = doctors.find(d => d.id === selectedDoctorId);
 
-    // Fetch clinics and doctors when dialog opens
+    // Fetch doctors when dialog opens
     useEffect(() => {
-        if (isOpen && step === 2 && clinics.length === 0) {
+        if (isOpen && step === 2 && doctors.length === 0) {
             setIsLoading(true);
             axios.get('/api/doctors-and-clinics')
                 .then(response => {
-                    setClinics(response.data.clinics || []);
+                    setDoctors(response.data.doctors || []);
                 })
                 .catch(error => {
-                    console.error("Failed to fetch clinics and doctors:", error);
-                    toast.error("Failed to load clinic data", { description: "Please try again." });
+                    console.error("Failed to fetch doctors:", error);
+                    toast.error("Failed to load doctor data", { description: "Please try again." });
                 })
                 .finally(() => setIsLoading(false));
         }
-    }, [isOpen, step, clinics.length]);
+    }, [isOpen, step, doctors.length]);
 
-    // Update doctor list when clinic changes
+    // Fetch slots when doctor is selected
     useEffect(() => {
-        if (selectedClinicId) {
-            const selectedClinic = clinics.find(c => c.id === selectedClinicId);
-            setDoctors(selectedClinic?.doctors || []);
-            form.resetField("doctor"); // Reset doctor selection
-            setAvailableSlots([]); // Reset slots
-        } else {
-            setDoctors([]);
-        }
-    }, [selectedClinicId, clinics, form]);
-
-    // Fetch slots when date, doctor, and clinic are selected
-    useEffect(() => {
-        if (selectedDate && selectedDoctorId && selectedClinicId) {
+        if (selectedDoctorId && selectedDoctor) {
             setIsFetchingSlots(true);
             setAvailableSlots([]);
-            const dateString = format(selectedDate, 'yyyy-MM-dd');
-            axios.get(`/api/available-slots?doctorId=${selectedDoctorId}&clinicId=${selectedClinicId}&date=${dateString}`)
+            const dateString = format(new Date(), 'yyyy-MM-dd');
+            axios.get(`/api/available-slots?doctorId=${selectedDoctorId}&clinicId=${selectedDoctor.clinicId}&date=${dateString}`)
                 .then(response => {
                     setAvailableSlots(response.data || []);
                 })
                 .catch(error => {
                     console.error("Failed to fetch slots:", error);
-                    toast.error("Failed to fetch time slots", { description: "Please try another date or provider." });
+                    toast.error("Failed to fetch time slots", { description: "Please try another provider." });
                 })
                 .finally(() => setIsFetchingSlots(false));
         } else {
              setAvailableSlots([]);
         }
-    }, [selectedDate, selectedDoctorId, selectedClinicId]);
+    }, [selectedDoctorId, selectedDoctor]);
 
 
     const processBooking = async (data: BookingFormValues) => {
         setIsSubmitting(true);
         try {
+            const selectedSlot = availableSlots.find(s => s.startTime === data.startTime);
+            if (!selectedSlot) {
+                toast.error("Invalid slot selected");
+                setIsSubmitting(false);
+                return;
+            }
+
             const payload = {
                 patient: {
                     fullName: data.fullName,
@@ -138,21 +127,19 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
                     lastName: data.fullName.split(' ').slice(1).join(' ') || data.fullName.split(' ')[0],
                     phone: data.phone,
                     email: data.email,
-                    // The schema requires dob and gender, but we are not collecting them.
-                    // Provide dummy data or adjust the backend if they are truly optional.
                     dob: '1990-01-01', 
                     gender: 'O',
                 },
                 appointment: {
-                    clinicId: data.clinic,
-                    doctorId: data.doctor,
-                    startTime: data.startTime,
+                    clinicId: selectedSlot.clinicId,
+                    doctorId: selectedSlot.doctorId,
+                    startTime: selectedSlot.startTime,
                 }
             };
             
             await axios.post('/api/book-appointment', payload);
-            toast.success("Appointment Booked!", { description: `Your appointment on ${format(data.appointmentDate, "PPP")} at ${format(new Date(data.startTime), "p")} is confirmed.` });
-            setStep(5); // Move to success step
+            toast.success("Appointment Booked!", { description: `Your appointment with Dr. ${selectedDoctor?.name} on ${format(new Date(selectedSlot.startTime), "PPP")} at ${format(new Date(selectedSlot.startTime), "p")} is confirmed.` });
+            setStep(4); // Move to success step
 
         } catch (error: any) {
             console.error("Booking failed:", error);
@@ -170,7 +157,6 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
             setIsSubmitting(false);
             setAvailableSlots([]);
             setIsFetchingSlots(false);
-            setClinics([]);
             setDoctors([]);
             form.reset();
         }
@@ -184,7 +170,7 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
                     <>
                         <DialogHeader>
                             <DialogTitle>Book an Appointment: Your Details</DialogTitle>
-                            <DialogDescription>Step 1 of 4: Tell us about yourself.</DialogDescription>
+                            <DialogDescription>Step 1 of 3: Tell us about yourself.</DialogDescription>
                         </DialogHeader>
                         <div className="space-y-4 py-4">
                            <FormField control={form.control} name="fullName" render={({ field }) => ( <FormItem> <FormLabel>Full Name</FormLabel> <FormControl><Input placeholder="John Doe" {...field} /></FormControl> <FormMessage /> </FormItem> )}/>
@@ -194,64 +180,33 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
                         <Button onClick={async () => { 
                             const isValid = await form.trigger(["fullName", "phone", "email"]); 
                             if(isValid) setStep(2); 
-                        }} className="w-full"> Next: Select Date </Button>
+                        }} className="w-full">Next: Select Doctor</Button>
                     </>
                 );
-             case 2: // Date Selection
-                return (
-                    <>
-                        <DialogHeader>
-                            <DialogTitle>Book an Appointment: Select a Date</DialogTitle>
-                            <DialogDescription>Step 2 of 4: Choose your desired appointment date.</DialogDescription>
-                        </DialogHeader>
-                         <FormField control={form.control} name="appointmentDate" render={({ field }) => (
-                            <FormItem className="flex flex-col items-center py-4">
-                                <FormControl>
-                                    <Calendar 
-                                        mode="single" 
-                                        selected={field.value} 
-                                        onSelect={field.onChange}
-                                        disabled={(date) => date < new Date(new Date().setDate(new Date().getDate() -1)) } 
-                                        initialFocus 
-                                    />
-                                </FormControl>
-                                <FormMessage />
-                            </FormItem>
-                         )} />
-                        <div className="flex gap-2">
-                            <Button onClick={() => setStep(1)} variant="outline" className="w-1/3">Back</Button>
-                            <Button onClick={async () => {
-                                const isValid = await form.trigger(["appointmentDate"]);
-                                if (isValid) setStep(3);
-                            }} className="w-2/3" disabled={!form.watch('appointmentDate')}>Next: Select Provider</Button>
-                        </div>
-                    </>
-                );
-            case 3: // Clinic and Doctor
+            case 2: // Doctor Selection
                  return (
                     <>
                         <DialogHeader>
-                            <DialogTitle>Book an Appointment: Choose Provider</DialogTitle>
-                            <DialogDescription>Step 3 of 4: Choose a clinic and doctor.</DialogDescription>
+                            <DialogTitle>Book an Appointment: Choose a Doctor</DialogTitle>
+                            <DialogDescription>Step 2 of 3: Who would you like to see?</DialogDescription>
                         </DialogHeader>
                         {isLoading ? ( <div className="flex items-center justify-center h-40"><Loader2 className="h-8 w-8 animate-spin" /></div> ) : (
                         <div className="space-y-4 py-4">
-                            <FormField control={form.control} name="clinic" render={({ field }) => ( <FormItem> <FormLabel>Preferred Clinic</FormLabel> <Select onValueChange={field.onChange} defaultValue={field.value}> <FormControl> <SelectTrigger> <SelectValue placeholder="Select a clinic" /> </SelectTrigger> </FormControl> <SelectContent> {clinics.map(clinic => <SelectItem key={clinic.id} value={clinic.id}>{clinic.name}</SelectItem>)} </SelectContent> </Select> <FormMessage /> </FormItem> )}/>
-                            <FormField control={form.control} name="doctor" render={({ field }) => ( <FormItem> <FormLabel>Doctor</FormLabel> <Select onValueChange={field.onChange} defaultValue={field.value} disabled={!selectedClinicId || doctors.length === 0}> <FormControl> <SelectTrigger> <SelectValue placeholder={!selectedClinicId ? "Select clinic first" : (doctors.length > 0 ? "Select a doctor" : "No doctors available")} /> </SelectTrigger> </FormControl> <SelectContent> {doctors.map(doctor => <SelectItem key={doctor.id} value={doctor.id}>{doctor.name}</SelectItem>)} </SelectContent> </Select> <FormMessage /> </FormItem> )}/>
+                            <FormField control={form.control} name="doctor" render={({ field }) => ( <FormItem> <FormLabel>Doctor</FormLabel> <Select onValueChange={field.onChange} defaultValue={field.value}> <FormControl> <SelectTrigger> <SelectValue placeholder="Select a doctor" /> </SelectTrigger> </FormControl> <SelectContent> {doctors.map(doctor => <SelectItem key={doctor.id} value={doctor.id}>{doctor.name} at {doctor.clinicName}</SelectItem>)} </SelectContent> </Select> <FormMessage /> </FormItem> )}/>
                         </div>
                         )}
                         <div className="flex gap-2">
-                            <Button onClick={() => setStep(2)} variant="outline" className="w-1/3">Back</Button>
-                            <Button onClick={async () => { const isValid = await form.trigger(["clinic", "doctor"]); if (isValid) setStep(4); }} className="w-2/3" disabled={!form.watch('doctor')}>Next: Select Time</Button>
+                            <Button onClick={() => setStep(1)} variant="outline" className="w-1/3">Back</Button>
+                            <Button onClick={async () => { const isValid = await form.trigger(["doctor"]); if (isValid) setStep(3); }} className="w-2/3" disabled={!form.watch('doctor')}>Next: Select Time</Button>
                         </div>
                     </>
                 );
-            case 4: // Time Slot
+            case 3: // Time Slot
                 return (
                     <>
                         <DialogHeader>
                             <DialogTitle>Book an Appointment: Time Slot</DialogTitle>
-                            <DialogDescription>Step 4 of 4: Choose an available time.</DialogDescription>
+                            <DialogDescription>Step 3 of 3: Choose an available time for Dr. {selectedDoctor?.name}.</DialogDescription>
                         </DialogHeader>
                          {isFetchingSlots ? (
                             <div className="flex items-center justify-center h-40">
@@ -277,9 +232,10 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
                                                          </FormControl>
                                                         <Label
                                                             htmlFor={slot.startTime}
-                                                            className="flex w-full cursor-pointer items-center justify-center rounded-md border-2 border-muted bg-popover p-2 hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary [&:has([data-state=checked])]:border-primary"
+                                                            className="flex w-full cursor-pointer flex-col items-center justify-center rounded-md border-2 border-muted bg-popover p-2 text-center hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary [&:has([data-state=checked])]:border-primary"
                                                         >
-                                                            {format(new Date(slot.startTime), "p")}
+                                                            <span className="font-semibold">{format(new Date(slot.startTime), "p")}</span>
+                                                            <span className="text-xs text-muted-foreground">{format(new Date(slot.startTime), "MMM d")}</span>
                                                         </Label>
                                                     </FormItem>
                                                 ))}
@@ -291,20 +247,20 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
                             />
                         ) : (
                              <div className="text-center text-muted-foreground py-16">
-                                <p>No available slots for the selected provider and date.</p>
-                                <p className="text-sm">Please try a different date or doctor.</p>
+                                <p>No available slots for the selected provider.</p>
+                                <p className="text-sm">Please try a different doctor.</p>
                             </div>
                         )}
                         
                         <div className="flex gap-2">
-                           <Button onClick={() => setStep(3)} variant="outline" className="w-1/3">Back</Button>
+                           <Button onClick={() => setStep(2)} variant="outline" className="w-1/3">Back</Button>
                            <Button onClick={form.handleSubmit(processBooking)} disabled={isSubmitting || isFetchingSlots || !form.watch('startTime')} className="w-2/3">
                                {isSubmitting ? <><Loader2 className="mr-2 h-4 w-4 animate-spin"/>Booking...</> : "Confirm Appointment"}
                            </Button>
                         </div>
                     </>
                 );
-             case 5: // Success
+             case 4: // Success
                 return (
                     <>
                         <DialogHeader>
@@ -338,5 +294,3 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
         </Dialog>
     );
 }
-
-    

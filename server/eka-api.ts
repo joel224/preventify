@@ -1,7 +1,7 @@
 
 import axios from 'axios';
 import { getTokens, saveTokens } from './token-storage';
-import { format, addDays } from "date-fns";
+import { format, addDays, setHours, setMinutes, setSeconds, isBefore, startOfDay, endOfDay } from "date-fns";
 import { processBusinessEntities } from './data-processing';
 
 const EKA_API_BASE_URL = 'https://api.eka.care';
@@ -135,31 +135,32 @@ async function makeApiRequest(apiCall: (client: any) => Promise<any>) {
   }
 }
 
-export async function getAvailableSlots(doctorId: string, clinicId: string, date: string): Promise<any[]> {
-    console.log(`--- Fetching available slots for doctor: ${doctorId}, clinic: ${clinicId}, date: ${date} ---`);
+// Helper function to fetch slots for a given date range
+async function fetchSlotsForDate(doctorId: string, clinicId: string, startDate: Date, endDate: Date): Promise<any[]> {
+    const formattedStartDate = format(startDate, 'yyyy-MM-dd');
+    const formattedEndDate = format(endDate, 'yyyy-MM-dd');
 
-    const formattedDate = format(new Date(date), 'yyyy-MM-dd');
+    console.log(`--- Fetching available slots for doctor: ${doctorId}, clinic: ${clinicId}, from: ${formattedStartDate} to ${formattedEndDate} ---`);
 
     try {
         const responseData = await makeApiRequest(async (client) => {
             const response = await client.get(`/dr/v1/doctor/${doctorId}/clinic/${clinicId}/appointment/slot`, {
                 params: {
-                    start_date: formattedDate,
-                    end_date: formattedDate
+                    start_date: formattedStartDate,
+                    end_date: formattedEndDate
                 }
             });
             return response.data;
         });
 
         if (!responseData.data || !responseData.data.schedule) {
-            console.log(`INFO: No schedule object found for ${doctorId}/${clinicId} on ${formattedDate}.`);
+            console.log(`INFO: No schedule object found for ${doctorId}/${clinicId} on ${formattedStartDate}.`);
             return [];
         }
 
         const schedule = responseData.data.schedule;
         const availableSlots: any[] = [];
         
-        // The schedule object keys can be dynamic, so we iterate over them
         for (const scheduleKey in schedule) {
             if (Object.prototype.hasOwnProperty.call(schedule, scheduleKey)) {
                 const scheduleItems = schedule[scheduleKey];
@@ -167,7 +168,12 @@ export async function getAvailableSlots(doctorId: string, clinicId: string, date
                     for (const item of scheduleItems) {
                         if (item.slots && Array.isArray(item.slots)) {
                             item.slots.forEach((slot: any) => {
-                                if (slot.available) {
+                                // Filter slots based on work hours (8am to 7pm)
+                                const slotStartTime = new Date(slot.s);
+                                const dayStart = setHours(startOfDay(slotStartTime), 8);
+                                const dayEnd = setHours(startOfDay(slotStartTime), 19); // 7 PM
+                                
+                                if (slot.available && isBefore(slotStartTime, dayEnd) && slotStartTime >= dayStart) {
                                     availableSlots.push({
                                         startTime: slot.s,
                                         endTime: slot.e,
@@ -183,17 +189,49 @@ export async function getAvailableSlots(doctorId: string, clinicId: string, date
         }
         
         if (availableSlots.length > 0) {
-            console.log(`SUCCESS: Found ${availableSlots.length} available slots for ${doctorId}/${clinicId} on ${formattedDate}.`);
+            console.log(`SUCCESS: Found ${availableSlots.length} available slots.`);
         } else {
-            console.log(`INFO: No available slots found for ${doctorId}/${clinicId} on ${formattedDate}.`);
+            console.log(`INFO: No available slots found in the given range.`);
         }
-
         return availableSlots;
 
     } catch (error: any) {
-        console.error(`ERROR fetching slots for ${doctorId}/${clinicId} on ${formattedDate}:`, error.message);
-        return []; // Return empty array on error to not block the whole process
+        console.error(`ERROR fetching slots for ${doctorId}/${clinicId}:`, error.message);
+        return []; // Return empty array on error
     }
+}
+
+
+export async function getAvailableSlots(doctorId: string, clinicId: string, date: string): Promise<any[]> {
+    const requestedDate = new Date(date);
+    const now = new Date();
+    
+    // Define working hours
+    const todayWorkStart = setHours(startOfDay(now), 8);
+    const todayWorkEnd = setHours(startOfDay(now), 19); // 7 PM
+
+    let slots: any[] = [];
+
+    // Check today first, but only if it's before 7 PM
+    if (isBefore(now, todayWorkEnd)) {
+        console.log("INFO: Checking for available slots for the rest of today.");
+        // If it's before 8 AM, check the whole day. Otherwise, check from the current time.
+        const startTime = isBefore(now, todayWorkStart) ? todayWorkStart : now;
+        slots = await fetchSlotsForDate(doctorId, clinicId, startTime, todayWorkEnd);
+    } else {
+        console.log("INFO: It's past 7 PM. Skipping today's slots check.");
+    }
+
+    // If no slots are found for today, check for tomorrow
+    if (slots.length === 0) {
+        console.log("INFO: No slots found for today. Checking for tomorrow's availability.");
+        const tomorrow = addDays(requestedDate, 1);
+        const tomorrowStart = setHours(startOfDay(tomorrow), 8);
+        const tomorrowEnd = setHours(startOfDay(tomorrow), 19);
+        slots = await fetchSlotsForDate(doctorId, clinicId, tomorrowStart, tomorrowEnd);
+    }
+    
+    return slots;
 }
 
 
