@@ -61,19 +61,37 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
     const [availableSlots, setAvailableSlots] = useState<Slot[]>([]);
     const [isFetchingSlots, setIsFetchingSlots] = useState(false);
 
+    const getCurrentSchema = () => {
+        switch (step) {
+            case 1:
+                return patientDetailsSchema;
+            case 2:
+                return patientDetailsSchema.merge(doctorSelectionSchema);
+            case 3:
+                return bookingSchema;
+            default:
+                return patientDetailsSchema;
+        }
+    };
+    
     const form = useForm<BookingFormValues>({
-        resolver: patientDetailsSchema, // Start with patient schema
+        resolver: zodResolver(getCurrentSchema()),
+        mode: "onChange",
         defaultValues: {
             fullName: "",
             phone: "",
             email: "",
         },
     });
-    
+
+    useEffect(() => {
+        form.reset(); // Reset form state on step change
+    }, [step, form]);
+
     const selectedDoctorId = form.watch("doctor");
     const selectedDoctor = doctors.find(d => d.id === selectedDoctorId);
 
-    // Fetch doctors when dialog opens
+    // Fetch doctors when dialog opens and we are on step 2
     useEffect(() => {
         if (isOpen && step === 2 && doctors.length === 0) {
             setIsLoading(true);
@@ -201,15 +219,15 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
                     </>
                 );
             case 3: // Time Slot
-                 let timeSlotContent;
-                 if (isFetchingSlots) {
-                    timeSlotContent = (
-                        <div className="flex items-center justify-center h-40">
-                            <Loader2 className="mr-2 h-8 w-8 animate-spin" />
-                            <p>Finding open slots...</p>
-                        </div>
-                    );
-                 } else if (availableSlots.length > 0) {
+                let timeSlotContent;
+                if (isFetchingSlots) {
+                   timeSlotContent = (
+                       <div className="flex items-center justify-center h-40">
+                           <Loader2 className="mr-2 h-8 w-8 animate-spin" />
+                           <p>Finding open slots...</p>
+                       </div>
+                   );
+                } else if (availableSlots.length > 0) {
                     timeSlotContent = (
                         <FormField
                             control={form.control}
@@ -244,14 +262,14 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
                             )}
                         />
                     );
-                 } else {
-                    timeSlotContent = (
-                        <div className="text-center text-muted-foreground py-16">
-                            <p>No available slots for the selected provider.</p>
-                            <p className="text-sm">Please try a different doctor or date.</p>
-                        </div>
-                    );
-                 }
+                } else {
+                   timeSlotContent = (
+                       <div className="text-center text-muted-foreground py-16">
+                           <p>No available slots for the selected provider.</p>
+                           <p className="text-sm">Please try a different doctor or date.</p>
+                       </div>
+                   );
+                }
                 return (
                     <>
                         <DialogHeader>
