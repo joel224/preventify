@@ -86,7 +86,7 @@ async function _refreshAccessToken() {
   }
 }
 
-// Export this function so it can be used in booking-api.ts
+// This function now consistently returns the full Axios response object.
 export async function makeApiRequest(apiCall: (client: any) => Promise<any>) {
   let tokens = await getTokens();
 
@@ -99,6 +99,7 @@ export async function makeApiRequest(apiCall: (client: any) => Promise<any>) {
 
   try {
     console.log('INFO: Making API call with current token.');
+    // Always return the full response object from the apiCall
     const result = await apiCall(apiClient);
     console.log(`SUCCESS: API call successful.`);
     return result;
@@ -138,16 +139,18 @@ async function fetchSlotsForDate(doctorId: string, clinicId: string, startDate: 
     console.log(`--- Fetching available slots for doctor: ${doctorId}, clinic: ${clinicId}, from: ${formattedStartDate} to ${formattedEndDate} ---`);
 
     try {
-        const responseData = await makeApiRequest(async (client) => {
-            const response = await client.get(`/dr/v1/doctor/${doctorId}/clinic/${clinicId}/appointment/slot`, {
+        // The API call now returns the full Axios response
+        const response = await makeApiRequest(async (client) => {
+            return client.get(`/dr/v1/doctor/${doctorId}/clinic/${clinicId}/appointment/slot`, {
                 params: {
                     start_date: formattedStartDate,
                     end_date: formattedEndDate
                 }
             });
-            return response.data; // Return the full data object from axios
         });
 
+        // The actual data from Eka is nested under `response.data.data`
+        const responseData = response.data;
         console.log(`RAW SLOT API RESPONSE for ${doctorId}/${clinicId} on ${formattedStartDate}:`, JSON.stringify(responseData, null, 2));
 
         if (!responseData?.data?.schedule) {
@@ -253,4 +256,3 @@ export async function getBusinessEntitiesAndDoctors(): Promise<any> {
     
     return { doctors: processedDoctors, clinics: processedClinics };
 }
-

@@ -52,17 +52,17 @@ export async function createAppointment(data: any): Promise<any> {
 
     // 4. Make the API call
     try {
+        // The API call now returns the full Axios response object
         const bookingResponse = await makeApiRequest(async (client) => {
-            const response = await client.post('/dr/v1/appointment', appointmentPayload);
-            return response.data;
+            return client.post('/dr/v1/appointment', appointmentPayload);
         });
 
         console.log("--- [DEBUG] booking-api.ts: SUCCESS: API responded to booking request. ---");
         console.log("--- [DEBUG] booking-api.ts: Full API Response ---");
-        console.log(JSON.stringify(bookingResponse, null, 2));
+        console.log(JSON.stringify(bookingResponse.data, null, 2)); // Log the .data property of the response
         console.log("---------------------------------");
         
-        return bookingResponse;
+        return bookingResponse.data; // Return just the data to the frontend
     } catch(error: any) {
         console.error("--- [DEBUG] booking-api.ts: ERROR during Eka API booking call ---");
         if (error.response) {
