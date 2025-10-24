@@ -1,3 +1,4 @@
+
 'use client'
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -80,24 +81,63 @@ function Step1Form({ onNext, onDialogClose }: { onNext: (data: Step1Values) => v
                     <DialogDescription>Please provide your name and contact information.</DialogDescription>
                 </DialogHeader>
                 <div className="space-y-4 py-4">
-                    <FormField control={form.control} name="fullName" render={({ field }) => ( 
+                    
+                    {/* --- CHANGED FIELD --- */}
+                    <FormField 
+                        control={form.control} 
+                        name="fullName" 
+                        render={({ field: { onChange, onBlur, name, value } }) => ( // Destructure field, ignore ref
                         <FormItem> 
                             <FormLabel>Full Name</FormLabel> 
-                            <FormControl><Input placeholder="John Doe" {...field} value={field.value ?? ""} /></FormControl> 
+                            <FormControl>
+                                <Input 
+                                    placeholder="John Doe" 
+                                    onChange={onChange}
+                                    onBlur={onBlur}
+                                    name={name}
+                                    value={value ?? ""} // Keep the patch
+                                />
+                            </FormControl> 
                             <FormMessage /> 
                         </FormItem> 
                     )}/>
-                    <FormField control={form.control} name="phone" render={({ field }) => ( 
+                    
+                    {/* --- CHANGED FIELD --- */}
+                    <FormField 
+                        control={form.control} 
+                        name="phone" 
+                        render={({ field: { onChange, onBlur, name, value } }) => ( // Destructure field, ignore ref
                         <FormItem> 
                             <FormLabel>Phone</FormLabel> 
-                            <FormControl><Input placeholder="+91 98765 43210" {...field} value={field.value ?? ""} /></FormControl> 
+                            <FormControl>
+                                <Input 
+                                    placeholder="+91 98765 43210" 
+                                    onChange={onChange}
+                                    onBlur={onBlur}
+                                    name={name}
+                                    value={value ?? ""} // Keep the patch
+                                />
+                            </FormControl> 
                             <FormMessage /> 
                         </FormItem> 
                     )}/>
-                    <FormField control={form.control} name="email" render={({ field }) => ( 
+
+                    {/* --- CHANGED FIELD --- */}
+                    <FormField 
+                        control={form.control} 
+                        name="email" 
+                        render={({ field: { onChange, onBlur, name, value } }) => ( // Destructure field, ignore ref
                         <FormItem> 
                             <FormLabel>Email (Optional)</FormLabel> 
-                            <FormControl><Input placeholder="you@example.com" {...field} value={field.value ?? ""} /></FormControl> 
+                            <FormControl>
+                                <Input 
+                                    placeholder="you@example.com" 
+                                    onChange={onChange}
+                                    onBlur={onBlur}
+                                    name={name}
+                                    value={value ?? ""} // Keep the patch
+                                />
+                            </FormControl> 
                             <FormMessage /> 
                         </FormItem> 
                     )}/>
@@ -450,3 +490,5 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
         </Dialog>
     );
 }
+
+    
