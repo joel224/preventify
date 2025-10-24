@@ -58,6 +58,8 @@ interface Slot {
   endTime: string;
 }
 
+const PADINJARANGADI_CLINIC_ID = "21683";
+
 // Zod Schemas
 const stepOneSchema = z.object({
   doctorId: z.string().min(1, 'Please select a doctor.'),
@@ -95,7 +97,7 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
     resolver: zodResolver(bookingSchema),
     defaultValues: {
       doctorId: '',
-      clinicId: '',
+      clinicId: PADINJARANGADI_CLINIC_ID,
       time: '',
       firstName: '',
       lastName: '',
@@ -120,6 +122,8 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
           const { doctors, clinics } = await res.json();
           setDoctors(doctors);
           setClinics(clinics);
+          // Pre-select the clinic
+          form.setValue('clinicId', PADINJARANGADI_CLINIC_ID, { shouldValidate: true });
         } catch (error) {
           console.error(error);
           toast.error('Could not load doctors and clinics.');
@@ -129,12 +133,21 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
       };
       fetchData();
     }
-  }, [open]);
+  }, [open, form]);
 
   // Reset form when dialog is closed
   useEffect(() => {
     if (!open) {
-      form.reset();
+      form.reset({
+        doctorId: '',
+        clinicId: PADINJARANGADI_CLINIC_ID,
+        time: '',
+        firstName: '',
+        lastName: '',
+        phone: '',
+        dob: '',
+        gender: 'M',
+      });
       setStep(1);
       setBookingStatus('idle');
       setAvailableSlots([]);
@@ -166,20 +179,9 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
   }, [selectedDoctorId, selectedClinicId, selectedDate, form]);
   
   const selectedDoctor = useMemo(() => doctors.find(d => d.id === selectedDoctorId), [doctors, selectedDoctorId]);
-  const clinicsForSelectedDoctor = useMemo(() => {
-    if (!selectedDoctorId) return clinics;
-    // Find all clinics associated with the selected doctor
-    const clinicIds = new Set<string>();
-    clinics.forEach(c => {
-        if(c.doctors.some(d => d.id === selectedDoctorId)){
-            clinicIds.add(c.id);
-        }
-    });
-    return clinics.filter(c => clinicIds.has(c.id));
-  }, [clinics, selectedDoctorId]);
-
+  
   const doctorsForSelectedClinic = useMemo(() => {
-    if (!selectedClinicId) return doctors;
+    if (!selectedClinicId) return [];
     const clinic = clinics.find(c => c.id === selectedClinicId);
     if (!clinic) return [];
     const doctorIds = new Set(clinic.doctors.map(d => d.id));
@@ -251,15 +253,18 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
 
 
   const renderStepContent = () => {
+    const selectedClinic = clinics.find(c => c.id === PADINJARANGADI_CLINIC_ID);
     switch (step) {
-      case 1: // Select Doctor & Clinic
+      case 1: // Select Doctor
         return (
           <>
             <DialogHeader>
-              <DialogTitle>Step 1: Select Doctor and Clinic</DialogTitle>
-              <DialogDescription>Choose a doctor and the clinic where you want to book.</DialogDescription>
+              <DialogTitle>Step 1: Select a Doctor</DialogTitle>
+              <DialogDescription>
+                Booking an appointment at {selectedClinic?.name || 'our clinic'}.
+              </DialogDescription>
             </DialogHeader>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 py-4">
+            <div className="py-4">
               <FormField
                 control={form.control}
                 name="doctorId"
@@ -268,18 +273,15 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
                     <FormLabel>Doctor</FormLabel>
                     <Command>
                       <CommandInput placeholder="Search doctor..." />
-                      <CommandList className="max-h-[200px]">
+                      <CommandList className="max-h-[250px]">
                         <CommandEmpty>No doctor found.</CommandEmpty>
                         <CommandGroup>
-                           {(selectedClinicId ? doctorsForSelectedClinic : doctors).map((doctor) => (
+                           {doctorsForSelectedClinic.map((doctor) => (
                             <CommandItem
                               key={doctor.id}
                               value={doctor.name}
                               onSelect={() => {
                                 form.setValue('doctorId', doctor.id, { shouldValidate: true });
-                                if(!clinicsForSelectedDoctor.some(c => c.id === form.getValues('clinicId'))){
-                                    form.setValue('clinicId', doctor.clinicId, { shouldValidate: true });
-                                }
                               }}
                             >
                               {doctor.name}
@@ -292,38 +294,9 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
                   </FormItem>
                 )}
               />
-              <FormField
-                control={form.control}
-                name="clinicId"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Clinic</FormLabel>
-                    <Command>
-                      <CommandInput placeholder="Search clinic..." />
-                       <CommandList className="max-h-[200px]">
-                        <CommandEmpty>No clinic found.</CommandEmpty>
-                        <CommandGroup>
-                          {(selectedDoctorId ? clinicsForSelectedDoctor : clinics).map((clinic) => (
-                            <CommandItem
-                              key={clinic.id}
-                              value={clinic.name}
-                              onSelect={() => {
-                                form.setValue('clinicId', clinic.id, { shouldValidate: true });
-                              }}
-                            >
-                              {clinic.name}
-                            </CommandItem>
-                          ))}
-                        </CommandGroup>
-                      </CommandList>
-                    </Command>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
             </div>
             <DialogFooter>
-              <Button onClick={handleNextStep} disabled={isLoading}>
+              <Button onClick={handleNextStep} disabled={isLoading || doctorsForSelectedClinic.length === 0} type="button">
                 {isLoading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
                 Next
               </Button>
@@ -336,7 +309,7 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
             <DialogHeader>
               <DialogTitle>Step 2: Select Date & Time</DialogTitle>
               <DialogDescription>
-                {`Booking for ${selectedDoctor?.name} at ${clinics.find(c => c.id === selectedClinicId)?.name}`}
+                {`Booking for ${selectedDoctor?.name} at ${selectedClinic?.name}`}
               </DialogDescription>
             </DialogHeader>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 py-4">
@@ -344,7 +317,7 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
                 control={form.control}
                 name="date"
                 render={({ field }) => (
-                  <FormItem className="flex flex-col">
+                  <FormItem className="flex flex-col items-center">
                     <FormLabel>Date</FormLabel>
                     <Calendar
                         mode="single"
@@ -363,7 +336,7 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Available Slots</FormLabel>
-                    <div className="grid grid-cols-3 gap-2 max-h-[300px] overflow-y-auto">
+                    <div className="grid grid-cols-3 gap-2 max-h-[300px] overflow-y-auto pr-2">
                       {isLoading ? (
                         <div className="col-span-3 flex justify-center items-center h-24">
                           <Loader2 className="h-8 w-8 animate-spin text-primary" />
@@ -375,13 +348,14 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
                                 variant={field.value === slot.startTime ? 'default' : 'outline'}
                                 onClick={() => field.onChange(slot.startTime)}
                                 className="w-full"
+                                type="button"
                             >
                                 {format(parseISO(slot.startTime), 'hh:mm a')}
                             </Button>
                         ))
                       ) : (
                          <p className="col-span-3 text-sm text-muted-foreground text-center py-4">
-                           {selectedDate ? 'No slots available for this date. Please select another date.' : 'Please select a date to see available slots.'}
+                           {selectedDate ? 'No slots available. Please select another date.' : 'Please select a date to see available slots.'}
                          </p>
                       )}
                     </div>
@@ -391,8 +365,8 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
               />
             </div>
             <DialogFooter>
-              <Button variant="outline" onClick={handlePrevStep}>Back</Button>
-              <Button onClick={handleNextStep}>Next</Button>
+              <Button variant="outline" onClick={handlePrevStep} type="button">Back</Button>
+              <Button onClick={handleNextStep} type="button">Next</Button>
             </DialogFooter>
           </>
         );
@@ -403,7 +377,6 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
               <DialogTitle>Step 3: Patient Details</DialogTitle>
               <DialogDescription>Please provide your information.</DialogDescription>
             </DialogHeader>
-            {/* Note: The <form> tag is now outside, wrapping the entire content */}
             <div className="space-y-4 py-4">
               <div className="grid grid-cols-2 gap-4">
                 <FormField
@@ -553,7 +526,7 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>{children}</DialogTrigger>
-      <DialogContent className="sm:max-w-xl md:max-w-2xl lg:max-w-3xl">
+      <DialogContent className="sm:max-w-md">
         <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)}>
                 {renderStepContent()}
@@ -563,3 +536,4 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
     </Dialog>
   );
 }
+
