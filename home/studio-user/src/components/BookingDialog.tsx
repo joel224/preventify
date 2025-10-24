@@ -24,7 +24,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { Calendar } from "@/components/ui/calendar";
 import { cn } from "@/lib/utils";
 import { CalendarIcon, Loader2 } from "lucide-react";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { toast } from "@/components/ui/sonner";
 import axios from "axios";
 import { format } from "date-fns";
@@ -121,7 +121,10 @@ function Step2Form({ onNext, onBack, onDialogClose }: { onNext: (data: Step2Valu
     const form = useForm<Step2Values>({
         resolver: zodResolver(Step2Schema),
         mode: "onChange",
-        defaultValues: { doctor: "", startTime: "" }
+        defaultValues: { 
+            doctor: undefined, 
+            startTime: undefined 
+        } 
     });
 
     const selectedDoctorId = form.watch("doctor");
@@ -144,7 +147,7 @@ function Step2Form({ onNext, onBack, onDialogClose }: { onNext: (data: Step2Valu
 
             setIsFetchingSlots(true);
             setAvailableSlots([]);
-            form.setValue("startTime", "");
+            form.setValue("startTime", undefined);
             setSelectedSlotObj(null);
 
             const dateString = format(new Date(), 'yyyy-MM-dd');
@@ -202,7 +205,7 @@ function Step2Form({ onNext, onBack, onDialogClose }: { onNext: (data: Step2Valu
                         <FormField control={form.control} name="doctor" render={({ field }) => ( 
                             <FormItem> 
                                 <FormLabel>Doctor</FormLabel> 
-                                <Select onValueChange={field.onChange} value={field.value || ""}> 
+                                <Select onValueChange={field.onChange} value={field.value}> 
                                     <FormControl><SelectTrigger><SelectValue placeholder="Select a doctor" /></SelectTrigger></FormControl> 
                                     <SelectContent> 
                                         {doctors.map(doc => <SelectItem key={doc.id} value={doc.id}>{doc.name} - {doc.clinicName}</SelectItem>)} 
@@ -254,7 +257,10 @@ function Step3Form({ onBack, onSubmit }: { onBack: () => void; onSubmit: (data: 
     const form = useForm<Step3Values>({
         resolver: zodResolver(Step3Schema),
         mode: "onChange",
-        defaultValues: { gender: "" as "M" | "F" | "O", dob: undefined }
+        defaultValues: { 
+            gender: undefined, 
+            dob: undefined 
+        }
     });
     
     return (
@@ -268,7 +274,7 @@ function Step3Form({ onBack, onSubmit }: { onBack: () => void; onSubmit: (data: 
                     <FormField control={form.control} name="gender" render={({ field }) => (
                         <FormItem>
                             <FormLabel>Gender</FormLabel>
-                            <Select onValueChange={field.onChange} value={field.value || ""}>
+                            <Select onValueChange={field.onChange} value={field.value}>
                                 <FormControl><SelectTrigger><SelectValue placeholder="Select your gender" /></SelectTrigger></FormControl>
                                 <SelectContent>
                                     <SelectItem value="M">Male</SelectItem>
