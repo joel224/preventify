@@ -57,7 +57,7 @@ app.get('/api/available-slots', async (req, res) => {
         console.log(`API Endpoint: /api/available-slots called with doctorId=${doctorId}, clinicId=${clinicId}, date=${date}`);
         const slots = await getAvailableSlots(doctorId, clinicId, date);
         res.json(slots);
-    } catch (error: any)
+    } catch (error: any) {
         console.error('Error in /api/available-slots endpoint:', error.message);
         res.status(500).json({ message: 'Failed to get available slots', error: error.message });
     }
