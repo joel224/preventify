@@ -63,7 +63,7 @@ const PADINJARANGADI_CLINIC_ID = "21683";
 // Zod Schemas
 const stepOneSchema = z.object({
   doctorId: z.string().min(1, 'Please select a doctor.'),
-  clinicId: z.string().min(1, 'Please select a clinic.'),
+  clinicId: z.string().min(1, 'Internal: Clinic ID is missing.'),
 });
 
 const stepTwoSchema = z.object({
@@ -123,7 +123,7 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
           setDoctors(doctors);
           setClinics(clinics);
           // Pre-select the clinic
-          form.setValue('clinicId', PADINJARANGADI_CLINIC_ID, { shouldValidate: true });
+          form.setValue('clinicId', PADINJARANGADI_CLINIC_ID);
         } catch (error) {
           console.error(error);
           toast.error('Could not load doctors and clinics.');
@@ -183,8 +183,11 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
   const doctorsForSelectedClinic = useMemo(() => {
     const clinic = clinics.find(c => c.id === PADINJARANGADI_CLINIC_ID);
     if (!clinic) return [];
-    const doctorIds = new Set(clinic.doctors.map(d => d.id));
-    return doctors.filter(d => doctorIds.has(d.id));
+    // The business logic is that all doctors can operate from any clinic, so we just return all doctors.
+    // If this needs to be filtered by clinic, the logic below can be used.
+    // const doctorIds = new Set(clinic.doctors.map(d => d.id));
+    // return doctors.filter(d => doctorIds.has(d.id));
+    return doctors;
   }, [doctors, clinics]);
 
 
@@ -525,7 +528,7 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>{children}</DialogTrigger>
-      <DialogContent className="sm:max-w-md">
+      <DialogContent className="sm:max-w-xl md:max-w-2xl">
         <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)}>
                 {renderStepContent()}
@@ -535,3 +538,5 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
     </Dialog>
   );
 }
+
+    
