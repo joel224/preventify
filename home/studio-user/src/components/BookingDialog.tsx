@@ -151,9 +151,11 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
     
     const selectedSlotValue = form.watch("startTime");
 
-    const processBooking = async (data: BookingFormValues) => {
+    const processBooking = async () => {
         setIsSubmitting(true);
-        console.log("[DEBUG] Frontend: processBooking started. Full form data:", data);
+        // THE FIX: Get all values directly from the form state.
+        const data = form.getValues();
+        console.log("[DEBUG] Frontend: processBooking started. Full form data from getValues():", data);
 
         if (!selectedSlotObj || !selectedDoctorObj) {
             toast.error("Invalid slot or doctor selected");
