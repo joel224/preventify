@@ -38,7 +38,8 @@ app.get('/api/doctors-and-clinics', async (req, res) => {
     console.log('API Endpoint: /api/doctors-and-clinics called');
     const data = await getBusinessEntitiesAndDoctors();
     res.json(data);
-  } catch (error: any)     console.error('Error in /api/doctors-and-clinics endpoint:', error.message);
+  } catch (error: any) {
+     console.error('Error in /api/doctors-and-clinics endpoint:', error.message);
      res.status(500).json({ message: 'Failed to get doctors and clinics', error: error.message });
   }
 });
