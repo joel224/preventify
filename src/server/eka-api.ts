@@ -1,3 +1,4 @@
+
 import axios from 'axios';
 import { getTokens, saveTokens } from './token-storage';
 import { format, addDays, setHours, isBefore, startOfDay } from "date-fns";
@@ -11,7 +12,6 @@ const getApiClient = (accessToken?: string) => {
     'Content-Type': 'application/json',
   };
   if (accessToken) {
-     headers['auth'] = accessToken;
      headers['Authorization'] = `Bearer ${accessToken}`;
      console.log('API client using existing access token.');
   }
@@ -235,7 +235,7 @@ export async function getBusinessEntitiesAndDoctors(): Promise<any> {
         return res.data;
     });
 
-    const { doctors: doctorList, clinics: clinicList } = response;
+    const { doctors: doctorList, clinics: clinicList } = response.data;
 
     if (!doctorList || doctorList.length === 0) {
         console.warn("WARN: No doctors found in business entities response.");
@@ -260,15 +260,22 @@ export async function getBusinessEntitiesAndDoctors(): Promise<any> {
 }
 
 export async function bookAppointment(data: any): Promise<any> {
-    console.log("--- Starting Simplified Booking Process ---");
-    
+    console.log("--- [DEBUG] BACKEND: bookAppointment function started ---");
+    console.log("--- [DEBUG] BACKEND: Received data from frontend:", JSON.stringify(data, null, 2));
+
     const partnerAppointmentId = `preventify_appt_${Date.now()}`;
     const partnerPatientId = `preventify_patient_${data.patient.phone}_${Date.now()}`;
 
     const startTimeInSeconds = Math.floor(new Date(data.appointment.startTime).getTime() / 1000);
-    const endTimeInSeconds = startTimeInSeconds + (10 * 60); // 10 minute duration
+    const endTimeInSeconds = startTimeInSeconds + 600; // 10 minute duration
 
     const sanitizedMobile = data.patient.phone.replace(/^\+/, '');
+
+    const getDesignation = (gender: string) => {
+        if (gender === 'F') return 'Ms.';
+        if (gender === 'M') return 'Mr.';
+        return 'Mx.';
+    };
 
     const appointmentPayload = {
         partner_appointment_id: partnerAppointmentId,
@@ -281,7 +288,7 @@ export async function bookAppointment(data: any): Promise<any> {
             mode: "INCLINIC",
         },
         patient_details: {
-            designation: data.patient.designation,
+            designation: getDesignation(data.patient.gender),
             first_name: data.patient.firstName,
             last_name: data.patient.lastName,
             mobile: sanitizedMobile,
@@ -290,17 +297,32 @@ export async function bookAppointment(data: any): Promise<any> {
         },
     };
     
-    console.log("\n--- Booking Appointment via /dr/v1/appointment ---");
-    console.log("Request Payload:", JSON.stringify(appointmentPayload, null, 2));
+    console.log("\n--- [DEBUG] BACKEND: Booking Appointment via /dr/v1/appointment ---");
+    console.log("--- [DEBUG] BACKEND: Full Request Payload to Eka API ---");
+    console.log(JSON.stringify(appointmentPayload, null, 2));
+    console.log("------------------------------------");
 
-    const bookingResponse = await makeApiRequest(async (client) => {
-        const response = await client.post('/dr/v1/appointment', appointmentPayload);
-        return response.data;
-    });
+    try {
+        const bookingResponse = await makeApiRequest(async (client) => {
+            const response = await client.post('/dr/v1/appointment', appointmentPayload);
+            return response.data;
+        });
 
-    console.log("SUCCESS: Appointment booked successfully (or patient found/created).");
-    console.log("Response Data:", JSON.stringify(bookingResponse, null, 2));
-    console.log("--- Simplified Booking Process Finished ---");
-
-    return bookingResponse;
+        console.log("--- [DEBUG] BACKEND: SUCCESS: API responded to booking request. ---");
+        console.log("--- [DEBUG] BACKEND: Full API Response ---");
+        console.log(JSON.stringify(bookingResponse, null, 2));
+        console.log("---------------------------------");
+        
+        return bookingResponse;
+    } catch(error: any) {
+        console.error("--- [DEBUG] BACKEND: ERROR during Eka API booking call ---");
+        if (error.response) {
+            console.error("Eka API Error Response Status:", error.response.status);
+            console.error("Eka API Error Response Data:", JSON.stringify(error.response.data, null, 2));
+        } else {
+            console.error("Eka API Error Message:", error.message);
+        }
+        console.log("---------------------------------");
+        throw error; // Re-throw the error to be caught by the endpoint handler
+    }
 }
