@@ -57,8 +57,6 @@ interface Slot {
   endTime: string;
 }
 
-const PADINJARANGADI_CLINIC_ID = "21683";
-
 // Zod Schemas
 const stepOneSchema = z.object({
   firstName: z.string().min(1, 'First name is required.'),
@@ -99,7 +97,7 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
       phone: '',
       email: '',
       doctorId: '',
-      clinicId: PADINJARANGADI_CLINIC_ID,
+      clinicId: '',
       time: '',
     },
   });
@@ -119,7 +117,6 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
           const { doctors, clinics } = await res.json();
           setDoctors(doctors);
           setClinics(clinics);
-          form.setValue('clinicId', PADINJARANGADI_CLINIC_ID);
         } catch (error) {
           console.error(error);
           toast.error('Could not load doctors and clinics.');
@@ -134,15 +131,7 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
   // Reset form when dialog is closed
   useEffect(() => {
     if (!open) {
-      form.reset({
-        firstName: '',
-        lastName: '',
-        phone: '',
-        email: '',
-        doctorId: '',
-        clinicId: PADINJARANGADI_CLINIC_ID,
-        time: '',
-      });
+      form.reset();
       setStep(1);
       setBookingStatus('idle');
       setAvailableSlots([]);
@@ -175,13 +164,6 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
   
   const selectedDoctor = useMemo(() => doctors.find(d => d.id === selectedDoctorId), [doctors, selectedDoctorId]);
   
-  const doctorsForSelectedClinic = useMemo(() => {
-    const clinic = clinics.find(c => c.id === PADINJARANGADI_CLINIC_ID);
-    if (!clinic || !clinic.doctors) return [];
-    const doctorIdsForClinic = new Set(clinic.doctors.map(d => d.id));
-    return doctors.filter(doctor => doctorIdsForClinic.has(doctor.id));
-  }, [doctors, clinics]);
-
   const handleNextStep = async () => {
     let result;
     if (step === 1) {
@@ -253,7 +235,7 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
   };
 
   const renderStepContent = () => {
-    const selectedClinic = clinics.find(c => c.id === PADINJARANGADI_CLINIC_ID);
+    const selectedClinic = clinics.find(c => c.id === selectedClinicId);
     switch (step) {
       case 1: // Patient Details
         return (
@@ -329,7 +311,7 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
             <DialogHeader>
               <DialogTitle>Step 2: Select a Doctor</DialogTitle>
               <DialogDescription>
-                Booking an appointment at {selectedClinic?.name || 'our clinic'}.
+                Booking an appointment at a Preventify clinic.
               </DialogDescription>
             </DialogHeader>
             <div className="py-4">
@@ -344,12 +326,13 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
                       <CommandList className="max-h-[250px]">
                         <CommandEmpty>No doctor found.</CommandEmpty>
                         <CommandGroup>
-                           {doctorsForSelectedClinic.map((doctor) => (
+                           {doctors.map((doctor) => (
                             <CommandItem
                               key={doctor.id}
                               value={doctor.name}
                               onSelect={() => {
                                 form.setValue('doctorId', doctor.id, { shouldValidate: true });
+                                form.setValue('clinicId', doctor.clinicId, { shouldValidate: true });
                               }}
                             >
                               {doctor.name}
@@ -365,7 +348,7 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
             </div>
             <DialogFooter>
               <Button variant="outline" onClick={handlePrevStep} type="button">Back</Button>
-              <Button onClick={handleNextStep} disabled={isLoading || doctorsForSelectedClinic.length === 0} type="button">
+              <Button onClick={handleNextStep} disabled={isLoading || doctors.length === 0} type="button">
                 {isLoading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
                 Next
               </Button>
