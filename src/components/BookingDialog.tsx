@@ -32,25 +32,23 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from ".
 
 // Define schemas for each step
 const stepOneSchema = z.object({
-  firstName: z.string().min(2, "First name must be at least 2 characters."),
-  lastName: z.string().min(2, "Last name must be at least 2 characters."),
+  fullName: z.string().min(3, "Full name must be at least 3 characters."),
   phone: z.string().regex(/^\+?[0-9]{10,14}$/, "Please enter a valid phone number."),
+  email: z.string().email("Please enter a valid email address.").optional().or(z.literal("")),
 });
 
 const stepTwoSchema = z.object({
-  gender: z.enum(["M", "F", "O"], { required_error: "Please select a gender." }),
-  dob: z.date({ required_error: "Date of birth is required." }),
-});
-
-const stepThreeSchema = z.object({
     doctor: z.string({ required_error: "Please select a doctor."}),
-});
-
-const stepFourSchema = z.object({
     startTime: z.string({ required_error: "Please select a time slot."}),
 });
 
-const combinedSchema = stepOneSchema.merge(stepTwoSchema).merge(stepThreeSchema).merge(stepFourSchema);
+const stepThreeSchema = z.object({
+    gender: z.enum(["M", "F", "O"], { required_error: "Please select a gender." }),
+    dob: z.date({ required_error: "Date of birth is required." }),
+});
+
+// A combined schema for progressive validation
+const combinedSchema = stepOneSchema.merge(stepTwoSchema).merge(stepThreeSchema);
 type BookingFormValues = z.infer<typeof combinedSchema>;
 
 type Doctor = { id: string; name: string; clinicId: string; clinicName: string; };
@@ -75,31 +73,26 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
             case 1: return stepOneSchema;
             case 2: return stepTwoSchema;
             case 3: return stepThreeSchema;
-            case 4: return stepFourSchema;
-            default: return combinedSchema;
+            default: return combinedSchema; // Fallback to the full schema
         }
     }
 
     const form = useForm<BookingFormValues>({
         resolver: zodResolver(getCurrentSchema()),
         mode: "onChange",
-        defaultValues: {
-            firstName: "",
-            lastName: "",
-            phone: "",
-        },
     });
     
     // This effect updates the resolver when the step changes
     useEffect(() => {
-        form.reset(undefined, { keepDirty: true, keepValues: true }); // Keep form state across steps
+        form.trigger(); // Re-validate with the new schema
     }, [step, form]);
 
     const selectedDoctorId = form.watch("doctor");
     const selectedDoctor = doctors.find(d => d.id === selectedDoctorId);
 
+    // Fetch doctors when dialog opens
     useEffect(() => {
-        if (isOpen && step === 3 && doctors.length === 0) {
+        if (isOpen && doctors.length === 0) {
             setIsLoading(true);
             axios.get('/api/doctors-and-clinics')
                 .then(response => {
@@ -111,8 +104,9 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
                 })
                 .finally(() => setIsLoading(false));
         }
-    }, [isOpen, step, doctors.length]);
+    }, [isOpen, doctors.length]);
 
+    // Fetch slots when a doctor is selected
     useEffect(() => {
         if (selectedDoctorId && selectedDoctor) {
             setIsFetchingSlots(true);
@@ -148,7 +142,6 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
 
     const handleHourClick = (hourKey: string) => {
         setSelectedHour(hourKey);
-        
         const slotsInHour = groupedSlots[hourKey];
         if (!slotsInHour || slotsInHour.length === 0) return;
 
@@ -156,11 +149,9 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
         const targetTime = addMinutes(hourStart, 20);
 
         let bestSlot = slotsInHour.find(slot => new Date(slot.startTime) >= targetTime);
-
         if (!bestSlot) {
             bestSlot = slotsInHour[slotsInHour.length - 1];
         }
-
         form.setValue("startTime", bestSlot.startTime, { shouldValidate: true });
     };
 
@@ -174,16 +165,18 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
                 return;
             }
 
-            const designation = data.gender === 'F' ? 'Ms.' : 'Mr.';
+            const nameParts = data.fullName.split(" ");
+            const firstName = nameParts[0];
+            const lastName = nameParts.length > 1 ? nameParts.slice(1).join(" ") : " ";
 
             const payload = {
                 patient: {
-                    firstName: data.firstName,
-                    lastName: data.lastName,
+                    firstName,
+                    lastName,
                     phone: data.phone,
+                    email: data.email,
                     gender: data.gender,
                     dob: format(data.dob, 'yyyy-MM-dd'),
-                    designation: designation,
                 },
                 appointment: {
                     clinicId: selectedSlot.clinicId,
@@ -194,7 +187,7 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
             
             await axios.post('/api/book-appointment', payload);
             toast.success("Appointment Booked!", { description: `Your appointment with ${selectedDoctor?.name} on ${format(new Date(selectedSlot.startTime), "PPP")} at ${format(new Date(selectedSlot.startTime), "p")} is confirmed.` });
-            setStep(5); // Move to confirmation screen
+            setStep(4); // Move to confirmation screen
 
         } catch (error: any) {
             console.error("Booking failed:", error);
@@ -232,31 +225,92 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
                     <>
                         <DialogHeader>
                             <DialogTitle>Step 1: Your Details</DialogTitle>
-                            <DialogDescription>Please provide your name and phone number.</DialogDescription>
+                            <DialogDescription>Please provide your name and contact information.</DialogDescription>
                         </DialogHeader>
                         <div className="space-y-4 py-4">
-                           <FormField control={form.control} name="firstName" render={({ field }) => ( <FormItem> <FormLabel>First Name</FormLabel> <FormControl><Input placeholder="John" {...field} /></FormControl> <FormMessage /> </FormItem> )}/>
-                           <FormField control={form.control} name="lastName" render={({ field }) => ( <FormItem> <FormLabel>Last Name</FormLabel> <FormControl><Input placeholder="Doe" {...field} /></FormControl> <FormMessage /> </FormItem> )}/>
+                           <FormField control={form.control} name="fullName" render={({ field }) => ( <FormItem> <FormLabel>Full Name</FormLabel> <FormControl><Input placeholder="John Doe" {...field} /></FormControl> <FormMessage /> </FormItem> )}/>
                            <FormField control={form.control} name="phone" render={({ field }) => ( <FormItem> <FormLabel>Phone</FormLabel> <FormControl><Input placeholder="+91 98765 43210" {...field} /></FormControl> <FormMessage /> </FormItem> )}/>
+                           <FormField control={form.control} name="email" render={({ field }) => ( <FormItem> <FormLabel>Email (Optional)</FormLabel> <FormControl><Input placeholder="you@example.com" {...field} /></FormControl> <FormMessage /> </FormItem> )}/>
                         </div>
-                        <Button onClick={() => handleNext(['firstName', 'lastName', 'phone'])} className="w-full">Next</Button>
+                        <Button onClick={() => handleNext(['fullName', 'phone', 'email'])} className="w-full">Next</Button>
                     </>
                 );
             case 2:
                 return (
                     <>
                         <DialogHeader>
-                            <DialogTitle>Step 2: Additional Details</DialogTitle>
-                            <DialogDescription>Please provide your gender and date of birth.</DialogDescription>
+                            <DialogTitle>Step 2: Select Doctor & Time</DialogTitle>
+                            <DialogDescription>Choose a doctor and an available time slot.</DialogDescription>
+                        </DialogHeader>
+                        <div className="space-y-4 py-4 min-h-[250px]">
+                            {isLoading ? (
+                                <div className="flex items-center justify-center h-full"><Loader2 className="h-8 w-8 animate-spin" /></div>
+                            ) : (
+                                <FormField control={form.control} name="doctor" render={({ field }) => ( 
+                                    <FormItem> 
+                                        <FormLabel>Doctor</FormLabel> 
+                                        <Select onValueChange={field.onChange} defaultValue={field.value}> 
+                                            <FormControl><SelectTrigger><SelectValue placeholder="Select a doctor" /></SelectTrigger></FormControl> 
+                                            <SelectContent> 
+                                                {doctors.map(doc => <SelectItem key={doc.id} value={doc.id}>{doc.name} - {doc.clinicName}</SelectItem>)} 
+                                            </SelectContent> 
+                                        </Select> 
+                                        <FormMessage /> 
+                                    </FormItem> 
+                                )}/>
+                            )}
+
+                            {selectedDoctorId && (
+                                <div>
+                                {isFetchingSlots ? (
+                                    <div className="flex items-center justify-center pt-8"><Loader2 className="mr-2 h-6 w-6 animate-spin" /> <p>Finding open slots...</p></div>
+                                ) : Object.keys(groupedSlots).length > 0 ? (
+                                    <FormField control={form.control} name="startTime" render={() => (
+                                        <FormItem>
+                                            <FormLabel>Select an hour</FormLabel>
+                                            <div className="grid grid-cols-4 gap-2 pt-2">
+                                                {Object.keys(groupedSlots).map((hourKey) => (
+                                                    <Button key={hourKey} variant={selectedHour === hourKey ? "default" : "outline"} onClick={() => handleHourClick(hourKey)} className="uppercase" type="button" >
+                                                        {hourKey}
+                                                    </Button>
+                                                ))}
+                                            </div>
+                                            {selectedSlotValue && (
+                                                <div className="text-center pt-4">
+                                                    <p className="text-sm text-muted-foreground">Selected time: <span className="font-bold text-primary">{format(new Date(selectedSlotValue), "p")}</span></p>
+                                                </div>
+                                            )}
+                                            <FormMessage />
+                                        </FormItem>
+                                    )}/>
+                                ) : (
+                                    <div className="text-center text-muted-foreground py-8 h-full flex flex-col justify-center items-center">
+                                        <p>No available slots for the selected provider today.</p>
+                                        <p className="text-sm">Please try a different doctor.</p>
+                                    </div>
+                                )}
+                                </div>
+                            )}
+                        </div>
+                        <div className="flex gap-2">
+                            <Button onClick={handleBack} variant="outline" className="w-1/3">Back</Button>
+                            <Button onClick={() => handleNext(['doctor', 'startTime'])} className="w-2/3" disabled={!form.watch('startTime')}>Next</Button>
+                        </div>
+                    </>
+                );
+            case 3:
+                return (
+                    <>
+                        <DialogHeader>
+                            <DialogTitle>Step 3: Final Details</DialogTitle>
+                            <DialogDescription>Please provide these last details to confirm your identity.</DialogDescription>
                         </DialogHeader>
                         <div className="space-y-4 py-4">
                             <FormField control={form.control} name="gender" render={({ field }) => (
                                 <FormItem>
                                     <FormLabel>Gender</FormLabel>
                                     <Select onValueChange={field.onChange} defaultValue={field.value}>
-                                        <FormControl>
-                                            <SelectTrigger><SelectValue placeholder="Select your gender" /></SelectTrigger>
-                                        </FormControl>
+                                        <FormControl><SelectTrigger><SelectValue placeholder="Select your gender" /></SelectTrigger></FormControl>
                                         <SelectContent>
                                             <SelectItem value="M">Male</SelectItem>
                                             <SelectItem value="F">Female</SelectItem>
@@ -287,101 +341,26 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
                             )}/>
                         </div>
                         <div className="flex gap-2">
-                            <Button onClick={handleBack} variant="outline" className="w-1/3">Back</Button>
-                            <Button onClick={() => handleNext(['gender', 'dob'])} className="w-2/3">Next</Button>
-                        </div>
-                    </>
-                );
-            case 3:
-                 return (
-                    <>
-                        <DialogHeader>
-                            <DialogTitle>Step 3: Choose a Doctor</DialogTitle>
-                            <DialogDescription>Who would you like to see?</DialogDescription>
-                        </DialogHeader>
-                        <div className="py-4">
-                        {isLoading ? ( <div className="flex items-center justify-center h-40"><Loader2 className="h-8 w-8 animate-spin" /></div> ) : (
-                            <FormField control={form.control} name="doctor" render={({ field }) => ( 
-                                <FormItem> 
-                                    <FormLabel>Doctor</FormLabel> 
-                                    <Select onValueChange={field.onChange} defaultValue={field.value}> 
-                                        <FormControl> 
-                                            <SelectTrigger> 
-                                                <SelectValue placeholder="Select a doctor" /> 
-                                            </SelectTrigger> 
-                                        </FormControl> 
-                                        <SelectContent> 
-                                            {doctors.map(doctor => <SelectItem key={doctor.id} value={doctor.id}>{doctor.name} - {doctor.clinicName}</SelectItem>)} 
-                                        </SelectContent> 
-                                    </Select> 
-                                    <FormMessage /> 
-                                </FormItem> 
-                            )}/>
-                        )}
-                        </div>
-                        <div className="flex gap-2">
-                            <Button onClick={handleBack} variant="outline" className="w-1/3">Back</Button>
-                            <Button onClick={() => handleNext(['doctor'])} className="w-2/3" disabled={!form.watch('doctor')}>Next</Button>
-                        </div>
-                    </>
-                );
-            case 4:
-                return (
-                    <>
-                        <DialogHeader>
-                            <DialogTitle>Step 4: Select Time Slot</DialogTitle>
-                            <DialogDescription>Choose an available time for {selectedDoctor?.name}.</DialogDescription>
-                        </DialogHeader>
-                        <div className="py-4 min-h-[200px]">
-                            {isFetchingSlots ? (
-                                <div className="flex items-center justify-center h-full">
-                                    <Loader2 className="mr-2 h-8 w-8 animate-spin" /> <p>Finding open slots...</p>
-                                </div>
-                            ) : Object.keys(groupedSlots).length > 0 ? (
-                                <FormField control={form.control} name="startTime" render={() => (
-                                        <FormItem>
-                                            <FormLabel>Select an hour</FormLabel>
-                                            <div className="grid grid-cols-4 gap-2 pt-2">
-                                                {Object.keys(groupedSlots).map((hourKey) => (
-                                                    <Button key={hourKey} variant={selectedHour === hourKey ? "default" : "outline"} onClick={() => handleHourClick(hourKey)} className="uppercase" type="button" >
-                                                        {hourKey}
-                                                    </Button>
-                                                ))}
-                                            </div>
-                                            {selectedSlotValue && (
-                                                <div className="text-center pt-4">
-                                                    <p className="text-sm text-muted-foreground">Selected time: <span className="font-bold text-primary">{format(new Date(selectedSlotValue), "p")}</span></p>
-                                                </div>
-                                            )}
-                                            <FormMessage />
-                                        </FormItem>
-                                    )}
-                                />
-                            ) : (
-                                <div className="text-center text-muted-foreground py-16 h-full flex flex-col justify-center items-center">
-                                    <p>No available slots for the selected provider.</p>
-                                    <p className="text-sm">Please try a different doctor or check back later.</p>
-                                </div>
-                            )}
-                        </div>
-                        <div className="flex gap-2">
                            <Button onClick={handleBack} variant="outline" className="w-1/3" type="button">Back</Button>
-                           <Button onClick={form.handleSubmit(processBooking)} disabled={isSubmitting || isFetchingSlots || !form.watch('startTime')} className="w-2/3">
-                               {isSubmitting ? <><Loader2 className="mr-2 h-4 w-4 animate-spin"/>Booking...</> : "Confirm Appointment"}
+                           <Button onClick={form.handleSubmit(processBooking)} disabled={isSubmitting} className="w-2/3">
+                               {isSubmitting ? <><Loader2 className="mr-2 h-4 w-4 animate-spin"/>Booking...</> : "Book Appointment"}
                            </Button>
                         </div>
                     </>
                 );
-             case 5:
+             case 4:
+                const bookedDoctor = doctors.find(d => d.id === form.getValues('doctor'));
+                const bookedTime = form.getValues('startTime');
                 return (
                     <>
                         <DialogHeader>
                             <DialogTitle>Appointment Confirmed!</DialogTitle>
                             <DialogDescription>Your booking was successful. We look forward to seeing you.</DialogDescription>
                         </DialogHeader>
-                        <div className="py-8 text-center">
+                        <div className="py-8 text-center space-y-4">
                             <svg className="w-16 h-16 mx-auto text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                            <p className="mt-4">You will receive a confirmation message shortly.</p>
+                            <p>Your appointment with <span className="font-bold">{bookedDoctor?.name}</span> on <span className="font-bold">{format(new Date(bookedTime), 'PPP')}</span> at <span className="font-bold">{format(new Date(bookedTime), 'p')}</span> is confirmed.</p>
+                            <p className="text-sm text-muted-foreground">You will also receive a confirmation message shortly.</p>
                         </div>
                         <Button onClick={() => setIsOpen(false)} className="w-full">Close</Button>
                     </>
