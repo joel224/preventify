@@ -163,13 +163,14 @@ async function fetchSlotsForDate(doctorId: string, clinicId: string, startDate: 
         const schedule = responseData.data.schedule;
         const availableSlots: any[] = [];
         
-        // The schedule object's keys are clinic IDs.
         const scheduleItemsForClinic = schedule[clinicId];
         if (scheduleItemsForClinic && Array.isArray(scheduleItemsForClinic)) {
             for (const item of scheduleItemsForClinic) {
                 if (item.slots && Array.isArray(item.slots)) {
                     item.slots.forEach((slot: any) => {
-                        if (slot.available) { // Just check the primary availability flag
+                        // We only care about the primary availability flag from the API here.
+                        // Detailed business logic filtering will happen in getAvailableSlots.
+                        if (slot.available) {
                             availableSlots.push({
                                 startTime: slot.s,
                                 endTime: slot.e,
@@ -216,14 +217,27 @@ export async function getAvailableSlots(doctorId: string, clinicId: string, date
             return false;
         }
 
-        // 2. Ensure the slot is within working hours (8am to 7pm).
-        const workDayStart = setHours(startOfDay(slotStartTime), 8);
+        // 2. Define doctor-specific start times or a default.
+        // ID for "Muhammed Faisal OS"
+        const DR_FAISAL_ID = "173208610763786"; 
+        let workDayStart;
+
+        if (doctorId === DR_FAISAL_ID) {
+            // Dr. Faisal's session starts at 1:30 PM IST
+            workDayStart = setMinutes(setHours(startOfDay(slotStartTime), 13), 30);
+        } else {
+            // Default working hours start at 8 AM
+            workDayStart = setHours(startOfDay(slotStartTime), 8);
+        }
+        
         const workDayEnd = setHours(startOfDay(slotStartTime), 19); // 7 PM
+
+        // 3. Ensure the slot is within the determined working hours.
         if (isBefore(slotStartTime, workDayStart) || !isBefore(slotStartTime, workDayEnd)) {
             return false;
         }
 
-        // 3. If the requested date is today, ensure the slot is in the future.
+        // 4. If the requested date is today, ensure the slot is in the future.
         if (format(requestedDate, 'yyyy-MM-dd') === format(now, 'yyyy-MM-dd')) {
             if (isBefore(slotStartTime, now)) {
                 return false;
@@ -265,7 +279,6 @@ export async function getBusinessEntitiesAndDoctors(): Promise<any> {
 
     console.log(`--- Finished getBusinessEntitiesAndDoctors. Returning ${processedDoctors.length} doctors and ${processedClinics.length} clinics. ---`);
     
-    // DEBUG: List all returned doctors
     console.log("--- Returned Doctors List (DEBUG) ---");
     console.log(JSON.stringify(processedDoctors, null, 2));
     console.log("-------------------------------------");
