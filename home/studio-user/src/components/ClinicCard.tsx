@@ -2,7 +2,8 @@
 import { MapPin } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import BookingDialog from "./BookingDialog";
+import Link from "next/link";
+import BookingDialog from "@/components/BookingDialog";
 
 interface ClinicCardProps {
   name: string;

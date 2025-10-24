@@ -42,7 +42,8 @@ pnpm-debug.log*
 # Token file
 token.json
 backend/token.json
-/home/user/studio/home
+
+/home/user/studio/home/
 /home/user/studio/home/studio-user/src/components/home
 /home/user/studio/home/studio-user/src/components
 /home/user/studio/home/studio-user/src

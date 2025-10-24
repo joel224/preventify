@@ -3,7 +3,7 @@ import { MapPin } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import Link from "next/link";
-import BookingDialog from "./BookingDialog";
+import BookingDialog from "@/components/BookingDialog";
 
 interface ClinicCardProps {
   name: string;
@@ -53,3 +53,5 @@ const ClinicCard = ({ name, location, address, phone, image }: ClinicCardProps) 
 };
 
 export default ClinicCard;
+
+    

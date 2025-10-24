@@ -2,7 +2,7 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import BookingDialog from "./BookingDialog";
+import BookingDialog from "@/components/BookingDialog";
 
 interface DoctorCardProps {
   name: string;
@@ -44,3 +44,5 @@ const DoctorCard = ({
 };
 
 export default DoctorCard;
+
+    
