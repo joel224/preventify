@@ -66,9 +66,9 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
             case 1:
                 return patientDetailsSchema;
             case 2:
-                return patientDetailsSchema.merge(doctorSelectionSchema);
+                return doctorSelectionSchema;
             case 3:
-                return bookingSchema;
+                 return slotSelectionSchema;
             default:
                 return patientDetailsSchema;
         }
@@ -83,10 +83,11 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
             email: "",
         },
     });
-
+     // We need to re-initialize the resolver when the step changes
     useEffect(() => {
-        form.reset(); // Reset form state on step change
+        form.reset(undefined, { keepValues: true }); // Keep values between steps
     }, [step, form]);
+
 
     const selectedDoctorId = form.watch("doctor");
     const selectedDoctor = doctors.find(d => d.id === selectedDoctorId);
@@ -234,7 +235,7 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
                             name="startTime"
                             render={({ field }) => (
                                 <FormItem className="space-y-3 py-4">
-                                    <FormLabel>Available Slots</FormLabel>
+                                    <FormLabel>Available Slots for {selectedDoctor?.name}</FormLabel>
                                     <FormControl>
                                         <RadioGroup
                                             onValueChange={field.onChange}
@@ -266,7 +267,7 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
                    timeSlotContent = (
                        <div className="text-center text-muted-foreground py-16">
                            <p>No available slots for the selected provider.</p>
-                           <p className="text-sm">Please try a different doctor or date.</p>
+                           <p className="text-sm">Please try a different doctor or check back later.</p>
                        </div>
                    );
                 }
@@ -274,7 +275,7 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
                     <>
                         <DialogHeader>
                             <DialogTitle>Book an Appointment: Time Slot</DialogTitle>
-                            <DialogDescription>Step 3 of 3: Choose an available time for {selectedDoctor?.name}.</DialogDescription>
+                            <DialogDescription>Step 3 of 3: Choose an available time.</DialogDescription>
                         </DialogHeader>
                         {timeSlotContent}
                         <div className="flex gap-2">
@@ -311,9 +312,8 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
             </DialogTrigger>
             <DialogContent className="sm:max-w-lg">
                 <Form {...form}>
-                    <form onSubmit={form.handleSubmit(processBooking)} className="space-y-4">
-                        {renderStepContent()}
-                    </form>
+                    {/* The form submission is now handled by the button in the final step */}
+                    {renderStepContent()}
                 </Form>
             </DialogContent>
         </Dialog>
