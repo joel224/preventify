@@ -2,6 +2,7 @@
 import axios from 'axios';
 import { getTokens, saveTokens } from './token-storage';
 import { format, addDays } from "date-fns";
+import { processBusinessEntities } from './data-processing';
 
 const EKA_API_BASE_URL = 'https://api.eka.care';
 
@@ -160,19 +161,23 @@ export async function getAvailableSlots(doctorId: string, clinicId: string, date
         
         // The schedule object keys can be dynamic, so we iterate over them
         for (const scheduleKey in schedule) {
-            const scheduleItems = schedule[scheduleKey];
-            for (const item of scheduleItems) {
-                if (item.slots && Array.isArray(item.slots)) {
-                    item.slots.forEach((slot: any) => {
-                        if (slot.available) {
-                            availableSlots.push({
-                                startTime: slot.s,
-                                endTime: slot.e,
-                                doctorId,
-                                clinicId,
+            if (Object.prototype.hasOwnProperty.call(schedule, scheduleKey)) {
+                const scheduleItems = schedule[scheduleKey];
+                if (Array.isArray(scheduleItems)) {
+                    for (const item of scheduleItems) {
+                        if (item.slots && Array.isArray(item.slots)) {
+                            item.slots.forEach((slot: any) => {
+                                if (slot.available) {
+                                    availableSlots.push({
+                                        startTime: slot.s,
+                                        endTime: slot.e,
+                                        doctorId,
+                                        clinicId,
+                                    });
+                                }
                             });
                         }
-                    });
+                    }
                 }
             }
         }
@@ -215,30 +220,15 @@ export async function getBusinessEntitiesAndDoctors(): Promise<any> {
     
     console.log(`INFO: Found ${doctorList.length} doctors and ${clinicList.length} clinics. Processing data...`);
     
-    // Create a map for quick doctor lookup
-    const doctorMap = new Map(doctorList.map((doc: any) => [doc.doctor_id, doc.name]));
-    
-    const processedClinics = clinicList.map((clinic: any) => {
-        const clinicDoctors = clinic.doctors
-            .map((docId: string) => {
-                if (!docId || !doctorMap.has(docId)) return null;
-                return {
-                    id: docId,
-                    name: doctorMap.get(docId)
-                };
-            })
-            .filter(Boolean); // Remove null entries for invalid/missing doctor IDs
-
-        return {
-            id: clinic.clinic_id,
-            name: clinic.name,
-            doctors: clinicDoctors
-        };
-    });
-
-    const processedDoctors = Array.from(doctorMap.entries()).map(([id, name]) => ({ id, name }));
+    const { doctors: processedDoctors, clinics: processedClinics } = processBusinessEntities(doctorList, clinicList);
 
     console.log(`--- Finished getBusinessEntitiesAndDoctors. Returning ${processedDoctors.length} doctors and ${processedClinics.length} clinics. ---`);
+    
+    // DEBUG: List all returned doctors
+    console.log("--- Returned Doctors List (DEBUG) ---");
+    console.log(JSON.stringify(processedDoctors, null, 2));
+    console.log("-------------------------------------");
+
     return { doctors: processedDoctors, clinics: processedClinics };
 }
 
@@ -363,7 +353,3 @@ export async function bookAppointment(data: any): Promise<any> {
 
     return bookingResponse;
 }
-
-    
-
-    

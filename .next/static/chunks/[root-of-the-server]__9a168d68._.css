@@ -616,10 +616,6 @@ h1, h2, h3, h4, h5, h6 {
   order: 2;
 }
 
-.col-span-3 {
-  grid-column: span 3 / span 3;
-}
-
 .-mx-1 {
   margin-left: -.25rem;
   margin-right: -.25rem;
@@ -868,6 +864,10 @@ h1, h2, h3, h4, h5, h6 {
   height: 1rem;
 }
 
+.h-40 {
+  height: 10rem;
+}
+
 .h-48 {
   height: 12rem;
 }
@@ -932,14 +932,6 @@ h1, h2, h3, h4, h5, h6 {
   height: 100svh;
 }
 
-.h-32 {
-  height: 8rem;
-}
-
-.h-40 {
-  height: 10rem;
-}
-
 .max-h-96 {
   max-height: 24rem;
 }
@@ -950,10 +942,6 @@ h1, h2, h3, h4, h5, h6 {
 
 .max-h-screen {
   max-height: 100vh;
-}
-
-.max-h-80 {
-  max-height: 20rem;
 }
 
 .min-h-0 {
@@ -1150,10 +1138,6 @@ h1, h2, h3, h4, h5, h6 {
 
 .max-w-none {
   max-width: none;
-}
-
-.max-w-xl {
-  max-width: 36rem;
 }
 
 .flex-1 {
@@ -1356,10 +1340,6 @@ h1, h2, h3, h4, h5, h6 {
   list-style-type: none;
 }
 
-.list-disc {
-  list-style-type: disc;
-}
-
 .appearance-none {
   appearance: none;
 }
@@ -1460,12 +1440,6 @@ h1, h2, h3, h4, h5, h6 {
   --tw-space-x-reverse: 0;
   margin-right: calc(.25rem * var(--tw-space-x-reverse));
   margin-left: calc(.25rem * calc(1 - var(--tw-space-x-reverse)));
-}
-
-.space-x-2 > :not([hidden]) ~ :not([hidden]) {
-  --tw-space-x-reverse: 0;
-  margin-right: calc(.5rem * var(--tw-space-x-reverse));
-  margin-left: calc(.5rem * calc(1 - var(--tw-space-x-reverse)));
 }
 
 .space-x-3 > :not([hidden]) ~ :not([hidden]) {
@@ -1671,6 +1645,10 @@ h1, h2, h3, h4, h5, h6 {
   border-color: hsl(var(--input));
 }
 
+.border-muted {
+  border-color: hsl(var(--muted));
+}
+
 .border-preventify-green {
   --tw-border-opacity: 1;
   border-color: rgb(40 182 122 / var(--tw-border-opacity, 1));
@@ -1696,10 +1674,6 @@ h1, h2, h3, h4, h5, h6 {
 .border-white {
   --tw-border-opacity: 1;
   border-color: rgb(255 255 255 / var(--tw-border-opacity, 1));
-}
-
-.border-muted {
-  border-color: hsl(var(--muted));
 }
 
 .border-l-transparent {
@@ -1995,11 +1969,6 @@ h1, h2, h3, h4, h5, h6 {
   padding-bottom: 2rem;
 }
 
-.py-10 {
-  padding-top: 2.5rem;
-  padding-bottom: 2.5rem;
-}
-
 .pb-2 {
   padding-bottom: .5rem;
 }
@@ -2018,10 +1987,6 @@ h1, h2, h3, h4, h5, h6 {
 
 .pl-2\.5 {
   padding-left: .625rem;
-}
-
-.pl-3 {
-  padding-left: .75rem;
 }
 
 .pl-4 {
@@ -2060,10 +2025,6 @@ h1, h2, h3, h4, h5, h6 {
   padding-top: .25rem;
 }
 
-.pt-2 {
-  padding-top: .5rem;
-}
-
 .pt-3 {
   padding-top: .75rem;
 }
@@ -2078,10 +2039,6 @@ h1, h2, h3, h4, h5, h6 {
 
 .pt-8 {
   padding-top: 2rem;
-}
-
-.pl-5 {
-  padding-left: 1.25rem;
 }
 
 .text-left {
@@ -2246,6 +2203,11 @@ h1, h2, h3, h4, h5, h6 {
   color: rgb(55 65 81 / var(--tw-text-opacity, 1));
 }
 
+.text-green-500 {
+  --tw-text-opacity: 1;
+  color: rgb(34 197 94 / var(--tw-text-opacity, 1));
+}
+
 .text-muted-foreground {
   color: hsl(var(--muted-foreground));
 }
@@ -2311,11 +2273,6 @@ h1, h2, h3, h4, h5, h6 {
 
 .text-white\/80 {
   color: #fffc;
-}
-
-.text-green-500 {
-  --tw-text-opacity: 1;
-  color: rgb(34 197 94 / var(--tw-text-opacity, 1));
 }
 
 .underline {
@@ -3550,16 +3507,8 @@ h1, h2, h3, h4, h5, h6 {
   border-color: hsl(var(--primary));
 }
 
-.peer[data-state="checked"] ~ .peer-data-\[state\=checked\]\:bg-primary {
-  background-color: hsl(var(--primary));
-}
-
 .peer\/menu-button[data-active="true"] ~ .peer-data-\[active\=true\]\/menu-button\:text-sidebar-accent-foreground {
   color: hsl(var(--sidebar-accent-foreground));
-}
-
-.peer[data-state="checked"] ~ .peer-data-\[state\=checked\]\:text-primary-foreground {
-  color: hsl(var(--primary-foreground));
 }
 
 .dark\:border-destructive:is(.dark *) {
@@ -3591,8 +3540,8 @@ h1, h2, h3, h4, h5, h6 {
     width: auto;
   }
 
-  .sm\:max-w-\[625px\] {
-    max-width: 625px;
+  .sm\:max-w-lg {
+    max-width: 32rem;
   }
 
   .sm\:max-w-md {
@@ -3601,14 +3550,6 @@ h1, h2, h3, h4, h5, h6 {
 
   .sm\:max-w-sm {
     max-width: 24rem;
-  }
-
-  .sm\:max-w-\[425px\] {
-    max-width: 425px;
-  }
-
-  .sm\:max-w-lg {
-    max-width: 32rem;
   }
 
   .sm\:grid-cols-2 {
@@ -3752,10 +3693,6 @@ h1, h2, h3, h4, h5, h6 {
 
   .md\:max-w-\[420px\] {
     max-width: 420px;
-  }
-
-  .md\:max-w-lg {
-    max-width: 32rem;
   }
 
   .md\:grid-cols-2 {
