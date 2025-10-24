@@ -137,16 +137,16 @@ async function fetchSlotsForDate(doctorId: string, clinicId: string, startDate: 
     console.log(`--- Fetching available slots for doctor: ${doctorId}, clinic: ${clinicId}, from: ${formattedStartDate} to ${formattedEndDate} ---`);
 
     try {
-        const responseData = await makeApiRequest(async (client) => {
-            const response = await client.get(`/dr/v1/doctor/${doctorId}/clinic/${clinicId}/appointment/slot`, {
+        const response = await makeApiRequest(async (client) => {
+            return client.get(`/dr/v1/doctor/${doctorId}/clinic/${clinicId}/appointment/slot`, {
                 params: {
                     start_date: formattedStartDate,
                     end_date: formattedEndDate
                 }
             });
-            return response.data;
         });
-
+        
+        const responseData = response.data;
         console.log(`RAW SLOT API RESPONSE for ${doctorId}/${clinicId} on ${formattedStartDate}:`, JSON.stringify(responseData, null, 2));
 
         if (!responseData?.data?.schedule) {
@@ -226,9 +226,7 @@ export async function getBusinessEntitiesAndDoctors(): Promise<any> {
     
     const response = await makeApiRequest(async (client) => {
         console.log('INFO: Fetching business entities (/dr/v1/business/entities)...');
-        const res = await client.get('/dr/v1/business/entities');
-        console.log("SUCCESS: Fetched business entities.");
-        return res.data;
+        return client.get('/dr/v1/business/entities');
     });
 
     const { doctors: doctorList, clinics: clinicList } = response.data;
