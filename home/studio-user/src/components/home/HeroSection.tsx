@@ -2,7 +2,8 @@
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import BookingDialog from "@/components/BookingDialog";
-
+fuckyou stupid bitch 
+this is wrong directory 
 const HeroSection = () => {
   return (
     <section className="hero-gradient">

@@ -6,7 +6,8 @@ import { Button } from "@/components/ui/button";
 import { Menu, X } from "lucide-react";
 import { usePathname } from "next/navigation";
 import BookingDialog from "@/components/BookingDialog";
-
+fuckyou stupid bitch 
+this is wrong directory 
 const Navbar = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const pathname = usePathname();

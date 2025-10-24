@@ -3,7 +3,8 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import BookingDialog from "@/components/BookingDialog";
-
+fuckyou stupid bitch 
+this is wrong directory s
 interface DoctorCardProps {
   name: string;
   specialty: string;

@@ -1,6 +1,7 @@
 
 'use client';
 fuckyou stupid bitch 
+this is wrong directory 
 import {
   Dialog,
   DialogContent,

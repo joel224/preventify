@@ -4,7 +4,8 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import Link from "next/link";
 import BookingDialog from "@/components/BookingDialog";
-
+fuckyou stupid bitch 
+this is wrong directory 
 interface ClinicCardProps {
   name: string;
   location: string;
