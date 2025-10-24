@@ -82,52 +82,49 @@ function Step1Form({ onNext, onDialogClose }: { onNext: (data: Step1Values) => v
                 </DialogHeader>
                 <div className="space-y-4 py-4">
                     
-                    {/* --- NEW FIX --- */}
                     <FormField 
                         control={form.control} 
                         name="fullName" 
-                        render={({ field }) => (  // Use the full 'field' object
+                        // Destructure field to separate value from the rest
+                        render={({ field: { value, ...restOfField } }) => ( 
                         <FormItem> 
                             <FormLabel>Full Name</FormLabel> 
-                            {/* We removed <FormControl> here */}
                             <Input 
                                 placeholder="John Doe" 
-                                {...field} // Spread all field props (ref, name, onChange, etc.)
-                                value={field.value ?? ""} // Override value to be safe
+                                {...restOfField} // Pass ref, name, onChange, onBlur
+                                value={value ?? ""} // Pass ONLY ONE value prop
                             />
                             <FormMessage /> 
                         </FormItem> 
                     )}/>
                     
-                    {/* --- NEW FIX --- */}
                     <FormField 
                         control={form.control} 
                         name="phone" 
-                        render={({ field }) => ( // Use the full 'field' object
+                        // Destructure field to separate value from the rest
+                        render={({ field: { value, ...restOfField } }) => ( 
                         <FormItem> 
                             <FormLabel>Phone</FormLabel> 
-                            {/* We removed <FormControl> here */}
                             <Input 
                                 placeholder="+91 98765 43210" 
-                                {...field} // Spread all field props
-                                value={field.value ?? ""} // Override value to be safe
+                                {...restOfField} // Pass ref, name, onChange, onBlur
+                                value={value ?? ""} // Pass ONLY ONE value prop
                             />
                             <FormMessage /> 
                         </FormItem> 
                     )}/>
 
-                    {/* --- NEW FIX --- */}
                     <FormField 
                         control={form.control} 
                         name="email" 
-                        render={({ field }) => ( // Use the full 'field' object
+                        // Destructure field to separate value from the rest
+                        render={({ field: { value, ...restOfField } }) => ( 
                         <FormItem> 
                             <FormLabel>Email (Optional)</FormLabel> 
-                            {/* We removed <FormControl> here */}
                             <Input 
                                 placeholder="you@example.com" 
-                                {...field} // Spread all field props
-                                value={field.value ?? ""} // Override value to be safe
+                                {...restOfField} // Pass ref, name, onChange, onBlur
+                                value={value ?? ""} // Pass ONLY ONE value prop
                             />
                             <FormMessage /> 
                         </FormItem> 
@@ -138,6 +135,7 @@ function Step1Form({ onNext, onDialogClose }: { onNext: (data: Step1Values) => v
         </Form>
     );
 }
+
 
 // ====== Step 2 Form ======
 function Step2Form({ onNext, onBack, onDialogClose }: { onNext: (data: Step2Values) => void; onBack: () => void; onDialogClose: () => void; }) {
@@ -481,6 +479,3 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
         </Dialog>
     );
 }
-
-    
-
