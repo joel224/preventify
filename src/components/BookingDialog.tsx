@@ -30,24 +30,17 @@ import axios from "axios";
 import { format, startOfHour, addMinutes } from "date-fns";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./ui/select";
 
-const stepOneSchema = z.object({
+const FormSchema = z.object({
   fullName: z.string().min(3, "Full name must be at least 3 characters."),
   phone: z.string().regex(/^\+?[0-9]{10,14}$/, "Please enter a valid phone number."),
   email: z.string().email("Please enter a valid email address.").optional().or(z.literal("")),
+  doctor: z.string({ required_error: "Please select a doctor." }),
+  startTime: z.string({ required_error: "Please select a time slot." }),
+  gender: z.enum(["M", "F", "O"], { required_error: "Please select a gender." }),
+  dob: z.date({ required_error: "Date of birth is required." }),
 });
 
-const stepTwoSchema = z.object({
-    doctor: z.string({ required_error: "Please select a doctor." }),
-    startTime: z.string({ required_error: "Please select a time slot." }),
-});
-
-const stepThreeSchema = z.object({
-    gender: z.enum(["M", "F", "O"], { required_error: "Please select a gender." }),
-    dob: z.date({ required_error: "Date of birth is required." }),
-});
-
-const combinedSchema = stepOneSchema.merge(stepTwoSchema).merge(stepThreeSchema);
-type BookingFormValues = z.infer<typeof combinedSchema>;
+type BookingFormValues = z.infer<typeof FormSchema>;
 
 type Doctor = { id: string; name: string; clinicId: string; clinicName: string; };
 type Slot = { startTime: string; endTime: string; doctorId: string; clinicId: string; };
@@ -64,17 +57,31 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
     const [isFetchingSlots, setIsFetchingSlots] = useState(false);
     const [selectedHour, setSelectedHour] = useState<string | null>(null);
 
-    // State to hold the full selected objects
     const [selectedDoctorObj, setSelectedDoctorObj] = useState<Doctor | null>(null);
     const [selectedSlotObj, setSelectedSlotObj] = useState<Slot | null>(null);
 
+    const stepOneSchema = z.object({
+      fullName: z.string().min(3, "Full name must be at least 3 characters."),
+      phone: z.string().regex(/^\+?[0-9]{10,14}$/, "Please enter a valid phone number."),
+      email: z.string().email("Please enter a valid email address.").optional().or(z.literal("")),
+    });
+
+    const stepTwoSchema = z.object({
+        doctor: z.string({ required_error: "Please select a doctor." }),
+        startTime: z.string({ required_error: "Please select a time slot." }),
+    });
+
+    const stepThreeSchema = z.object({
+        gender: z.enum(["M", "F", "O"], { required_error: "Please select a gender." }),
+        dob: z.date({ required_error: "Date of birth is required." }),
+    });
 
     const getCurrentSchema = () => {
         switch(step) {
             case 1: return stepOneSchema;
             case 2: return stepTwoSchema;
             case 3: return stepThreeSchema;
-            default: return combinedSchema;
+            default: return FormSchema;
         }
     }
 
@@ -90,7 +97,7 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
     const selectedDoctorId = form.watch("doctor");
     
     useEffect(() => {
-        if (isOpen && (step === 2 || step === 3) && doctors.length === 0) {
+        if (isOpen && (step === 2) && doctors.length === 0) {
             setIsLoading(true);
             axios.get('/api/doctors-and-clinics')
                 .then(response => {
@@ -107,7 +114,7 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
      useEffect(() => {
         if (selectedDoctorId) {
             const doctor = doctors.find(d => d.id === selectedDoctorId);
-            setSelectedDoctorObj(doctor || null); // Store the full doctor object
+            setSelectedDoctorObj(doctor || null);
             if (!doctor) return;
 
             setIsFetchingSlots(true);
@@ -156,7 +163,7 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
         }
         
         form.setValue("startTime", bestSlot.startTime, { shouldValidate: true });
-        setSelectedSlotObj(bestSlot); // Store the full slot object
+        setSelectedSlotObj(bestSlot);
     };
     
     const selectedSlotValue = form.watch("startTime");
@@ -196,7 +203,8 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
 
         } catch (error: any) {
             console.error("Booking failed:", error);
-            toast.error("Booking Failed", { description: error.response?.data?.message || "Something went wrong. Please try again." });
+            const errorMessage = error.response?.data?.message || "Something went wrong. Please try again.";
+            toast.error("Booking Failed", { description: errorMessage });
         } finally {
             setIsSubmitting(false);
         }
