@@ -1,4 +1,3 @@
-
 import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
@@ -20,14 +19,13 @@ const bookingSessions: { [key: string]: any } = {};
 
 app.post('/api/save-step', (req, res) => {
     const { step, sessionId, data } = req.body;
-    console.log(`--- [DEBUG] SERVER index.ts: /api/save-step called for step ${step} ---`);
-    console.log('--- [DEBUG] SERVER index.ts: Received data:', JSON.stringify(data, null, 2));
-
-    if (!data) {
-        return res.status(400).json({ message: 'Missing data for step.' });
-    }
-
+    console.log(`\n--- [DEBUG] SERVER index.ts: /api/save-step called for step ${step} ---`);
+    console.log(`--- [DEBUG] SERVER index.ts: Received data:`, JSON.stringify(data, null, 2));
+    
     if (step === 1) {
+        if (!data || !data.fullName || !data.phone) {
+             return res.status(400).json({ message: 'Missing data for step 1.' });
+        }
         const newSessionId = crypto.randomUUID();
         bookingSessions[newSessionId] = { step1: data };
         console.log(`--- [DEBUG] SERVER index.ts: New session created with ID: ${newSessionId} ---`);
@@ -40,6 +38,9 @@ app.post('/api/save-step', (req, res) => {
     }
 
     if (step === 2) {
+        if (!data) {
+             return res.status(400).json({ message: 'Missing data for step 2.' });
+        }
         bookingSessions[sessionId].step2 = data;
         console.log(`--- [DEBUG] SERVER index.ts: Session ${sessionId} updated with step 2 data. ---`);
         return res.status(200).json({ message: 'Step 2 data saved.' });
@@ -50,7 +51,7 @@ app.post('/api/save-step', (req, res) => {
 
 app.post('/api/create-appointment', async (req, res) => {
     console.log('\n--- [DEBUG] SERVER index.ts: Received request on /api/create-appointment endpoint ---');
-    const { sessionId, data: step3Data, doctor, slot } = req.body;
+    const { sessionId, data: step3Data } = req.body;
     console.log('--- [DEBUG] SERVER index.ts: Request Body Received from Frontend:', JSON.stringify(req.body, null, 2));
 
     if (!sessionId || !bookingSessions[sessionId]) {
@@ -74,11 +75,13 @@ app.post('/api/create-appointment', async (req, res) => {
             dob: step3Data.dob,
         },
         appointment: {
-            clinicId: doctor.clinicId,
-            doctorId: doctor.id,
-            startTime: slot.startTime,
+            clinicId: sessionData.step2.doctor.clinicId,
+            doctorId: sessionData.step2.doctor.id,
+            startTime: sessionData.step2.slot.startTime,
         }
     };
+
+    console.log('--- [DEBUG] SERVER index.ts: Assembled full payload for booking:', JSON.stringify(fullPayload, null, 2));
 
     try {
         const result = await bookAppointment(fullPayload);

@@ -37,8 +37,8 @@ const Step1Schema = z.object({
   email: z.string().email("Please enter a valid email address.").optional().or(z.literal("")),
 });
 const Step2Schema = z.object({
-  doctor: z.string({ required_error: "Please select a doctor." }),
-  startTime: z.string({ required_error: "Please select a time slot." }),
+  doctor: z.string({ required_error: "Please select a doctor." }).min(1, "Please select a doctor."),
+  startTime: z.string({ required_error: "Please select a time slot." }).min(1, "Please select a time slot."),
 });
 const Step3Schema = z.object({
   gender: z.enum(["M", "F", "O"], { required_error: "Please select a gender." }),
@@ -182,8 +182,8 @@ function Step2Form({ onNext, onBack, onDialogClose }: { onNext: (data: Step2Valu
     const onSubmit = (data: Step2Values) => {
         const submissionData = {
             ...data,
-            doctorObj: selectedDoctorObj,
-            slotObj: selectedSlotObj
+            doctor: selectedDoctorObj, // sending the full doctor object
+            slot: selectedSlotObj      // sending the full slot object
         };
         onNext(submissionData as any);
     }
@@ -340,15 +340,20 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
         }
     };
 
-    const handleNextStep2 = async (data: any) => {
+    const handleNextStep2 = async (data: Step2Values) => {
         setIsStepLoading(true);
-        const { doctorObj, slotObj, ...step2Data } = data;
+        // The data object from Step2Form now contains the full doctor and slot objects
+        const { doctor, slot, ...step2Data } = data as any;
         
-        // Stash these for the final submission
-        setFinalBookingData({ doctor: doctorObj, slot: slotObj });
+        setFinalBookingData({ doctor, slot }); // Stash the full objects for the final submission
 
         try {
-            await axios.post('/api/save-step', { step: 2, sessionId, data: step2Data });
+            // We only need to send the IDs to the backend for session storage
+            const payload = {
+                doctor: doctor.id,
+                startTime: slot.startTime,
+            };
+            await axios.post('/api/save-step', { step: 2, sessionId, data: payload });
             setStep(3);
         } catch (error) {
             toast.error("Error saving data", { description: "Could not proceed to the next step." });
@@ -367,12 +372,10 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
                     ...data,
                     dob: format(data.dob, 'yyyy-MM-dd'),
                 },
-                doctor: finalBookingData.doctor,
-                slot: finalBookingData.slot,
             };
             await axios.post('/api/create-appointment', payload);
             setStep(4);
-        } catch (error) {
+        } catch (error: any) {
             console.error("[DEBUG] Frontend: Booking request failed.", error);
             const errorMessage = (error as any).response?.data?.message || "Something went wrong. Please try again.";
             toast.error("Booking Failed", { description: errorMessage });
@@ -385,7 +388,7 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
 
     const handleOpenChange = (isOpen: boolean) => {
         if (isOpen) {
-            setStep(1); // Start flow
+            if (step === 0) setStep(1); // Start flow only if it's not already started
         } else {
             resetFlow(); // Reset on close
         }
