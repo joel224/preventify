@@ -403,109 +403,108 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
               <DialogTitle>Step 3: Patient Details</DialogTitle>
               <DialogDescription>Please provide your information.</DialogDescription>
             </DialogHeader>
-            <Form {...form}>
-              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 py-4">
-                <div className="grid grid-cols-2 gap-4">
-                  <FormField
-                    control={form.control}
-                    name="firstName"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>First Name</FormLabel>
-                        <FormControl>
-                          <Input placeholder="John" {...field} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                   <FormField
-                    control={form.control}
-                    name="lastName"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Last Name</FormLabel>
-                        <FormControl>
-                          <Input placeholder="Doe" {...field} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                </div>
+            {/* Note: The <form> tag is now outside, wrapping the entire content */}
+            <div className="space-y-4 py-4">
+              <div className="grid grid-cols-2 gap-4">
                 <FormField
-                    control={form.control}
-                    name="phone"
-                    render={({ field }) => (
-                        <FormItem>
-                        <FormLabel>Phone Number</FormLabel>
-                        <FormControl>
-                            <Input placeholder="+919876543210" {...field} />
-                        </FormControl>
-                        <FormMessage />
-                        </FormItem>
-                    )}
+                  control={form.control}
+                  name="firstName"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>First Name</FormLabel>
+                      <FormControl>
+                        <Input placeholder="John" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
                 />
-                 <div className="grid grid-cols-2 gap-4">
-                    <FormField
-                        control={form.control}
-                        name="dob"
-                        render={({ field }) => (
-                        <FormItem>
-                            <FormLabel>Date of Birth</FormLabel>
-                            <FormControl>
-                            <Input placeholder="YYYY-MM-DD" {...field} />
-                            </FormControl>
-                            <FormMessage />
-                        </FormItem>
-                        )}
-                    />
-                    <FormField
-                        control={form.control}
-                        name="gender"
-                        render={({ field }) => (
-                        <FormItem>
-                            <FormLabel>Gender</FormLabel>
-                            <FormControl>
-                            <RadioGroup
-                                onValueChange={field.onChange}
-                                defaultValue={field.value}
-                                className="flex space-x-4 pt-2"
-                            >
-                                <FormItem className="flex items-center space-x-2">
-                                <FormControl>
-                                    <RadioGroupItem value="M" />
-                                </FormControl>
-                                <FormLabel className="font-normal">Male</FormLabel>
-                                </FormItem>
-                                <FormItem className="flex items-center space-x-2">
-                                <FormControl>
-                                    <RadioGroupItem value="F" />
-                                </FormControl>
-                                <FormLabel className="font-normal">Female</FormLabel>
-                                </FormItem>
-                                <FormItem className="flex items-center space-x-2">
-                                <FormControl>
-                                    <RadioGroupItem value="O" />
-                                </FormControl>
-                                <FormLabel className="font-normal">Other</FormLabel>
-                                </FormItem>
-                            </RadioGroup>
-                            </FormControl>
-                            <FormMessage />
-                        </FormItem>
-                        )}
-                    />
-                </div>
-                 <DialogFooter>
-                    <Button variant="outline" onClick={handlePrevStep} type="button">Back</Button>
-                    <Button type="submit" disabled={isLoading}>
-                    {isLoading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
-                    Confirm Booking
-                    </Button>
-                </DialogFooter>
-              </form>
-            </Form>
+                 <FormField
+                  control={form.control}
+                  name="lastName"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Last Name</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Doe" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+              <FormField
+                  control={form.control}
+                  name="phone"
+                  render={({ field }) => (
+                      <FormItem>
+                      <FormLabel>Phone Number</FormLabel>
+                      <FormControl>
+                          <Input placeholder="+919876543210" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                      </FormItem>
+                  )}
+              />
+               <div className="grid grid-cols-2 gap-4">
+                  <FormField
+                      control={form.control}
+                      name="dob"
+                      render={({ field }) => (
+                      <FormItem>
+                          <FormLabel>Date of Birth</FormLabel>
+                          <FormControl>
+                          <Input placeholder="YYYY-MM-DD" {...field} />
+                          </FormControl>
+                          <FormMessage />
+                      </FormItem>
+                      )}
+                  />
+                  <FormField
+                      control={form.control}
+                      name="gender"
+                      render={({ field }) => (
+                      <FormItem>
+                          <FormLabel>Gender</FormLabel>
+                          <FormControl>
+                          <RadioGroup
+                              onValueChange={field.onChange}
+                              defaultValue={field.value}
+                              className="flex space-x-4 pt-2"
+                          >
+                              <FormItem className="flex items-center space-x-2">
+                              <FormControl>
+                                  <RadioGroupItem value="M" />
+                              </FormControl>
+                              <FormLabel className="font-normal">Male</FormLabel>
+                              </FormItem>
+                              <FormItem className="flex items-center space-x-2">
+                              <FormControl>
+                                  <RadioGroupItem value="F" />
+                              </FormControl>
+                              <FormLabel className="font-normal">Female</FormLabel>
+                              </FormItem>
+                              <FormItem className="flex items-center space-x-2">
+                              <FormControl>
+                                  <RadioGroupItem value="O" />
+                              </FormControl>
+                              <FormLabel className="font-normal">Other</FormLabel>
+                              </FormItem>
+                          </RadioGroup>
+                          </FormControl>
+                          <FormMessage />
+                      </FormItem>
+                      )}
+                  />
+              </div>
+            </div>
+            <DialogFooter>
+                <Button variant="outline" onClick={handlePrevStep} type="button">Back</Button>
+                <Button type="submit" disabled={isLoading}>
+                {isLoading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
+                Confirm Booking
+                </Button>
+            </DialogFooter>
           </>
         );
         case 4: // Confirmation
@@ -555,7 +554,11 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>{children}</DialogTrigger>
       <DialogContent className="sm:max-w-xl md:max-w-2xl lg:max-w-3xl">
-        {renderStepContent()}
+        <Form {...form}>
+            <form onSubmit={form.handleSubmit(onSubmit)}>
+                {renderStepContent()}
+            </form>
+        </Form>
       </DialogContent>
     </Dialog>
   );
