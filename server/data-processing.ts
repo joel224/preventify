@@ -33,53 +33,32 @@ export function processBusinessEntities(doctorList: any[], clinicList: any[]) {
         for (const doctorId of clinic.doctors) {
             if (!doctorId) continue; // Skip null/empty doctor IDs
 
-            // "First Match" rule: If this doctor has already been assigned to a clinic, skip.
-            if (processedDoctors.has(doctorId)) {
-                // Even if the doctor is already processed, we need to add them to this clinic's list
-                const clinicDoctors = processedClinics.get(clinic.clinic_id).doctors;
-                const doctorInfo = processedDoctors.get(doctorId);
-                 if (doctorInfo && !clinicDoctors.some((d: any) => d.id === doctorId)) {
-                    clinicDoctors.push({ id: doctorId, name: doctorInfo.name });
+            // "First Match" rule: If this doctor has already been assigned to a primary clinic, skip assigning a new primary.
+            if (!processedDoctors.has(doctorId)) {
+                const doctorName = doctorNameMap.get(doctorId);
+                if (doctorName) {
+                    // Add the doctor to our main processed list with their primary clinic
+                    processedDoctors.set(doctorId, {
+                        id: doctorId,
+                        name: doctorName,
+                        // Assign the primary clinic based on the first match
+                        clinicId: clinic.clinic_id,
+                        clinicName: clinic.name,
+                    });
                 }
-                continue;
             }
-
-            // If it's a new doctor, process them.
+            
+            // Regardless of first match, we still need to associate this doctor with this clinic
+            // for the clinic's list of doctors.
             const doctorName = doctorNameMap.get(doctorId);
             if (doctorName) {
-                // Add the doctor to our main processed list
-                processedDoctors.set(doctorId, {
-                    id: doctorId,
-                    name: doctorName,
-                    // Assign the primary clinic based on the first match
-                    clinicId: clinic.clinic_id,
-                    clinicName: clinic.name,
-                });
-                
-                // Also add the doctor to the current clinic's list of doctors
-                const clinicDoctors = processedClinics.get(clinic.clinic_id).doctors;
-                 if (!clinicDoctors.some((d: any) => d.id === doctorId)) {
+                const clinicDoctors = processedClinics.get(clinic.clinic_id)?.doctors;
+                if (clinicDoctors && !clinicDoctors.some((d: any) => d.id === doctorId)) {
                     clinicDoctors.push({ id: doctorId, name: doctorName });
                 }
             }
         }
     }
-    
-    // Now, ensure every doctor in a clinic's list is also in every other clinic they belong to.
-    // This is a correction to ensure the clinic-to-doctor mapping is complete.
-    for (const clinic of clinicList) {
-        if(!processedClinics.has(clinic.clinic_id)) continue;
-        const currentClinic = processedClinics.get(clinic.clinic_id);
-
-        for (const doctorId of clinic.doctors) {
-            if(!doctorId) continue;
-            const doctorName = doctorNameMap.get(doctorId);
-            if(doctorName && !currentClinic.doctors.some((d: any) => d.id === doctorId)) {
-                currentClinic.doctors.push({ id: doctorId, name: doctorName });
-            }
-        }
-    }
-
 
     // Convert the Maps to arrays for the final return value.
     const finalDoctors = Array.from(processedDoctors.values());

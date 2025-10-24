@@ -163,36 +163,29 @@ async function fetchSlotsForDate(doctorId: string, clinicId: string, startDate: 
         const schedule = responseData.data.schedule;
         const availableSlots: any[] = [];
         
-        for (const scheduleKey in schedule) {
-            if (Object.prototype.hasOwnProperty.call(schedule, scheduleKey)) {
-                const scheduleItems = schedule[scheduleKey];
-                if (Array.isArray(scheduleItems)) {
-                    for (const item of scheduleItems) {
-                        if (item.slots && Array.isArray(item.slots)) {
-                            item.slots.forEach((slot: any) => {
-                                const slotStartTime = new Date(slot.s);
-                                const workDayStart = setHours(startOfDay(slotStartTime), 8);
-                                const workDayEnd = setHours(startOfDay(slotStartTime), 19); // 7 PM
-                                
-                                if (slot.available && slotStartTime >= workDayStart && isBefore(slotStartTime, workDayEnd)) {
-                                    availableSlots.push({
-                                        startTime: slot.s,
-                                        endTime: slot.e,
-                                        doctorId,
-                                        clinicId,
-                                    });
-                                }
+        // The schedule object's keys are clinic IDs.
+        const scheduleItemsForClinic = schedule[clinicId];
+        if (scheduleItemsForClinic && Array.isArray(scheduleItemsForClinic)) {
+            for (const item of scheduleItemsForClinic) {
+                if (item.slots && Array.isArray(item.slots)) {
+                    item.slots.forEach((slot: any) => {
+                        if (slot.available) { // Just check the primary availability flag
+                            availableSlots.push({
+                                startTime: slot.s,
+                                endTime: slot.e,
+                                doctorId,
+                                clinicId,
                             });
                         }
-                    }
+                    });
                 }
             }
         }
         
         if (availableSlots.length > 0) {
-            console.log(`SUCCESS: Found ${availableSlots.length} available slots.`);
+            console.log(`SUCCESS: Found ${availableSlots.length} raw available slots from API.`);
         } else {
-            console.log(`INFO: No available slots found for the requested date range.`);
+            console.log(`INFO: No available slots found in API response for the requested date range.`);
         }
         return availableSlots;
 
@@ -207,40 +200,41 @@ export async function getAvailableSlots(doctorId: string, clinicId: string, date
     const requestedDate = new Date(date);
     const now = new Date();
 
-    // The start date for the API call should be the date requested by the user.
+    // Per API requirements, the end date must be at least D+1 of the start date.
     const apiStartDate = startOfDay(requestedDate);
-    
-    // As per API requirements, the end date must be at least D+1.
     const apiEndDate = addDays(apiStartDate, 1);
 
-    // Fetch slots for the two-day range.
+    // Fetch all available slots for the requested day from the API
     let slots = await fetchSlotsForDate(doctorId, clinicId, apiStartDate, apiEndDate);
 
     // Filter the results to only include slots that are valid based on our business logic.
-    return slots.filter(slot => {
+    const finalFilteredSlots = slots.filter(slot => {
         const slotStartTime = new Date(slot.startTime);
         
-        // Ensure the slot is on the originally requested date.
+        // 1. Ensure the slot is on the originally requested date. The API might return slots for D+1 as well.
         if (format(slotStartTime, 'yyyy-MM-dd') !== format(requestedDate, 'yyyy-MM-dd')) {
             return false;
         }
 
-        // Ensure the slot is within working hours (8am to 7pm).
+        // 2. Ensure the slot is within working hours (8am to 7pm).
         const workDayStart = setHours(startOfDay(slotStartTime), 8);
         const workDayEnd = setHours(startOfDay(slotStartTime), 19); // 7 PM
-        if (slotStartTime < workDayStart || slotStartTime >= workDayEnd) {
+        if (isBefore(slotStartTime, workDayStart) || !isBefore(slotStartTime, workDayEnd)) {
             return false;
         }
 
-        // If the requested date is today, ensure the slot is in the future.
+        // 3. If the requested date is today, ensure the slot is in the future.
         if (format(requestedDate, 'yyyy-MM-dd') === format(now, 'yyyy-MM-dd')) {
-            if (slotStartTime < now) {
+            if (isBefore(slotStartTime, now)) {
                 return false;
             }
         }
 
         return true;
     });
+
+    console.log(`INFO: After filtering, returning ${finalFilteredSlots.length} valid slots.`);
+    return finalFilteredSlots;
 }
 
 
