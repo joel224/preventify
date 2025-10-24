@@ -27,6 +27,13 @@ import {
   FormLabel,
   FormMessage,
 } from '@/components/ui/form';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { toast } from 'sonner';
@@ -68,6 +75,8 @@ const stepOneSchema = z.object({
   lastName: z.string().min(1, 'Last name is required.'),
   phone: z.string().regex(/^\+?[0-9]{10,15}$/, 'Invalid phone number.'),
   email: z.string().email('Invalid email address.').optional().or(z.literal('')),
+  dob: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "Please use YYYY-MM-DD format."),
+  gender: z.enum(["M", "F", "O"], {required_error: "Gender is required."}),
 });
 
 const stepTwoSchema = z.object({
@@ -101,6 +110,8 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
       lastName: '',
       phone: '',
       email: '',
+      dob: '',
+      gender: undefined,
       doctorId: '',
       clinicId: '',
       time: '',
@@ -110,14 +121,12 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
   const selectedDoctorId = useWatch({ control: form.control, name: 'doctorId' });
   const selectedDate = useWatch({ control: form.control, name: 'date' });
 
-  // Use a derived clinic ID, assuming the first doctor determines the clinic.
   const selectedClinicId = useMemo(() => {
     if (!selectedDoctorId || doctors.length === 0) return '';
     const doctor = doctors.find(d => d.id === selectedDoctorId);
     return doctor ? doctor.clinicId : '';
   }, [selectedDoctorId, doctors]);
 
-  // Fetch doctors and clinics on mount
   useEffect(() => {
     if (open) {
       const fetchData = async () => {
@@ -139,7 +148,6 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
     }
   }, [open]);
 
-  // Reset form when dialog is closed
   useEffect(() => {
     if (!open) {
       form.reset();
@@ -149,14 +157,12 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
     }
   }, [open, form]);
   
-  // Set clinicId whenever doctorId changes
   useEffect(() => {
     if (selectedClinicId) {
       form.setValue('clinicId', selectedClinicId, { shouldValidate: true });
     }
   }, [selectedClinicId, form]);
 
-  // Fetch slots when doctor, clinic, and date are selected
   useEffect(() => {
     if (selectedDoctorId && selectedClinicId && selectedDate) {
       const fetchSlots = async () => {
@@ -208,9 +214,12 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
 
     let finalTime = slotTime;
 
+    // Check if adding 20 minutes is feasible within the available slots
     if (originalMinutes < 40) { // Can add 20 minutes without spilling to next hour
       const bufferedTime = addMinutes(slotTime, 20);
-      const isBufferedTimeAvailable = availableSlots.some(slot => slot.startTime === bufferedTime.toISOString());
+      const isBufferedTimeAvailable = availableSlots.some(slot => 
+          parseISO(slot.startTime).getTime() === bufferedTime.getTime()
+      );
       
       if (isBufferedTimeAvailable) {
         finalTime = bufferedTime;
@@ -224,16 +233,14 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
   const handleNextStep = async () => {
     let result;
     if (step === 1) {
-      result = await form.trigger(['firstName', 'lastName', 'phone', 'email']);
+      result = await form.trigger(['firstName', 'lastName', 'phone', 'email', 'dob', 'gender']);
     } else if (step === 2) {
       result = await form.trigger(['doctorId']);
       if(result) {
-         // Also set clinicId when moving from step 2
          const doctor = doctors.find(d => d.id === form.getValues('doctorId'));
          if(doctor) {
             form.setValue('clinicId', doctor.clinicId, { shouldValidate: true });
          } else {
-             // Handle case where doctor might not be found, although it shouldn't happen with proper selection
              result = false;
              toast.error("Could not find clinic for the selected doctor.");
          }
@@ -252,7 +259,6 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
     setIsLoading(true);
     setBookingStatus('idle');
 
-    // Manually trigger validation for the last step
     const result = await form.trigger(['date', 'time']);
     if (!result) {
         setIsLoading(false);
@@ -264,8 +270,8 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
             firstName: data.firstName,
             lastName: data.lastName,
             phone: data.phone,
-            dob: '1990-01-01', // Using a placeholder as it's required by API but not collected
-            gender: 'O', // Using a placeholder
+            dob: data.dob,
+            gender: data.gender,
             email: data.email
         },
         appointment: {
@@ -305,7 +311,7 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
   const renderStepContent = () => {
     const selectedClinic = clinics.find(c => c.id === selectedClinicId);
     switch (step) {
-      case 1: // Patient Details
+      case 1:
         return (
           <>
             <DialogHeader>
@@ -367,13 +373,51 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
                       </FormItem>
                   )}
               />
+              <div className="grid grid-cols-2 gap-4">
+                 <FormField
+                    control={form.control}
+                    name="dob"
+                    render={({ field }) => (
+                        <FormItem>
+                        <FormLabel>Date of Birth</FormLabel>
+                        <FormControl>
+                            <Input placeholder="YYYY-MM-DD" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                        </FormItem>
+                    )}
+                 />
+                 <FormField
+                    control={form.control}
+                    name="gender"
+                    render={({ field }) => (
+                        <FormItem>
+                            <FormLabel>Gender</FormLabel>
+                            <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                <FormControl>
+                                <SelectTrigger>
+                                    <SelectValue placeholder="Select gender" />
+                                </SelectTrigger>
+                                </FormControl>
+                                <SelectContent>
+                                    <SelectItem value="M">Male</SelectItem>
+                                    <SelectItem value="F">Female</SelectItem>
+                                    <SelectItem value="O">Other</SelectItem>
+                                </SelectContent>
+                            </Select>
+                            <FormMessage />
+                        </FormItem>
+                    )}
+                 />
+              </div>
+
             </div>
             <DialogFooter>
                 <Button onClick={handleNextStep} type="button">Next</Button>
             </DialogFooter>
           </>
         );
-      case 2: // Select Doctor
+      case 2:
         return (
           <>
             <DialogHeader>
@@ -429,7 +473,7 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
             </DialogFooter>
           </>
         );
-      case 3: // Select Date & Time
+      case 3:
         const today = new Date();
         const tomorrow = addDays(today, 1);
         const selectedDay = form.getValues('date');
@@ -477,7 +521,6 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
                         ) : hourlySlots.length > 0 ? (
                           hourlySlots.map((slot) => {
                             const selectedSlotDate = form.getValues('time') ? parseISO(form.getValues('time')) : null;
-                            // This comparison is a bit tricky now. Let's base it on the hour.
                             const slotHour = getHours(parseISO(slot.firstAvailableSlot));
                             const isSelected = selectedSlotDate && getHours(selectedSlotDate) === slotHour;
 
@@ -514,7 +557,7 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
             </DialogFooter>
           </>
         );
-        case 4: // Confirmation
+        case 4:
             return (
                 <>
                 <DialogHeader className="items-center text-center">

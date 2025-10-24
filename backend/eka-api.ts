@@ -249,17 +249,60 @@ export async function getBusinessEntitiesAndDoctors(): Promise<any> {
     return { doctors: processedDoctors, clinics: processedClinics };
 }
 
+async function _searchPatientByMobile(mobile: string): Promise<string | null> {
+    const sanitizedMobile = mobile.replace(/^\+/, '');
+    const searchMobile = `+91${sanitizedMobile.slice(-10)}`; // Ensure +91 format
+
+    console.log(`--- Searching for patient with mobile: ${searchMobile} ---`);
+
+    try {
+        const response = await makeApiRequest(async (client) => {
+            return client.get('/dr/v1/business/patients/search', {
+                params: {
+                    mobile: searchMobile,
+                }
+            });
+        });
+
+        const profiles = response.data?.data?.profiles;
+        if (profiles && profiles.length > 0) {
+            const patientId = profiles[0].patient_id;
+            console.log(`SUCCESS: Found existing patient with ID: ${patientId}`);
+            return patientId;
+        }
+
+        console.log(`INFO: No patient found with mobile ${searchMobile}.`);
+        return null;
+
+    } catch (error: any) {
+        console.error(`ERROR searching for patient by mobile:`, error.message);
+        // Don't throw, just return null so booking can continue for a new patient
+        return null;
+    }
+}
+
+
 export async function bookAppointment(data: any): Promise<any> {
     console.log("--- [DEBUG] BACKEND eka-api.ts: bookAppointment function started ---");
     console.log("--- [DEBUG] BACKEND eka-api.ts: Received data from index.ts:", JSON.stringify(data, null, 2));
 
-    const partnerAppointmentId = `preventify_appt_${Date.now()}`;
-    const partnerPatientId = `preventify_patient_${data.patient.phone}_${Date.now()}`;
+    const sanitizedMobile = data.patient.phone.replace(/^\+/, '');
+    
+    // Search for patient first
+    const existingPatientId = await _searchPatientByMobile(sanitizedMobile);
 
+    let partnerPatientId;
+    if (existingPatientId) {
+        partnerPatientId = existingPatientId;
+        console.log(`INFO: Using existing patient ID for booking: ${partnerPatientId}`);
+    } else {
+        partnerPatientId = `preventify_patient_${sanitizedMobile}_${Date.now()}`;
+        console.log(`INFO: Generating new patient ID for booking: ${partnerPatientId}`);
+    }
+
+    const partnerAppointmentId = `preventify_appt_${Date.now()}`;
     const startTimeInSeconds = Math.floor(new Date(data.appointment.startTime).getTime() / 1000);
     const endTimeInSeconds = startTimeInSeconds + 600; // 10 minute duration
-
-    const sanitizedMobile = data.patient.phone.replace(/^\+/, '');
 
     const getDesignation = (gender: string) => {
         if (gender === 'F') return 'Ms.';
@@ -271,7 +314,7 @@ export async function bookAppointment(data: any): Promise<any> {
         partner_appointment_id: partnerAppointmentId,
         clinic_id: data.appointment.clinicId,
         doctor_id: data.appointment.doctorId,
-        partner_patient_id: partnerPatientId,
+        partner_patient_id: partnerPatientId, // Use the determined patient ID
         appointment_details: {
             start_time: startTimeInSeconds,
             end_time: endTimeInSeconds,
@@ -316,5 +359,3 @@ export async function bookAppointment(data: any): Promise<any> {
         throw error;
     }
 }
-
-    
