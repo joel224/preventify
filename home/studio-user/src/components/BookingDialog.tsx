@@ -35,7 +35,7 @@ type Slot = { startTime: string; endTime: string; doctorId: string; clinicId: st
 type GroupedSlots = { [hour: string]: Slot[] };
 
 // A single, comprehensive schema for the entire form.
-// Fields for future steps are marked as optional.
+// Fields for future steps are marked as optional initially, but validated at submission.
 const FormSchema = z.object({
   fullName: z.string().min(3, "Full name must be at least 3 characters."),
   phone: z.string().regex(/^\+?[0-9]{10,14}$/, "Please enter a valid phone number."),
