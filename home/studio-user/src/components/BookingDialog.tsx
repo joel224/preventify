@@ -34,14 +34,14 @@ type Doctor = { id: string; name: string; clinicId: string; clinicName: string; 
 type Slot = { startTime: string; endTime: string; doctorId: string; clinicId: string; };
 type GroupedSlots = { [hour: string]: Slot[] };
 
-// A single, comprehensive schema for the entire form.
-// Fields for future steps are marked as optional initially, but validated at submission.
+// This schema covers all fields across all steps.
+// We make them all optional here because we will validate them step-by-step.
 const FormSchema = z.object({
-  fullName: z.string().min(3, "Full name must be at least 3 characters."),
-  phone: z.string().regex(/^\+?[0-9]{10,14}$/, "Please enter a valid phone number."),
+  fullName: z.string().min(3, "Full name must be at least 3 characters.").optional(),
+  phone: z.string().regex(/^\+?[0-9]{10,14}$/, "Please enter a valid phone number.").optional(),
   email: z.string().email("Please enter a valid email address.").optional().or(z.literal("")),
-  doctor: z.string({ required_error: "Please select a doctor." }),
-  startTime: z.string({ required_error: "Please select a time slot." }),
+  doctor: z.string().optional(),
+  startTime: z.string().optional(),
   gender: z.enum(["M", "F", "O"]).optional(),
   dob: z.date().optional(),
 });
@@ -53,6 +53,11 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
     const [step, setStep] = useState(1);
     const [isLoading, setIsLoading] = useState(false);
     const [isSubmitting, setIsSubmitting] = useState(false);
+
+    // --- State for Backend-Driven Flow ---
+    const [sessionId, setSessionId] = useState<string | null>(null);
+    const [isStepLoading, setIsStepLoading] = useState(false);
+    // ---
     
     const [doctors, setDoctors] = useState<Doctor[]>([]);
     const [availableSlots, setAvailableSlots] = useState<Slot[]>([]);
@@ -61,7 +66,6 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
     const [selectedDoctorObj, setSelectedDoctorObj] = useState<Doctor | null>(null);
     const [selectedSlotObj, setSelectedSlotObj] = useState<Slot | null>(null);
 
-    // Use a single schema and provide consistent default values.
     const form = useForm<BookingFormValues>({
         resolver: zodResolver(FormSchema),
         mode: "onChange",
@@ -151,59 +155,34 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
     
     const selectedSlotValue = form.watch("startTime");
 
+    // This is now the final submission function
     const processBooking = async () => {
         setIsSubmitting(true);
-        // THE FIX: Get all values directly from the form state.
-        const data = form.getValues();
-        console.log("[DEBUG] Frontend: processBooking started. Full form data from getValues():", data);
+        const finalStepData = form.getValues();
 
-        if (!selectedSlotObj || !selectedDoctorObj) {
-            toast.error("Invalid slot or doctor selected");
+        // Manual validation for the last step's fields
+        if (!finalStepData.gender || !finalStepData.dob) {
+            toast.error("Validation failed", { description: "Please complete all required fields." });
             setIsSubmitting(false);
             return;
         }
 
-        // Validate required fields for the final step that were optional earlier
-        if (!data.gender) {
-             toast.error("Please select a gender.");
-             setIsSubmitting(false);
-             return;
-        }
-
-        if (!data.dob) {
-             toast.error("Please select a date of birth.");
-             setIsSubmitting(false);
-             return;
-        }
-
         try {
-            // Because of defaultValues, data.fullName will be a string, not undefined.
-            const nameParts = data.fullName.split(" ");
-            const firstName = nameParts[0];
-            const lastName = nameParts.length > 1 ? nameParts.slice(1).join(" ") : " ";
-
             const payload = {
-                patient: {
-                    firstName,
-                    lastName,
-                    phone: data.phone,
-                    email: data.email || "",
-                    gender: data.gender,
-                    dob: format(data.dob, 'yyyy-MM-dd'),
+                sessionId: sessionId,
+                step: 3,
+                data: {
+                    gender: finalStepData.gender,
+                    dob: format(finalStepData.dob, 'yyyy-MM-dd'),
                 },
-                appointment: {
-                    clinicId: selectedDoctorObj.clinicId,
-                    doctorId: selectedDoctorObj.id,
-                    startTime: selectedSlotObj.startTime,
-                }
+                doctor: selectedDoctorObj,
+                slot: selectedSlotObj
             };
-            
-            console.log("[DEBUG] Frontend: Booking payload prepared:", payload);
-            await axios.post('/api/create-appointment', payload);
-            console.log("[DEBUG] Frontend: Booking request successful.");
 
+            await axios.post('/api/create-appointment', payload);
+            
             toast.success("Appointment Booked!", { 
-                description: `Your appointment with ${selectedDoctorObj?.name} on ${format(new Date(selectedSlotObj.startTime), "PPP")} at ${format(new Date(selectedSlotObj.startTime), "p")} is confirmed.` 
+                description: `Your appointment is confirmed.`
             });
             setStep(4); // Move to success step
 
@@ -227,26 +206,49 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
                 setIsFetchingSlots(false);
                 setSelectedDoctorObj(null);
                 setSelectedSlotObj(null);
-                form.reset(); // This will reset to the defaultValues
-            }, 300); // Small delay for smooth closing animation
+                setSessionId(null);
+                setIsStepLoading(false);
+                form.reset();
+            }, 300);
         }
     }, [isOpen, form]);
 
-    // Handle validation and navigation for steps
     const handleNext = async () => {
         let fieldsToValidate: (keyof BookingFormValues)[] = [];
+        let stepData: Partial<BookingFormValues> = {};
+        
         if (step === 1) {
             fieldsToValidate = ['fullName', 'phone', 'email'];
+            const { fullName, phone, email } = form.getValues();
+            stepData = { fullName, phone, email };
         } else if (step === 2) {
             fieldsToValidate = ['doctor', 'startTime'];
+             const { doctor, startTime } = form.getValues();
+            stepData = { doctor, startTime };
         }
 
         const isValid = await form.trigger(fieldsToValidate);
         if (isValid) {
-            if (step === 3) { // If on the final step, submit the form
-                await form.handleSubmit(processBooking)();
-            } else {
+            setIsStepLoading(true);
+            try {
+                const response = await axios.post('/api/save-step', {
+                    step: step,
+                    sessionId: sessionId,
+                    data: stepData
+                });
+
+                if (step === 1 && response.data.sessionId) {
+                    setSessionId(response.data.sessionId);
+                }
+
                 setStep(prev => prev + 1);
+
+            } catch (error: any) {
+                console.error("Error saving step data:", error);
+                const errorMessage = error.response?.data?.message || `Failed to save Step ${step} data.`;
+                toast.error("Error", { description: errorMessage });
+            } finally {
+                setIsStepLoading(false);
             }
         }
     };
@@ -291,7 +293,9 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
                                </FormItem> 
                            )}/>
                         </div>
-                        <Button onClick={handleNext} className="w-full">Next</Button>
+                        <Button onClick={handleNext} className="w-full" disabled={isStepLoading}>
+                            {isStepLoading ? <Loader2 className="mr-2 h-4 w-4 animate-spin"/> : "Next"}
+                        </Button>
                     </>
                 );
             case 2:
@@ -382,13 +386,13 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
                             )}
                         </div>
                         <div className="flex gap-2">
-                            <Button onClick={handleBack} variant="outline" className="w-1/3">Back</Button>
+                            <Button onClick={handleBack} variant="outline" className="w-1/3" disabled={isStepLoading}>Back</Button>
                             <Button 
                                 onClick={handleNext} 
                                 className="w-2/3" 
-                                disabled={!form.watch('startTime') || isFetchingSlots}
+                                disabled={!form.watch('startTime') || isFetchingSlots || isStepLoading}
                             >
-                                Next
+                                {isStepLoading ? <Loader2 className="mr-2 h-4 w-4 animate-spin"/> : "Next"}
                             </Button>
                         </div>
                     </>
@@ -477,12 +481,7 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
                             <svg className="w-16 h-16 mx-auto text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                             </svg>
-                            {selectedDoctorObj && selectedSlotObj && (
-                                <p>
-                                    Your appointment with <span className="font-bold">{selectedDoctorObj.name}</span> on <span className="font-bold">{format(new Date(selectedSlotObj.startTime), 'PPP')}</span> at <span className="font-bold">{format(new Date(selectedSlotObj.startTime), 'p')}</span> is confirmed.
-                                </p>
-                            )}
-                            <p className="text-sm text-muted-foreground">You will also receive a confirmation message shortly.</p>
+                            <p className="text-sm text-muted-foreground">Your appointment details have been confirmed. You will receive a confirmation message shortly.</p>
                         </div>
                         <Button onClick={() => setIsOpen(false)} className="w-full">Close</Button>
                     </>
@@ -499,7 +498,6 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
             </DialogTrigger>
             <DialogContent className="sm:max-w-lg">
                 <Form {...form}>
-                    {/* The form submission is handled by button click, not a form's native submit event */}
                     <form onSubmit={(e) => e.preventDefault()} className="space-y-4">
                         {renderStepContent()}
                     </form>
