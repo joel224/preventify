@@ -2,12 +2,10 @@
     script: typeof document === "object" ? document.currentScript : undefined,
     chunks: [
   "static/chunks/[root-of-the-server]__9a168d68._.css",
-  "static/chunks/src_7ebedab0._.js",
+  "static/chunks/src_40a14b13._.js",
   "static/chunks/node_modules_next_d6661594._.js",
-  "static/chunks/node_modules_date-fns_ff956cdb._.js",
-  "static/chunks/node_modules_react-day-picker_dist_index_esm_9fc30424.js",
   "static/chunks/node_modules_zod_lib_index_mjs_ee760afb._.js",
-  "static/chunks/node_modules_ddb641a5._.js"
+  "static/chunks/node_modules_6a5b9f07._.js"
 ],
     source: "dynamic"
 });

@@ -29,14 +29,14 @@ import {
 } from '@/components/ui/form';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Calendar } from '@/components/ui/calendar';
 import { toast } from 'sonner';
 import { z } from 'zod';
 import { useForm, useWatch } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useState, useEffect, useMemo } from 'react';
-import { format, parseISO, addMinutes, getHours, setHours, startOfHour, getMinutes } from 'date-fns';
+import { format, parseISO, addMinutes, getHours, setHours, addDays } from 'date-fns';
 import { Loader2, CheckCircle, XCircle } from 'lucide-react';
+import { cn } from "@/lib/utils";
 
 // Types
 interface Doctor {
@@ -108,8 +108,14 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
   });
 
   const selectedDoctorId = useWatch({ control: form.control, name: 'doctorId' });
-  const selectedClinicId = useWatch({ control: form.control, name: 'clinicId' });
   const selectedDate = useWatch({ control: form.control, name: 'date' });
+
+  // Use a derived clinic ID, assuming the first doctor determines the clinic.
+  const selectedClinicId = useMemo(() => {
+    if (!selectedDoctorId || doctors.length === 0) return '';
+    const doctor = doctors.find(d => d.id === selectedDoctorId);
+    return doctor ? doctor.clinicId : '';
+  }, [selectedDoctorId, doctors]);
 
   // Fetch doctors and clinics on mount
   useEffect(() => {
@@ -131,7 +137,7 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
       };
       fetchData();
     }
-  }, [open, form]);
+  }, [open]);
 
   // Reset form when dialog is closed
   useEffect(() => {
@@ -142,6 +148,13 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
       setAvailableSlots([]);
     }
   }, [open, form]);
+  
+  // Set clinicId whenever doctorId changes
+  useEffect(() => {
+    if (selectedClinicId) {
+      form.setValue('clinicId', selectedClinicId, { shouldValidate: true });
+    }
+  }, [selectedClinicId, form]);
 
   // Fetch slots when doctor, clinic, and date are selected
   useEffect(() => {
@@ -186,33 +199,25 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
     return Object.entries(slotsByHour).map(([hour, firstAvailableSlot]) => ({
       hour: parseInt(hour, 10),
       firstAvailableSlot,
-    }));
+    })).sort((a, b) => a.hour - b.hour);
   }, [availableSlots]);
 
   const handleHourSelect = (firstAvailableSlot: string) => {
     const slotTime = parseISO(firstAvailableSlot);
-    let targetTime = addMinutes(slotTime, 20);
+    const originalMinutes = slotTime.getMinutes();
 
-    // If adding 20 mins pushes it to the next hour, only proceed if the new time is available or just use original
-    const targetHour = getHours(targetTime);
-    const originalHour = getHours(slotTime);
-    const originalMinutes = getMinutes(slotTime);
+    let finalTime = slotTime;
+
+    if (originalMinutes < 40) { // Can add 20 minutes without spilling to next hour
+      const bufferedTime = addMinutes(slotTime, 20);
+      const isBufferedTimeAvailable = availableSlots.some(slot => slot.startTime === bufferedTime.toISOString());
+      
+      if (isBufferedTimeAvailable) {
+        finalTime = bufferedTime;
+      }
+    }
     
-    // If original slot is too late in the hour (e.g., 11:50), buffer might not work.
-    if (originalMinutes >= 45) {
-      form.setValue('time', firstAvailableSlot, { shouldValidate: true });
-      return;
-    }
-
-    // Check if the buffered time is actually available. If not, just use the original.
-    const isBufferedTimeAvailable = availableSlots.some(slot => slot.startTime === targetTime.toISOString());
-
-    if (targetHour === originalHour && isBufferedTimeAvailable) {
-        form.setValue('time', targetTime.toISOString(), { shouldValidate: true });
-    } else {
-        // Fallback to the first available slot if buffered time is not available or in next hour
-        form.setValue('time', firstAvailableSlot, { shouldValidate: true });
-    }
+    form.setValue('time', finalTime.toISOString(), { shouldValidate: true });
   };
 
 
@@ -221,7 +226,18 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
     if (step === 1) {
       result = await form.trigger(['firstName', 'lastName', 'phone', 'email']);
     } else if (step === 2) {
-      result = await form.trigger(['doctorId', 'clinicId']);
+      result = await form.trigger(['doctorId']);
+      if(result) {
+         // Also set clinicId when moving from step 2
+         const doctor = doctors.find(d => d.id === form.getValues('doctorId'));
+         if(doctor) {
+            form.setValue('clinicId', doctor.clinicId, { shouldValidate: true });
+         } else {
+             // Handle case where doctor might not be found, although it shouldn't happen with proper selection
+             result = false;
+             toast.error("Could not find clinic for the selected doctor.");
+         }
+      }
     }
     if (result) {
       setStep(step + 1);
@@ -378,18 +394,24 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
                       <CommandList className="max-h-[250px]">
                         <CommandEmpty>No doctor found.</CommandEmpty>
                         <CommandGroup>
-                           {doctors.map((doctor) => (
-                            <CommandItem
-                              key={doctor.id}
-                              value={doctor.name}
-                              onSelect={() => {
-                                form.setValue('doctorId', doctor.id, { shouldValidate: true });
-                                form.setValue('clinicId', doctor.clinicId, { shouldValidate: true });
-                              }}
-                            >
-                              {doctor.name}
-                            </CommandItem>
-                          ))}
+                           {doctors.length > 0 ? (
+                              doctors.map((doctor) => (
+                                <CommandItem
+                                  key={doctor.id}
+                                  value={doctor.name}
+                                  onSelect={() => {
+                                    form.setValue('doctorId', doctor.id, { shouldValidate: true });
+                                  }}
+                                >
+                                  {doctor.name}
+                                  <span className="text-xs text-muted-foreground ml-2">({doctor.clinicName})</span>
+                                </CommandItem>
+                              ))
+                           ) : isLoading ? (
+                             <div className="p-4 text-center text-sm text-muted-foreground">Loading doctors...</div>
+                           ) : (
+                             <div className="p-4 text-center text-sm text-muted-foreground">No doctors available.</div>
+                           )}
                         </CommandGroup>
                       </CommandList>
                     </Command>
@@ -408,6 +430,10 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
           </>
         );
       case 3: // Select Date & Time
+        const today = new Date();
+        const tomorrow = addDays(today, 1);
+        const selectedDay = form.getValues('date');
+        
         return (
           <>
             <DialogHeader>
@@ -416,62 +442,68 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
                 {`Booking for ${selectedDoctor?.name} at ${selectedClinic?.name}`}
               </DialogDescription>
             </DialogHeader>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 py-4">
-               <FormField
-                control={form.control}
-                name="date"
-                render={({ field }) => (
-                  <FormItem className="flex flex-col items-center">
-                    <FormLabel>Date</FormLabel>
-                    <Calendar
-                        mode="single"
-                        selected={field.value}
-                        onSelect={field.onChange}
-                        disabled={(date) => date < new Date(new Date().toDateString())}
-                        initialFocus
-                    />
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-               <FormField
-                control={form.control}
-                name="time"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Available Slots</FormLabel>
-                    <div className="grid grid-cols-3 gap-2 max-h-[300px] overflow-y-auto pr-2">
-                      {isLoading ? (
-                        <div className="col-span-3 flex justify-center items-center h-24">
-                          <Loader2 className="h-8 w-8 animate-spin text-primary" />
-                        </div>
-                      ) : hourlySlots.length > 0 ? (
-                        hourlySlots.map((slot) => {
-                          const selectedSlotDate = form.getValues('time') ? parseISO(form.getValues('time')) : null;
-                          const isSelected = selectedSlotDate && getHours(selectedSlotDate) === slot.hour;
+            <div className="flex flex-col items-center gap-6 py-4">
+              <div className="w-full max-w-sm">
+                <FormLabel className="text-center block mb-2">Date</FormLabel>
+                <div className="grid grid-cols-2 gap-4">
+                    <Button 
+                      type="button" 
+                      variant={selectedDay && format(selectedDay, 'yyyy-MM-dd') === format(today, 'yyyy-MM-dd') ? 'default' : 'outline'}
+                      onClick={() => form.setValue('date', today, { shouldValidate: true })}>
+                        Today
+                    </Button>
+                    <Button 
+                      type="button" 
+                      variant={selectedDay && format(selectedDay, 'yyyy-MM-dd') === format(tomorrow, 'yyyy-MM-dd') ? 'default' : 'outline'}
+                      onClick={() => form.setValue('date', tomorrow, { shouldValidate: true })}>
+                        Tomorrow
+                    </Button>
+                </div>
+                <FormField control={form.control} name="date" render={() => <FormMessage className="text-center pt-2" />} />
+              </div>
+               
+              <div className="w-full max-w-sm">
+                <FormField
+                  control={form.control}
+                  name="time"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-center block mb-2">Available Slots</FormLabel>
+                      <div className="grid grid-cols-3 gap-2 max-h-[250px] overflow-y-auto pr-2">
+                        {isLoading ? (
+                          <div className="col-span-3 flex justify-center items-center h-24">
+                            <Loader2 className="h-8 w-8 animate-spin text-primary" />
+                          </div>
+                        ) : hourlySlots.length > 0 ? (
+                          hourlySlots.map((slot) => {
+                            const selectedSlotDate = form.getValues('time') ? parseISO(form.getValues('time')) : null;
+                            // This comparison is a bit tricky now. Let's base it on the hour.
+                            const slotHour = getHours(parseISO(slot.firstAvailableSlot));
+                            const isSelected = selectedSlotDate && getHours(selectedSlotDate) === slotHour;
 
-                          return (
-                            <Button
-                                key={slot.hour}
-                                variant={isSelected ? 'default' : 'outline'}
-                                onClick={() => handleHourSelect(slot.firstAvailableSlot)}
-                                className="w-full"
-                                type="button"
-                            >
-                                {format(setHours(new Date(), slot.hour), 'ha')}
-                            </Button>
-                          );
-                        })
-                      ) : (
-                         <p className="col-span-3 text-sm text-muted-foreground text-center py-4">
-                           {selectedDate ? 'No slots available. Please select another date.' : 'Please select a date to see available slots.'}
-                         </p>
-                      )}
-                    </div>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+                            return (
+                              <Button
+                                  key={slot.hour}
+                                  variant={isSelected ? 'default' : 'outline'}
+                                  onClick={() => handleHourSelect(slot.firstAvailableSlot)}
+                                  className="w-full"
+                                  type="button"
+                              >
+                                  {format(setHours(new Date(), slot.hour), 'ha')}
+                              </Button>
+                            );
+                          })
+                        ) : (
+                          <p className="col-span-3 text-sm text-muted-foreground text-center py-4">
+                            {selectedDate ? 'No slots available. Please select another date.' : 'Please select a date to see available slots.'}
+                          </p>
+                        )}
+                      </div>
+                      <FormMessage className="text-center pt-2" />
+                    </FormItem>
+                  )}
+                />
+              </div>
             </div>
             <DialogFooter>
               <Button variant="outline" onClick={handlePrevStep} type="button">Back</Button>

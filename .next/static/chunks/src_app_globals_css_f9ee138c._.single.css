@@ -684,6 +684,10 @@ h1, h2, h3, h4, h5, h6 {
   margin-top: auto;
 }
 
+.ml-2 {
+  margin-left: .5rem;
+}
+
 .line-clamp-2 {
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
@@ -1058,6 +1062,10 @@ h1, h2, h3, h4, h5, h6 {
 
 .max-w-none {
   max-width: none;
+}
+
+.max-w-sm {
+  max-width: 24rem;
 }
 
 .flex-1 {
