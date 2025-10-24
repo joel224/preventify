@@ -21,13 +21,13 @@ import {
     DialogTrigger,
 } from "@/components/ui/dialog";
 import { Loader2 } from "lucide-react";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { toast } from "./ui/sonner";
 import axios from "axios";
-import { format } from "date-fns";
+import { format, getHours, startOfHour } from "date-fns";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./ui/select";
-import { RadioGroup, RadioGroupItem } from "./ui/radio-group";
 import { Label } from "./ui/label";
+import { Slider } from "./ui/slider";
 
 // Define schemas for each step
 const patientDetailsSchema = z.object({
@@ -49,6 +49,8 @@ type BookingFormValues = z.infer<typeof bookingSchema>;
 
 type Doctor = { id: string; name: string; clinicId: string; clinicName: string; };
 type Slot = { startTime: string; endTime: string; doctorId: string; clinicId: string; };
+type GroupedSlots = { [hour: string]: Slot[] };
+
 
 export default function BookingDialog({ children }: { children: React.ReactNode }) {
     const [isOpen, setIsOpen] = useState(false);
@@ -61,16 +63,15 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
     const [availableSlots, setAvailableSlots] = useState<Slot[]>([]);
     const [isFetchingSlots, setIsFetchingSlots] = useState(false);
 
+    // State for the new UI
+    const [selectedHour, setSelectedHour] = useState<string | null>(null);
+
     const getCurrentSchema = () => {
         switch (step) {
-            case 1:
-                return patientDetailsSchema;
-            case 2:
-                return doctorSelectionSchema;
-            case 3:
-                 return slotSelectionSchema;
-            default:
-                return patientDetailsSchema;
+            case 1: return patientDetailsSchema;
+            case 2: return doctorSelectionSchema;
+            case 3: return slotSelectionSchema;
+            default: return patientDetailsSchema;
         }
     };
     
@@ -83,17 +84,14 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
             email: "",
         },
     });
-
-     // We need to re-initialize the resolver when the step changes
+    
     useEffect(() => {
-        form.reset(undefined, { keepValues: true }); // Keep values between steps
+        form.reset(undefined, { keepValues: true }); 
     }, [step, form]);
-
 
     const selectedDoctorId = form.watch("doctor");
     const selectedDoctor = doctors.find(d => d.id === selectedDoctorId);
 
-    // Fetch doctors when dialog opens and we are on step 2
     useEffect(() => {
         if (isOpen && step === 2 && doctors.length === 0) {
             setIsLoading(true);
@@ -109,11 +107,13 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
         }
     }, [isOpen, step, doctors.length]);
 
-    // Fetch slots when doctor is selected
     useEffect(() => {
         if (selectedDoctorId && selectedDoctor) {
             setIsFetchingSlots(true);
             setAvailableSlots([]);
+            setSelectedHour(null);
+            form.resetField("startTime");
+
             const dateString = format(new Date(), 'yyyy-MM-dd');
             axios.get(`/api/available-slots?doctorId=${selectedDoctorId}&clinicId=${selectedDoctor.clinicId}&date=${dateString}`)
                 .then(response => {
@@ -127,8 +127,36 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
         } else {
              setAvailableSlots([]);
         }
-    }, [selectedDoctorId, selectedDoctor]);
+    }, [selectedDoctorId, selectedDoctor, form]);
 
+    const groupedSlots = useMemo(() => {
+        return availableSlots.reduce((acc, slot) => {
+            const hourKey = format(startOfHour(new Date(slot.startTime)), "ha").toLowerCase(); // "9am", "10am", "1pm"
+            if (!acc[hourKey]) {
+                acc[hourKey] = [];
+            }
+            acc[hourKey].push(slot);
+            return acc;
+        }, {} as GroupedSlots);
+    }, [availableSlots]);
+    
+    const slotsInSelectedHour = selectedHour ? groupedSlots[selectedHour] : [];
+    const selectedSlotValue = form.watch("startTime");
+    const selectedSlotIndex = slotsInSelectedHour.findIndex(s => s.startTime === selectedSlotValue);
+
+    const handleHourClick = (hourKey: string) => {
+        setSelectedHour(hourKey);
+        // Set the form value to the first slot of that hour
+        const firstSlot = groupedSlots[hourKey][0];
+        form.setValue("startTime", firstSlot.startTime, { shouldValidate: true });
+    };
+
+    const handleSliderChange = (value: number[]) => {
+        const newSlot = slotsInSelectedHour[value[0]];
+        if (newSlot) {
+            form.setValue("startTime", newSlot.startTime, { shouldValidate: true });
+        }
+    };
 
     const processBooking = async (data: BookingFormValues) => {
         setIsSubmitting(true);
@@ -159,7 +187,7 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
             
             await axios.post('/api/book-appointment', payload);
             toast.success("Appointment Booked!", { description: `Your appointment with ${selectedDoctor?.name} on ${format(new Date(selectedSlot.startTime), "PPP")} at ${format(new Date(selectedSlot.startTime), "p")} is confirmed.` });
-            setStep(4); // Move to success step
+            setStep(4); 
 
         } catch (error: any) {
             console.error("Booking failed:", error);
@@ -169,7 +197,6 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
         }
     };
     
-    // Reset state when dialog is closed
     useEffect(() => {
         if (!isOpen) {
             setStep(1);
@@ -177,14 +204,14 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
             setIsSubmitting(false);
             setAvailableSlots([]);
             setIsFetchingSlots(false);
+            setSelectedHour(null);
             form.reset();
         }
     }, [isOpen, form]);
 
-
     const renderStepContent = () => {
         switch (step) {
-            case 1: // Patient Details
+            case 1:
                 return (
                     <>
                         <DialogHeader>
@@ -193,16 +220,13 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
                         </DialogHeader>
                         <div className="space-y-4 py-4">
                            <FormField control={form.control} name="fullName" render={({ field }) => ( <FormItem> <FormLabel>Full Name</FormLabel> <FormControl><Input placeholder="John Doe" {...field} /></FormControl> <FormMessage /> </FormItem> )}/>
-                            <FormField control={form.control} name="phone" render={({ field }) => ( <FormItem> <FormLabel>Phone</FormLabel> <FormControl><Input placeholder="+91 98765 43210" {...field} /></FormControl> <FormMessage /> </FormItem> )}/>
-                            <FormField control={form.control} name="email" render={({ field }) => ( <FormItem> <FormLabel>Email (Optional)</FormLabel> <FormControl><Input type="email" placeholder="you@example.com" {...field} /></FormControl> <FormMessage /> </FormItem> )}/>
+                           <FormField control={form.control} name="phone" render={({ field }) => ( <FormItem> <FormLabel>Phone</FormLabel> <FormControl><Input placeholder="+91 98765 43210" {...field} /></FormControl> <FormMessage /> </FormItem> )}/>
+                           <FormField control={form.control} name="email" render={({ field }) => ( <FormItem> <FormLabel>Email (Optional)</FormLabel> <FormControl><Input type="email" placeholder="you@example.com" {...field} /></FormControl> <FormMessage /> </FormItem> )}/>
                         </div>
-                        <Button onClick={async () => { 
-                            const isValid = await form.trigger(["fullName", "phone", "email"]); 
-                            if(isValid) setStep(2); 
-                        }} className="w-full">Next: Select Doctor</Button>
+                        <Button onClick={async () => { const isValid = await form.trigger(["fullName", "phone", "email"]); if(isValid) setStep(2); }} className="w-full">Next: Select Doctor</Button>
                     </>
                 );
-            case 2: // Doctor Selection
+            case 2:
                  return (
                     <>
                         <DialogHeader>
@@ -210,9 +234,8 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
                             <DialogDescription>Step 2 of 3: Who would you like to see?</DialogDescription>
                         </DialogHeader>
                         {isLoading ? ( <div className="flex items-center justify-center h-40"><Loader2 className="h-8 w-8 animate-spin" /></div> ) : (
-                        <div className="space-y-4 py-4">
                             <FormField control={form.control} name="doctor" render={({ field }) => ( 
-                                <FormItem> 
+                                <FormItem className="py-4"> 
                                     <FormLabel>Doctor</FormLabel> 
                                     <Select onValueChange={field.onChange} defaultValue={field.value}> 
                                         <FormControl> 
@@ -227,7 +250,6 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
                                     <FormMessage /> 
                                 </FormItem> 
                             )}/>
-                        </div>
                         )}
                         <div className="flex gap-2">
                             <Button onClick={() => setStep(1)} variant="outline" className="w-1/3">Back</Button>
@@ -235,58 +257,60 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
                         </div>
                     </>
                 );
-            case 3: // Time Slot
+            case 3:
                 return (
                     <>
                         <DialogHeader>
                             <DialogTitle>Book an Appointment: Time Slot</DialogTitle>
-                            <DialogDescription>Step 3 of 3: Choose an available time.</DialogDescription>
+                            <DialogDescription>Step 3 of 3: Choose an available time for {selectedDoctor?.name}.</DialogDescription>
                         </DialogHeader>
 
                         {isFetchingSlots && (
-                            <div className="flex items-center justify-center h-40">
+                            <div className="flex items-center justify-center h-64">
                                 <Loader2 className="mr-2 h-8 w-8 animate-spin" />
                                 <p>Finding open slots...</p>
                             </div>
                         )}
 
                         {!isFetchingSlots && availableSlots.length > 0 && (
-                             <FormField
-                                control={form.control}
-                                name="startTime"
-                                render={({ field }) => (
-                                    <FormItem className="space-y-3 py-4">
-                                        <FormLabel>Available Slots for {selectedDoctor?.name}</FormLabel>
-                                        <FormControl>
-                                            <RadioGroup
-                                                onValueChange={field.onChange}
-                                                defaultValue={field.value}
-                                                className="grid grid-cols-3 gap-2"
-                                            >
-                                                {availableSlots.map((slot) => (
-                                                    <FormItem key={slot.startTime} className="flex items-center">
-                                                        <FormControl>
-                                                            <RadioGroupItem value={slot.startTime} id={slot.startTime} className="sr-only" />
-                                                        </FormControl>
-                                                        <Label
-                                                            htmlFor={slot.startTime}
-                                                            className="flex w-full cursor-pointer flex-col items-center justify-center rounded-md border-2 border-muted bg-popover p-2 text-center hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary [&:has([data-state=checked])]:border-primary"
-                                                        >
-                                                            <span className="font-semibold">{format(new Date(slot.startTime), "p")}</span>
-                                                            <span className="text-xs text-muted-foreground">{format(new Date(slot.startTime), "MMM d")}</span>
-                                                        </Label>
-                                                    </FormItem>
-                                                ))}
-                                            </RadioGroup>
-                                        </FormControl>
-                                        <FormMessage />
-                                    </FormItem>
+                            <div className="py-4">
+                                <Label>Select an hour</Label>
+                                <div className="grid grid-cols-4 gap-2 pt-2">
+                                    {Object.keys(groupedSlots).map((hourKey) => (
+                                        <Button
+                                            key={hourKey}
+                                            variant={selectedHour === hourKey ? "default" : "outline"}
+                                            onClick={() => handleHourClick(hourKey)}
+                                            className="uppercase"
+                                        >
+                                            {hourKey}
+                                        </Button>
+                                    ))}
+                                </div>
+                                
+                                {selectedHour && slotsInSelectedHour.length > 0 && (
+                                    <div className="pt-6">
+                                        <div className="flex justify-between items-center">
+                                            <Label>Fine-tune the time</Label>
+                                            <p className="text-sm font-medium text-primary">
+                                                Selected: {selectedSlotValue ? format(new Date(selectedSlotValue), "p") : "None"}
+                                            </p>
+                                        </div>
+                                        <Slider
+                                            value={[selectedSlotIndex]}
+                                            onValueChange={handleSliderChange}
+                                            max={slotsInSelectedHour.length - 1}
+                                            step={1}
+                                            className="my-4"
+                                        />
+                                        <FormField control={form.control} name="startTime" render={() => <FormMessage />} />
+                                    </div>
                                 )}
-                            />
+                            </div>
                         )}
 
                         {!isFetchingSlots && availableSlots.length === 0 && (
-                             <div className="text-center text-muted-foreground py-16">
+                             <div className="text-center text-muted-foreground py-16 h-64 flex flex-col justify-center items-center">
                                 <p>No available slots for the selected provider.</p>
                                 <p className="text-sm">Please try a different doctor or check back later.</p>
                             </div>
@@ -300,7 +324,7 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
                         </div>
                     </>
                 );
-             case 4: // Success
+             case 4:
                 return (
                     <>
                         <DialogHeader>
@@ -326,7 +350,6 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
             </DialogTrigger>
             <DialogContent className="sm:max-w-lg">
                 <Form {...form}>
-                    {/* The form submission is now handled by the button in the final step */}
                     {renderStepContent()}
                 </Form>
             </DialogContent>

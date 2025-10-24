@@ -2,11 +2,11 @@
     script: typeof document === "object" ? document.currentScript : undefined,
     chunks: [
   "static/chunks/[root-of-the-server]__9a168d68._.css",
-  "static/chunks/src_b905992b._.js",
+  "static/chunks/src_f63e0acf._.js",
   "static/chunks/node_modules_next_36ca6cb8._.js",
   "static/chunks/node_modules_zod_lib_index_mjs_ee760afb._.js",
   "static/chunks/node_modules_axios_lib_99999129._.js",
-  "static/chunks/node_modules_23405af4._.js"
+  "static/chunks/node_modules_b9e7b630._.js"
 ],
     source: "dynamic"
 });
