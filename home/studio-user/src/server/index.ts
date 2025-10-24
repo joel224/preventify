@@ -2,12 +2,9 @@
 import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
-import { 
-    getBusinessEntitiesAndDoctors, 
-    _loginAndGetTokens, 
-    getAvailableSlots,
-    bookAppointment
-} from './eka-api';
+import { _loginAndGetTokens } from './eka-auth';
+import { getBusinessEntitiesAndDoctors, getAvailableSlots } from './clinic-api';
+import { bookAppointment } from './booking-api';
 
 
 dotenv.config();
