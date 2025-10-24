@@ -181,12 +181,11 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
   const selectedDoctor = useMemo(() => doctors.find(d => d.id === selectedDoctorId), [doctors, selectedDoctorId]);
   
   const doctorsForSelectedClinic = useMemo(() => {
-    if (!selectedClinicId) return [];
-    const clinic = clinics.find(c => c.id === selectedClinicId);
+    const clinic = clinics.find(c => c.id === PADINJARANGADI_CLINIC_ID);
     if (!clinic) return [];
     const doctorIds = new Set(clinic.doctors.map(d => d.id));
     return doctors.filter(d => doctorIds.has(d.id));
-  }, [doctors, clinics, selectedClinicId]);
+  }, [doctors, clinics]);
 
 
   const handleNextStep = async () => {
@@ -536,4 +535,3 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
     </Dialog>
   );
 }
-
