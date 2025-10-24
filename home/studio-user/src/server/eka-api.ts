@@ -229,6 +229,7 @@ export async function getBusinessEntitiesAndDoctors(): Promise<any> {
         return client.get('/dr/v1/business/entities');
     });
 
+    // The actual data from Eka is nested under `response.data`
     const { doctors: doctorList, clinics: clinicList } = response.data;
 
     if (!doctorList || doctorList.length === 0) {
@@ -316,5 +317,3 @@ export async function bookAppointment(data: any): Promise<any> {
         throw error;
     }
 }
-
-    
