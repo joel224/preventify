@@ -25,7 +25,7 @@ import { Calendar } from "@/components/ui/calendar";
 import { cn } from "@/lib/utils";
 import { CalendarIcon, Loader2 } from "lucide-react";
 import { useState, useEffect, useMemo } from "react";
-import { toast } from "./ui/sonner";
+import { toast } from "@/components/ui/sonner";
 import axios from "axios";
 import { format } from "date-fns";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -34,17 +34,16 @@ type Doctor = { id: string; name: string; clinicId: string; clinicName: string; 
 type Slot = { startTime: string; endTime: string; doctorId: string; clinicId: string; };
 type GroupedSlots = { [hour: string]: Slot[] };
 
-// --- CORRECTED SCHEMA ---
-// Made 'gender' and 'dob' optional to prevent uncontrolled/controlled errors
-// They will be validated later in the submission process or specific steps.
+// A single, comprehensive schema for the entire form.
+// Fields for future steps are marked as optional.
 const FormSchema = z.object({
   fullName: z.string().min(3, "Full name must be at least 3 characters."),
   phone: z.string().regex(/^\+?[0-9]{10,14}$/, "Please enter a valid phone number."),
   email: z.string().email("Please enter a valid email address.").optional().or(z.literal("")),
   doctor: z.string({ required_error: "Please select a doctor." }),
   startTime: z.string({ required_error: "Please select a time slot." }),
-  gender: z.enum(["M", "F", "O"]).optional(), // Made optional
-  dob: z.date().optional(), // Made optional
+  gender: z.enum(["M", "F", "O"]).optional(),
+  dob: z.date().optional(),
 });
 
 type BookingFormValues = z.infer<typeof FormSchema>;
@@ -62,8 +61,7 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
     const [selectedDoctorObj, setSelectedDoctorObj] = useState<Doctor | null>(null);
     const [selectedSlotObj, setSelectedSlotObj] = useState<Slot | null>(null);
 
-    // --- CORRECTED DEFAULT VALUES ---
-    // All string fields initialized to "", optional fields like gender and dob to undefined
+    // Use a single schema and provide consistent default values.
     const form = useForm<BookingFormValues>({
         resolver: zodResolver(FormSchema),
         mode: "onChange",
@@ -71,10 +69,10 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
             fullName: "",
             phone: "",
             email: "",
-            doctor: "", // Changed from undefined to ""
-            startTime: "", // Changed from undefined to ""
-            gender: undefined, // Correctly typed as optional
-            dob: undefined,   // Correctly typed as optional
+            doctor: "",
+            startTime: "",
+            gender: undefined,
+            dob: undefined,
         }
     });
 
@@ -153,8 +151,6 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
     
     const selectedSlotValue = form.watch("startTime");
 
-    // --- CORRECTED SUBMISSION LOGIC ---
-    // Added checks for gender and dob before processing, as they are now optional in the base schema
     const processBooking = async (data: BookingFormValues) => {
         setIsSubmitting(true);
         console.log("[DEBUG] Frontend: processBooking started. Full form data:", data);
@@ -165,7 +161,7 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
             return;
         }
 
-        // Validate required fields that are optional in the base schema
+        // Validate required fields for the final step that were optional earlier
         if (!data.gender) {
              toast.error("Please select a gender.");
              setIsSubmitting(false);
@@ -179,7 +175,8 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
         }
 
         try {
-            const nameParts = data.fullName.split(" "); // fullName should be defined due to default value and schema
+            // Because of defaultValues, data.fullName will be a string, not undefined.
+            const nameParts = data.fullName.split(" ");
             const firstName = nameParts[0];
             const lastName = nameParts.length > 1 ? nameParts.slice(1).join(" ") : " ";
 
@@ -189,8 +186,8 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
                     lastName,
                     phone: data.phone,
                     email: data.email || "",
-                    gender: data.gender, // Now guaranteed to be defined
-                    dob: format(data.dob, 'yyyy-MM-dd'), // Now guaranteed to be defined
+                    gender: data.gender,
+                    dob: format(data.dob, 'yyyy-MM-dd'),
                 },
                 appointment: {
                     clinicId: selectedDoctorObj.clinicId,
@@ -228,19 +225,19 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
                 setIsFetchingSlots(false);
                 setSelectedDoctorObj(null);
                 setSelectedSlotObj(null);
-                form.reset(); // This will reset to the corrected defaultValues
+                form.reset(); // This will reset to the defaultValues
             }, 300); // Small delay for smooth closing animation
         }
     }, [isOpen, form]);
 
-    // Handle validation and navigation for steps 1 and 2
+    // Handle validation and navigation for steps
     const handleNext = async () => {
         let fieldsToValidate: (keyof BookingFormValues)[] = [];
         if (step === 1) {
             fieldsToValidate = ['fullName', 'phone', 'email'];
         } else if (step === 2) {
             fieldsToValidate = ['doctor', 'startTime'];
-        } else if (step === 3) { // Add validation for step 3 fields when moving from step 3
+        } else if (step === 3) {
              fieldsToValidate = ['gender', 'dob'];
         }
 
@@ -311,7 +308,7 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
                                         <FormLabel>Doctor</FormLabel> 
                                         <Select 
                                             onValueChange={field.onChange} 
-                                            value={field.value} // Ensure controlled behavior
+                                            value={field.value}
                                         > 
                                             <FormControl>
                                                 <SelectTrigger>
@@ -355,7 +352,7 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
                                                         onClick={() => handleHourClick(hourKey)} 
                                                         className="uppercase" 
                                                         type="button" 
-                                                        disabled={isFetchingSlots} // Disable during fetch
+                                                        disabled={isFetchingSlots}
                                                     >
                                                         {hourKey}
                                                     </Button>
@@ -385,7 +382,7 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
                             <Button 
                                 onClick={handleNext} 
                                 className="w-2/3" 
-                                disabled={!form.watch('startTime') || isFetchingSlots} // Disable if no time selected or fetching
+                                disabled={!form.watch('startTime') || isFetchingSlots}
                             >
                                 Next
                             </Button>
@@ -405,7 +402,7 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
                                     <FormLabel>Gender</FormLabel>
                                     <Select 
                                         onValueChange={field.onChange} 
-                                        value={field.value} // Ensure controlled behavior
+                                        value={field.value}
                                     >
                                         <FormControl>
                                             <SelectTrigger>
@@ -443,7 +440,7 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
                                             <Calendar 
                                                 mode="single" 
                                                 selected={field.value} 
-                                                onSelect={field.onChange} // Ensure controlled behavior
+                                                onSelect={field.onChange}
                                                 disabled={(date) => date > new Date() || date < new Date("1900-01-01")} 
                                                 initialFocus 
                                             />
@@ -498,7 +495,7 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
             </DialogTrigger>
             <DialogContent className="sm:max-w-lg">
                 <Form {...form}>
-                    {/* Removed onSubmit handler from form element as submission is handled by button click */}
+                    {/* The form submission is handled by button click, not a form's native submit event */}
                     <form onSubmit={(e) => e.preventDefault()} className="space-y-4">
                         {renderStepContent()}
                     </form>
