@@ -249,9 +249,25 @@ export async function getBusinessEntitiesAndDoctors(): Promise<any> {
     return { doctors: processedDoctors, clinics: processedClinics };
 }
 
+function sanitizeMobileNumber(mobile: string): string {
+    // 1. Remove all non-digit characters
+    let plainNumber = mobile.replace(/\D/g, '');
+
+    // 2. Handle different formats
+    if (plainNumber.length === 12 && plainNumber.startsWith('91')) {
+        // Format is 91xxxxxxxxxx, it's already correct
+        return plainNumber;
+    } else if (plainNumber.length === 10) {
+        // Format is xxxxxxxxxx, prepend 91
+        return `91${plainNumber}`;
+    } else {
+        // Fallback: assume the last 10 digits are the mobile number and prepend 91
+        return `91${plainNumber.slice(-10)}`;
+    }
+}
+
 async function _searchPatientByMobile(mobile: string): Promise<string | null> {
-    const plainNumber = mobile.replace(/\D/g, '');
-    const searchMobile = `91${plainNumber.slice(-10)}`; 
+    const searchMobile = sanitizeMobileNumber(mobile);
 
     console.log(`--- Searching for patient with mobile: ${searchMobile} ---`);
 
@@ -286,8 +302,7 @@ export async function bookAppointment(data: any): Promise<any> {
     console.log("--- [DEBUG] BACKEND eka-api.ts: bookAppointment function started ---");
     console.log("--- [DEBUG] BACKEND eka-api.ts: Received data from index.ts:", JSON.stringify(data, null, 2));
 
-    const plainNumber = data.patient.phone.replace(/\D/g, '');
-    const sanitizedMobile = `91${plainNumber.slice(-10)}`;
+    const sanitizedMobile = sanitizeMobileNumber(data.patient.phone);
     
     // Search for patient first
     const existingPatientId = await _searchPatientByMobile(data.patient.phone);
