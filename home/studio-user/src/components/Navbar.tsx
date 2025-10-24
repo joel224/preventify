@@ -33,7 +33,7 @@ const Navbar = () => {
         <div className="flex justify-between items-center">
           <div className="flex items-center">
             <Link href="/" className="flex items-center">
-              <span className="text-2xl font-display font-bold text-[#1E2665]">
+              <span className="text-2xl font-display font-bold text-preventify-dark-blue">
                 Preventify
               </span>
             </Link>
@@ -45,7 +45,7 @@ const Navbar = () => {
               <Link
                 key={link.name}
                 href={link.path}
-                className={`font-medium transition-colors text-sm ${pathname === link.path ? 'text-preventify-purple' : 'text-gray-700 hover:text-preventify-purple'}`}
+                className={`font-medium transition-colors text-sm ${pathname === link.path ? 'text-preventify-blue' : 'text-gray-700 hover:text-preventify-blue'}`}
               >
                 {link.name}
               </Link>
@@ -56,14 +56,13 @@ const Navbar = () => {
             <Link href="/doctors">
               <Button 
                 variant="outline" 
-                className="border-preventify-purple text-preventify-purple hover:bg-preventify-soft-purple relative overflow-hidden group"
+                className="border-preventify-blue text-preventify-blue hover:bg-preventify-blue/10 relative overflow-hidden group"
               >
-                <span className="absolute inset-0 bg-gradient-to-r from-transparent via-preventify-light-gray to-transparent animate-shimmer group-hover:animate-shimmer" />
                 <span className="relative">Find a Doctor</span>
               </Button>
             </Link>
              <BookingDialog>
-              <Button className="bg-preventify-purple hover:bg-preventify-dark-purple text-white">
+              <Button className="bg-preventify-blue hover:bg-preventify-dark-blue text-white">
                 Book Appointment
               </Button>
             </BookingDialog>
@@ -72,7 +71,7 @@ const Navbar = () => {
           {/* Mobile menu button */}
           <div className="lg:hidden">
             <button
-              className="text-gray-700 hover:text-preventify-purple"
+              className="text-gray-700 hover:text-preventify-blue"
               onClick={toggleMenu}
             >
               {mobileMenuOpen ? (
@@ -92,7 +91,7 @@ const Navbar = () => {
                 <Link
                   key={link.name}
                   href={link.path}
-                  className={`font-medium transition-colors py-2 ${pathname === link.path ? 'text-preventify-purple' : 'text-gray-700 hover:text-preventify-purple'}`}
+                  className={`font-medium transition-colors py-2 ${pathname === link.path ? 'text-preventify-blue' : 'text-gray-700 hover:text-preventify-blue'}`}
                   onClick={() => setMobileMenuOpen(false)}
                 >
                   {link.name}
@@ -102,14 +101,13 @@ const Navbar = () => {
                  <Link href="/doctors">
                   <Button 
                     variant="outline" 
-                    className="border-preventify-purple text-preventify-purple hover:bg-preventify-soft-purple w-full relative overflow-hidden group"
+                    className="border-preventify-blue text-preventify-blue hover:bg-preventify-blue/10 w-full relative overflow-hidden group"
                   >
-                    <span className="absolute inset-0 bg-gradient-to-r from-transparent via-preventify-light-gray to-transparent animate-shimmer group-hover:animate-shimmer" />
                     <span className="relative">Find a Doctor</span>
                   </Button>
                 </Link>
                 <BookingDialog>
-                  <Button className="bg-preventify-purple hover:bg-preventify-dark-purple text-white w-full">
+                  <Button className="bg-preventify-blue hover:bg-preventify-dark-blue text-white w-full">
                     Book Appointment
                   </Button>
                 </BookingDialog>

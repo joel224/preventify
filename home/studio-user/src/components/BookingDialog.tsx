@@ -237,7 +237,7 @@ const BookingDialog = ({ children }: { children: React.ReactNode }) => {
 
         {isLoading && step < 4 && (
           <div className="flex items-center justify-center p-10">
-            <Loader2 className="h-8 w-8 animate-spin text-preventify-purple" />
+            <Loader2 className="h-8 w-8 animate-spin text-primary" />
           </div>
         )}
 
@@ -286,13 +286,12 @@ const BookingDialog = ({ children }: { children: React.ReactNode }) => {
                                             key={index}
                                             variant={selectedSlot?.startTime === slot.startTime ? 'default' : 'outline'}
                                             onClick={() => setSelectedSlot(slot)}
-                                            className={selectedSlot?.startTime === slot.startTime ? 'bg-preventify-blue' : ''}
                                         >
                                             {format(new Date(slot.startTime), 'hh:mm a')}
                                         </Button>
                                     ))
                                 ) : (
-                                    <p className="col-span-3 text-sm text-gray-500">
+                                    <p className="col-span-3 text-sm text-muted-foreground">
                                         No slots available. Please select a doctor, clinic, and date.
                                     </p>
                                 )}
@@ -399,7 +398,7 @@ const BookingDialog = ({ children }: { children: React.ReactNode }) => {
                             </div>
                              <DialogFooter>
                                 <Button type="button" variant="outline" onClick={handlePrevStep}>Back</Button>
-                                <Button type="submit" className="bg-preventify-blue">Next</Button>
+                                <Button type="submit">Next</Button>
                             </DialogFooter>
                         </form>
                     </Form>
@@ -421,7 +420,7 @@ const BookingDialog = ({ children }: { children: React.ReactNode }) => {
                 {step === 4 && (
                      <div className="text-center py-10">
                         <p className="text-lg">Your appointment has been successfully booked!</p>
-                        <p className="text-gray-500">You will receive a confirmation message shortly.</p>
+                        <p className="text-muted-foreground">You will receive a confirmation message shortly.</p>
                      </div>
                 )}
 
@@ -433,9 +432,9 @@ const BookingDialog = ({ children }: { children: React.ReactNode }) => {
                 {step === 1 && <Button onClick={() => setIsOpen(false)} variant="ghost">Cancel</Button>}
                 {step > 1 && step < 4 && <Button variant="outline" onClick={handlePrevStep} disabled={isBooking}>Back</Button>}
                 
-                {step === 1 && <Button onClick={handleNextStep} disabled={!selectedDoctorId || !selectedClinicId || !selectedDate || !selectedSlot} className="bg-preventify-blue">Next</Button>}
-                {step === 3 && <Button onClick={bookAppointment} disabled={isBooking} className="bg-preventify-green">{isBooking && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}Confirm Booking</Button>}
-                {step === 4 && <Button onClick={() => setIsOpen(false)} className="bg-preventify-blue">Done</Button>}
+                {step === 1 && <Button onClick={handleNextStep} disabled={!selectedDoctorId || !selectedClinicId || !selectedDate || !selectedSlot}>Next</Button>}
+                {step === 3 && <Button onClick={bookAppointment} disabled={isBooking}>{isBooking && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}Confirm Booking</Button>}
+                {step === 4 && <Button onClick={() => setIsOpen(false)}>Done</Button>}
             </DialogFooter>
         )}
       </DialogContent>
