@@ -59,33 +59,8 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
     const [selectedDoctorObj, setSelectedDoctorObj] = useState<Doctor | null>(null);
     const [selectedSlotObj, setSelectedSlotObj] = useState<Slot | null>(null);
 
-    const stepOneSchema = z.object({
-        fullName: z.string().min(3, "Full name must be at least 3 characters."),
-        phone: z.string().regex(/^\+?[0-9]{10,14}$/, "Please enter a valid phone number."),
-        email: z.string().email("Please enter a valid email address.").optional().or(z.literal("")),
-    });
-
-    const stepTwoSchema = z.object({
-        doctor: z.string({ required_error: "Please select a doctor." }),
-        startTime: z.string({ required_error: "Please select a time slot." }),
-    });
-
-    const stepThreeSchema = z.object({
-        gender: z.enum(["M", "F", "O"], { required_error: "Please select a gender." }),
-        dob: z.date({ required_error: "Date of birth is required." }),
-    });
-
-    const getCurrentSchema = () => {
-        switch(step) {
-            case 1: return stepOneSchema;
-            case 2: return stepTwoSchema;
-            case 3: return stepThreeSchema;
-            default: return FormSchema;
-        }
-    }
-
     const form = useForm<BookingFormValues>({
-        resolver: zodResolver(getCurrentSchema()),
+        resolver: zodResolver(FormSchema),
         mode: "onChange",
         defaultValues: {
             fullName: "",
@@ -97,10 +72,6 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
             dob: undefined,
         }
     });
-
-    useEffect(() => {
-        form.trigger();
-    }, [step, form]);
 
     const selectedDoctorId = form.watch("doctor");
     
@@ -239,8 +210,15 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
         }
     }, [isOpen, form]);
 
-    const handleNext = async (fields: (keyof BookingFormValues)[]) => {
-        const isValid = await form.trigger(fields);
+    const handleNext = async () => {
+        let fieldsToValidate: (keyof BookingFormValues)[] = [];
+        if (step === 1) {
+            fieldsToValidate = ['fullName', 'phone', 'email'];
+        } else if (step === 2) {
+            fieldsToValidate = ['doctor', 'startTime'];
+        }
+
+        const isValid = await form.trigger(fieldsToValidate);
         if (isValid) {
             setStep(prev => prev + 1);
         }
@@ -262,7 +240,7 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
                            <FormField control={form.control} name="phone" render={({ field }) => ( <FormItem> <FormLabel>Phone</FormLabel> <FormControl><Input placeholder="+91 98765 43210" {...field} /></FormControl> <FormMessage /> </FormItem> )}/>
                            <FormField control={form.control} name="email" render={({ field }) => ( <FormItem> <FormLabel>Email (Optional)</FormLabel> <FormControl><Input placeholder="you@example.com" {...field} /></FormControl> <FormMessage /> </FormItem> )}/>
                         </div>
-                        <Button onClick={() => handleNext(['fullName', 'phone', 'email'])} className="w-full">Next</Button>
+                        <Button onClick={handleNext} className="w-full">Next</Button>
                     </>
                 );
             case 2:
@@ -324,7 +302,7 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
                         </div>
                         <div className="flex gap-2">
                             <Button onClick={handleBack} variant="outline" className="w-1/3">Back</Button>
-                            <Button onClick={() => handleNext(['doctor', 'startTime'])} className="w-2/3" disabled={!form.watch('startTime')}>Next</Button>
+                            <Button onClick={handleNext} className="w-2/3" disabled={!form.watch('startTime')}>Next</Button>
                         </div>
                     </>
                 );
