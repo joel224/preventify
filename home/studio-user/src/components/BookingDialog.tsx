@@ -28,20 +28,23 @@ import { useState, useEffect, useMemo } from "react";
 import { toast } from "./ui/sonner";
 import axios from "axios";
 import { format } from "date-fns";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./ui/select";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 type Doctor = { id: string; name: string; clinicId: string; clinicName: string; };
 type Slot = { startTime: string; endTime: string; doctorId: string; clinicId: string; };
 type GroupedSlots = { [hour: string]: Slot[] };
 
+// --- CORRECTED SCHEMA ---
+// Made 'gender' and 'dob' optional to prevent uncontrolled/controlled errors
+// They will be validated later in the submission process or specific steps.
 const FormSchema = z.object({
   fullName: z.string().min(3, "Full name must be at least 3 characters."),
   phone: z.string().regex(/^\+?[0-9]{10,14}$/, "Please enter a valid phone number."),
   email: z.string().email("Please enter a valid email address.").optional().or(z.literal("")),
   doctor: z.string({ required_error: "Please select a doctor." }),
   startTime: z.string({ required_error: "Please select a time slot." }),
-  gender: z.enum(["M", "F", "O"], { required_error: "Please select a gender." }),
-  dob: z.date({ required_error: "Date of birth is required." }),
+  gender: z.enum(["M", "F", "O"]).optional(), // Made optional
+  dob: z.date().optional(), // Made optional
 });
 
 type BookingFormValues = z.infer<typeof FormSchema>;
@@ -59,6 +62,8 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
     const [selectedDoctorObj, setSelectedDoctorObj] = useState<Doctor | null>(null);
     const [selectedSlotObj, setSelectedSlotObj] = useState<Slot | null>(null);
 
+    // --- CORRECTED DEFAULT VALUES ---
+    // All string fields initialized to "", optional fields like gender and dob to undefined
     const form = useForm<BookingFormValues>({
         resolver: zodResolver(FormSchema),
         mode: "onChange",
@@ -66,10 +71,10 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
             fullName: "",
             phone: "",
             email: "",
-            doctor: undefined,
-            startTime: undefined,
-            gender: undefined,
-            dob: undefined,
+            doctor: "", // Changed from undefined to ""
+            startTime: "", // Changed from undefined to ""
+            gender: undefined, // Correctly typed as optional
+            dob: undefined,   // Correctly typed as optional
         }
     });
 
@@ -148,6 +153,8 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
     
     const selectedSlotValue = form.watch("startTime");
 
+    // --- CORRECTED SUBMISSION LOGIC ---
+    // Added checks for gender and dob before processing, as they are now optional in the base schema
     const processBooking = async (data: BookingFormValues) => {
         setIsSubmitting(true);
         console.log("[DEBUG] Frontend: processBooking started. Full form data:", data);
@@ -158,8 +165,21 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
             return;
         }
 
+        // Validate required fields that are optional in the base schema
+        if (!data.gender) {
+             toast.error("Please select a gender.");
+             setIsSubmitting(false);
+             return;
+        }
+
+        if (!data.dob) {
+             toast.error("Please select a date of birth.");
+             setIsSubmitting(false);
+             return;
+        }
+
         try {
-            const nameParts = data.fullName.split(" ");
+            const nameParts = data.fullName.split(" "); // fullName should be defined due to default value and schema
             const firstName = nameParts[0];
             const lastName = nameParts.length > 1 ? nameParts.slice(1).join(" ") : " ";
 
@@ -169,8 +189,8 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
                     lastName,
                     phone: data.phone,
                     email: data.email || "",
-                    gender: data.gender,
-                    dob: format(data.dob, 'yyyy-MM-dd'),
+                    gender: data.gender, // Now guaranteed to be defined
+                    dob: format(data.dob, 'yyyy-MM-dd'), // Now guaranteed to be defined
                 },
                 appointment: {
                     clinicId: selectedDoctorObj.clinicId,
@@ -183,8 +203,10 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
             await axios.post('/api/create-appointment', payload);
             console.log("[DEBUG] Frontend: Booking request successful.");
 
-            toast.success("Appointment Booked!", { description: `Your appointment with ${selectedDoctorObj?.name} on ${format(new Date(selectedSlotObj.startTime), "PPP")} at ${format(new Date(selectedSlotObj.startTime), "p")} is confirmed.` });
-            setStep(4);
+            toast.success("Appointment Booked!", { 
+                description: `Your appointment with ${selectedDoctorObj?.name} on ${format(new Date(selectedSlotObj.startTime), "PPP")} at ${format(new Date(selectedSlotObj.startTime), "p")} is confirmed.` 
+            });
+            setStep(4); // Move to success step
 
         } catch (error: any) {
             console.error("[DEBUG] Frontend: Booking request failed.", error);
@@ -195,6 +217,7 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
         }
     };
     
+    // Reset form and state when dialog is closed
     useEffect(() => {
         if (!isOpen) {
             setTimeout(() => {
@@ -205,17 +228,20 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
                 setIsFetchingSlots(false);
                 setSelectedDoctorObj(null);
                 setSelectedSlotObj(null);
-                form.reset();
-            }, 300);
+                form.reset(); // This will reset to the corrected defaultValues
+            }, 300); // Small delay for smooth closing animation
         }
     }, [isOpen, form]);
 
+    // Handle validation and navigation for steps 1 and 2
     const handleNext = async () => {
         let fieldsToValidate: (keyof BookingFormValues)[] = [];
         if (step === 1) {
             fieldsToValidate = ['fullName', 'phone', 'email'];
         } else if (step === 2) {
             fieldsToValidate = ['doctor', 'startTime'];
+        } else if (step === 3) { // Add validation for step 3 fields when moving from step 3
+             fieldsToValidate = ['gender', 'dob'];
         }
 
         const isValid = await form.trigger(fieldsToValidate);
@@ -236,9 +262,33 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
                             <DialogDescription>Please provide your name and contact information.</DialogDescription>
                         </DialogHeader>
                         <div className="space-y-4 py-4">
-                           <FormField control={form.control} name="fullName" render={({ field }) => ( <FormItem> <FormLabel>Full Name</FormLabel> <FormControl><Input placeholder="John Doe" {...field} /></FormControl> <FormMessage /> </FormItem> )}/>
-                           <FormField control={form.control} name="phone" render={({ field }) => ( <FormItem> <FormLabel>Phone</FormLabel> <FormControl><Input placeholder="+91 98765 43210" {...field} /></FormControl> <FormMessage /> </FormItem> )}/>
-                           <FormField control={form.control} name="email" render={({ field }) => ( <FormItem> <FormLabel>Email (Optional)</FormLabel> <FormControl><Input placeholder="you@example.com" {...field} /></FormControl> <FormMessage /> </FormItem> )}/>
+                           <FormField control={form.control} name="fullName" render={({ field }) => ( 
+                               <FormItem> 
+                                   <FormLabel>Full Name</FormLabel> 
+                                   <FormControl>
+                                       <Input placeholder="John Doe" {...field} />
+                                   </FormControl> 
+                                   <FormMessage /> 
+                               </FormItem> 
+                           )}/>
+                           <FormField control={form.control} name="phone" render={({ field }) => ( 
+                               <FormItem> 
+                                   <FormLabel>Phone</FormLabel> 
+                                   <FormControl>
+                                       <Input placeholder="+91 98765 43210" {...field} />
+                                   </FormControl> 
+                                   <FormMessage /> 
+                               </FormItem> 
+                           )}/>
+                           <FormField control={form.control} name="email" render={({ field }) => ( 
+                               <FormItem> 
+                                   <FormLabel>Email (Optional)</FormLabel> 
+                                   <FormControl>
+                                       <Input placeholder="you@example.com" {...field} />
+                                   </FormControl> 
+                                   <FormMessage /> 
+                               </FormItem> 
+                           )}/>
                         </div>
                         <Button onClick={handleNext} className="w-full">Next</Button>
                     </>
@@ -252,15 +302,28 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
                         </DialogHeader>
                         <div className="space-y-4 py-4 min-h-[250px]">
                             {isLoading ? (
-                                <div className="flex items-center justify-center h-full"><Loader2 className="h-8 w-8 animate-spin" /></div>
+                                <div className="flex items-center justify-center h-full">
+                                    <Loader2 className="h-8 w-8 animate-spin" />
+                                </div>
                             ) : (
                                 <FormField control={form.control} name="doctor" render={({ field }) => ( 
                                     <FormItem> 
                                         <FormLabel>Doctor</FormLabel> 
-                                        <Select onValueChange={field.onChange} defaultValue={field.value}> 
-                                            <FormControl><SelectTrigger><SelectValue placeholder="Select a doctor" /></SelectTrigger></FormControl> 
+                                        <Select 
+                                            onValueChange={field.onChange} 
+                                            value={field.value} // Ensure controlled behavior
+                                        > 
+                                            <FormControl>
+                                                <SelectTrigger>
+                                                    <SelectValue placeholder="Select a doctor" />
+                                                </SelectTrigger>
+                                            </FormControl> 
                                             <SelectContent> 
-                                                {doctors.map(doc => <SelectItem key={doc.id} value={doc.id}>{doc.name} - {doc.clinicName}</SelectItem>)} 
+                                                {doctors.map(doc => (
+                                                    <SelectItem key={doc.id} value={doc.id}>
+                                                        {doc.name} - {doc.clinicName}
+                                                    </SelectItem>
+                                                ))} 
                                             </SelectContent> 
                                         </Select> 
                                         <FormMessage /> 
@@ -271,21 +334,38 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
                             {selectedDoctorId && (
                                 <div>
                                 {isFetchingSlots ? (
-                                    <div className="flex items-center justify-center pt-8"><Loader2 className="mr-2 h-6 w-6 animate-spin" /> <p>Finding open slots...</p></div>
+                                    <div className="flex items-center justify-center pt-8">
+                                        <Loader2 className="mr-2 h-6 w-6 animate-spin" /> 
+                                        <p>Finding open slots...</p>
+                                    </div>
                                 ) : Object.keys(groupedSlots).length > 0 ? (
                                     <FormField control={form.control} name="startTime" render={() => (
                                         <FormItem>
                                             <FormLabel>Select an hour</FormLabel>
                                             <div className="grid grid-cols-4 gap-2 pt-2">
                                                 {Object.keys(groupedSlots).map((hourKey) => (
-                                                    <Button key={hourKey} variant={selectedSlotObj?.startTime && format(new Date(selectedSlotObj.startTime), "ha").toLowerCase() === hourKey ? "default" : "outline"} onClick={() => handleHourClick(hourKey)} className="uppercase" type="button" >
+                                                    <Button 
+                                                        key={hourKey} 
+                                                        variant={
+                                                            selectedSlotObj?.startTime && 
+                                                            format(new Date(selectedSlotObj.startTime), "ha").toLowerCase() === hourKey 
+                                                                ? "default" 
+                                                                : "outline"
+                                                        } 
+                                                        onClick={() => handleHourClick(hourKey)} 
+                                                        className="uppercase" 
+                                                        type="button" 
+                                                        disabled={isFetchingSlots} // Disable during fetch
+                                                    >
                                                         {hourKey}
                                                     </Button>
                                                 ))}
                                             </div>
                                             {selectedSlotValue && (
                                                 <div className="text-center pt-4">
-                                                    <p className="text-sm text-muted-foreground">Selected time: <span className="font-bold text-primary">{format(new Date(selectedSlotValue), "p")}</span></p>
+                                                    <p className="text-sm text-muted-foreground">
+                                                        Selected time: <span className="font-bold text-primary">{format(new Date(selectedSlotValue), "p")}</span>
+                                                    </p>
                                                 </div>
                                             )}
                                             <FormMessage />
@@ -302,7 +382,13 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
                         </div>
                         <div className="flex gap-2">
                             <Button onClick={handleBack} variant="outline" className="w-1/3">Back</Button>
-                            <Button onClick={handleNext} className="w-2/3" disabled={!form.watch('startTime')}>Next</Button>
+                            <Button 
+                                onClick={handleNext} 
+                                className="w-2/3" 
+                                disabled={!form.watch('startTime') || isFetchingSlots} // Disable if no time selected or fetching
+                            >
+                                Next
+                            </Button>
                         </div>
                     </>
                 );
@@ -317,8 +403,15 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
                             <FormField control={form.control} name="gender" render={({ field }) => (
                                 <FormItem>
                                     <FormLabel>Gender</FormLabel>
-                                    <Select onValueChange={field.onChange} defaultValue={field.value}>
-                                        <FormControl><SelectTrigger><SelectValue placeholder="Select your gender" /></SelectTrigger></FormControl>
+                                    <Select 
+                                        onValueChange={field.onChange} 
+                                        value={field.value} // Ensure controlled behavior
+                                    >
+                                        <FormControl>
+                                            <SelectTrigger>
+                                                <SelectValue placeholder="Select your gender" />
+                                            </SelectTrigger>
+                                        </FormControl>
                                         <SelectContent>
                                             <SelectItem value="M">Male</SelectItem>
                                             <SelectItem value="F">Female</SelectItem>
@@ -334,14 +427,26 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
                                     <Popover>
                                         <PopoverTrigger asChild>
                                             <FormControl>
-                                                <Button variant={"outline"} className={cn("pl-3 text-left font-normal", !field.value && "text-muted-foreground")}>
+                                                <Button 
+                                                    variant={"outline"} 
+                                                    className={cn(
+                                                        "pl-3 text-left font-normal",
+                                                        !field.value && "text-muted-foreground"
+                                                    )}
+                                                >
                                                     {field.value ? format(field.value, "PPP") : <span>Pick a date</span>}
                                                     <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
                                                 </Button>
                                             </FormControl>
                                         </PopoverTrigger>
                                         <PopoverContent className="w-auto p-0" align="start">
-                                            <Calendar mode="single" selected={field.value} onSelect={field.onChange} disabled={(date) => date > new Date() || date < new Date("1900-01-01")} initialFocus />
+                                            <Calendar 
+                                                mode="single" 
+                                                selected={field.value} 
+                                                onSelect={field.onChange} // Ensure controlled behavior
+                                                disabled={(date) => date > new Date() || date < new Date("1900-01-01")} 
+                                                initialFocus 
+                                            />
                                         </PopoverContent>
                                     </Popover>
                                     <FormMessage />
@@ -350,13 +455,17 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
                         </div>
                         <div className="flex gap-2">
                            <Button onClick={handleBack} variant="outline" className="w-1/3" type="button">Back</Button>
-                           <Button onClick={form.handleSubmit(processBooking)} disabled={isSubmitting} className="w-2/3">
+                           <Button 
+                               onClick={form.handleSubmit(processBooking)} 
+                               disabled={isSubmitting} 
+                               className="w-2/3"
+                           >
                                {isSubmitting ? <><Loader2 className="mr-2 h-4 w-4 animate-spin"/>Booking...</> : "Book Appointment"}
                            </Button>
                         </div>
                     </>
                 );
-             case 4:
+             case 4: // Success Step
                 return (
                     <>
                         <DialogHeader>
@@ -364,9 +473,13 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
                             <DialogDescription>Your booking was successful. We look forward to seeing you.</DialogDescription>
                         </DialogHeader>
                         <div className="py-8 text-center space-y-4">
-                            <svg className="w-16 h-16 mx-auto text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                            <svg className="w-16 h-16 mx-auto text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
                             {selectedDoctorObj && selectedSlotObj && (
-                                <p>Your appointment with <span className="font-bold">{selectedDoctorObj.name}</span> on <span className="font-bold">{format(new Date(selectedSlotObj.startTime), 'PPP')}</span> at <span className="font-bold">{format(new Date(selectedSlotObj.startTime), 'p')}</span> is confirmed.</p>
+                                <p>
+                                    Your appointment with <span className="font-bold">{selectedDoctorObj.name}</span> on <span className="font-bold">{format(new Date(selectedSlotObj.startTime), 'PPP')}</span> at <span className="font-bold">{format(new Date(selectedSlotObj.startTime), 'p')}</span> is confirmed.
+                                </p>
                             )}
                             <p className="text-sm text-muted-foreground">You will also receive a confirmation message shortly.</p>
                         </div>
@@ -385,6 +498,7 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
             </DialogTrigger>
             <DialogContent className="sm:max-w-lg">
                 <Form {...form}>
+                    {/* Removed onSubmit handler from form element as submission is handled by button click */}
                     <form onSubmit={(e) => e.preventDefault()} className="space-y-4">
                         {renderStepContent()}
                     </form>
