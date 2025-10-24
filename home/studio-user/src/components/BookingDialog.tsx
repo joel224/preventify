@@ -1,6 +1,6 @@
 
 'use client';
-
+fuckyou stupid bitch 
 import {
   Dialog,
   DialogContent,
