@@ -201,7 +201,7 @@ export async function getAvailableSlots(doctorId: string, clinicId: string, date
     const requestedDate = new Date(date);
     const now = new Date();
 
-    // Per API requirements, the end date must be at least D+1 of the start date.
+    // Per API requirements, the end date must be at least D+1.
     const apiStartDate = startOfDay(requestedDate);
     const apiEndDate = addDays(apiStartDate, 1);
 
@@ -220,20 +220,20 @@ export async function getAvailableSlots(doctorId: string, clinicId: string, date
         // 2. Define doctor-specific start times or a default.
         // ID for "Muhammed Faisal OS"
         const DR_FAISAL_ID = "173208610763786"; 
-        let workDayStart;
+        
+        // Default working hours
+        const generalWorkDayStart = setHours(startOfDay(slotStartTime), 8);
+        const workDayEnd = setHours(startOfDay(slotStartTime), 19); // 7 PM
+
+        let effectiveWorkDayStart = generalWorkDayStart;
 
         if (doctorId === DR_FAISAL_ID) {
             // Dr. Faisal's session starts at 1:30 PM IST
-            workDayStart = setMinutes(setHours(startOfDay(slotStartTime), 13), 30);
-        } else {
-            // Default working hours start at 8 AM
-            workDayStart = setHours(startOfDay(slotStartTime), 8);
+            effectiveWorkDayStart = setMinutes(setHours(startOfDay(slotStartTime), 13), 30);
         }
         
-        const workDayEnd = setHours(startOfDay(slotStartTime), 19); // 7 PM
-
         // 3. Ensure the slot is within the determined working hours.
-        if (isBefore(slotStartTime, workDayStart) || !isBefore(slotStartTime, workDayEnd)) {
+        if (isBefore(slotStartTime, effectiveWorkDayStart) || !isBefore(slotStartTime, workDayEnd)) {
             return false;
         }
 
