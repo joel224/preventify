@@ -41,7 +41,7 @@ import { useForm, useWatch } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useState, useEffect, useMemo } from 'react';
 import { format, parseISO, addMinutes, getHours, setHours, addDays, getYear, getMonth, getDate } from 'date-fns';
-import { Loader2, CheckCircle, XCircle } from 'lucide-react';
+import { Loader2, CheckCircle, XCircle, Check } from 'lucide-react';
 import { cn } from "@/lib/utils";
 
 // Types
@@ -426,18 +426,24 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
                         <CommandEmpty>No doctor found.</CommandEmpty>
                         <CommandGroup>
                            {doctors.length > 0 ? (
-                              doctors.map((doctor) => (
+                              doctors.map((doctor) => {
+                                const isSelected = field.value === doctor.id;
+                                return (
                                 <CommandItem
                                   key={doctor.id}
                                   value={doctor.name}
                                   onSelect={() => {
                                     form.setValue('doctorId', doctor.id, { shouldValidate: true });
                                   }}
+                                  className={cn("justify-between", isSelected && "bg-accent text-accent-foreground")}
                                 >
-                                  {doctor.name}
-                                  <span className="text-xs text-muted-foreground ml-2">({doctor.clinicName})</span>
+                                  <div>
+                                    {doctor.name}
+                                    <span className="text-xs text-muted-foreground ml-2">({doctor.clinicName})</span>
+                                  </div>
+                                  <Check className={cn("h-4 w-4", isSelected ? "opacity-100" : "opacity-0")} />
                                 </CommandItem>
-                              ))
+                              )})
                            ) : isLoading ? (
                              <div className="p-4 text-center text-sm text-muted-foreground">Loading doctors...</div>
                            ) : (
