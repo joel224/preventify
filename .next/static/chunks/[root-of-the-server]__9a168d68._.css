@@ -1101,6 +1101,10 @@ h1, h2, h3, h4, h5, h6 {
   width: 1px;
 }
 
+.w-\[95vw\] {
+  width: 95vw;
+}
+
 .min-w-0 {
   min-width: 0;
 }
@@ -3721,6 +3725,10 @@ h1, h2, h3, h4, h5, h6 {
     height: 5rem;
   }
 
+  .md\:h-full {
+    height: 100%;
+  }
+
   .md\:w-2\/3 {
     width: 66.6667%;
   }
@@ -3763,6 +3771,10 @@ h1, h2, h3, h4, h5, h6 {
 
   .md\:rounded-lg {
     border-radius: var(--radius);
+  }
+
+  .md\:rounded-none {
+    border-radius: 0;
   }
 
   .md\:rounded-r-lg {

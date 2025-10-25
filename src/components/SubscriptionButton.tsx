@@ -72,16 +72,16 @@ const SubscriptionButton = () => {
           </Button>
         </div>
       </DialogTrigger>
-      <DialogContent className="w-[90vw] max-w-4xl bg-white p-0 sm:p-0">
+      <DialogContent className="w-[95vw] max-w-4xl bg-white p-0 rounded-lg">
         <DialogHeader>
-            <DialogTitle className="sr-only">One Health Member Plan</DialogTitle>
-            <DialogClose className="absolute right-4 top-4 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-secondary z-10">
+          <DialogTitle className="sr-only">One Health Member Plan</DialogTitle>
+          <DialogClose className="absolute right-4 top-4 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-secondary z-10">
             <X className="h-4 w-4" />
             <span className="sr-only">Close</span>
-            </DialogClose>
+          </DialogClose>
         </DialogHeader>
         
-        <div className="grid md:grid-cols-2 gap-4 md:gap-6 items-center">
+        <div className="grid md:grid-cols-2 items-center">
           <div className="order-2 md:order-1 p-6">
             <ShimmerText isActive={activeShimmerLine === 0}>
               <h3 className="tracking-tight text-2xl sm:text-3xl font-bold text-preventify-dark-blue mb-4 text-center md:text-left">
@@ -118,12 +118,12 @@ const SubscriptionButton = () => {
             </div>
           </div>
           <div className="order-1 md:order-2">
-            <div className="relative w-full aspect-square">
+            <div className="relative w-full aspect-[16/10] md:h-full">
               <Image
                 src="/family.png"
                 alt="Family"
                 fill
-                className="rounded-t-lg md:rounded-r-lg object-cover"
+                className="rounded-t-lg md:rounded-none md:rounded-r-lg object-cover"
               />
             </div>
           </div>
