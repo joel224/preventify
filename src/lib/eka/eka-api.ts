@@ -306,9 +306,10 @@ export async function bookAppointment(data: any): Promise<any> {
     
     const formattedGender = formatGender(data.patient.gender);
 
-    const getDesignation = (gender: 'M' | 'F' | 'O') => {
-        if (gender === 'F') return 'Ms.';
-        if (gender === 'M') return 'Mr.';
+    const getDesignation = (gender: string) => {
+        const lowerGender = gender.toLowerCase();
+        if (lowerGender.startsWith('f')) return 'Ms.';
+        if (lowerGender.startsWith('m')) return 'Mr.';
         return 'Mx.';
     };
 
@@ -323,13 +324,12 @@ export async function bookAppointment(data: any): Promise<any> {
             mode: "INCLINIC",
         },
         patient_details: {
-            designation: getDesignation(formattedGender),
+            designation: getDesignation(data.patient.gender),
             first_name: data.patient.firstName,
             last_name: data.patient.lastName,
             mobile: sanitizedMobile,
             gender: formattedGender,
             dob: data.patient.dob,
-            ...(data.patient.email && { email: data.patient.email }),
         },
     };
 

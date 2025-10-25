@@ -87,7 +87,6 @@ const stepOneSchema = z.object({
   firstName: z.string().min(1, 'First name is required.'),
   lastName: z.string().min(1, 'Last name is required.'),
   phone: z.string().regex(/^\+?[0-9]{10,15}$/, 'Invalid phone number.'),
-  email: z.string().email('Invalid email address.').optional().or(z.literal('')),
 });
 
 const stepTwoSchema = z.object({
@@ -141,7 +140,6 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
       firstName: '',
       lastName: '',
       phone: '',
-      email: '',
       doctorId: '',
       clinicId: '',
       time: '',
@@ -268,7 +266,7 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
   const handleNextStep = async () => {
     let result;
     if (step === 1) {
-        result = await form.trigger(['firstName', 'lastName', 'phone', 'email']);
+        result = await form.trigger(['firstName', 'lastName', 'phone']);
         if (result) {
             setIsLoading(true);
             try {
@@ -320,7 +318,7 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
     setStep(step - 1);
   };
   
-  const formatGender = (gender: FoundPatientProfile['gender']): 'M' | 'F' | 'O' => {
+  const formatGenderAPI = (gender: FoundPatientProfile['gender']): 'M' | 'F' | 'O' => {
       const lowerGender = gender.toLowerCase();
       if (lowerGender.startsWith('m')) return 'M';
       if (lowerGender.startsWith('f')) return 'F';
@@ -339,8 +337,7 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
             lastName: foundPatientProfile.last_name,
             phone: data.phone,
             dob: foundPatientProfile.dob,
-            gender: formatGender(foundPatientProfile.gender),
-            email: data.email,
+            gender: formatGenderAPI(foundPatientProfile.gender),
         };
     } else {
         const newPatientValidation = newPatientSchema.safeParse(data);
@@ -359,7 +356,6 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
             phone: data.phone,
             dob: `${dobYear}-${String(dobMonth).padStart(2, '0')}-${String(dobDay).padStart(2, '0')}`,
             gender: gender,
-            email: data.email,
         };
     }
 
@@ -390,6 +386,7 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
         setBookingStatus('success');
         setStep(5);
     } catch (error: any) {
+        setBookingResponse({ message: error.message });
         setBookingStatus('error');
         setStep(5);
     } finally {
@@ -444,19 +441,6 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
                       <FormLabel>Phone Number</FormLabel>
                       <FormControl>
                           <Input placeholder="+919876543210" {...field} />
-                      </FormControl>
-                      <FormMessage />
-                      </FormItem>
-                  )}
-              />
-              <FormField
-                  control={form.control}
-                  name="email"
-                  render={({ field }) => (
-                      <FormItem>
-                      <FormLabel>Email (Optional)</FormLabel>
-                      <FormControl>
-                          <Input placeholder="you@example.com" {...field} />
                       </FormControl>
                       <FormMessage />
                       </FormItem>
@@ -750,10 +734,11 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
             return (
                 <>
                 <DialogHeader className="items-center text-center">
+                    <DialogTitle className="sr-only">Booking Confirmation</DialogTitle>
                     {bookingStatus === 'success' ? (
                         <>
                             <CheckCircle className="h-16 w-16 text-green-500 mb-4" />
-                            <DialogTitle className="text-2xl">Appointment Confirmed!</DialogTitle>
+                            <h2 className="text-2xl font-semibold">Appointment Confirmed!</h2>
                             <DialogDescription>
                                 Your appointment has been successfully booked.
                             </DialogDescription>
@@ -761,9 +746,9 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
                     ) : (
                         <>
                             <XCircle className="h-16 w-16 text-red-500 mb-4" />
-                            <DialogTitle className="text-2xl">Booking Failed</DialogTitle>
+                            <h2 className="text-2xl font-semibold">Booking Failed</h2>
                             <DialogDescription>
-                                There was an error processing your booking. Please try again.
+                                {bookingResponse?.message || 'There was an error processing your booking. Please try again.'}
                             </DialogDescription>
                         </>
                     )}
