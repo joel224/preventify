@@ -346,7 +346,7 @@ export async function bookAppointment(data: any): Promise<any> {
     const startTimeInSeconds = Math.floor(new Date(data.appointment.startTime).getTime() / 1000);
     const endTimeInSeconds = startTimeInSeconds + 600; // 10 minute duration
 
-    const getDesignation = (gender: string) => {
+    const getDesignation = (gender: 'M' | 'F' | 'O') => {
         if (gender === 'F') return 'Ms.';
         if (gender === 'M') return 'Mr.';
         return 'Mx.';
