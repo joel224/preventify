@@ -99,18 +99,26 @@ const stepThreeSchema = z.object({
 });
 
 const stepFourSchema = z.object({
-  dobYear: z.string().min(1, "Year is required."),
-  dobMonth: z.string().min(1, "Month is required."),
-  dobDay: z.string().min(1, "Day is required."),
-  gender: z.enum(["M", "F", "O"], {required_error: "Gender is required."}),
+  dobYear: z.string().optional(),
+  dobMonth: z.string().optional(),
+  dobDay: z.string().optional(),
+  gender: z.enum(["M", "F", "O"]).optional(),
 });
 
 const combinedSchema = stepOneSchema.merge(stepTwoSchema).merge(stepThreeSchema).merge(stepFourSchema);
 
-const bookingSchema = combinedSchema.transform(data => ({
-    ...data,
-    dob: `${data.dobYear}-${data.dobMonth.padStart(2, '0')}-${data.dobDay.padStart(2, '0')}`
-}));
+const bookingSchema = combinedSchema.transform(data => {
+    // If we have a found patient, their data is already validated server-side.
+    // If we have form data for a new patient, construct the DOB.
+    const dob = (data.dobYear && data.dobMonth && data.dobDay) 
+        ? `${data.dobYear}-${data.dobMonth.padStart(2, '0')}-${data.dobDay.padStart(2, '0')}`
+        : '';
+    
+    return {
+        ...data,
+        dob,
+    };
+});
 
 type BookingFormData = z.infer<typeof bookingSchema>;
 
@@ -324,26 +332,37 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
     setIsLoading(true);
     setBookingStatus('idle');
 
-    const result = await form.trigger(['dobYear', 'dobMonth', 'dobDay', 'gender']);
-    if (!result && !foundPatientProfile) { // Only require manual validation if profile not found
+    if (!foundPatientProfile) {
+      const result = await form.trigger(['dobYear', 'dobMonth', 'dobDay', 'gender']);
+      if (!result) {
         setIsLoading(false);
         return;
+      }
     }
     
-    const validatedData = bookingSchema.safeParse(data);
+    let submissionData = data;
+    if (foundPatientProfile) {
+        submissionData = { ...data, ...foundPatientProfile, dob: foundPatientProfile.dob };
+    }
+    
+    const validatedData = bookingSchema.safeParse(submissionData);
     if (!validatedData.success) {
+      console.error("Zod validation failed:", validatedData.error.flatten());
       toast.error("There was an error with your submission. Please check the details.");
       setIsLoading(false);
       return;
     }
+
+    const patientDob = foundPatientProfile ? foundPatientProfile.dob : validatedData.data.dob;
+    const patientGender = foundPatientProfile ? foundPatientProfile.gender : validatedData.data.gender;
 
     const payload = {
         patient: {
             firstName: validatedData.data.firstName,
             lastName: validatedData.data.lastName,
             phone: validatedData.data.phone,
-            dob: validatedData.data.dob,
-            gender: validatedData.data.gender,
+            dob: patientDob,
+            gender: patientGender,
             email: validatedData.data.email
         },
         appointment: {
