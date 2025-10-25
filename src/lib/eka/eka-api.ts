@@ -287,7 +287,7 @@ function sanitizeMobileNumber(mobile: string): string {
     }
 }
 
-async function _searchPatientByMobile(mobile: string): Promise<string | null> {
+export async function searchPatientByMobile(mobile: string): Promise<any | null> {
     const searchMobile = sanitizeMobileNumber(mobile);
 
     console.log(`--- Searching for patient with mobile: ${searchMobile} ---`);
@@ -303,9 +303,10 @@ async function _searchPatientByMobile(mobile: string): Promise<string | null> {
 
         const profiles = response.data?.data?.profiles;
         if (profiles && profiles.length > 0) {
-            const patientId = profiles[0].patient_id;
-            console.log(`SUCCESS: Found existing patient with ID: ${patientId}`);
-            return patientId;
+            // Return the first matching profile's patient_profile object
+            const patientProfile = profiles[0].patient_profile;
+            console.log(`SUCCESS: Found existing patient profile:`, patientProfile);
+            return patientProfile;
         }
 
         console.log(`INFO: No patient found with mobile ${searchMobile}.`);
@@ -313,9 +314,13 @@ async function _searchPatientByMobile(mobile: string): Promise<string | null> {
 
     } catch (error: any) {
         console.error(`ERROR searching for patient by mobile:`, error.message);
-        // Don't throw, just return null so booking can continue for a new patient
         return null;
     }
+}
+
+async function findPatientId(mobile: string): Promise<string | null> {
+    const patientProfile = await searchPatientByMobile(mobile);
+    return patientProfile ? patientProfile.patient_id : null;
 }
 
 
@@ -325,8 +330,7 @@ export async function bookAppointment(data: any): Promise<any> {
 
     const sanitizedMobile = sanitizeMobileNumber(data.patient.phone);
     
-    // Search for patient first
-    const existingPatientId = await _searchPatientByMobile(data.patient.phone);
+    const existingPatientId = await findPatientId(data.patient.phone);
 
     let partnerPatientId;
     if (existingPatientId) {

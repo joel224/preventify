@@ -73,6 +73,13 @@ interface HourlySlot {
   firstAvailableSlot: string;
 }
 
+interface FoundPatientProfile {
+    first_name: string;
+    last_name: string;
+    dob: string; // "YYYY-MM-DD"
+    gender: "M" | "F" | "O";
+}
+
 // Zod Schemas
 const stepOneSchema = z.object({
   firstName: z.string().min(1, 'First name is required.'),
@@ -122,6 +129,7 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
   const [bookingStatus, setBookingStatus] = useState<'idle' | 'success' | 'error'>('idle');
   const [bookingResponse, setBookingResponse] = useState<any>(null);
   const [comboboxOpen, setComboboxOpen] = useState(false);
+  const [foundPatientProfile, setFoundPatientProfile] = useState<FoundPatientProfile | null>(null);
 
   const form = useForm<z.infer<typeof combinedSchema>>({
     resolver: zodResolver(combinedSchema),
@@ -176,6 +184,7 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
       setStep(1);
       setBookingStatus('idle');
       setAvailableSlots([]);
+      setFoundPatientProfile(null);
     }
   }, [open, form]);
   
@@ -255,23 +264,55 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
   const handleNextStep = async () => {
     let result;
     if (step === 1) {
-      result = await form.trigger(['firstName', 'lastName', 'phone', 'email']);
+        result = await form.trigger(['firstName', 'lastName', 'phone', 'email']);
+        if (result) {
+            setIsLoading(true);
+            try {
+                const res = await fetch(`/api/search-patient?phone=${encodeURIComponent(form.getValues('phone'))}`);
+                if (res.ok) {
+                    const patient: FoundPatientProfile = await res.json();
+                    setFoundPatientProfile(patient);
+                    form.setValue('firstName', patient.first_name);
+                    form.setValue('lastName', patient.last_name);
+                    const [year, month, day] = patient.dob.split('-');
+                    form.setValue('dobYear', year);
+                    form.setValue('dobMonth', month);
+                    form.setValue('dobDay', day);
+                    form.setValue('gender', patient.gender);
+                    toast.info(`Welcome back, ${patient.first_name}! Your details have been pre-filled.`);
+                } else {
+                    setFoundPatientProfile(null);
+                }
+            } catch (error) {
+                console.log('Patient search failed or not found, continuing as new patient.');
+                setFoundPatientProfile(null);
+            } finally {
+                setIsLoading(false);
+                setStep(2);
+            }
+        }
     } else if (step === 2) {
       result = await form.trigger(['doctorId']);
       if(result) {
          const doctor = doctors.find(d => d.id === form.getValues('doctorId'));
          if(doctor) {
             form.setValue('clinicId', doctor.clinicId, { shouldValidate: true });
+            setStep(step + 1);
          } else {
              result = false;
              toast.error("Could not find clinic for the selected doctor.");
          }
       }
     } else if (step === 3) {
-      result = await form.trigger(['date', 'time']);
-    }
-    if (result) {
-      setStep(step + 1);
+        result = await form.trigger(['date', 'time']);
+        if (result) {
+            // If we found a patient, skip step 4 and submit
+            if (foundPatientProfile) {
+                await onSubmit(form.getValues());
+            } else {
+                setStep(step + 1);
+            }
+        }
     }
   };
 
@@ -284,7 +325,7 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
     setBookingStatus('idle');
 
     const result = await form.trigger(['dobYear', 'dobMonth', 'dobDay', 'gender']);
-    if (!result) {
+    if (!result && !foundPatientProfile) { // Only require manual validation if profile not found
         setIsLoading(false);
         return;
     }
@@ -347,7 +388,7 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
           <>
             <DialogHeader>
               <DialogTitle>Step 1: Your Information</DialogTitle>
-              <DialogDescription>Please provide your contact details.</DialogDescription>
+              <DialogDescription>Please provide your contact details. If you are a returning patient, we'll find your details.</DialogDescription>
             </DialogHeader>
             <div className="space-y-4 py-4">
               <div className="grid grid-cols-2 gap-4">
@@ -406,7 +447,10 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
               />
             </div>
             <DialogFooter>
-                <Button onClick={handleNextStep} type="button">Next</Button>
+                <Button onClick={handleNextStep} disabled={isLoading} type="button">
+                    {isLoading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
+                    Next
+                </Button>
             </DialogFooter>
           </>
         );
@@ -488,7 +532,6 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
             <DialogFooter>
               <Button variant="outline" onClick={handlePrevStep} type="button">Back</Button>
               <Button onClick={handleNextStep} disabled={isLoading || doctors.length === 0} type="button">
-                {isLoading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
                 Next
               </Button>
             </DialogFooter>
@@ -574,7 +617,7 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
             <DialogFooter>
               <Button variant="outline" onClick={handlePrevStep} type="button">Back</Button>
               <Button onClick={handleNextStep} disabled={!form.getValues('time')} type="button">
-                Next
+                {foundPatientProfile ? 'Confirm Booking' : 'Next'}
               </Button>
             </DialogFooter>
           </>
