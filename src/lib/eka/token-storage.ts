@@ -1,7 +1,8 @@
 import * as fs from 'fs/promises';
 import * as path from 'path';
 
-const tokenFilePath = path.join(__dirname, 'token.json');
+// In Vercel Serverless Functions, only the /tmp directory is writable.
+const tokenFilePath = path.join(process.env.VERCEL ? '/tmp' : __dirname, 'token.json');
 
 interface Tokens {
   access_token: string;

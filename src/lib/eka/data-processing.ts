@@ -1,4 +1,3 @@
-
 // This file contains the logic for processing the business entities data from the Eka API.
 
 export function processBusinessEntities(doctorList: any[], clinicList: any[]) {
