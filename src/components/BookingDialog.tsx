@@ -33,6 +33,11 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover"
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { toast } from 'sonner';
@@ -41,7 +46,7 @@ import { useForm, useWatch } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useState, useEffect, useMemo } from 'react';
 import { format, parseISO, addMinutes, getHours, setHours, addDays, getYear, getMonth, getDate } from 'date-fns';
-import { Loader2, CheckCircle, XCircle, Check } from 'lucide-react';
+import { Loader2, CheckCircle, XCircle, Check, ChevronsUpDown } from 'lucide-react';
 import { cn } from "@/lib/utils";
 
 // Types
@@ -77,7 +82,7 @@ const stepOneSchema = z.object({
 });
 
 const stepTwoSchema = z.object({
-  doctorId: z.string().min(1, 'Please select a doctor.'),
+  doctorId: z.string({ required_error: "Please select a doctor."}).min(1, 'Please select a doctor.'),
   clinicId: z.string().min(1, 'Internal: Clinic ID is missing.'),
 });
 
@@ -116,6 +121,7 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
   const [availableSlots, setAvailableSlots] = useState<Slot[]>([]);
   const [bookingStatus, setBookingStatus] = useState<'idle' | 'success' | 'error'>('idle');
   const [bookingResponse, setBookingResponse] = useState<any>(null);
+  const [comboboxOpen, setComboboxOpen] = useState(false);
 
   const form = useForm<z.infer<typeof combinedSchema>>({
     resolver: zodResolver(combinedSchema),
@@ -418,40 +424,62 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
                 control={form.control}
                 name="doctorId"
                 render={({ field }) => (
-                  <FormItem>
+                  <FormItem className="flex flex-col">
                     <FormLabel>Doctor</FormLabel>
-                    <Command>
-                      <CommandInput placeholder="Search doctor..." />
-                      <CommandList className="max-h-[250px]">
-                        <CommandEmpty>No doctor found.</CommandEmpty>
-                        <CommandGroup>
-                           {doctors.length > 0 ? (
-                              doctors.map((doctor) => {
-                                const isSelected = field.value === doctor.id;
-                                return (
+                    <Popover open={comboboxOpen} onOpenChange={setComboboxOpen}>
+                      <PopoverTrigger asChild>
+                        <FormControl>
+                          <Button
+                            variant="outline"
+                            role="combobox"
+                            className={cn(
+                              "w-full justify-between",
+                              !field.value && "text-muted-foreground"
+                            )}
+                          >
+                            {field.value
+                              ? doctors.find(
+                                  (doctor) => doctor.id === field.value
+                                )?.name
+                              : "Select doctor"}
+                            <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                          </Button>
+                        </FormControl>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-[--radix-popover-trigger-width] p-0">
+                        <Command>
+                          <CommandInput placeholder="Search doctor..." />
+                          <CommandList>
+                            <CommandEmpty>No doctor found.</CommandEmpty>
+                            <CommandGroup>
+                              {doctors.map((doctor) => (
                                 <CommandItem
-                                  key={doctor.id}
                                   value={doctor.name}
+                                  key={doctor.id}
                                   onSelect={() => {
-                                    form.setValue('doctorId', doctor.id, { shouldValidate: true });
+                                    form.setValue("doctorId", doctor.id, { shouldValidate: true });
+                                    setComboboxOpen(false);
                                   }}
-                                  className={cn("justify-between", isSelected && "bg-accent text-accent-foreground")}
                                 >
+                                  <Check
+                                    className={cn(
+                                      "mr-2 h-4 w-4",
+                                      doctor.id === field.value
+                                        ? "opacity-100"
+                                        : "opacity-0"
+                                    )}
+                                  />
                                   <div>
                                     {doctor.name}
                                     <span className="text-xs text-muted-foreground ml-2">({doctor.clinicName})</span>
                                   </div>
-                                  <Check className={cn("h-4 w-4", isSelected ? "opacity-100" : "opacity-0")} />
                                 </CommandItem>
-                              )})
-                           ) : isLoading ? (
-                             <div className="p-4 text-center text-sm text-muted-foreground">Loading doctors...</div>
-                           ) : (
-                             <div className="p-4 text-center text-sm text-muted-foreground">No doctors available.</div>
-                           )}
-                        </CommandGroup>
-                      </CommandList>
-                    </Command>
+                              ))}
+                            </CommandGroup>
+                           </CommandList>
+                        </Command>
+                      </PopoverContent>
+                    </Popover>
                     <FormMessage />
                   </FormItem>
                 )}
