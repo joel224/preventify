@@ -55,14 +55,8 @@ import { DialogTrigger } from '@radix-ui/react-dialog';
 interface Doctor {
   id: string;
   name: string;
-  clinicId: string;
-  clinicName: string;
-}
-
-interface Clinic {
-  id: string;
-  name: string;
-  doctors: { id: string; name: string }[];
+  specialty: string;
+  clinicId: string; // Keep for booking logic
 }
 
 interface Slot {
@@ -81,6 +75,26 @@ interface FoundPatientProfile {
     dob: string; // "YYYY-MM-DD"
     gender: "M" | "F" | "O" | "male" | "female" | "other"; // Allow for API inconsistencies
 }
+
+// Hardcoded doctor list
+const doctors: Doctor[] = [
+    { id: '173208576372747', name: 'Dr. Rakesh K R', specialty: 'General Physician', clinicId: '673d87fdaa91c2001d716c91'},
+    { id: '173208610763786', name: 'Dr. Mohammed Faisal', specialty: 'General Practitioner', clinicId: '673d87fdaa91c2001d716c91'},
+    { id: '174497110921725', name: 'Dr. Hafsa Hussain', specialty: 'Pediatrics', clinicId: '673d87fdaa91c2001d716c91'},
+    { id: '173771631358722', name: 'Dr. Krishnendu U K', specialty: 'General Practitioner', clinicId: '673d87fdaa91c2001d716c91'},
+    { id: '175931883083616', name: 'Dr. Girish U', specialty: 'Dermatology', clinicId: '673d87fdaa91c2001d716c91'},
+    { id: '175949148741914', name: 'Dr. Ijas V. I.', specialty: 'Pulmonology', clinicId: '673d87fdaa91c2001d716c91'},
+    { id: '175949141398449', name: 'Dr. Husna V.', specialty: 'Gynecology', clinicId: '673d87fdaa91c2001d716c91'},
+    { id: '175931888074630', name: 'Dr. Neeharika V.', specialty: 'ENT', clinicId: '673d87fdaa91c2001d716c91'},
+    { id: '175931864615485', name: 'Dr. Sreedev N', specialty: 'Pulmonology', clinicId: '673d87fdaa91c2001d716c91'},
+    { id: '175949158258558', name: 'Dr. Ajay Biju', specialty: 'Resident Medical Officer', clinicId: '673d87fdaa91c2001d716c91'},
+    { id: '175949152812334', name: 'Dr. Renjith A.', specialty: 'Orthopedics', clinicId: '673d87fdaa91c2001d716c91'},
+    { id: '175949162376135', name: 'Dr. K.Y.Sanjay', specialty: 'Orthopedics', clinicId: '673d87fdaa91c2001d716c91'},
+    //NOTE: These doctors had no ID, so they are not included in the booking form.
+    // { id: '', name: 'Dr. Md. Abdurahiman', specialty: 'Minor Surgeries', clinicId: '673d87fdaa91c2001d716c91'},
+    // { id: '', name: 'Dr. Ashwin T.R.', specialty: 'Resident Medical Officer', clinicId: '673d87fdaa91c2001d716c91'},
+];
+
 
 // Zod Schemas
 const stepOneSchema = z.object({
@@ -126,8 +140,6 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
   const [open, setOpen] = useState(false);
   const [step, setStep] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
-  const [doctors, setDoctors] = useState<Doctor[]>([]);
-  const [clinics, setClinics] = useState<Clinic[]>([]);
   const [availableSlots, setAvailableSlots] = useState<Slot[]>([]);
   const [bookingStatus, setBookingStatus] = useState<'idle' | 'success' | 'error'>('idle');
   const [bookingResponse, setBookingResponse] = useState<any>(null);
@@ -157,28 +169,7 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
     if (!selectedDoctorId || doctors.length === 0) return '';
     const doctor = doctors.find(d => d.id === selectedDoctorId);
     return doctor ? doctor.clinicId : '';
-  }, [selectedDoctorId, doctors]);
-
-  useEffect(() => {
-    if (open) {
-      const fetchData = async () => {
-        setIsLoading(true);
-        try {
-          const res = await fetch('/api/doctors-and-clinics');
-          if (!res.ok) throw new Error('Failed to fetch data');
-          const { doctors, clinics } = await res.json();
-          setDoctors(doctors);
-          setClinics(clinics);
-        } catch (error) {
-          console.error(error);
-          toast.error('Could not load doctors and clinics.');
-        } finally {
-          setIsLoading(false);
-        }
-      };
-      fetchData();
-    }
-  }, [open]);
+  }, [selectedDoctorId]);
 
   useEffect(() => {
     if (!open) {
@@ -219,7 +210,7 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
     }
   }, [selectedDoctorId, selectedClinicId, selectedDate, form]);
   
-  const selectedDoctor = useMemo(() => doctors.find(d => d.id === selectedDoctorId), [doctors, selectedDoctorId]);
+  const selectedDoctor = useMemo(() => doctors.find(d => d.id === selectedDoctorId), [selectedDoctorId]);
   
   const hourlySlots = useMemo((): HourlySlot[] => {
     if (!availableSlots.length) return [];
@@ -319,6 +310,7 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
   };
   
   const formatGenderAPI = (gender: FoundPatientProfile['gender']): 'M' | 'F' | 'O' => {
+      if (!gender) return 'O';
       const lowerGender = gender.toLowerCase();
       if (lowerGender.startsWith('m')) return 'M';
       if (lowerGender.startsWith('f')) return 'F';
@@ -395,7 +387,6 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
   };
 
   const renderStepContent = () => {
-    const selectedClinic = clinics.find(c => c.id === selectedClinicId);
     switch (step) {
       case 1:
         return (
@@ -516,7 +507,7 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
                                   />
                                   <div>
                                     {doctor.name}
-                                    <span className="text-xs text-muted-foreground ml-2">({doctor.clinicName})</span>
+                                    <span className="text-xs text-muted-foreground ml-2">({doctor.specialty})</span>
                                   </div>
                                 </CommandItem>
                               ))}
@@ -548,7 +539,7 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
             <DialogHeader>
               <DialogTitle>Step 3: Select Date & Time</DialogTitle>
               <DialogDescription>
-                {`Booking for ${selectedDoctor?.name} at ${selectedClinic?.name}`}
+                {`Booking for ${selectedDoctor?.name}`}
               </DialogDescription>
             </DialogHeader>
             <div className="space-y-6 py-4">
@@ -731,6 +722,7 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
             );
         case 5:
             const finalData = form.getValues();
+            const finalDoctor = doctors.find(d => d.id === finalData.doctorId)
             return (
                 <>
                 <DialogHeader className="items-center text-center">
@@ -757,8 +749,7 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
                     <div className="py-4 space-y-2 text-sm text-gray-700 bg-gray-50 p-4 rounded-md">
                         <p><strong>Confirmation ID:</strong> {bookingResponse.appointment_id}</p>
                         <p><strong>Patient Name:</strong> {finalData.firstName} {finalData.lastName}</p>
-                        <p><strong>Doctor:</strong> {doctors.find(d => d.id === finalData.doctorId)?.name}</p>
-                        <p><strong>Clinic:</strong> {clinics.find(c => c.id === finalData.clinicId)?.name}</p>
+                        <p><strong>Doctor:</strong> {finalDoctor?.name}</p>
                         <p><strong>Date & Time:</strong> {format(parseISO(finalData.time), 'dd MMMM yyyy, hh:mm a')}</p>
                     </div>
                 )}
@@ -788,3 +779,5 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
     </Dialog>
   );
 }
+
+      
