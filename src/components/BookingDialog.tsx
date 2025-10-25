@@ -8,7 +8,6 @@ import {
   DialogDescription,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
   DialogFooter,
   DialogClose,
 } from '@/components/ui/dialog';
@@ -50,6 +49,7 @@ import { useState, useEffect, useMemo } from 'react';
 import { format, parseISO, addMinutes, getHours, setHours, addDays, getYear, getMonth, getDate } from 'date-fns';
 import { Loader2, CheckCircle, XCircle, Check, ChevronsUpDown } from 'lucide-react';
 import { cn } from "@/lib/utils";
+import { DialogTrigger } from '@radix-ui/react-dialog';
 
 // Types
 interface Doctor {
@@ -320,6 +320,13 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
     setStep(step - 1);
   };
   
+  const formatGender = (gender: FoundPatientProfile['gender']): 'M' | 'F' | 'O' => {
+      const lowerGender = gender.toLowerCase();
+      if (lowerGender.startsWith('m')) return 'M';
+      if (lowerGender.startsWith('f')) return 'F';
+      return 'O';
+  };
+
   const onSubmit = async (data: CombinedFormData) => {
     setIsLoading(true);
     setBookingStatus('idle');
@@ -332,7 +339,7 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
             lastName: foundPatientProfile.last_name,
             phone: data.phone,
             dob: foundPatientProfile.dob,
-            gender: foundPatientProfile.gender, // This might be 'male' or 'M'
+            gender: formatGender(foundPatientProfile.gender),
             email: data.email,
         };
     } else {
@@ -351,7 +358,7 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
             lastName: data.lastName,
             phone: data.phone,
             dob: `${dobYear}-${String(dobMonth).padStart(2, '0')}-${String(dobDay).padStart(2, '0')}`,
-            gender: gender, // This will be 'M', 'F', or 'O'
+            gender: gender,
             email: data.email,
         };
     }
@@ -383,8 +390,6 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
         setBookingStatus('success');
         setStep(5);
     } catch (error: any) {
-        console.error('Booking error:', error);
-        toast.error(`Booking failed: ${error.message}`);
         setBookingStatus('error');
         setStep(5);
     } finally {
@@ -788,6 +793,7 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>{children}</DialogTrigger>
       <DialogContent className="sm:max-w-xl md:max-w-2xl">
+        <DialogTitle className="sr-only">Book an Appointment</DialogTitle>
         <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)}>
                 {renderStepContent()}

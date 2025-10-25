@@ -4,5 +4,7 @@
   "/api/create-appointment/route": "app/api/create-appointment/route.js",
   "/api/doctors-and-clinics/route": "app/api/doctors-and-clinics/route.js",
   "/api/search-patient/route": "app/api/search-patient/route.js",
-  "/page": "app/page.js"
+  "/blog/page": "app/blog/page.js",
+  "/page": "app/page.js",
+  "/savings/page": "app/savings/page.js"
 }

@@ -980,10 +980,6 @@ h1, h2, h3, h4, h5, h6 {
   width: 2.25rem;
 }
 
-.w-\[--radix-popover-trigger-width\] {
-  width: var(--radix-popover-trigger-width);
-}
-
 .w-\[--sidebar-width\] {
   width: var(--sidebar-width);
 }
@@ -1014,6 +1010,10 @@ h1, h2, h3, h4, h5, h6 {
 
 .w-px {
   width: 1px;
+}
+
+.w-\[--radix-popover-trigger-width\] {
+  width: var(--radix-popover-trigger-width);
 }
 
 .min-w-0 {
@@ -2225,10 +2225,6 @@ h1, h2, h3, h4, h5, h6 {
   opacity: 0;
 }
 
-.opacity-100 {
-  opacity: 1;
-}
-
 .opacity-50 {
   opacity: .5;
 }
@@ -2243,6 +2239,10 @@ h1, h2, h3, h4, h5, h6 {
 
 .opacity-90 {
   opacity: .9;
+}
+
+.opacity-100 {
+  opacity: 1;
 }
 
 .shadow-\[0_0_0_1px_hsl\(var\(--sidebar-border\)\)\] {

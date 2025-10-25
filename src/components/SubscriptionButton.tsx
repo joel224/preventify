@@ -7,12 +7,13 @@ import { Star, FileLock, Search, Building } from "lucide-react";
 import {
   Dialog,
   DialogContent,
-  DialogTrigger,
   DialogFooter,
+  DialogTitle,
 } from "@/components/ui/dialog";
 import Image from "next/image";
 import ShimmerText from "./ShimmerText";
 import Link from "next/link";
+import { DialogTrigger } from "@radix-ui/react-dialog";
 
 const SubscriptionButton = () => {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -70,6 +71,7 @@ const SubscriptionButton = () => {
         </div>
       </DialogTrigger>
       <DialogContent className="w-[90vw] max-w-4xl bg-white p-4 sm:p-6 pt-0">
+        <DialogTitle className="sr-only">One Health Member Plan</DialogTitle>
         <div className="grid md:grid-cols-2 gap-4 items-center">
           <div>
             <ShimmerText isActive={activeShimmerLine === 0}>
@@ -138,12 +140,10 @@ const SubscriptionButton = () => {
         </div>
 
         <DialogFooter className="flex flex-col gap-2 sm:flex-row sm:gap-2 sm:justify-center">
-          <Link href="/savings" legacyBehavior>
-            <a className="w-full sm:w-auto" onClick={() => setIsOpen(false)}>
-              <Button className="w-full bg-preventify-green hover:bg-preventify-dark-green text-white text-base py-3 px-6">
-                Claim My Peace of Mind
-              </Button>
-            </a>
+          <Link href="/savings" onClick={() => setIsOpen(false)}>
+            <Button className="w-full bg-preventify-green hover:bg-preventify-dark-green text-white text-base py-3 px-6">
+              Claim My Peace of Mind
+            </Button>
           </Link>
         </DialogFooter>
       </DialogContent>
