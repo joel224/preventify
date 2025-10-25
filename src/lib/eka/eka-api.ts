@@ -1,4 +1,5 @@
 
+
 'use server';
 
 import axios from 'axios';
@@ -343,13 +344,18 @@ export async function bookAppointment(data: any): Promise<any> {
         const bookingResponse = await attemptBooking();
         return bookingResponse;
     } catch(error: any) {
-        await _loginAndGetTokens();
+        // This catch block handles cases where makeApiRequest itself fails or
+        // if the initial token was so old that even the retry logic inside it failed.
+        // A final attempt after a fresh login is a robust way to handle this.
+        console.error("First booking attempt failed, retrying with a fresh login...", error.message);
+        await _loginAndGetTokens(); // Force a fresh login to get a new token
 
         try {
-            const bookingResponse = await attemptBooking();
+            const bookingResponse = await attemptBooking(); // Retry the booking
             return bookingResponse;
         } catch (finalError: any) {
-            throw finalError;
+            console.error("Final booking attempt failed:", finalError.message);
+            throw finalError; // If it fails again, we let the error propagate.
         }
     }
 }
