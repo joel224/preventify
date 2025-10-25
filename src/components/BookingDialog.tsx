@@ -41,7 +41,7 @@ import { z } from 'zod';
 import { useForm, useWatch } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useState, useEffect, useMemo } from 'react';
-import { format, parseISO, addMinutes, getHours, setHours, addDays } from 'date-fns';
+import { format, parseISO, addMinutes, getHours, setHours, addDays, getYear, getMonth, getDate } from 'date-fns';
 import { Loader2, CheckCircle, XCircle } from 'lucide-react';
 import { cn } from "@/lib/utils";
 
@@ -88,13 +88,23 @@ const stepThreeSchema = z.object({
 });
 
 const stepFourSchema = z.object({
-  dob: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "Please use YYYY-MM-DD format."),
+  dobYear: z.string().min(1, "Year is required."),
+  dobMonth: z.string().min(1, "Month is required."),
+  dobDay: z.string().min(1, "Day is required."),
   gender: z.enum(["M", "F", "O"], {required_error: "Gender is required."}),
 });
 
-const bookingSchema = stepOneSchema.merge(stepTwoSchema).merge(stepThreeSchema).merge(stepFourSchema);
+const bookingSchema = stepOneSchema.merge(stepTwoSchema).merge(stepThreeSchema).merge(stepFourSchema.transform(data => ({
+    ...data,
+    dob: `${data.dobYear}-${data.dobMonth.padStart(2, '0')}-${data.dobDay.padStart(2, '0')}`
+})));
 
 type BookingFormData = z.infer<typeof bookingSchema>;
+
+const years = Array.from({ length: 100 }, (_, i) => getYear(new Date()) - i);
+const months = Array.from({ length: 12 }, (_, i) => i + 1);
+const days = Array.from({ length: 31 }, (_, i) => i + 1);
+
 
 export default function BookingDialog({ children }: { children: React.ReactNode }) {
   const [open, setOpen] = useState(false);
@@ -106,7 +116,7 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
   const [bookingStatus, setBookingStatus] = useState<'idle' | 'success' | 'error'>('idle');
   const [bookingResponse, setBookingResponse] = useState<any>(null);
 
-  const form = useForm<BookingFormData>({
+  const form = useForm<z.infer<typeof stepOneSchema & typeof stepTwoSchema & typeof stepThreeSchema & typeof stepFourSchema>>({
     resolver: zodResolver(bookingSchema),
     defaultValues: {
       firstName: '',
@@ -116,7 +126,9 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
       doctorId: '',
       clinicId: '',
       time: '',
-      dob: '',
+      dobYear: '',
+      dobMonth: '',
+      dobDay: '',
       gender: undefined,
     },
   });
@@ -260,29 +272,36 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
     setStep(step - 1);
   };
   
-  const onSubmit = async (data: BookingFormData) => {
+  const onSubmit = async (data: z.infer<typeof stepOneSchema & typeof stepTwoSchema & typeof stepThreeSchema & typeof stepFourSchema>) => {
     setIsLoading(true);
     setBookingStatus('idle');
 
-    const result = await form.trigger(['dob', 'gender']);
+    const result = await form.trigger(['dobYear', 'dobMonth', 'dobDay', 'gender']);
     if (!result) {
         setIsLoading(false);
         return;
     }
+    
+    const validatedData = bookingSchema.safeParse(data);
+    if (!validatedData.success) {
+      toast.error("There was an error with your submission. Please check the details.");
+      setIsLoading(false);
+      return;
+    }
 
     const payload = {
         patient: {
-            firstName: data.firstName,
-            lastName: data.lastName,
-            phone: data.phone,
-            dob: data.dob,
-            gender: data.gender,
-            email: data.email
+            firstName: validatedData.data.firstName,
+            lastName: validatedData.data.lastName,
+            phone: validatedData.data.phone,
+            dob: validatedData.data.dob,
+            gender: validatedData.data.gender,
+            email: validatedData.data.email
         },
         appointment: {
-            doctorId: data.doctorId,
-            clinicId: data.clinicId,
-            startTime: data.time,
+            doctorId: validatedData.data.doctorId,
+            clinicId: validatedData.data.clinicId,
+            startTime: validatedData.data.time,
         }
     };
 
@@ -535,20 +554,69 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
                   </DialogDescription>
                 </DialogHeader>
                 <div className="space-y-6 py-4">
-                    <div className="grid grid-cols-2 gap-4">
-                        <FormField
-                            control={form.control}
-                            name="dob"
-                            render={({ field }) => (
-                                <FormItem>
-                                <FormLabel>Date of Birth</FormLabel>
-                                <FormControl>
-                                    <Input placeholder="YYYY-MM-DD" {...field} />
-                                </FormControl>
-                                <FormMessage />
-                                </FormItem>
-                            )}
-                        />
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <FormItem>
+                            <FormLabel>Date of Birth</FormLabel>
+                            <div className="grid grid-cols-3 gap-2">
+                                <FormField
+                                    control={form.control}
+                                    name="dobYear"
+                                    render={({ field }) => (
+                                        <FormItem>
+                                            <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                                <FormControl>
+                                                <SelectTrigger>
+                                                    <SelectValue placeholder="Year" />
+                                                </SelectTrigger>
+                                                </FormControl>
+                                                <SelectContent>
+                                                    {years.map(year => <SelectItem key={year} value={String(year)}>{year}</SelectItem>)}
+                                                </SelectContent>
+                                            </Select>
+                                            <FormMessage />
+                                        </FormItem>
+                                    )}
+                                />
+                                <FormField
+                                    control={form.control}
+                                    name="dobMonth"
+                                    render={({ field }) => (
+                                        <FormItem>
+                                            <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                                <FormControl>
+                                                <SelectTrigger>
+                                                    <SelectValue placeholder="Month" />
+                                                </SelectTrigger>
+                                                </FormControl>
+                                                <SelectContent>
+                                                    {months.map(month => <SelectItem key={month} value={String(month)}>{month}</SelectItem>)}
+                                                </SelectContent>
+                                            </Select>
+                                             <FormMessage />
+                                        </FormItem>
+                                    )}
+                                />
+                                <FormField
+                                    control={form.control}
+                                    name="dobDay"
+                                    render={({ field }) => (
+                                        <FormItem>
+                                            <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                                <FormControl>
+                                                <SelectTrigger>
+                                                    <SelectValue placeholder="Day" />
+                                                </SelectTrigger>
+                                                </FormControl>
+                                                <SelectContent>
+                                                    {days.map(day => <SelectItem key={day} value={String(day)}>{day}</SelectItem>)}
+                                                </SelectContent>
+                                            </Select>
+                                             <FormMessage />
+                                        </FormItem>
+                                    )}
+                                />
+                            </div>
+                        </FormItem>
                         <FormField
                             control={form.control}
                             name="gender"
@@ -583,6 +651,7 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
               </>
             );
         case 5:
+            const finalData = form.getValues();
             return (
                 <>
                 <DialogHeader className="items-center text-center">
@@ -607,10 +676,10 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
                 {bookingStatus === 'success' && bookingResponse && (
                     <div className="py-4 space-y-2 text-sm text-gray-700 bg-gray-50 p-4 rounded-md">
                         <p><strong>Confirmation ID:</strong> {bookingResponse.appointment_id}</p>
-                        <p><strong>Patient Name:</strong> {form.getValues('firstName')} {form.getValues('lastName')}</p>
-                        <p><strong>Doctor:</strong> {doctors.find(d => d.id === form.getValues('doctorId'))?.name}</p>
-                        <p><strong>Clinic:</strong> {clinics.find(c => c.id === form.getValues('clinicId'))?.name}</p>
-                        <p><strong>Date & Time:</strong> {format(parseISO(form.getValues('time')), 'dd MMMM yyyy, hh:mm a')}</p>
+                        <p><strong>Patient Name:</strong> {finalData.firstName} {finalData.lastName}</p>
+                        <p><strong>Doctor:</strong> {doctors.find(d => d.id === finalData.doctorId)?.name}</p>
+                        <p><strong>Clinic:</strong> {clinics.find(c => c.id === finalData.clinicId)?.name}</p>
+                        <p><strong>Date & Time:</strong> {format(parseISO(finalData.time), 'dd MMMM yyyy, hh:mm a')}</p>
                     </div>
                 )}
                 <DialogFooter>
