@@ -75,8 +75,6 @@ const stepOneSchema = z.object({
   lastName: z.string().min(1, 'Last name is required.'),
   phone: z.string().regex(/^\+?[0-9]{10,15}$/, 'Invalid phone number.'),
   email: z.string().email('Invalid email address.').optional().or(z.literal('')),
-  dob: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "Please use YYYY-MM-DD format."),
-  gender: z.enum(["M", "F", "O"], {required_error: "Gender is required."}),
 });
 
 const stepTwoSchema = z.object({
@@ -87,6 +85,8 @@ const stepTwoSchema = z.object({
 const stepThreeSchema = z.object({
   date: z.date({ required_error: 'Please select a date.' }),
   time: z.string().min(1, 'Please select a time slot.'),
+  dob: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "Please use YYYY-MM-DD format."),
+  gender: z.enum(["M", "F", "O"], {required_error: "Gender is required."}),
 });
 
 const bookingSchema = stepOneSchema.merge(stepTwoSchema).merge(stepThreeSchema);
@@ -214,8 +214,7 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
 
     let finalTime = slotTime;
 
-    // Check if adding 20 minutes is feasible within the available slots
-    if (originalMinutes < 40) { // Can add 20 minutes without spilling to next hour
+    if (originalMinutes < 40) { 
       const bufferedTime = addMinutes(slotTime, 20);
       const isBufferedTimeAvailable = availableSlots.some(slot => 
           parseISO(slot.startTime).getTime() === bufferedTime.getTime()
@@ -233,7 +232,7 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
   const handleNextStep = async () => {
     let result;
     if (step === 1) {
-      result = await form.trigger(['firstName', 'lastName', 'phone', 'email', 'dob', 'gender']);
+      result = await form.trigger(['firstName', 'lastName', 'phone', 'email']);
     } else if (step === 2) {
       result = await form.trigger(['doctorId']);
       if(result) {
@@ -259,7 +258,7 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
     setIsLoading(true);
     setBookingStatus('idle');
 
-    const result = await form.trigger(['date', 'time']);
+    const result = await form.trigger(['date', 'time', 'dob', 'gender']);
     if (!result) {
         setIsLoading(false);
         return;
@@ -373,44 +372,6 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
                       </FormItem>
                   )}
               />
-              <div className="grid grid-cols-2 gap-4">
-                 <FormField
-                    control={form.control}
-                    name="dob"
-                    render={({ field }) => (
-                        <FormItem>
-                        <FormLabel>Date of Birth</FormLabel>
-                        <FormControl>
-                            <Input placeholder="YYYY-MM-DD" {...field} />
-                        </FormControl>
-                        <FormMessage />
-                        </FormItem>
-                    )}
-                 />
-                 <FormField
-                    control={form.control}
-                    name="gender"
-                    render={({ field }) => (
-                        <FormItem>
-                            <FormLabel>Gender</FormLabel>
-                            <Select onValueChange={field.onChange} defaultValue={field.value}>
-                                <FormControl>
-                                <SelectTrigger>
-                                    <SelectValue placeholder="Select gender" />
-                                </SelectTrigger>
-                                </FormControl>
-                                <SelectContent>
-                                    <SelectItem value="M">Male</SelectItem>
-                                    <SelectItem value="F">Female</SelectItem>
-                                    <SelectItem value="O">Other</SelectItem>
-                                </SelectContent>
-                            </Select>
-                            <FormMessage />
-                        </FormItem>
-                    )}
-                 />
-              </div>
-
             </div>
             <DialogFooter>
                 <Button onClick={handleNextStep} type="button">Next</Button>
@@ -481,72 +442,112 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
         return (
           <>
             <DialogHeader>
-              <DialogTitle>Step 3: Select Date & Time</DialogTitle>
+              <DialogTitle>Step 3: Confirm Details</DialogTitle>
               <DialogDescription>
                 {`Booking for ${selectedDoctor?.name} at ${selectedClinic?.name}`}
               </DialogDescription>
             </DialogHeader>
-            <div className="flex flex-col items-center gap-6 py-4">
-              <div className="w-full max-w-sm">
-                <FormLabel className="text-center block mb-2">Date</FormLabel>
+            <div className="space-y-6 py-4">
                 <div className="grid grid-cols-2 gap-4">
-                    <Button 
-                      type="button" 
-                      variant={selectedDay && format(selectedDay, 'yyyy-MM-dd') === format(today, 'yyyy-MM-dd') ? 'default' : 'outline'}
-                      onClick={() => form.setValue('date', today, { shouldValidate: true })}>
-                        Today
-                    </Button>
-                    <Button 
-                      type="button" 
-                      variant={selectedDay && format(selectedDay, 'yyyy-MM-dd') === format(tomorrow, 'yyyy-MM-dd') ? 'default' : 'outline'}
-                      onClick={() => form.setValue('date', tomorrow, { shouldValidate: true })}>
-                        Tomorrow
-                    </Button>
-                </div>
-                <FormField control={form.control} name="date" render={() => <FormMessage className="text-center pt-2" />} />
-              </div>
-               
-              <div className="w-full max-w-sm">
-                <FormField
-                  control={form.control}
-                  name="time"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel className="text-center block mb-2">Available Slots</FormLabel>
-                      <div className="grid grid-cols-3 gap-2 max-h-[250px] overflow-y-auto pr-2">
-                        {isLoading ? (
-                          <div className="col-span-3 flex justify-center items-center h-24">
-                            <Loader2 className="h-8 w-8 animate-spin text-primary" />
-                          </div>
-                        ) : hourlySlots.length > 0 ? (
-                          hourlySlots.map((slot) => {
-                            const selectedSlotDate = form.getValues('time') ? parseISO(form.getValues('time')) : null;
-                            const slotHour = getHours(parseISO(slot.firstAvailableSlot));
-                            const isSelected = selectedSlotDate && getHours(selectedSlotDate) === slotHour;
-
-                            return (
-                              <Button
-                                  key={slot.hour}
-                                  variant={isSelected ? 'default' : 'outline'}
-                                  onClick={() => handleHourSelect(slot.firstAvailableSlot)}
-                                  className="w-full"
-                                  type="button"
-                              >
-                                  {format(setHours(new Date(), slot.hour), 'ha')}
-                              </Button>
-                            );
-                          })
-                        ) : (
-                          <p className="col-span-3 text-sm text-muted-foreground text-center py-4">
-                            {selectedDate ? 'No slots available. Please select another date.' : 'Please select a date to see available slots.'}
-                          </p>
+                    <FormField
+                        control={form.control}
+                        name="dob"
+                        render={({ field }) => (
+                            <FormItem>
+                            <FormLabel>Date of Birth</FormLabel>
+                            <FormControl>
+                                <Input placeholder="YYYY-MM-DD" {...field} />
+                            </FormControl>
+                            <FormMessage />
+                            </FormItem>
                         )}
-                      </div>
-                      <FormMessage className="text-center pt-2" />
-                    </FormItem>
-                  )}
-                />
-              </div>
+                    />
+                    <FormField
+                        control={form.control}
+                        name="gender"
+                        render={({ field }) => (
+                            <FormItem>
+                                <FormLabel>Gender</FormLabel>
+                                <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                    <FormControl>
+                                    <SelectTrigger>
+                                        <SelectValue placeholder="Select gender" />
+                                    </SelectTrigger>
+                                    </FormControl>
+                                    <SelectContent>
+                                        <SelectItem value="M">Male</SelectItem>
+                                        <SelectItem value="F">Female</SelectItem>
+                                        <SelectItem value="O">Other</SelectItem>
+                                    </SelectContent>
+                                </Select>
+                                <FormMessage />
+                            </FormItem>
+                        )}
+                    />
+                </div>
+                
+                <div className="flex flex-col items-center gap-6">
+                    <div className="w-full max-w-sm">
+                        <FormLabel className="text-center block mb-2">Date</FormLabel>
+                        <div className="grid grid-cols-2 gap-4">
+                            <Button 
+                            type="button" 
+                            variant={selectedDay && format(selectedDay, 'yyyy-MM-dd') === format(today, 'yyyy-MM-dd') ? 'default' : 'outline'}
+                            onClick={() => form.setValue('date', today, { shouldValidate: true })}>
+                                Today
+                            </Button>
+                            <Button 
+                            type="button" 
+                            variant={selectedDay && format(selectedDay, 'yyyy-MM-dd') === format(tomorrow, 'yyyy-MM-dd') ? 'default' : 'outline'}
+                            onClick={() => form.setValue('date', tomorrow, { shouldValidate: true })}>
+                                Tomorrow
+                            </Button>
+                        </div>
+                        <FormField control={form.control} name="date" render={() => <FormMessage className="text-center pt-2" />} />
+                    </div>
+                    
+                    <div className="w-full max-w-sm">
+                        <FormField
+                        control={form.control}
+                        name="time"
+                        render={({ field }) => (
+                            <FormItem>
+                            <FormLabel className="text-center block mb-2">Available Slots</FormLabel>
+                            <div className="grid grid-cols-3 gap-2 max-h-[250px] overflow-y-auto pr-2">
+                                {isLoading ? (
+                                <div className="col-span-3 flex justify-center items-center h-24">
+                                    <Loader2 className="h-8 w-8 animate-spin text-primary" />
+                                </div>
+                                ) : hourlySlots.length > 0 ? (
+                                hourlySlots.map((slot) => {
+                                    const selectedSlotDate = form.getValues('time') ? parseISO(form.getValues('time')) : null;
+                                    const slotHour = getHours(parseISO(slot.firstAvailableSlot));
+                                    const isSelected = selectedSlotDate && getHours(selectedSlotDate) === slotHour;
+
+                                    return (
+                                    <Button
+                                        key={slot.hour}
+                                        variant={isSelected ? 'default' : 'outline'}
+                                        onClick={() => handleHourSelect(slot.firstAvailableSlot)}
+                                        className="w-full"
+                                        type="button"
+                                    >
+                                        {format(setHours(new Date(), slot.hour), 'ha')}
+                                    </Button>
+                                    );
+                                })
+                                ) : (
+                                <p className="col-span-3 text-sm text-muted-foreground text-center py-4">
+                                    {selectedDate ? 'No slots available. Please select another date.' : 'Please select a date to see available slots.'}
+                                </p>
+                                )}
+                            </div>
+                            <FormMessage className="text-center pt-2" />
+                            </FormItem>
+                        )}
+                        />
+                    </div>
+                </div>
             </div>
             <DialogFooter>
               <Button variant="outline" onClick={handlePrevStep} type="button">Back</Button>
@@ -613,3 +614,5 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
     </Dialog>
   );
 }
+
+    
