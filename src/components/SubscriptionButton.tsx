@@ -72,7 +72,7 @@ const SubscriptionButton = () => {
           </Button>
         </div>
       </DialogTrigger>
-      <DialogContent className="w-[90vw] max-w-4xl bg-white p-4 sm:p-6">
+      <DialogContent className="w-[90vw] max-w-4xl bg-white p-0 sm:p-0">
         <DialogHeader>
             <DialogTitle className="sr-only">One Health Member Plan</DialogTitle>
             <DialogClose className="absolute right-4 top-4 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-secondary z-10">
@@ -82,7 +82,7 @@ const SubscriptionButton = () => {
         </DialogHeader>
         
         <div className="grid md:grid-cols-2 gap-4 md:gap-6 items-center">
-          <div className="order-2 md:order-1 pt-6 md:pt-0">
+          <div className="order-2 md:order-1 p-6">
             <ShimmerText isActive={activeShimmerLine === 0}>
               <h3 className="tracking-tight text-2xl sm:text-3xl font-bold text-preventify-dark-blue mb-4 text-center md:text-left">
                 Simplify health, save time, save money.
@@ -117,19 +117,20 @@ const SubscriptionButton = () => {
               </div>
             </div>
           </div>
-          <div className="order-1 md:order-2 -mx-4 -mt-4 sm:-mx-6 sm:-mt-6 md:m-0">
-            <Image
-              src="/family.png"
-              alt="Family"
-              width={400}
-              height={400}
-              className="rounded-t-lg md:rounded-lg object-cover w-full aspect-square"
-            />
+          <div className="order-1 md:order-2">
+            <div className="relative w-full aspect-square">
+              <Image
+                src="/family.png"
+                alt="Family"
+                fill
+                className="rounded-t-lg md:rounded-r-lg object-cover"
+              />
+            </div>
           </div>
         </div>
 
         <div 
-          className="p-4 rounded-lg text-center my-4"
+          className="p-4 rounded-b-lg text-center"
           style={{
             background: 'linear-gradient(to right, #FDF5ED, #F5ECE5, #E4DBCC)',
           }}
@@ -146,15 +147,15 @@ const SubscriptionButton = () => {
               ₹1999/year for a family.
             </p>
           </ShimmerText>
+        
+            <DialogFooter className="sm:justify-center mt-4">
+              <Link href="/savings" onClick={() => setIsOpen(false)}>
+                <Button className="w-full bg-preventify-green hover:bg-preventify-dark-green text-white text-base py-3 px-6">
+                    Claim My Peace of Mind
+                </Button>
+              </Link>
+            </DialogFooter>
         </div>
-
-        <DialogFooter className="sm:justify-center">
-           <Link href="/savings" onClick={() => setIsOpen(false)}>
-             <Button className="w-full bg-preventify-green hover:bg-preventify-dark-green text-white text-base py-3 px-6">
-                Claim My Peace of Mind
-             </Button>
-           </Link>
-        </DialogFooter>
       </DialogContent>
     </Dialog>
   );

@@ -1499,6 +1499,11 @@ h1, h2, h3, h4, h5, h6 {
   border-top-right-radius: var(--radius);
 }
 
+.rounded-b-lg {
+  border-bottom-right-radius: var(--radius);
+  border-bottom-left-radius: var(--radius);
+}
+
 .rounded-tl-sm {
   border-top-left-radius: calc(var(--radius)  - 4px);
 }
@@ -3563,6 +3568,10 @@ h1, h2, h3, h4, h5, h6 {
     padding: 2rem;
   }
 
+  .sm\:p-0 {
+    padding: 0;
+  }
+
   .sm\:px-6 {
     padding-left: 1.5rem;
     padding-right: 1.5rem;
@@ -3674,6 +3683,11 @@ h1, h2, h3, h4, h5, h6 {
 
   .md\:rounded-lg {
     border-radius: var(--radius);
+  }
+
+  .md\:rounded-r-lg {
+    border-top-right-radius: var(--radius);
+    border-bottom-right-radius: var(--radius);
   }
 
   .md\:py-12 {
