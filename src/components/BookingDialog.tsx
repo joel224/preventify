@@ -1,4 +1,3 @@
-
 'use client';
 
 import {
@@ -94,10 +93,12 @@ const stepFourSchema = z.object({
   gender: z.enum(["M", "F", "O"], {required_error: "Gender is required."}),
 });
 
-const bookingSchema = stepOneSchema.merge(stepTwoSchema).merge(stepThreeSchema).merge(stepFourSchema.transform(data => ({
+const combinedSchema = stepOneSchema.merge(stepTwoSchema).merge(stepThreeSchema).merge(stepFourSchema);
+
+const bookingSchema = combinedSchema.transform(data => ({
     ...data,
     dob: `${data.dobYear}-${data.dobMonth.padStart(2, '0')}-${data.dobDay.padStart(2, '0')}`
-})));
+}));
 
 type BookingFormData = z.infer<typeof bookingSchema>;
 
@@ -116,8 +117,8 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
   const [bookingStatus, setBookingStatus] = useState<'idle' | 'success' | 'error'>('idle');
   const [bookingResponse, setBookingResponse] = useState<any>(null);
 
-  const form = useForm<z.infer<typeof stepOneSchema & typeof stepTwoSchema & typeof stepThreeSchema & typeof stepFourSchema>>({
-    resolver: zodResolver(bookingSchema),
+  const form = useForm<z.infer<typeof combinedSchema>>({
+    resolver: zodResolver(combinedSchema),
     defaultValues: {
       firstName: '',
       lastName: '',
@@ -272,7 +273,7 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
     setStep(step - 1);
   };
   
-  const onSubmit = async (data: z.infer<typeof stepOneSchema & typeof stepTwoSchema & typeof stepThreeSchema & typeof stepFourSchema>) => {
+  const onSubmit = async (data: z.infer<typeof combinedSchema>) => {
     setIsLoading(true);
     setBookingStatus('idle');
 
