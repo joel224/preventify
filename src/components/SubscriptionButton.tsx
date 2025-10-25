@@ -71,15 +71,15 @@ const SubscriptionButton = () => {
           </Button>
         </div>
       </DialogTrigger>
-      <DialogContent className="w-[95vw] max-w-lg bg-white p-0 rounded-lg">
-        <DialogHeader className="sr-only">
+      <DialogContent className="w-[95vw] sm:max-w-lg md:max-w-2xl lg:max-w-4xl bg-white p-0 rounded-lg">
+         <DialogHeader className="sr-only">
           <DialogTitle>One Health Member Plan</DialogTitle>
         </DialogHeader>
-        
-        <div className="grid md:grid-cols-2 items-center">
-          <div className="order-2 md:order-1 p-6">
+
+        <div className="grid grid-cols-1 lg:grid-cols-2 items-center">
+          <div className="order-2 lg:order-1 p-6 md:p-8">
             <ShimmerText isActive={activeShimmerLine === 0}>
-              <h3 className="tracking-tight text-2xl sm:text-3xl font-bold text-preventify-dark-blue mb-4 text-center md:text-left">
+              <h3 className="tracking-tight text-2xl sm:text-3xl font-bold text-preventify-dark-blue mb-4 text-center lg:text-left">
                 Simplify health, save time, save money.
               </h3>
             </ShimmerText>
@@ -112,13 +112,13 @@ const SubscriptionButton = () => {
               </div>
             </div>
           </div>
-          <div className="order-1 md:order-2">
-            <div className="relative w-full aspect-[16/10] md:h-full">
+          <div className="order-1 lg:order-2">
+             <div className="relative w-full aspect-[16/10] lg:h-full">
               <Image
                 src="/family.png"
                 alt="Family"
                 fill
-                className="rounded-t-lg md:rounded-none md:rounded-r-lg object-cover"
+                className="rounded-t-lg lg:rounded-none lg:rounded-r-lg object-cover"
               />
             </div>
           </div>
@@ -144,7 +144,7 @@ const SubscriptionButton = () => {
           </ShimmerText>
         
             <DialogFooter className="sm:justify-center mt-4">
-              <Link href="/savings" asChild>
+               <Link href="/savings" asChild>
                 <Button className="w-full bg-preventify-green hover:bg-preventify-dark-green text-white text-base py-3 px-6" onClick={() => setIsOpen(false)}>
                   Claim My Peace of Mind
                 </Button>
