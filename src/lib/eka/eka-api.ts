@@ -4,6 +4,7 @@ import axios from 'axios';
 import { getTokens, saveTokens } from './token-storage';
 import { format, addDays, isBefore, startOfDay } from "date-fns";
 import { processBusinessEntities } from './data-processing';
+import { getEkaSecrets } from '@/lib/secrets';
 
 const EKA_API_BASE_URL = 'https://api.eka.care';
 
@@ -16,9 +17,6 @@ const getApiClient = (accessToken?: string) => {
      headers['Authorization'] = `Bearer ${accessToken}`;
      console.log('API client using existing access token.');
   }
-   if (process.env.EKA_CLIENT_ID) {
-    headers['client-id'] = process.env.EKA_CLIENT_ID;
-  }
   return axios.create({
     baseURL: EKA_API_BASE_URL,
     headers,
@@ -27,14 +25,18 @@ const getApiClient = (accessToken?: string) => {
 
 export async function _loginAndGetTokens() {
   console.log('--- Attempting Eka Care API Login ---');
-  const { EKA_API_KEY, EKA_CLIENT_ID, EKA_CLIENT_SECRET } = process.env;
-
-  if (!EKA_API_KEY || !EKA_CLIENT_ID || !EKA_CLIENT_SECRET) {
-    console.error('ERROR: Missing Eka Care API credentials in .env file');
-    throw new Error('Missing Eka Care API credentials in .env file');
+  const secrets = await getEkaSecrets();
+  
+  if (!secrets) {
+    console.error('ERROR: Could not retrieve Eka Care API credentials from secret manager.');
+    throw new Error('Could not retrieve Eka Care API credentials.');
   }
 
+  const { EKA_API_KEY, EKA_CLIENT_ID, EKA_CLIENT_SECRET } = secrets;
+
   const client = getApiClient();
+  client.defaults.headers.common['client-id'] = EKA_CLIENT_ID;
+
   try {
     const response = await client.post('/connect-auth/v1/account/login', {
       api_key: EKA_API_KEY,
@@ -61,12 +63,21 @@ export async function _loginAndGetTokens() {
 async function _refreshAccessToken() {
   console.log('--- Attempting to refresh access token ---');
   const tokens = await getTokens();
+  const secrets = await getEkaSecrets();
+
   if (!tokens?.refresh_token) {
     console.log('INFO: No refresh token found. A full login is required.');
     return null;
   }
+  
+  if (!secrets?.EKA_CLIENT_ID) {
+    console.error('ERROR: Missing Eka Client ID for token refresh.');
+    return null;
+  }
 
   const client = getApiClient();
+  client.defaults.headers.common['client-id'] = secrets.EKA_CLIENT_ID;
+
   try {
     const response = await client.post('/connect-auth/v1/account/refresh', {
       access_token: tokens.access_token,
@@ -90,6 +101,11 @@ async function _refreshAccessToken() {
 async function makeApiRequest(apiCall: (client: any) => Promise<any>) {
   let tokens = await getTokens();
   let accessToken: string | undefined = tokens?.access_token;
+  const secrets = await getEkaSecrets();
+
+  if (!secrets?.EKA_CLIENT_ID) {
+    throw new Error('Eka Client ID is missing. Cannot make API requests.');
+  }
 
   if (!accessToken) {
     console.log('INFO: No access token found. Logging in...');
@@ -98,6 +114,8 @@ async function makeApiRequest(apiCall: (client: any) => Promise<any>) {
   }
 
   const apiClient = getApiClient(accessToken);
+  apiClient.defaults.headers.common['client-id'] = secrets.EKA_CLIENT_ID;
+
 
   try {
     console.log('INFO: Making API call with current token.');
@@ -110,6 +128,7 @@ async function makeApiRequest(apiCall: (client: any) => Promise<any>) {
       if (newAccessToken) {
         console.log('INFO: Retrying API call with new refreshed token.');
         const newApiClient = getApiClient(newAccessToken);
+        newApiClient.defaults.headers.common['client-id'] = secrets.EKA_CLIENT_ID;
         return await apiCall(newApiClient);
       }
       
@@ -117,6 +136,7 @@ async function makeApiRequest(apiCall: (client: any) => Promise<any>) {
       const freshTokens = await _loginAndGetTokens();
       console.log('INFO: Retrying API call with new login token.');
       const freshApiClient = getApiClient(freshTokens.access_token);
+      freshApiClient.defaults.headers.common['client-id'] = secrets.EKA_CLIENT_ID;
       return await apiCall(freshApiClient);
 
     } else {
