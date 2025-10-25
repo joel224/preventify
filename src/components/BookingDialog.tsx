@@ -1,3 +1,4 @@
+
 'use client';
 
 import {
@@ -113,6 +114,13 @@ const years = Array.from({ length: 100 }, (_, i) => getYear(new Date()) - i);
 const months = Array.from({ length: 12 }, (_, i) => i + 1);
 const days = Array.from({ length: 31 }, (_, i) => i + 1);
 
+const newPatientSchema = z.object({
+    dobYear: z.string().min(1, "Year is required."),
+    dobMonth: z.string().min(1, "Month is required."),
+    dobDay: z.string().min(1, "Day is required."),
+    gender: z.enum(["M", "F", "O"], { required_error: "Gender is required."}),
+});
+
 
 export default function BookingDialog({ children }: { children: React.ReactNode }) {
   const [open, setOpen] = useState(false);
@@ -142,31 +150,6 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
       gender: undefined,
     },
   });
-
-  const bookingSchema = combinedSchema.transform(data => {
-    let finalDob = '';
-    // If a patient profile was found, use its dob directly.
-    if (foundPatientProfile?.dob) {
-        finalDob = foundPatientProfile.dob;
-    } 
-    // Otherwise, construct DOB from form for a new patient.
-    else if (data.dobYear && data.dobMonth && data.dobDay) {
-        finalDob = `${data.dobYear}-${String(data.dobMonth).padStart(2, '0')}-${String(data.dobDay).padStart(2, '0')}`;
-    }
-    
-    return {
-        ...data,
-        dob: finalDob, // The transformed 'dob' field.
-        gender: foundPatientProfile?.gender || data.gender,
-    };
-}).refine(data => data.dob && data.dob.match(/^\d{4}-\d{2}-\d{2}$/), {
-    message: "A valid date of birth is required.",
-    path: ["dobYear"], // Point error to the DOB fields if refinement fails
-}).refine(data => !!data.gender, {
-    message: "Gender is required.",
-    path: ["gender"],
-});
-
 
   const selectedDoctorId = useWatch({ control: form.control, name: 'doctorId' });
   const selectedDate = useWatch({ control: form.control, name: 'date' });
@@ -344,38 +327,47 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
     setIsLoading(true);
     setBookingStatus('idle');
 
-    // Only validate step 4 fields if it's a new patient
-    if (!foundPatientProfile) {
-      const result = await form.trigger(['dobYear', 'dobMonth', 'dobDay', 'gender']);
-      if (!result) {
-        setIsLoading(false);
-        return;
-      }
+    let patientPayload;
+
+    if (foundPatientProfile) {
+        // Existing patient, use their data
+        patientPayload = {
+            firstName: foundPatientProfile.first_name,
+            lastName: foundPatientProfile.last_name,
+            phone: data.phone,
+            dob: foundPatientProfile.dob,
+            gender: foundPatientProfile.gender,
+            email: data.email,
+        };
+    } else {
+        // New patient, validate Step 4 data
+        const newPatientValidation = newPatientSchema.safeParse(data);
+        if (!newPatientValidation.success) {
+            console.error("Zod validation failed for new patient:", newPatientValidation.error.flatten());
+            toast.error("Please fill in all required details for the new patient.");
+            setIsLoading(false);
+            // Trigger validation to show errors on the form
+            await form.trigger(['dobYear', 'dobMonth', 'dobDay', 'gender']);
+            return;
+        }
+
+        const { dobYear, dobMonth, dobDay, gender } = newPatientValidation.data;
+        patientPayload = {
+            firstName: data.firstName,
+            lastName: data.lastName,
+            phone: data.phone,
+            dob: `${dobYear}-${String(dobMonth).padStart(2, '0')}-${String(dobDay).padStart(2, '0')}`,
+            gender: gender,
+            email: data.email,
+        };
     }
-    
-    const validatedData = bookingSchema.safeParse(data);
-    if (!validatedData.success) {
-      console.error("Zod validation failed:", validatedData.error.flatten());
-      toast.error("There was an error with your submission. Please check the details.");
-      setIsLoading(false);
-      return;
-    }
-    
-    const { dob, gender, ...restOfData } = validatedData.data;
 
     const payload = {
-        patient: {
-            firstName: restOfData.firstName,
-            lastName: restOfData.lastName,
-            phone: restOfData.phone,
-            dob: dob, // Use the transformed DOB
-            gender: gender, // Use the transformed gender
-            email: restOfData.email
-        },
+        patient: patientPayload,
         appointment: {
-            doctorId: restOfData.doctorId,
-            clinicId: restOfData.clinicId,
-            startTime: restOfData.time,
+            doctorId: data.doctorId,
+            clinicId: data.clinicId,
+            startTime: data.time,
         }
     };
 
