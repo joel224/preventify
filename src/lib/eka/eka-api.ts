@@ -1,4 +1,5 @@
 
+
 'use server';
 
 import axios from 'axios';
@@ -346,6 +347,16 @@ export async function bookAppointment(data: any): Promise<any> {
     const startTimeInSeconds = Math.floor(new Date(data.appointment.startTime).getTime() / 1000);
     const endTimeInSeconds = startTimeInSeconds + 600; // 10 minute duration
 
+    const formatGender = (gender: string) => {
+        if (!gender) return 'O';
+        const lowerGender = gender.toLowerCase();
+        if (lowerGender.startsWith('m')) return 'M';
+        if (lowerGender.startsWith('f')) return 'F';
+        return 'O';
+    };
+    
+    const formattedGender = formatGender(data.patient.gender);
+
     const getDesignation = (gender: 'M' | 'F' | 'O') => {
         if (gender === 'F') return 'Ms.';
         if (gender === 'M') return 'Mr.';
@@ -363,11 +374,11 @@ export async function bookAppointment(data: any): Promise<any> {
             mode: "INCLINIC",
         },
         patient_details: {
-            designation: getDesignation(data.patient.gender),
+            designation: getDesignation(formattedGender),
             first_name: data.patient.firstName,
             last_name: data.patient.lastName,
             mobile: sanitizedMobile,
-            gender: data.patient.gender,
+            gender: formattedGender,
             dob: data.patient.dob,
         },
     };

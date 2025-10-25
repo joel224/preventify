@@ -1,4 +1,5 @@
 
+
 'use client';
 
 import {
@@ -78,7 +79,7 @@ interface FoundPatientProfile {
     first_name: string;
     last_name: string;
     dob: string; // "YYYY-MM-DD"
-    gender: "M" | "F" | "O";
+    gender: "M" | "F" | "O" | "male" | "female" | "other"; // Allow for API inconsistencies
 }
 
 // Zod Schemas
@@ -277,11 +278,7 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
                     setFoundPatientProfile(patient);
                     form.setValue('firstName', patient.first_name);
                     form.setValue('lastName', patient.last_name);
-                    const [year, month, day] = patient.dob.split('-');
-                    form.setValue('dobYear', year);
-                    form.setValue('dobMonth', month);
-                    form.setValue('dobDay', day);
-                    form.setValue('gender', patient.gender);
+                    // Don't pre-fill DOB/gender form fields as they'll be taken from the profile directly
                     toast.info(`Welcome back, ${patient.first_name}! Your details have been pre-filled.`);
                 } else {
                     setFoundPatientProfile(null);
@@ -330,23 +327,20 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
     let patientPayload;
 
     if (foundPatientProfile) {
-        // Existing patient, use their data
         patientPayload = {
             firstName: foundPatientProfile.first_name,
             lastName: foundPatientProfile.last_name,
             phone: data.phone,
             dob: foundPatientProfile.dob,
-            gender: foundPatientProfile.gender,
+            gender: foundPatientProfile.gender, // This might be 'male' or 'M'
             email: data.email,
         };
     } else {
-        // New patient, validate Step 4 data
         const newPatientValidation = newPatientSchema.safeParse(data);
         if (!newPatientValidation.success) {
             console.error("Zod validation failed for new patient:", newPatientValidation.error.flatten());
             toast.error("Please fill in all required details for the new patient.");
             setIsLoading(false);
-            // Trigger validation to show errors on the form
             await form.trigger(['dobYear', 'dobMonth', 'dobDay', 'gender']);
             return;
         }
@@ -357,7 +351,7 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
             lastName: data.lastName,
             phone: data.phone,
             dob: `${dobYear}-${String(dobMonth).padStart(2, '0')}-${String(dobDay).padStart(2, '0')}`,
-            gender: gender,
+            gender: gender, // This will be 'M', 'F', or 'O'
             email: data.email,
         };
     }
