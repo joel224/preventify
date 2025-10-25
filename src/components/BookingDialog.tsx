@@ -85,11 +85,14 @@ const stepTwoSchema = z.object({
 const stepThreeSchema = z.object({
   date: z.date({ required_error: 'Please select a date.' }),
   time: z.string().min(1, 'Please select a time slot.'),
+});
+
+const stepFourSchema = z.object({
   dob: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "Please use YYYY-MM-DD format."),
   gender: z.enum(["M", "F", "O"], {required_error: "Gender is required."}),
 });
 
-const bookingSchema = stepOneSchema.merge(stepTwoSchema).merge(stepThreeSchema);
+const bookingSchema = stepOneSchema.merge(stepTwoSchema).merge(stepThreeSchema).merge(stepFourSchema);
 
 type BookingFormData = z.infer<typeof bookingSchema>;
 
@@ -110,11 +113,11 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
       lastName: '',
       phone: '',
       email: '',
-      dob: '',
-      gender: undefined,
       doctorId: '',
       clinicId: '',
       time: '',
+      dob: '',
+      gender: undefined,
     },
   });
 
@@ -213,16 +216,17 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
     const originalMinutes = slotTime.getMinutes();
 
     let finalTime = slotTime;
-
+    
     if (originalMinutes < 40) { 
-      const bufferedTime = addMinutes(slotTime, 20);
-      const isBufferedTimeAvailable = availableSlots.some(slot => 
-          parseISO(slot.startTime).getTime() === bufferedTime.getTime()
-      );
+        const bufferedTime = addMinutes(slotTime, 20);
+        
+        const isBufferedTimeAvailable = availableSlots.some(slot => 
+            parseISO(slot.startTime).getTime() === bufferedTime.getTime()
+        );
       
-      if (isBufferedTimeAvailable) {
-        finalTime = bufferedTime;
-      }
+        if (isBufferedTimeAvailable) {
+            finalTime = bufferedTime;
+        }
     }
     
     form.setValue('time', finalTime.toISOString(), { shouldValidate: true });
@@ -244,6 +248,8 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
              toast.error("Could not find clinic for the selected doctor.");
          }
       }
+    } else if (step === 3) {
+      result = await form.trigger(['date', 'time']);
     }
     if (result) {
       setStep(step + 1);
@@ -258,7 +264,7 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
     setIsLoading(true);
     setBookingStatus('idle');
 
-    const result = await form.trigger(['date', 'time', 'dob', 'gender']);
+    const result = await form.trigger(['dob', 'gender']);
     if (!result) {
         setIsLoading(false);
         return;
@@ -296,12 +302,12 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
         
         setBookingResponse(result);
         setBookingStatus('success');
-        setStep(4);
+        setStep(5);
     } catch (error: any) {
         console.error('Booking error:', error);
         toast.error(`Booking failed: ${error.message}`);
         setBookingStatus('error');
-        setStep(4);
+        setStep(5);
     } finally {
         setIsLoading(false);
     }
@@ -442,50 +448,12 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
         return (
           <>
             <DialogHeader>
-              <DialogTitle>Step 3: Confirm Details</DialogTitle>
+              <DialogTitle>Step 3: Select Date & Time</DialogTitle>
               <DialogDescription>
                 {`Booking for ${selectedDoctor?.name} at ${selectedClinic?.name}`}
               </DialogDescription>
             </DialogHeader>
             <div className="space-y-6 py-4">
-                <div className="grid grid-cols-2 gap-4">
-                    <FormField
-                        control={form.control}
-                        name="dob"
-                        render={({ field }) => (
-                            <FormItem>
-                            <FormLabel>Date of Birth</FormLabel>
-                            <FormControl>
-                                <Input placeholder="YYYY-MM-DD" {...field} />
-                            </FormControl>
-                            <FormMessage />
-                            </FormItem>
-                        )}
-                    />
-                    <FormField
-                        control={form.control}
-                        name="gender"
-                        render={({ field }) => (
-                            <FormItem>
-                                <FormLabel>Gender</FormLabel>
-                                <Select onValueChange={field.onChange} defaultValue={field.value}>
-                                    <FormControl>
-                                    <SelectTrigger>
-                                        <SelectValue placeholder="Select gender" />
-                                    </SelectTrigger>
-                                    </FormControl>
-                                    <SelectContent>
-                                        <SelectItem value="M">Male</SelectItem>
-                                        <SelectItem value="F">Female</SelectItem>
-                                        <SelectItem value="O">Other</SelectItem>
-                                    </SelectContent>
-                                </Select>
-                                <FormMessage />
-                            </FormItem>
-                        )}
-                    />
-                </div>
-                
                 <div className="flex flex-col items-center gap-6">
                     <div className="w-full max-w-sm">
                         <FormLabel className="text-center block mb-2">Date</FormLabel>
@@ -551,14 +519,70 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
             </div>
             <DialogFooter>
               <Button variant="outline" onClick={handlePrevStep} type="button">Back</Button>
-              <Button type="submit" disabled={isLoading}>
-                {isLoading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
-                Confirm Booking
+              <Button onClick={handleNextStep} disabled={!form.getValues('time')} type="button">
+                Next
               </Button>
             </DialogFooter>
           </>
         );
         case 4:
+            return (
+              <>
+                <DialogHeader>
+                  <DialogTitle>Step 4: Confirm Your Details</DialogTitle>
+                  <DialogDescription>
+                    Please provide your date of birth and gender to complete the booking.
+                  </DialogDescription>
+                </DialogHeader>
+                <div className="space-y-6 py-4">
+                    <div className="grid grid-cols-2 gap-4">
+                        <FormField
+                            control={form.control}
+                            name="dob"
+                            render={({ field }) => (
+                                <FormItem>
+                                <FormLabel>Date of Birth</FormLabel>
+                                <FormControl>
+                                    <Input placeholder="YYYY-MM-DD" {...field} />
+                                </FormControl>
+                                <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+                        <FormField
+                            control={form.control}
+                            name="gender"
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>Gender</FormLabel>
+                                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                        <FormControl>
+                                        <SelectTrigger>
+                                            <SelectValue placeholder="Select gender" />
+                                        </SelectTrigger>
+                                        </FormControl>
+                                        <SelectContent>
+                                            <SelectItem value="M">Male</SelectItem>
+                                            <SelectItem value="F">Female</SelectItem>
+                                            <SelectItem value="O">Other</SelectItem>
+                                        </SelectContent>
+                                    </Select>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+                    </div>
+                </div>
+                <DialogFooter>
+                  <Button variant="outline" onClick={handlePrevStep} type="button">Back</Button>
+                  <Button type="submit" disabled={isLoading}>
+                    {isLoading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
+                    Confirm Booking
+                  </Button>
+                </DialogFooter>
+              </>
+            );
+        case 5:
             return (
                 <>
                 <DialogHeader className="items-center text-center">
@@ -614,5 +638,3 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
     </Dialog>
   );
 }
-
-    
