@@ -580,6 +580,11 @@ h1, h2, h3, h4, h5, h6 {
   margin-bottom: 1rem;
 }
 
+.-mx-4 {
+  margin-left: -1rem;
+  margin-right: -1rem;
+}
+
 .-ml-4 {
   margin-left: -1rem;
 }
@@ -1487,6 +1492,11 @@ h1, h2, h3, h4, h5, h6 {
 .rounded-t-\[10px\] {
   border-top-left-radius: 10px;
   border-top-right-radius: 10px;
+}
+
+.rounded-t-lg {
+  border-top-left-radius: var(--radius);
+  border-top-right-radius: var(--radius);
 }
 
 .rounded-tl-sm {
@@ -3462,8 +3472,17 @@ h1, h2, h3, h4, h5, h6 {
     top: auto;
   }
 
+  .sm\:-mx-6 {
+    margin-left: -1.5rem;
+    margin-right: -1.5rem;
+  }
+
   .sm\:mt-0 {
     margin-top: 0;
+  }
+
+  .sm\:-mt-6 {
+    margin-top: -1.5rem;
   }
 
   .sm\:flex {
@@ -3589,6 +3608,10 @@ h1, h2, h3, h4, h5, h6 {
     grid-column: span 2 / span 2;
   }
 
+  .md\:m-0 {
+    margin: 0;
+  }
+
   .md\:mt-0 {
     margin-top: 0;
   }
@@ -3645,6 +3668,14 @@ h1, h2, h3, h4, h5, h6 {
     flex-direction: row;
   }
 
+  .md\:gap-6 {
+    gap: 1.5rem;
+  }
+
+  .md\:rounded-lg {
+    border-radius: var(--radius);
+  }
+
   .md\:py-12 {
     padding-top: 3rem;
     padding-bottom: 3rem;
@@ -3658,6 +3689,10 @@ h1, h2, h3, h4, h5, h6 {
   .md\:py-24 {
     padding-top: 6rem;
     padding-bottom: 6rem;
+  }
+
+  .md\:pt-0 {
+    padding-top: 0;
   }
 
   .md\:text-left {
