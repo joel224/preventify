@@ -9,9 +9,8 @@ import {
   DialogContent,
   DialogFooter,
   DialogTitle,
-  DialogClose,
   DialogTrigger,
-  DialogHeader,
+  DialogClose,
 } from "@/components/ui/dialog";
 import Image from "next/image";
 import ShimmerText from "./ShimmerText";
@@ -72,14 +71,8 @@ const SubscriptionButton = () => {
           </Button>
         </div>
       </DialogTrigger>
-      <DialogContent className="w-[95vw] max-w-4xl bg-white p-0 rounded-lg">
-        <DialogHeader>
-          <DialogTitle className="sr-only">One Health Member Plan</DialogTitle>
-          <DialogClose className="absolute right-4 top-4 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-secondary z-10">
-            <X className="h-4 w-4" />
-            <span className="sr-only">Close</span>
-          </DialogClose>
-        </DialogHeader>
+      <DialogContent className="w-[95vw] max-w-lg bg-white p-0 rounded-lg">
+        <DialogTitle className="sr-only">One Health Member Plan</DialogTitle>
         
         <div className="grid md:grid-cols-2 items-center">
           <div className="order-2 md:order-1 p-6">
@@ -149,13 +142,17 @@ const SubscriptionButton = () => {
           </ShimmerText>
         
             <DialogFooter className="sm:justify-center mt-4">
-              <Link href="/savings" onClick={() => setIsOpen(false)}>
-                <Button className="w-full bg-preventify-green hover:bg-preventify-dark-green text-white text-base py-3 px-6">
-                    Claim My Peace of Mind
+              <Link href="/savings" passHref>
+                <Button asChild className="w-full bg-preventify-green hover:bg-preventify-dark-green text-white text-base py-3 px-6" onClick={() => setIsOpen(false)}>
+                  <a>Claim My Peace of Mind</a>
                 </Button>
               </Link>
             </DialogFooter>
         </div>
+        <DialogClose className="absolute right-4 top-4 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-secondary">
+          <X className="h-4 w-4" />
+          <span className="sr-only">Close</span>
+        </DialogClose>
       </DialogContent>
     </Dialog>
   );

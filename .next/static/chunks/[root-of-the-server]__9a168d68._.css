@@ -3721,6 +3721,10 @@ h1, h2, h3, h4, h5, h6 {
     display: none;
   }
 
+  .md\:aspect-auto {
+    aspect-ratio: auto;
+  }
+
   .md\:h-20 {
     height: 5rem;
   }
