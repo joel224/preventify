@@ -72,15 +72,15 @@ const SubscriptionButton = () => {
       </DialogTrigger>
       <DialogContent className="w-[90vw] max-w-4xl bg-white p-4 sm:p-6 pt-0">
         <DialogTitle className="sr-only">One Health Member Plan</DialogTitle>
-        <div className="grid md:grid-cols-2 gap-4 items-center">
-          <div>
+        <div className="grid md:grid-cols-2 gap-6 items-center">
+          <div className="order-2 md:order-1">
             <ShimmerText isActive={activeShimmerLine === 0}>
               <h3 className="tracking-tight text-2xl sm:text-3xl font-bold text-preventify-dark-blue mb-4 text-center md:text-left">
                 Simplify health, save time, save money.
               </h3>
             </ShimmerText>
 
-            <div className="space-y-3 text-preventify-dark-gray">
+            <div className="space-y-4 text-preventify-dark-gray">
               <div className="flex items-start gap-3">
                 <Search className="h-8 w-8 text-preventify-green shrink-0" />
                 <ShimmerText isActive={activeShimmerLine === 1}>
@@ -108,7 +108,7 @@ const SubscriptionButton = () => {
               </div>
             </div>
           </div>
-          <div>
+          <div className="order-1 md:order-2 mt-4 md:mt-0">
             <Image
               src="/family.png"
               alt="Family"
@@ -140,11 +140,11 @@ const SubscriptionButton = () => {
         </div>
 
         <DialogFooter className="flex flex-col gap-2 sm:flex-row sm:gap-2 sm:justify-center">
-          <Link href="/savings" onClick={() => setIsOpen(false)}>
-            <Button className="w-full bg-preventify-green hover:bg-preventify-dark-green text-white text-base py-3 px-6">
-              Claim My Peace of Mind
-            </Button>
-          </Link>
+           <Link href="/savings" passHref>
+             <Button className="w-full bg-preventify-green hover:bg-preventify-dark-green text-white text-base py-3 px-6" onClick={() => setIsOpen(false)}>
+                Claim My Peace of Mind
+             </Button>
+           </Link>
         </DialogFooter>
       </DialogContent>
     </Dialog>
