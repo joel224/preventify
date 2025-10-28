@@ -63,9 +63,10 @@ export default {
 					border: 'hsl(var(--sidebar-border))',
 					ring: 'hsl(var(--sidebar-ring))'
 				},
+                'top-bar': 'hsl(var(--top-bar))',
 				preventify: {
-					blue: '#2E3B97', // Dark blue from logo
-					green: '#28B67A', // Green from logo
+					blue: '#0055A5', // Narayana Blue
+					green: '#28B67A', // Preventify green
 					gray: '#757575', // Gray text "Hospitals" from logo
 					'light-blue': '#4A5AC5', // Lighter shade of blue
 					'light-green': '#3DD391', // Lighter shade of green

@@ -15,7 +15,7 @@
     --popover: 0 0% 100%;
     --popover-foreground: 222.2 84% 4.9%;
 
-    --primary: 240 52% 39%; /* Preventify blue */
+    --primary: 221 44% 41%; /* narayana blue */
     --primary-foreground: 210 40% 98%;
 
     --secondary: 151 65% 44%; /* Preventify green */
@@ -32,9 +32,11 @@
 
     --border: 214.3 31.8% 91.4%;
     --input: 214.3 31.8% 91.4%;
-    --ring: 240 52% 39%; /* Preventify blue */
+    --ring: 221 44% 41%; /* narayana blue */
 
     --radius: 0.5rem;
+    
+    --top-bar: 0 0% 98%;
   }
 
   .dark {
@@ -47,7 +49,7 @@
     --popover: 222.2 84% 4.9%;
     --popover-foreground: 210 40% 98%;
 
-    --primary: 240 52% 39%; /* Preventify blue */
+    --primary: 221 44% 41%; /* narayana blue */
     --primary-foreground: 210 40% 98%;
 
     --secondary: 217.2 32.6% 17.5%;
@@ -65,6 +67,8 @@
     --border: 217.2 32.6% 17.5%;
     --input: 217.2 32.6% 17.5%;
     --ring: 212.7 26.8% 83.9%;
+    
+    --top-bar: 222.2 84% 4.9%;
   }
 }
 

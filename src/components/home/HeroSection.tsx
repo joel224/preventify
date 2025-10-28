@@ -1,50 +1,46 @@
 
 import { Button } from "@/components/ui/button";
-import Link from "next/link";
-import BookingDialog from "@/components/BookingDialog";
+import Image from "next/image";
 
 const HeroSection = () => {
   return (
-    <section className="hero-gradient">
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-16 md:py-24">
+    <section className="relative bg-white">
+      <div className="absolute inset-0">
+          <Image
+            src="/edit2.png"
+            alt="Abstract background"
+            fill
+            className="object-cover object-center opacity-30"
+          />
+           <div className="absolute inset-0 bg-gradient-to-t from-white via-white/80 to-transparent"></div>
+      </div>
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-16 md:py-24 relative">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
           <div className="order-2 md:order-1">
-            <div className="mb-6">
-              <img 
-                src="https://res.cloudinary.com/dyf8umlda/image/upload/v1749710604/Preventify_Logo_new_f7vxej.png" 
-                alt="Preventify Hospitals Logo" 
-                className="h-16 md:h-20"
-              />
-            </div>
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-4 text-preventify-dark-blue">
-              AI assisted Modern Healthcare for a{" "}
-              <span className="text-preventify-blue">
-                Preventive Lifestyle
-              </span>
+            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-4 text-primary">
+              One Network. One Standard. Global Accreditation.
             </h1>
-            <p className="text-lg text-preventify-dark-gray mb-8">
-              AI-assisted evidence-based care across Kerala focused
-               on prevention, early intervention, and better health outcomes for you and your family.
+            <p className="text-lg text-slate-600 mb-8">
+              We are proud to be the first hospital chain in India to receive the JCI Enterprise Accreditation.
             </p>
             <div className="flex flex-col sm:flex-row gap-4">
-              <BookingDialog>
-                <Button className="bg-preventify-blue hover:bg-preventify-dark-blue text-white text-lg py-6 px-8">
-                  Book an Appointment
+                <Button className="bg-primary hover:bg-primary/90 text-white text-lg py-6 px-8">
+                  Click here to hear from our leaders
                 </Button>
-              </BookingDialog>
-              <Link href="/programs">
-                <Button variant="outline" className="border-preventify-green text-preventify-green hover:bg-preventify-green/10 text-lg py-6 px-8">
-                  Our Services
-                </Button>
-              </Link>
             </div>
           </div>
-          <div className="order-1 md:order-2">
-            <img
-              src="https://images.unsplash.com/photo-1576091160550-2173dba999ef?q=80&w=1400&auto=format&fit=crop"
-              alt="Preventify Healthcare"
-              className="rounded-lg shadow-lg w-full"
-            />
+          <div className="order-1 md:order-2 flex flex-col items-center justify-center">
+             <Image
+                src="/edit.png"
+                alt="JCI Enterprise Accreditation"
+                width={300}
+                height={300}
+                className="rounded-lg"
+              />
+              <div className="text-center mt-4">
+                  <h3 className="font-bold text-primary">Joint Commission International</h3>
+                  <p className="font-semibold text-slate-700">Enterprise Accreditation</p>
+              </div>
           </div>
         </div>
       </div>
@@ -53,5 +49,3 @@ const HeroSection = () => {
 };
 
 export default HeroSection;
-
-    
