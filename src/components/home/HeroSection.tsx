@@ -26,7 +26,7 @@ const HeroSection = () => {
           <CarouselItem>
             <div className="w-full relative">
               <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-20 md:py-32">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+                <div className="grid grid-cols-1 gap-8 items-center">
                   <div className="text-center md:text-left">
                      <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-4 text-preventify-dark-blue">
                         AI assisted Modern Healthcare for a <span className="text-primary">Preventive Lifestyle</span>
@@ -47,9 +47,6 @@ const HeroSection = () => {
                         </Link>
                     </div>
                   </div>
-                   <div className="hidden md:block">
-                     <Image src="https://picsum.photos/seed/doc/600/400" alt="Doctor" width={600} height={400} className="rounded-lg" data-ai-hint="doctor healthcare"/>
-                   </div>
                 </div>
               </div>
             </div>
