@@ -6,23 +6,23 @@ import Image from "next/image"
 
 const PreventiveLifestyleSection = () => {
     return (
-        <section className="bg-white py-16 md:py-24">
+        <section className="bg-white py-16 md:py-24 relative">
             <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+
+                <div className="absolute -top-5 left-4 sm:left-6 lg:left-8">
+                    <div className="inline-flex items-center gap-2 bg-white rounded-full py-1.5 px-3 shadow-lg border border-gray-200/80">
+                        <Image src="/logo.png" alt="Preventify Logo" width={20} height={20} />
+                        <span className="font-semibold text-gray-700 text-sm">Preventify</span>
+                    </div>
+                </div>
+                
                 <div className="grid grid-cols-1 gap-8 md:gap-12 items-center">
                     <div className="text-center">
-
-                        <div className="max-w-3xl mx-auto text-left">
-                            <div className="inline-flex items-center gap-2 bg-white rounded-full py-1.5 px-3 shadow-md border border-gray-200/80 mb-4">
-                                <Image src="/logo.png" alt="Preventify Logo" width={20} height={20} />
-                                <span className="font-semibold text-gray-700 text-sm">Preventify</span>
-                            </div>
-
-                            <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4 text-preventify-dark-blue">
-                                AI assisted Modern Healthcare for a <span className="text-primary">Preventive Lifestyle</span>
-                            </h2>
-                        </div>
+                        <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4 text-preventify-dark-blue">
+                            AI assisted Modern Healthcare for a <span className="text-primary">Preventive Lifestyle</span>
+                        </h2>
                         
-                        <p className="text-lg text-preventify-dark-gray mb-8 max-w-3xl mx-auto text-left">
+                        <p className="text-lg text-preventify-dark-gray mb-8 max-w-3xl mx-auto">
                             AI-assisted evidence-based care across Kerala focused on prevention, early intervention, and better health outcomes for you and your family.
                         </p>
 
