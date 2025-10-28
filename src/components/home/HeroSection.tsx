@@ -1,3 +1,4 @@
+
 'use client'
 
 import {
@@ -11,10 +12,13 @@ import Autoplay from "embla-carousel-autoplay"
 import Image from "next/image"
 
 const HeroSection = () => {
+  // By adding a timestamp, we force the browser to reload the images
+  // bypassing any caches. This is a common technique to handle updated assets.
+  const cacheBuster = `?t=${new Date().getTime()}`;
   const images = [
-    '/edit1.png',
-    '/edit.png',
-    '/edit2.png'
+    `/edit1.png${cacheBuster}`,
+    `/edit.png${cacheBuster}`,
+    `/edit2.png${cacheBuster}`
   ];
 
   return (

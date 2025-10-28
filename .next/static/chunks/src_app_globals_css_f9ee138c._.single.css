@@ -514,14 +514,6 @@ h1, h2, h3, h4, h5, h6 {
   top: 100%;
 }
 
-.-top-8 {
-  top: -2rem;
-}
-
-.-top-5 {
-  top: -1.25rem;
-}
-
 .z-10 {
   z-index: 10;
 }
@@ -540,10 +532,6 @@ h1, h2, h3, h4, h5, h6 {
 
 .z-\[1\] {
   z-index: 1;
-}
-
-.z-40 {
-  z-index: 40;
 }
 
 .order-1 {
@@ -869,10 +857,6 @@ h1, h2, h3, h4, h5, h6 {
   height: 100svh;
 }
 
-.h-28 {
-  height: 7rem;
-}
-
 .max-h-96 {
   max-height: 24rem;
 }
@@ -1033,10 +1017,6 @@ h1, h2, h3, h4, h5, h6 {
   width: 1px;
 }
 
-.w-32 {
-  width: 8rem;
-}
-
 .min-w-0 {
   min-width: 0;
 }
@@ -1055,10 +1035,6 @@ h1, h2, h3, h4, h5, h6 {
 
 .min-w-\[var\(--radix-select-trigger-width\)\] {
   min-width: var(--radix-select-trigger-width);
-}
-
-.max-w-2xl {
-  max-width: 42rem;
 }
 
 .max-w-3xl {
@@ -1097,7 +1073,7 @@ h1, h2, h3, h4, h5, h6 {
   flex: 1;
 }
 
-.flex-shrink-0, .shrink-0 {
+.shrink-0 {
   flex-shrink: 0;
 }
 
@@ -1152,16 +1128,6 @@ h1, h2, h3, h4, h5, h6 {
 
 .translate-y-\[-50\%\] {
   --tw-translate-y: -50%;
-  transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
-}
-
-.-translate-x-\[calc\(100\%-44px\)\] {
-  --tw-translate-x: calc(calc(100% - 44px) * -1);
-  transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
-}
-
-.translate-y-1\/2 {
-  --tw-translate-y: 50%;
   transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
 }
 
@@ -1519,10 +1485,6 @@ h1, h2, h3, h4, h5, h6 {
   border-radius: calc(var(--radius)  - 4px);
 }
 
-.rounded-xl {
-  border-radius: .75rem;
-}
-
 .rounded-b-lg {
   border-bottom-right-radius: var(--radius);
   border-bottom-left-radius: var(--radius);
@@ -1536,11 +1498,6 @@ h1, h2, h3, h4, h5, h6 {
 .rounded-t-lg {
   border-top-left-radius: var(--radius);
   border-top-right-radius: var(--radius);
-}
-
-.rounded-r-lg {
-  border-top-right-radius: var(--radius);
-  border-bottom-right-radius: var(--radius);
 }
 
 .rounded-tl-sm {
@@ -1584,10 +1541,6 @@ h1, h2, h3, h4, h5, h6 {
   border-top-width: 1px;
 }
 
-.border-l-0 {
-  border-left-width: 0;
-}
-
 .border-dashed {
   border-style: dashed;
 }
@@ -1611,6 +1564,10 @@ h1, h2, h3, h4, h5, h6 {
 .border-gray-100 {
   --tw-border-opacity: 1;
   border-color: rgb(243 244 246 / var(--tw-border-opacity, 1));
+}
+
+.border-gray-200\/80 {
+  border-color: #e5e7ebcc;
 }
 
 .border-gray-300 {
@@ -1658,19 +1615,6 @@ h1, h2, h3, h4, h5, h6 {
   border-color: rgb(255 255 255 / var(--tw-border-opacity, 1));
 }
 
-.border-gray-200 {
-  --tw-border-opacity: 1;
-  border-color: rgb(229 231 235 / var(--tw-border-opacity, 1));
-}
-
-.border-gray-200\/50 {
-  border-color: #e5e7eb80;
-}
-
-.border-gray-200\/80 {
-  border-color: #e5e7ebcc;
-}
-
 .border-l-transparent {
   border-left-color: #0000;
 }
@@ -1689,10 +1633,6 @@ h1, h2, h3, h4, h5, h6 {
 
 .bg-background {
   background-color: hsl(var(--background));
-}
-
-.bg-black\/40 {
-  background-color: #0006;
 }
 
 .bg-black\/80 {
@@ -2032,10 +1972,6 @@ h1, h2, h3, h4, h5, h6 {
 
 .pt-8 {
   padding-top: 2rem;
-}
-
-.pt-12 {
-  padding-top: 3rem;
 }
 
 .text-left {
@@ -2640,11 +2576,6 @@ h1, h2, h3, h4, h5, h6 {
 
 .focus-within\:z-20:focus-within {
   z-index: 20;
-}
-
-.hover\:-translate-x-0:hover {
-  --tw-translate-x: -0px;
-  transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
 }
 
 .hover\:scale-105:hover {
@@ -3533,16 +3464,16 @@ h1, h2, h3, h4, h5, h6 {
     bottom: 0;
   }
 
+  .sm\:left-6 {
+    left: 1.5rem;
+  }
+
   .sm\:right-0 {
     right: 0;
   }
 
   .sm\:top-auto {
     top: auto;
-  }
-
-  .sm\:left-6 {
-    left: 1.5rem;
   }
 
   .sm\:mt-0 {
@@ -3748,11 +3679,6 @@ h1, h2, h3, h4, h5, h6 {
     line-height: 2.5rem;
   }
 
-  .md\:text-5xl {
-    font-size: 3rem;
-    line-height: 1;
-  }
-
   .md\:opacity-0 {
     opacity: 0;
   }
@@ -3864,11 +3790,6 @@ h1, h2, h3, h4, h5, h6 {
 
   .lg\:text-5xl {
     font-size: 3rem;
-    line-height: 1;
-  }
-
-  .lg\:text-6xl {
-    font-size: 3.75rem;
     line-height: 1;
   }
 }
