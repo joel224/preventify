@@ -8,6 +8,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import SubscriptionButton from "@/components/SubscriptionButton";
+import StickySavingsTab from "@/components/StickySavingsTab";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -27,7 +28,10 @@ export default function RootLayout({
         <TooltipProvider>
           <div className="flex flex-col min-h-screen">
             <Navbar />
-            <main className="flex-grow">{children}</main>
+            <main className="flex-grow">
+              <StickySavingsTab />
+              {children}
+            </main>
             <Footer />
             <SubscriptionButton />
           </div>
