@@ -1743,6 +1743,10 @@ h1, h2, h3, h4, h5, h6 {
   border-color: #e5e7eb80;
 }
 
+.border-gray-200\/80 {
+  border-color: #e5e7ebcc;
+}
+
 .border-l-transparent {
   border-left-color: #0000;
 }
