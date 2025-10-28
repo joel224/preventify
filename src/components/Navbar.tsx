@@ -59,7 +59,7 @@ const Navbar = () => {
       </div>
       
       {/* Main Navigation */}
-      <div className="container mx-auto py-4 px-4 sm:px-6 lg:px-8">
+      <div className="container mx-auto py-5 px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center">
           <div className="flex items-center">
             <Link href="/" className="flex items-center">
