@@ -20,6 +20,7 @@ import {
 import { Wallet, Stethoscope, Pill, ChevronDown } from "lucide-react";
 import ShimmerText from "@/components/ShimmerText";
 import { Button } from "@/components/ui/button";
+import Image from "next/image";
 
 
 const savingsData = [
@@ -103,7 +104,7 @@ const MagneticButton = () => {
             ref={containerRef}
             onMouseMove={handleMouseMove}
             onMouseLeave={handleMouseLeave}
-            className="mt-8 text-center flex justify-center items-center h-24 w-24 mx-auto"
+            className="mt-8 flex justify-center items-center h-24 w-24"
         >
             <a href="#savings-details" ref={buttonRef} className="transition-transform duration-200 ease-out">
                 <Button variant="outline" size="icon" className="rounded-full animate-bounce">
@@ -132,19 +133,31 @@ const SavingsPage = () => {
     <>
        <div className="bg-preventify-blue/10 py-12 md:py-20">
             <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-                <ShimmerText isActive={isShimmerActive}>
-                    <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-center text-preventify-blue">
-                        How much can you save with the One Health Member Plan?
-                    </h1>
-                </ShimmerText>
-                <p className="mt-4 text-lg text-center max-w-3xl mx-auto text-preventify-dark-gray">
-                    Explore the detailed savings and benefits of our membership.
-                </p>
-                <MagneticButton />
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+                    <div className="text-center md:text-left">
+                        <ShimmerText isActive={isShimmerActive}>
+                            <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-preventify-blue">
+                                How much can you save with the One Health Member Plan?
+                            </h1>
+                        </ShimmerText>
+                        <p className="mt-4 text-lg max-w-xl text-preventify-dark-gray">
+                            Explore the detailed savings and benefits of our membership.
+                        </p>
+                        <MagneticButton />
+                    </div>
+                    <div className="relative aspect-video rounded-lg overflow-hidden shadow-lg">
+                        <Image
+                            src="/cardX.jpg"
+                            alt="One Health Member Card"
+                            fill
+                            className="object-cover"
+                        />
+                    </div>
+                </div>
             </div>
         </div>
 
-      <section id="savings-details" className="py-16 pt-0">
+      <section id="savings-details" className="py-16 pt-8">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           {/* Top Info Cards */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -234,5 +247,3 @@ const SavingsPage = () => {
 };
 
 export default SavingsPage;
-
-    
