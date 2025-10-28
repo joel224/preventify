@@ -65,15 +65,15 @@ export default {
 				},
                 'top-bar': 'hsl(var(--top-bar))',
 				preventify: {
-					blue: '#0055A5', // Narayana Blue
-					green: '#28B67A', // Preventify green
-					gray: '#757575', // Gray text "Hospitals" from logo
-					'light-blue': '#4A5AC5', // Lighter shade of blue
-					'light-green': '#3DD391', // Lighter shade of green
-					'dark-blue': '#1E2665', // Darker shade of blue 
-					'dark-green': '#1D9965', // Darker shade of green
-					'light-gray': '#F1F5F9', // Light gray for backgrounds
-					'dark-gray': '#4B4B4B', // Dark gray for text
+					blue: '#0055A5', 
+					green: '#28B67A', 
+					gray: '#757575',
+					'light-blue': '#4A5AC5',
+					'light-green': '#3DD391',
+					'dark-blue': '#1E2665', 
+					'dark-green': '#1D9965',
+					'light-gray': '#F1F5F9',
+					'dark-gray': '#4B4B4B', 
 				}
 			},
 			borderRadius: {
