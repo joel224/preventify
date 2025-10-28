@@ -144,8 +144,8 @@ const SubscriptionButton = () => {
           </ShimmerText>
         
             <DialogFooter className="sm:justify-center mt-4">
-               <Link href="/savings" asChild>
-                <Button className="w-full bg-preventify-green hover:bg-preventify-dark-green text-white text-base py-3 px-6" onClick={() => setIsOpen(false)}>
+               <Link href="/savings" onClick={() => setIsOpen(false)}>
+                <Button className="w-full bg-preventify-green hover:bg-preventify-dark-green text-white text-base py-3 px-6">
                   Claim My Peace of Mind
                 </Button>
               </Link>
