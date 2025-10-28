@@ -115,8 +115,8 @@ const SubscriptionButton = () => {
           <div className="order-1 lg:order-2">
              <div className="relative w-full aspect-[16/10] lg:h-full">
               <Image
-                src="/family.png"
-                alt="Family"
+                src="/card.jpg"
+                alt="One Health Member Plan Card"
                 fill
                 className="rounded-t-lg lg:rounded-none lg:rounded-r-lg object-cover"
               />
