@@ -6,7 +6,7 @@ import Image from "next/image"
 
 const PreventiveLifestyleSection = () => {
     return (
-        <section className="bg-white py-16 md:py-24 relative -mt-16 rounded-t-2xl shadow-2xl">
+        <section className="bg-white py-16 md:py-24 relative -mt-16 rounded-t-2xl shadow-xl">
              <div className="absolute -top-12 left-4 sm:left-6 lg:left-8 z-10">
                     <div className="inline-flex items-center gap-2 bg-white rounded-full p-8 shadow-lg border border-gray-200/80">
                         <Image src="/logo.png" alt="Preventify Logo" width={88} height={88} />
