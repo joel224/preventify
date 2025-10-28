@@ -1,12 +1,20 @@
+
 'use client'
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useSearchParams } from 'next/navigation';
 import { Input } from "@/components/ui/input";
 import PageHeader from "@/components/PageHeader";
 import DoctorCard from "@/components/DoctorCard";
 
 const DoctorsPage = () => {
-  const [searchTerm, setSearchTerm] = useState("");
+  const searchParams = useSearchParams();
+  const locationQuery = searchParams.get('location');
+  const searchQuery = searchParams.get('q');
+  
+  const [searchTerm, setSearchTerm] = useState(searchQuery || "");
   const [selectedSpecialty, setSelectedSpecialty] = useState("All");
+  const [selectedLocation, setSelectedLocation] = useState(locationQuery || "All");
+
 
   const doctors = [
     {
@@ -132,16 +140,26 @@ const DoctorsPage = () => {
     },
   ];
 
-  const specialties = ["All", "Cardiology", "Family Medicine", "Endocrinology", "Pediatrics", "Orthopedics", "Dermatology", "Internal Medicine", "Gynecology"];
+  const specialties = ["All", "Chief Medical Officer", "General Practitioner", "Pediatrics", "Dermatology", "Pulmonology", "Gynecology", "Minor Surgeries", "ENT", "Resident Medical Officer", "Orthopedics", "Casuality Medical Officer"];
+  const locations = ["All", "Padinjarangadi", "Vattamkulam", "Padinjarangadi & Vattamkulam"];
+
+
+  useEffect(() => {
+    setSearchTerm(searchQuery || '');
+    setSelectedLocation(locationQuery || 'All');
+  }, [searchQuery, locationQuery]);
 
   const filteredDoctors = doctors.filter((doctor) => {
-    const matchesSearch = doctor.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
-                        doctor.specialty.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                        doctor.location.toLowerCase().includes(searchTerm.toLowerCase());
+    const searchLower = searchTerm.toLowerCase();
+    const matchesSearch = doctor.name.toLowerCase().includes(searchLower) || 
+                        doctor.specialty.toLowerCase().includes(searchLower) ||
+                        doctor.qualification.toLowerCase().includes(searchLower);
     
     const matchesSpecialty = selectedSpecialty === "All" || doctor.specialty === selectedSpecialty;
+
+    const matchesLocation = selectedLocation === "All" || doctor.location.toLowerCase().includes(selectedLocation.toLowerCase());
     
-    return matchesSearch && matchesSpecialty;
+    return matchesSearch && matchesSpecialty && matchesLocation;
   });
 
   return (
@@ -154,18 +172,22 @@ const DoctorsPage = () => {
       {/* Search and Filter Section */}
       <section className="py-8 bg-preventify-light-gray">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-col md:flex-row gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div className="flex-1">
+               <label htmlFor="search-input" className="block text-sm font-medium text-gray-700 mb-1">Search by Name or Specialty</label>
               <Input
+                id="search-input"
                 type="text"
-                placeholder="Search by name, specialty or location..."
+                placeholder="Search..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 className="w-full"
               />
             </div>
-            <div className="w-full md:w-64">
+            <div className="w-full">
+              <label htmlFor="specialty-select" className="block text-sm font-medium text-gray-700 mb-1">Filter by Specialty</label>
               <select
+                id="specialty-select"
                 value={selectedSpecialty}
                 onChange={(e) => setSelectedSpecialty(e.target.value)}
                 className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-preventify-purple"
@@ -173,6 +195,21 @@ const DoctorsPage = () => {
                 {specialties.map((specialty) => (
                   <option key={specialty} value={specialty}>
                     {specialty}
+                  </option>
+                ))}
+              </select>
+            </div>
+             <div className="w-full">
+               <label htmlFor="location-select" className="block text-sm font-medium text-gray-700 mb-1">Filter by Location</label>
+              <select
+                id="location-select"
+                value={selectedLocation}
+                onChange={(e) => setSelectedLocation(e.target.value)}
+                className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-preventify-purple"
+              >
+                {locations.map((loc) => (
+                  <option key={loc} value={loc}>
+                    {loc}
                   </option>
                 ))}
               </select>
