@@ -7,9 +7,9 @@ import Image from "next/image"
 const PreventiveLifestyleSection = () => {
     return (
         <section className="bg-white py-16 md:py-24 relative">
-             <div className="absolute -top-5 left-4 sm:left-6 lg:left-8">
-                    <div className="inline-flex items-center gap-2 bg-white rounded-full p-2 shadow-lg border border-gray-200/80">
-                        <Image src="/logo.png" alt="Preventify Logo" width={32} height={32} />
+             <div className="absolute -top-8 left-4 sm:left-6 lg:left-8">
+                    <div className="inline-flex items-center gap-2 bg-white rounded-full p-3 shadow-lg border border-gray-200/80">
+                        <Image src="/logo.png" alt="Preventify Logo" width={40} height={40} />
                     </div>
                 </div>
             <div className="container mx-auto px-4 sm:px-6 lg:px-8">
