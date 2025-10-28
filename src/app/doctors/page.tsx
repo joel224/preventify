@@ -1,22 +1,13 @@
 
 'use client'
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { useSearchParams } from 'next/navigation';
 import { Input } from "@/components/ui/input";
 import PageHeader from "@/components/PageHeader";
 import DoctorCard from "@/components/DoctorCard";
+import { Loader2 } from "lucide-react";
 
-const DoctorsPage = () => {
-  const searchParams = useSearchParams();
-  const locationQuery = searchParams.get('location');
-  const searchQuery = searchParams.get('q');
-  
-  const [searchTerm, setSearchTerm] = useState(searchQuery || "");
-  const [selectedSpecialty, setSelectedSpecialty] = useState("All");
-  const [selectedLocation, setSelectedLocation] = useState(locationQuery || "All");
-
-
-  const doctors = [
+const doctors = [
     {
       id: 1,
       name: "Dr. Rakesh K R",
@@ -140,9 +131,17 @@ const DoctorsPage = () => {
     },
   ];
 
-  const specialties = ["All", "Chief Medical Officer", "General Practitioner", "Pediatrics", "Dermatology", "Pulmonology", "Gynecology", "Minor Surgeries", "ENT", "Resident Medical Officer", "Orthopedics", "Casuality Medical Officer"];
-  const locations = ["All", "Padinjarangadi", "Vattamkulam", "Padinjarangadi & Vattamkulam"];
+const specialties = ["All", "Chief Medical Officer", "General Practitioner", "Pediatrics", "Dermatology", "Pulmonology", "Gynecology", "Minor Surgeries", "ENT", "Resident Medical Officer", "Orthopedics", "Casuality Medical Officer"];
+const locations = ["All", "Padinjarangadi", "Vattamkulam", "Padinjarangadi & Vattamkulam"];
 
+const DoctorsPageContent = () => {
+  const searchParams = useSearchParams();
+  const locationQuery = searchParams.get('location');
+  const searchQuery = searchParams.get('q');
+  
+  const [searchTerm, setSearchTerm] = useState(searchQuery || "");
+  const [selectedSpecialty, setSelectedSpecialty] = useState("All");
+  const [selectedLocation, setSelectedLocation] = useState(locationQuery || "All");
 
   useEffect(() => {
     setSearchTerm(searchQuery || '');
@@ -270,4 +269,15 @@ const DoctorsPage = () => {
   );
 };
 
+
+const DoctorsPage = () => {
+  return (
+    <Suspense fallback={<div className="flex justify-center items-center h-screen"><Loader2 className="h-16 w-16 animate-spin text-primary" /></div>}>
+      <DoctorsPageContent />
+    </Suspense>
+  );
+};
+
 export default DoctorsPage;
+
+    
