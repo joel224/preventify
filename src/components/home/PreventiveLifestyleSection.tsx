@@ -10,13 +10,6 @@ const PreventiveLifestyleSection = () => {
             <div className="container mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="grid grid-cols-1 gap-8 md:gap-12 items-center">
                     <div className="text-center">
-
-                        {/* Preventify Badge */}
-                        <div className="inline-flex items-center gap-2 bg-white rounded-full py-1.5 px-3 mb-6 shadow-sm border border-gray-200">
-                            <Image src="/logo.png" alt="Preventify Logo" width={20} height={20} />
-                            <span className="font-semibold text-gray-700 text-sm">Preventify</span>
-                        </div>
-
                         <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4 text-preventify-dark-blue">
                             AI assisted Modern Healthcare for a <span className="text-primary">Preventive Lifestyle</span>
                         </h2>

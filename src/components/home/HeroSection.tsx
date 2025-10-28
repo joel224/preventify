@@ -16,6 +16,13 @@ import Link from "next/link"
 const HeroSection = () => {
   return (
     <section className="relative w-full overflow-hidden hero-gradient">
+      {/* Preventify Badge */}
+      <div className="absolute top-4 left-4 z-10">
+          <div className="inline-flex items-center gap-2 bg-white rounded-full py-1.5 px-3 shadow-md border border-gray-200/50">
+              <Image src="/logo.png" alt="Preventify Logo" width={20} height={20} />
+              <span className="font-semibold text-gray-700 text-sm">Preventify</span>
+          </div>
+      </div>
       <Carousel 
         className="w-full"
         plugins={[Autoplay({ delay: 5000, stopOnInteraction: true })]}

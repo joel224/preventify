@@ -1739,6 +1739,10 @@ h1, h2, h3, h4, h5, h6 {
   border-color: rgb(229 231 235 / var(--tw-border-opacity, 1));
 }
 
+.border-gray-200\/50 {
+  border-color: #e5e7eb80;
+}
+
 .border-l-transparent {
   border-left-color: #0000;
 }
