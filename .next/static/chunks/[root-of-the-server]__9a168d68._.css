@@ -937,6 +937,10 @@ h1, h2, h3, h4, h5, h6 {
   height: 100svh;
 }
 
+.h-\[480px\] {
+  height: 480px;
+}
+
 .max-h-96 {
   max-height: 24rem;
 }
@@ -1841,6 +1845,10 @@ h1, h2, h3, h4, h5, h6 {
 
 .bg-white\/10 {
   background-color: #ffffff1a;
+}
+
+.bg-black\/40 {
+  background-color: #0006;
 }
 
 .bg-gradient-to-t {
@@ -3719,6 +3727,10 @@ h1, h2, h3, h4, h5, h6 {
     display: none;
   }
 
+  .md\:h-\[560px\] {
+    height: 560px;
+  }
+
   .md\:w-2\/3 {
     width: 66.6667%;
   }
@@ -3761,6 +3773,10 @@ h1, h2, h3, h4, h5, h6 {
 
   .md\:justify-start {
     justify-content: flex-start;
+  }
+
+  .md\:gap-12 {
+    gap: 3rem;
   }
 
   .md\:p-8 {

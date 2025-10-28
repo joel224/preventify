@@ -11,7 +11,6 @@ import {
 import { Button } from "@/components/ui/button"
 import Autoplay from "embla-carousel-autoplay"
 import Image from "next/image"
-import BookingDialog from "../BookingDialog"
 import Link from "next/link"
 
 const HeroSection = () => {
@@ -24,39 +23,9 @@ const HeroSection = () => {
         <CarouselContent>
           {/* Slide 1 */}
           <CarouselItem>
-            <div className="w-full relative">
-              <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-20 md:py-32">
-                <div className="grid grid-cols-1 gap-8 items-center">
-                  <div className="text-center md:text-left">
-                     <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-4 text-preventify-dark-blue">
-                        AI assisted Modern Healthcare for a <span className="text-primary">Preventive Lifestyle</span>
-                    </h1>
-                    <p className="text-lg text-preventify-dark-gray mb-8">
-                        AI-assisted evidence-based care across Kerala focused on prevention, early intervention, and better health outcomes for you and your family.
-                    </p>
-                    <div className="flex flex-col sm:flex-row gap-4 justify-center md:justify-start">
-                        <BookingDialog>
-                            <Button className="bg-primary hover:bg-primary/90 text-white text-lg py-6 px-8">
-                                Book an Appointment
-                            </Button>
-                        </BookingDialog>
-                         <Link href="/programs">
-                            <Button variant="outline" className="border-primary text-primary hover:bg-primary/5 text-lg py-6 px-8">
-                                Our Services
-                            </Button>
-                        </Link>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </CarouselItem>
-          
-          {/* Slide 2 */}
-          <CarouselItem>
-            <div className="w-full h-full relative">
+            <div className="w-full h-[480px] md:h-[560px] relative">
                 <Image src="https://images.unsplash.com/photo-1542841791-1925b02a2bbb?q=80&w=1632&auto=format&fit=crop" alt="Transplant" fill className="object-cover" data-ai-hint="hands heart"/>
-                 <div className="absolute inset-0 bg-black/30"></div>
+                 <div className="absolute inset-0 bg-black/40"></div>
                  <div className="absolute inset-0 flex items-center justify-center">
                     <div className="container mx-auto px-4 sm:px-6 lg:px-8 text-white text-center">
                          <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-4">
