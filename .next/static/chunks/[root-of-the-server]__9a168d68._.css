@@ -812,6 +812,10 @@ h1, h2, h3, h4, h5, h6 {
   aspect-ratio: 16 / 9;
 }
 
+.aspect-\[2\/1\] {
+  aspect-ratio: 2;
+}
+
 .size-4 {
   width: 1rem;
   height: 1rem;
@@ -1996,6 +2000,11 @@ h1, h2, h3, h4, h5, h6 {
 .py-8 {
   padding-top: 2rem;
   padding-bottom: 2rem;
+}
+
+.px-0 {
+  padding-left: 0;
+  padding-right: 0;
 }
 
 .pb-2 {
@@ -3674,6 +3683,11 @@ h1, h2, h3, h4, h5, h6 {
     padding-right: 1.5rem;
   }
 
+  .sm\:px-0 {
+    padding-left: 0;
+    padding-right: 0;
+  }
+
   .sm\:pt-0 {
     padding-top: 0;
   }
@@ -3728,6 +3742,10 @@ h1, h2, h3, h4, h5, h6 {
 
   .md\:hidden {
     display: none;
+  }
+
+  .md\:aspect-\[3\/1\] {
+    aspect-ratio: 3;
   }
 
   .md\:w-2\/3 {
@@ -3902,6 +3920,11 @@ h1, h2, h3, h4, h5, h6 {
   .lg\:px-8 {
     padding-left: 2rem;
     padding-right: 2rem;
+  }
+
+  .lg\:px-0 {
+    padding-left: 0;
+    padding-right: 0;
   }
 
   .lg\:text-left {
