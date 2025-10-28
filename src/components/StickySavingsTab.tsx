@@ -25,7 +25,6 @@ const StickySavingsTab = () => {
                         <p className="text-preventify-dark-gray text-xs whitespace-nowrap">Member Plan</p>
                         <div className="flex items-center text-preventify-green mt-2">
                             <span className="text-xs font-semibold">Explore</span>
-                            <ArrowRight className="h-4 w-4 ml-1" />
                         </div>
                     </div>
                 </div>
