@@ -48,23 +48,23 @@ const ServicesSection = () => {
             Preventify offers a comprehensive range of healthcare services designed to keep you healthy and address your medical needs.
           </p>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          {services.map((service, index) => (
-            <FadeInWhenVisible key={index}>
-              <Card className="h-full hover:shadow-lg transition-shadow">
-                <CardContent className="p-6 text-center">
-                  <img
-                    src={service.icon}
-                    alt={service.title}
-                    className="w-16 h-16 mx-auto mb-4"
-                  />
-                  <h3 className="text-xl font-semibold mb-2 text-preventify-blue">{service.title}</h3>
-                  <p className="text-preventify-dark-gray">{service.description}</p>
-                </CardContent>
-              </Card>
-            </FadeInWhenVisible>
-          ))}
-        </div>
+        <FadeInWhenVisible>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {services.map((service, index) => (
+              <Card key={index} className="h-full hover:shadow-lg transition-shadow">
+                  <CardContent className="p-6 text-center">
+                    <img
+                      src={service.icon}
+                      alt={service.title}
+                      className="w-16 h-16 mx-auto mb-4"
+                    />
+                    <h3 className="text-xl font-semibold mb-2 text-preventify-blue">{service.title}</h3>
+                    <p className="text-preventify-dark-gray">{service.description}</p>
+                  </CardContent>
+                </Card>
+            ))}
+          </div>
+        </FadeInWhenVisible>
       </div>
     </section>
   );

@@ -12,7 +12,7 @@ interface FadeInWhenVisibleProps {
 const FadeInWhenVisible = ({ children, className }: FadeInWhenVisibleProps) => {
   const { ref, inView } = useInView({
     triggerOnce: true, // Only trigger the animation once
-    threshold: 0.1,   // Trigger when 10% of the element is visible
+    threshold: 0,   // Trigger as soon as the element enters the viewport
   });
 
   return (
