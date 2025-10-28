@@ -736,6 +736,10 @@ h1, h2, h3, h4, h5, h6 {
   aspect-ratio: 16 / 9;
 }
 
+.aspect-\[3\/4\] {
+  aspect-ratio: 3 / 4;
+}
+
 .size-4 {
   width: 1rem;
   height: 1rem;

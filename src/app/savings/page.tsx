@@ -145,7 +145,7 @@ const SavingsPage = () => {
                         </p>
                         <MagneticButton />
                     </div>
-                    <div className="relative aspect-video rounded-lg overflow-hidden shadow-lg">
+                    <div className="relative aspect-[3/4] rounded-lg overflow-hidden shadow-lg">
                         <Image
                             src="/cardX.jpg"
                             alt="One Health Member Card"
