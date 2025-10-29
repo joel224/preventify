@@ -59,7 +59,7 @@ const SavingsTable = ({ data, offset = 0 }: { data: typeof savingsData; offset?:
             {data.map((item, index) => (
               <TableRow 
                 key={index} 
-                className="even:bg-preventify-green/5 animate-shimmer-reveal"
+                className="relative overflow-hidden even:bg-preventify-green/5 animate-shimmer-reveal"
                 style={{ animationDelay: `${(index + offset) * 100}ms` }}
               >
                 <TableCell className="font-medium">{item.service}</TableCell>
@@ -111,7 +111,7 @@ const MagneticButton = () => {
             ref={containerRef}
             onMouseMove={handleMouseMove}
             onMouseLeave={handleMouseLeave}
-            className="mt-8 flex justify-center items-center h-24 w-24"
+            className="mt-8 flex justify-start items-center h-24 w-24"
         >
             <a href="#savings-details" ref={buttonRef} className="transition-transform duration-200 ease-out">
                 <Button variant="outline" size="icon" className="rounded-full animate-bounce">
@@ -148,7 +148,7 @@ const SavingsPage = () => {
                             src="/cardX.jpg"
                             alt="One Health Member Card"
                             fill
-                            className="object-cover"
+                            className="object-contain"
                         />
                     </div>
                 </div>
@@ -245,6 +245,8 @@ const SavingsPage = () => {
 };
 
 export default SavingsPage;
+
+    
 
     
 
