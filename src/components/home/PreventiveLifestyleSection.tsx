@@ -1,7 +1,7 @@
 
 'use client';
 
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { Button } from "@/components/ui/button"
 import BookingDialog from "../BookingDialog"
 import Image from "next/image"
@@ -33,14 +33,31 @@ const clinicsData = [
 
 const PreventiveLifestyleSection = () => {
     const [selectedClinic, setSelectedClinic] = useState('');
+    const [selectedSpecialty, setSelectedSpecialty] = useState('');
     const [selectedDoctor, setSelectedDoctor] = useState('');
-    const [doctorsInClinic, setDoctorsInClinic] = useState<typeof doctorsData>([]);
-    
+
+    const availableSpecialties = useMemo(() => {
+        if (!selectedClinic) return [];
+        const specialties = doctorsData
+            .filter(d => d.clinicId === selectedClinic)
+            .map(d => d.specialty);
+        return [...new Set(specialties)]; // Unique specialties
+    }, [selectedClinic]);
+
+    const availableDoctors = useMemo(() => {
+        if (!selectedClinic || !selectedSpecialty) return [];
+        return doctorsData.filter(d => d.clinicId === selectedClinic && d.specialty === selectedSpecialty);
+    }, [selectedClinic, selectedSpecialty]);
+
     const handleClinicChange = (clinicId: string) => {
         setSelectedClinic(clinicId);
-        setSelectedDoctor(''); // Reset doctor selection
-        const filteredDoctors = doctorsData.filter(d => d.clinicId === clinicId);
-        setDoctorsInClinic(filteredDoctors);
+        setSelectedSpecialty('');
+        setSelectedDoctor('');
+    };
+
+    const handleSpecialtyChange = (specialty: string) => {
+        setSelectedSpecialty(specialty);
+        setSelectedDoctor('');
     };
 
     return (
@@ -62,12 +79,12 @@ const PreventiveLifestyleSection = () => {
                             AI-assisted evidence-based care across Kerala focused on prevention, early intervention, and better health outcomes for you and your family.
                         </p>
 
-                        <Card className="max-w-2xl mx-auto bg-gray-50/50">
+                        <Card className="max-w-3xl mx-auto bg-gray-50/50">
                             <CardContent className="p-6">
-                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 items-center">
+                                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 items-center">
                                     <Select onValueChange={handleClinicChange} value={selectedClinic}>
                                         <SelectTrigger className="w-full h-12 text-base">
-                                            <SelectValue placeholder="Select Clinic Location" />
+                                            <SelectValue placeholder="Select Clinic" />
                                         </SelectTrigger>
                                         <SelectContent>
                                             {clinicsData.map(clinic => (
@@ -76,15 +93,24 @@ const PreventiveLifestyleSection = () => {
                                         </SelectContent>
                                     </Select>
 
-                                    <Select onValueChange={setSelectedDoctor} value={selectedDoctor} disabled={!selectedClinic}>
+                                    <Select onValueChange={handleSpecialtyChange} value={selectedSpecialty} disabled={!selectedClinic}>
                                         <SelectTrigger className="w-full h-12 text-base">
-                                            <SelectValue placeholder="Select Doctor/Specialty" />
+                                            <SelectValue placeholder="Select Specialty" />
                                         </SelectTrigger>
                                         <SelectContent>
-                                            {doctorsInClinic.map(doctor => (
-                                                <SelectItem key={doctor.id} value={doctor.id}>
-                                                    {doctor.name} ({doctor.specialty})
-                                                </SelectItem>
+                                            {availableSpecialties.map(specialty => (
+                                                <SelectItem key={specialty} value={specialty}>{specialty}</SelectItem>
+                                            ))}
+                                        </SelectContent>
+                                    </Select>
+                                    
+                                    <Select onValueChange={setSelectedDoctor} value={selectedDoctor} disabled={!selectedSpecialty}>
+                                        <SelectTrigger className="w-full h-12 text-base">
+                                            <SelectValue placeholder="Select Doctor" />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                            {availableDoctors.map(doctor => (
+                                                <SelectItem key={doctor.id} value={doctor.id}>{doctor.name}</SelectItem>
                                             ))}
                                         </SelectContent>
                                     </Select>
