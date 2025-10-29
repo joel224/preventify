@@ -117,20 +117,17 @@ export default {
                     },
                 },
                 'shimmer-reveal': {
-                    '0%': {
+                    '0%': { 
                         opacity: '0',
                         transform: 'translateY(10px)',
-                        backgroundPosition: '-200% 0',
                     },
                     '60%': {
                         opacity: '1',
                         transform: 'translateY(0)',
-                        backgroundPosition: '200% 0',
                     },
                     '100%': {
                         opacity: '1',
                         transform: 'translateY(0)',
-                        backgroundPosition: '200% 0',
                     }
                 },
                 vibrate: {
@@ -145,20 +142,14 @@ export default {
 				'accordion-down': 'accordion-down 0.2s ease-out',
 				'accordion-up': 'accordion-up 0.2s ease-out',
 				'fade-in': 'fade-in 0.3s ease-out',
-                'shimmer': 'shimmer 2s infinite',
-                'shimmer-reveal': 'shimmer-reveal 1.5s ease-out forwards',
+                'shimmer': 'shimmer 1.5s infinite',
+                'shimmer-reveal': 'shimmer-reveal 1s ease-out forwards',
                 'vibrate': 'vibrate 4s ease-in-out infinite',
 			},
 			fontFamily: {
 				sans: ['Inter', 'sans-serif'],
 				display: ['Poppins', 'sans-serif'],
 			},
-			backgroundImage: {
-                'shimmer-gradient': 'linear-gradient(90deg, transparent 20%, rgba(255,255,255,0.05) 50%, transparent 80%)',
-            },
-            backgroundSize: {
-                'shimmer-size': '200% 100%',
-            },
 		}
 	},
 	plugins: [require("tailwindcss-animate")],

@@ -1310,31 +1310,28 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .animate-shimmer {
-  animation: 2s infinite shimmer;
+  animation: 1.5s infinite shimmer;
 }
 
 @keyframes shimmer-reveal {
   0% {
     opacity: 0;
-    background-position: -200% 0;
     transform: translateY(10px);
   }
 
   60% {
     opacity: 1;
-    background-position: 200% 0;
     transform: translateY(0);
   }
 
   100% {
     opacity: 1;
-    background-position: 200% 0;
     transform: translateY(0);
   }
 }
 
 .animate-shimmer-reveal {
-  animation: 1.5s ease-out forwards shimmer-reveal;
+  animation: 1s ease-out forwards shimmer-reveal;
 }
 
 @keyframes spin {
@@ -1879,12 +1876,12 @@ h1, h2, h3, h4, h5, h6 {
   background-color: rgb(255 255 255 / var(--tw-bg-opacity, 1));
 }
 
-.bg-gradient-to-t {
-  background-image: linear-gradient(to top, var(--tw-gradient-stops));
-}
-
 .bg-gradient-to-r {
   background-image: linear-gradient(to right, var(--tw-gradient-stops));
+}
+
+.bg-gradient-to-t {
+  background-image: linear-gradient(to top, var(--tw-gradient-stops));
 }
 
 .from-black\/70 {
@@ -1902,6 +1899,11 @@ h1, h2, h3, h4, h5, h6 {
 .via-white\/40 {
   --tw-gradient-to: #fff0 var(--tw-gradient-to-position);
   --tw-gradient-stops: var(--tw-gradient-from), #fff6 var(--tw-gradient-via-position), var(--tw-gradient-to);
+}
+
+.via-white\/70 {
+  --tw-gradient-to: #fff0 var(--tw-gradient-to-position);
+  --tw-gradient-stops: var(--tw-gradient-from), #ffffffb3 var(--tw-gradient-via-position), var(--tw-gradient-to);
 }
 
 .to-transparent {
@@ -2452,6 +2454,12 @@ h1, h2, h3, h4, h5, h6 {
   outline-style: solid;
 }
 
+.ring {
+  --tw-ring-offset-shadow: var(--tw-ring-inset) 0 0 0 var(--tw-ring-offset-width) var(--tw-ring-offset-color);
+  --tw-ring-shadow: var(--tw-ring-inset) 0 0 0 calc(3px + var(--tw-ring-offset-width)) var(--tw-ring-color);
+  box-shadow: var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow, 0 0 #0000);
+}
+
 .ring-0 {
   --tw-ring-offset-shadow: var(--tw-ring-inset) 0 0 0 var(--tw-ring-offset-width) var(--tw-ring-offset-color);
   --tw-ring-shadow: var(--tw-ring-inset) 0 0 0 calc(0px + var(--tw-ring-offset-width)) var(--tw-ring-color);
@@ -2467,12 +2475,6 @@ h1, h2, h3, h4, h5, h6 {
 .ring-4 {
   --tw-ring-offset-shadow: var(--tw-ring-inset) 0 0 0 var(--tw-ring-offset-width) var(--tw-ring-offset-color);
   --tw-ring-shadow: var(--tw-ring-inset) 0 0 0 calc(4px + var(--tw-ring-offset-width)) var(--tw-ring-color);
-  box-shadow: var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow, 0 0 #0000);
-}
-
-.ring {
-  --tw-ring-offset-shadow: var(--tw-ring-inset) 0 0 0 var(--tw-ring-offset-width) var(--tw-ring-offset-color);
-  --tw-ring-shadow: var(--tw-ring-inset) 0 0 0 calc(3px + var(--tw-ring-offset-width)) var(--tw-ring-color);
   box-shadow: var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow, 0 0 #0000);
 }
 
@@ -2613,16 +2615,12 @@ h1, h2, h3, h4, h5, h6 {
   animation-duration: .15s;
 }
 
-.fade-in-0 {
+.fade-in, .fade-in-0 {
   --tw-enter-opacity: 0;
 }
 
 .fade-in-80 {
   --tw-enter-opacity: .8;
-}
-
-.fade-in {
-  --tw-enter-opacity: 0;
 }
 
 .zoom-in-95 {

@@ -60,11 +60,18 @@ const SavingsTable = ({ data, offset = 0 }: { data: typeof savingsData; offset?:
             {data.map((item, index) => (
               <TableRow 
                 key={index} 
-                className="relative overflow-hidden animate-shimmer-reveal bg-gradient-to-r from-transparent via-white/40 to-transparent bg-[length:200%_100%]"
+                className="even:bg-preventify-green/5 animate-shimmer-reveal"
                 style={{ animationDelay: `${(index + offset) * 100}ms` }}
               >
                 <TableCell className="font-medium">{item.service}</TableCell>
-                <TableCell className="text-right font-extrabold text-preventify-green">₹{item.save.toLocaleString()}</TableCell>
+                <TableCell className="text-right font-extrabold text-preventify-green relative overflow-hidden">
+                  <span className="relative z-10">
+                    ₹{item.save.toLocaleString()}
+                  </span>
+                  <span 
+                    className="absolute inset-0 block w-full h-full bg-gradient-to-r from-transparent via-white/70 to-transparent animate-shimmer"
+                  />
+                </TableCell>
                 <TableCell className="text-right">₹{item.nonMember.toLocaleString()}</TableCell>
                 <TableCell className="text-right">₹{item.member.toLocaleString()}</TableCell>
               </TableRow>
@@ -241,5 +248,7 @@ const SavingsPage = () => {
 };
 
 export default SavingsPage;
+
+    
 
     
