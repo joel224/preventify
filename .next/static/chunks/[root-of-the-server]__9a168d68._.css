@@ -1316,11 +1316,13 @@ h1, h2, h3, h4, h5, h6 {
 @keyframes shimmer-reveal {
   0% {
     opacity: 0;
+    background-position: -200% 0;
     transform: translateY(10px);
   }
 
-  50% {
+  60% {
     opacity: 1;
+    background-position: 200% 0;
     transform: translateY(0);
   }
 

@@ -120,10 +120,12 @@ export default {
                     '0%': {
                         opacity: '0',
                         transform: 'translateY(10px)',
+                        backgroundPosition: '-200% 0',
                     },
-                    '50%': {
+                    '60%': {
                         opacity: '1',
                         transform: 'translateY(0)',
+                        backgroundPosition: '200% 0',
                     },
                     '100%': {
                         opacity: '1',
@@ -150,8 +152,16 @@ export default {
 			fontFamily: {
 				sans: ['Inter', 'sans-serif'],
 				display: ['Poppins', 'sans-serif'],
-			}
+			},
+			backgroundImage: {
+                'shimmer-gradient': 'linear-gradient(90deg, transparent 20%, rgba(255,255,255,0.05) 50%, transparent 80%)',
+            },
+            backgroundSize: {
+                'shimmer-size': '200% 100%',
+            },
 		}
 	},
 	plugins: [require("tailwindcss-animate")],
 } satisfies Config;
+
+    
