@@ -1,3 +1,4 @@
+
 'use client';
 import { Card, CardContent } from "@/components/ui/card";
 
@@ -28,7 +29,7 @@ const services = [
     description: "Comprehensive care addressing women's unique health needs.",
   },
   {
-    icon: "https://cdn-icons-png.flaticon.com/512/2491/2491749.png",
+    icon: "https://cdn-icons-png.flaticon.com/512/4087/4087640.png",
     title: "Preventive Screenings",
     description: "Early detection tests to identify potential health issues.",
   },
