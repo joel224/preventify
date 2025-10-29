@@ -21,8 +21,12 @@ const features = [
 
 const FeaturesSection = () => {
   return (
-    <section className="bg-preventify-light-gray py-16">
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+    <section className="bg-preventify-light-gray py-16 relative overflow-hidden">
+       <div 
+        className="absolute inset-0 bg-gradient-to-br from-transparent via-transparent to-blue-100/50 -z-0"
+        style={{ clipPath: 'polygon(100% 0, 0 100%, 100% 100%)' }}
+      ></div>
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <div className="text-center mb-12">
           <h2 className="text-3xl md:text-4xl font-bold mb-4 text-preventify-blue">
             Why Choose Preventify

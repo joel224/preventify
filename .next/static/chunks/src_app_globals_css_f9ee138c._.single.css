@@ -534,6 +534,10 @@ h1, h2, h3, h4, h5, h6 {
   z-index: 1;
 }
 
+.-z-0 {
+  z-index: 0;
+}
+
 .order-1 {
   order: 1;
 }
@@ -1820,6 +1824,10 @@ h1, h2, h3, h4, h5, h6 {
   background-image: linear-gradient(to top, var(--tw-gradient-stops));
 }
 
+.bg-gradient-to-br {
+  background-image: linear-gradient(to bottom right, var(--tw-gradient-stops));
+}
+
 .from-black\/70 {
   --tw-gradient-from: #000000b3 var(--tw-gradient-from-position);
   --tw-gradient-to: #0000 var(--tw-gradient-to-position);
@@ -1842,8 +1850,17 @@ h1, h2, h3, h4, h5, h6 {
   --tw-gradient-stops: var(--tw-gradient-from), #ffffffb3 var(--tw-gradient-via-position), var(--tw-gradient-to);
 }
 
+.via-transparent {
+  --tw-gradient-to: #0000 var(--tw-gradient-to-position);
+  --tw-gradient-stops: var(--tw-gradient-from), transparent var(--tw-gradient-via-position), var(--tw-gradient-to);
+}
+
 .to-transparent {
   --tw-gradient-to: transparent var(--tw-gradient-to-position);
+}
+
+.to-blue-100\/50 {
+  --tw-gradient-to: #dbeafe80 var(--tw-gradient-to-position);
 }
 
 .bg-\[length\:200\%_100\%\] {
