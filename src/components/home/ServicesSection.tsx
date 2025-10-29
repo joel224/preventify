@@ -24,7 +24,7 @@ const services = [
     description: "Specialized healthcare services for infants, children, and adolescents.",
   },
   {
-    icon: "https://cdn-icons-png.flaticon.com/512/3588/3588693.png",
+    icon: "https://cdn-icons-png.flaticon.com/512/8657/8657426.png",
     title: "Women's Health",
     description: "Comprehensive care addressing women's unique health needs.",
   },
