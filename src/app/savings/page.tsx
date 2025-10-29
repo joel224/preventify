@@ -63,7 +63,7 @@ const SavingsTable = ({ data, offset = 0 }: { data: typeof savingsData; offset?:
             {data.map((item, index) => (
               <TableRow 
                 key={index} 
-                className="relative overflow-hidden even:bg-preventify-green/5 animate-shimmer-reveal"
+                className="relative overflow-hidden even:bg-preventify-green/5 animate-shimmer-reveal bg-[length:200%_100%] bg-gradient-to-r from-transparent via-white/40 to-transparent"
                 style={{ animationDelay: `${(index + offset) * 100}ms` }}
               >
                 <TableCell className="font-medium">{item.service}</TableCell>
