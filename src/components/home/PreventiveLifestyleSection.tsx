@@ -36,12 +36,16 @@ const PreventiveLifestyleSection = () => {
     const [selectedSpecialty, setSelectedSpecialty] = useState('');
 
     const availableSpecialties = useMemo(() => {
-        if (!selectedClinic) return [];
+        if (!selectedClinic) {
+            const allSpecialties = doctorsData.map(d => d.specialty);
+            return [...new Set(allSpecialties)];
+        }
         const specialties = doctorsData
             .filter(d => d.clinicId === selectedClinic)
             .map(d => d.specialty);
         return [...new Set(specialties)]; // Unique specialties
     }, [selectedClinic]);
+
 
     const handleClinicChange = (clinicId: string) => {
         setSelectedClinic(clinicId);
@@ -75,7 +79,7 @@ const PreventiveLifestyleSection = () => {
                             <CardContent className="p-6">
                                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 items-center">
                                     <Select onValueChange={handleClinicChange} value={selectedClinic}>
-                                        <SelectTrigger className="w-full h-12 text-base">
+                                        <SelectTrigger className="w-full h-12 text-base bg-primary text-primary-foreground">
                                             <SelectValue placeholder="Select Clinic" />
                                         </SelectTrigger>
                                         <SelectContent>
