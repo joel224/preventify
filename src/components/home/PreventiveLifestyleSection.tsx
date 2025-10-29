@@ -37,9 +37,12 @@ const PreventiveLifestyleSection = () => {
     const [selectedSpecialty, setSelectedSpecialty] = useState('');
 
     const availableSpecialties = useMemo(() => {
+        if (!selectedClinic) return [];
+        // This logic needs to be more robust if clinics have different doctors.
+        // For now, we assume specialties are universal or tied to the available doctors list.
         const allSpecialties = doctorsData.map(d => d.specialty);
         return [...new Set(allSpecialties)];
-    }, []);
+    }, [selectedClinic]);
 
 
     const handleClinicChange = (clinicId: string) => {
@@ -52,7 +55,7 @@ const PreventiveLifestyleSection = () => {
     };
 
     return (
-        <section className="bg-white py-16 md:py-24 relative -mt-8 rounded-t-2xl shadow-xl">
+        <section className="bg-white py-8 md:py-12 relative -mt-8 rounded-t-2xl shadow-xl">
              <div className="absolute -top-12 left-4 sm:left-6 lg:left-8 z-10">
                     <div className="inline-flex items-center gap-2 bg-white rounded-full p-8 shadow-lg border border-gray-200/80">
                         <Image src="/logo.png" alt="Preventify Logo" width={88} height={88} />
@@ -70,8 +73,7 @@ const PreventiveLifestyleSection = () => {
                            AI-assisted evidence-based care across Kerala focused on prevention, early intervention, and better health outcomes for you and your family.
                         </p>
 
-                        <Card className="max-w-2xl mx-auto">
-                            <CardContent className="p-6">
+                        <div className="max-w-2xl mx-auto p-6 rounded-lg">
                                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 items-center">
                                     <Select onValueChange={handleClinicChange} value={selectedClinic}>
                                         <SelectTrigger className="w-full h-12 text-base bg-primary text-primary-foreground">
@@ -84,8 +86,8 @@ const PreventiveLifestyleSection = () => {
                                         </SelectContent>
                                     </Select>
 
-                                    <Select onValueChange={handleSpecialtyChange} value={selectedSpecialty}>
-                                        <SelectTrigger className="w-full h-12 text-base border-primary text-primary">
+                                    <Select onValueChange={handleSpecialtyChange} value={selectedSpecialty} disabled={!selectedClinic}>
+                                        <SelectTrigger className="w-full h-12 text-base border-primary text-primary bg-white">
                                             <SelectValue placeholder="Select Specialty" />
                                         </SelectTrigger>
                                         <SelectContent>
@@ -104,8 +106,7 @@ const PreventiveLifestyleSection = () => {
                                         </BookingDialog>
                                      </div>
                                 )}
-                            </CardContent>
-                        </Card>
+                        </div>
                     </div>
                 </div>
             </div>
