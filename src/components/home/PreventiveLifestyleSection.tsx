@@ -37,15 +37,9 @@ const PreventiveLifestyleSection = () => {
     const [selectedSpecialty, setSelectedSpecialty] = useState('');
 
     const availableSpecialties = useMemo(() => {
-        if (!selectedClinic) {
-            const allSpecialties = doctorsData.map(d => d.specialty);
-            return [...new Set(allSpecialties)];
-        }
-        const specialties = doctorsData
-            .filter(d => d.clinicId === selectedClinic)
-            .map(d => d.specialty);
-        return [...new Set(specialties)]; // Unique specialties
-    }, [selectedClinic]);
+        const allSpecialties = doctorsData.map(d => d.specialty);
+        return [...new Set(allSpecialties)];
+    }, []);
 
 
     const handleClinicChange = (clinicId: string) => {
@@ -68,7 +62,7 @@ const PreventiveLifestyleSection = () => {
                 
                 <div className="grid grid-cols-1 gap-8 md:gap-12 items-center">
                     <div className="text-center">
-                        <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4 text-preventify-dark-blue">
+                        <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4 text-preventify-dark-blue whitespace-nowrap">
                             AI assisted Modern Healthcare for a <span className="text-primary">Preventive Lifestyle</span>
                         </h2>
                         
@@ -90,7 +84,7 @@ const PreventiveLifestyleSection = () => {
                                         </SelectContent>
                                     </Select>
 
-                                    <Select onValueChange={handleSpecialtyChange} value={selectedSpecialty} disabled={!selectedClinic}>
+                                    <Select onValueChange={handleSpecialtyChange} value={selectedSpecialty}>
                                         <SelectTrigger className="w-full h-12 text-base border-primary text-primary">
                                             <SelectValue placeholder="Select Specialty" />
                                         </SelectTrigger>
