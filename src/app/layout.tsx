@@ -27,10 +27,12 @@ export default function RootLayout({
         <TooltipProvider>
           <div className="flex flex-col min-h-screen">
             <Navbar />
-            <main className="flex-grow">
-              {children}
-            </main>
-            <Footer />
+            <div className="relative -mt-24">
+              <main className="flex-grow">
+                {children}
+              </main>
+              <Footer />
+            </div>
             <SubscriptionButton />
           </div>
           <Toaster />
