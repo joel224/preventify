@@ -34,7 +34,6 @@ const clinicsData = [
 const PreventiveLifestyleSection = () => {
     const [selectedClinic, setSelectedClinic] = useState('');
     const [selectedSpecialty, setSelectedSpecialty] = useState('');
-    const [selectedDoctor, setSelectedDoctor] = useState('');
 
     const availableSpecialties = useMemo(() => {
         if (!selectedClinic) return [];
@@ -44,20 +43,13 @@ const PreventiveLifestyleSection = () => {
         return [...new Set(specialties)]; // Unique specialties
     }, [selectedClinic]);
 
-    const availableDoctors = useMemo(() => {
-        if (!selectedClinic || !selectedSpecialty) return [];
-        return doctorsData.filter(d => d.clinicId === selectedClinic && d.specialty === selectedSpecialty);
-    }, [selectedClinic, selectedSpecialty]);
-
     const handleClinicChange = (clinicId: string) => {
         setSelectedClinic(clinicId);
         setSelectedSpecialty('');
-        setSelectedDoctor('');
     };
 
     const handleSpecialtyChange = (specialty: string) => {
         setSelectedSpecialty(specialty);
-        setSelectedDoctor('');
     };
 
     return (
@@ -81,7 +73,7 @@ const PreventiveLifestyleSection = () => {
 
                         <Card className="max-w-3xl mx-auto bg-gray-50/50">
                             <CardContent className="p-6">
-                                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 items-center">
+                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 items-center">
                                     <Select onValueChange={handleClinicChange} value={selectedClinic}>
                                         <SelectTrigger className="w-full h-12 text-base">
                                             <SelectValue placeholder="Select Clinic" />
@@ -103,19 +95,8 @@ const PreventiveLifestyleSection = () => {
                                             ))}
                                         </SelectContent>
                                     </Select>
-                                    
-                                    <Select onValueChange={setSelectedDoctor} value={selectedDoctor} disabled={!selectedSpecialty}>
-                                        <SelectTrigger className="w-full h-12 text-base">
-                                            <SelectValue placeholder="Select Doctor" />
-                                        </SelectTrigger>
-                                        <SelectContent>
-                                            {availableDoctors.map(doctor => (
-                                                <SelectItem key={doctor.id} value={doctor.id}>{doctor.name}</SelectItem>
-                                            ))}
-                                        </SelectContent>
-                                    </Select>
                                 </div>
-                                {selectedDoctor && (
+                                {selectedSpecialty && (
                                      <div className="mt-4">
                                         <BookingDialog>
                                             <Button className="w-full bg-primary hover:bg-primary/90 text-white text-lg py-6 px-8">
