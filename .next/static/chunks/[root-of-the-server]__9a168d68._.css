@@ -808,16 +808,16 @@ h1, h2, h3, h4, h5, h6 {
   aspect-ratio: 16 / 10;
 }
 
+.aspect-\[3\/4\] {
+  aspect-ratio: 3 / 4;
+}
+
 .aspect-square {
   aspect-ratio: 1;
 }
 
 .aspect-video {
   aspect-ratio: 16 / 9;
-}
-
-.aspect-\[3\/4\] {
-  aspect-ratio: 3 / 4;
 }
 
 .size-4 {
@@ -949,6 +949,10 @@ h1, h2, h3, h4, h5, h6 {
   height: 100svh;
 }
 
+.max-h-0 {
+  max-height: 0;
+}
+
 .max-h-96 {
   max-height: 24rem;
 }
@@ -963,10 +967,6 @@ h1, h2, h3, h4, h5, h6 {
 
 .max-h-screen {
   max-height: 100vh;
-}
-
-.max-h-0 {
-  max-height: 0;
 }
 
 .min-h-0 {
@@ -1311,6 +1311,28 @@ h1, h2, h3, h4, h5, h6 {
 
 .animate-shimmer {
   animation: 2s infinite shimmer;
+}
+
+@keyframes shimmer-reveal {
+  0% {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  50% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  100% {
+    opacity: 1;
+    background-position: 200% 0;
+    transform: translateY(0);
+  }
+}
+
+.animate-shimmer-reveal {
+  animation: 1.5s ease-out forwards shimmer-reveal;
 }
 
 @keyframes spin {

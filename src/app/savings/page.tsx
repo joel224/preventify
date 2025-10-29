@@ -47,7 +47,7 @@ const half = Math.ceil(savingsData.length / 2);
 const firstHalf = savingsData.slice(0, half);
 const secondHalf = savingsData.slice(half);
 
-const SavingsTable = ({ data }: { data: typeof savingsData }) => (
+const SavingsTable = ({ data, offset = 0 }: { data: typeof savingsData; offset?: number }) => (
     <Card>
       <CardContent className="p-0">
         <Table>
@@ -61,7 +61,11 @@ const SavingsTable = ({ data }: { data: typeof savingsData }) => (
           </TableHeader>
           <TableBody>
             {data.map((item, index) => (
-              <TableRow key={index} className="even:bg-preventify-green/5">
+              <TableRow 
+                key={index} 
+                className="even:bg-preventify-green/5 animate-shimmer-reveal"
+                style={{ animationDelay: `${(index + offset) * 100}ms` }}
+              >
                 <TableCell className="font-medium">{item.service}</TableCell>
                 <TableCell className="text-right font-extrabold text-preventify-green">₹{item.save.toLocaleString()}</TableCell>
                 <TableCell className="text-right">₹{item.nonMember.toLocaleString()}</TableCell>
@@ -235,7 +239,7 @@ const SavingsPage = () => {
                 <CardContent>
                   <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
                       <SavingsTable data={firstHalf} />
-                      <SavingsTable data={secondHalf} />
+                      <SavingsTable data={secondHalf} offset={firstHalf.length} />
                   </div>
                 </CardContent>
             </Card>

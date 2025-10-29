@@ -116,6 +116,21 @@ export default {
                         transform: 'translateX(100%)',
                     },
                 },
+                'shimmer-reveal': {
+                    '0%': {
+                        opacity: '0',
+                        transform: 'translateY(10px)',
+                    },
+                    '50%': {
+                        opacity: '1',
+                        transform: 'translateY(0)',
+                    },
+                    '100%': {
+                        opacity: '1',
+                        transform: 'translateY(0)',
+                        backgroundPosition: '200% 0',
+                    }
+                },
                 vibrate: {
                   '0%, 12.5%, 100%': { transform: 'translateX(0)' },
                   '2.5%': { transform: 'translateX(-3px)' },
@@ -129,6 +144,7 @@ export default {
 				'accordion-up': 'accordion-up 0.2s ease-out',
 				'fade-in': 'fade-in 0.3s ease-out',
                 'shimmer': 'shimmer 2s infinite',
+                'shimmer-reveal': 'shimmer-reveal 1.5s ease-out forwards',
                 'vibrate': 'vibrate 4s ease-in-out infinite',
 			},
 			fontFamily: {
