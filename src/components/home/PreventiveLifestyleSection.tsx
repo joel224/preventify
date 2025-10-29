@@ -76,7 +76,7 @@ const PreventiveLifestyleSection = () => {
                             AI-assisted evidence-based care across Kerala focused on prevention, early intervention, and better health outcomes for you and your family.
                         </p>
 
-                        <Card className="max-w-3xl mx-auto">
+                        <Card className="max-w-2xl mx-auto">
                             <CardContent className="p-6">
                                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 items-center">
                                     <Select onValueChange={handleClinicChange} value={selectedClinic}>
