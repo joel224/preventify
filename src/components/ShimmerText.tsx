@@ -1,23 +1,24 @@
 'use client';
 
 import { ReactNode } from "react";
+import { cn } from "@/lib/utils";
 
 interface ShimmerTextProps {
   children: ReactNode;
-  isActive: boolean;
+  className?: string;
 }
 
-const ShimmerText = ({ children, isActive }: ShimmerTextProps) => {
+const ShimmerText = ({ children, className }: ShimmerTextProps) => {
   return (
-    <div className="relative overflow-hidden">
-      {isActive && (
-        <span
-          className="absolute inset-0 animate-shimmer"
-          style={{
-            background: 'linear-gradient(90deg, transparent 20%, rgba(212, 206, 155, 0.1) 50%, transparent 80%)',
-          }}
-        />
+    <div
+      className={cn(
+        "group relative",
+        className,
       )}
+    >
+      <span
+        className="absolute inset-0 animate-shimmer bg-[length:200%_100%] bg-gradient-to-r from-transparent via-white/40 to-transparent opacity-0 transition-opacity group-hover:opacity-100"
+      />
       <span className="relative">{children}</span>
     </div>
   );

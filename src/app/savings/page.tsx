@@ -43,9 +43,6 @@ const savingsData = [
     { service: "X-Ray Chest PA", nonMember: 650, member: 400, save: 250 },
 ];
 
-const half = Math.ceil(savingsData.length / 2);
-const firstHalf = savingsData.slice(0, half);
-const secondHalf = savingsData.slice(half);
 
 const SavingsTable = ({ data, offset = 0 }: { data: typeof savingsData; offset?: number }) => (
     <Card>
@@ -63,7 +60,7 @@ const SavingsTable = ({ data, offset = 0 }: { data: typeof savingsData; offset?:
             {data.map((item, index) => (
               <TableRow 
                 key={index} 
-                className="relative overflow-hidden even:bg-preventify-green/5 animate-shimmer-reveal bg-[length:200%_100%] bg-gradient-to-r from-transparent via-white/40 to-transparent"
+                className="relative overflow-hidden animate-shimmer-reveal bg-gradient-to-r from-transparent via-white/40 to-transparent bg-[length:200%_100%]"
                 style={{ animationDelay: `${(index + offset) * 100}ms` }}
               >
                 <TableCell className="font-medium">{item.service}</TableCell>
@@ -122,16 +119,9 @@ const MagneticButton = () => {
 
 
 const SavingsPage = () => {
-  const [isShimmerActive, setIsShimmerActive] = useState(false);
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setIsShimmerActive(true);
-      setTimeout(() => setIsShimmerActive(false), 2000); // Duration of the shimmer
-    }, 4000); // Repeat every 4 seconds
-
-    return () => clearInterval(interval);
-  }, []);
+  const half = Math.ceil(savingsData.length / 2);
+  const firstHalf = savingsData.slice(0, half);
+  const secondHalf = savingsData.slice(half);
 
   return (
     <>
@@ -139,7 +129,7 @@ const SavingsPage = () => {
             <div className="container mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
                     <div className="text-center md:text-left">
-                        <ShimmerText isActive={isShimmerActive}>
+                        <ShimmerText>
                             <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-preventify-blue">
                                 How much can you save with the One Health Member Plan?
                             </h1>
