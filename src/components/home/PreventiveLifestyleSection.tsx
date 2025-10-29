@@ -1,4 +1,5 @@
 
+
 'use client';
 
 import { useState, useMemo } from "react";
@@ -75,7 +76,7 @@ const PreventiveLifestyleSection = () => {
                             AI-assisted evidence-based care across Kerala focused on prevention, early intervention, and better health outcomes for you and your family.
                         </p>
 
-                        <Card className="max-w-3xl mx-auto bg-gray-50/50">
+                        <Card className="max-w-3xl mx-auto">
                             <CardContent className="p-6">
                                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 items-center">
                                     <Select onValueChange={handleClinicChange} value={selectedClinic}>
@@ -90,7 +91,7 @@ const PreventiveLifestyleSection = () => {
                                     </Select>
 
                                     <Select onValueChange={handleSpecialtyChange} value={selectedSpecialty} disabled={!selectedClinic}>
-                                        <SelectTrigger className="w-full h-12 text-base">
+                                        <SelectTrigger className="w-full h-12 text-base border-primary text-primary">
                                             <SelectValue placeholder="Select Specialty" />
                                         </SelectTrigger>
                                         <SelectContent>
