@@ -4,7 +4,7 @@ import { Card, CardContent } from "@/components/ui/card";
 
 const services = [
   {
-    icon: "https://cdn-icons-png.flaticon.com/512/2966/2966334.png",
+    icon: "https://cdn-icons-png.flaticon.com/512/9354/9354551.png",
     title: "Primary Care",
     description: "Comprehensive healthcare services for individuals and families.",
   },
