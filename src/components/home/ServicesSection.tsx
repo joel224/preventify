@@ -1,4 +1,3 @@
-
 'use client';
 import { Card, CardContent } from "@/components/ui/card";
 
@@ -19,7 +18,7 @@ const services = [
     description: "Evidence-based approach to treating and preventing chronic diseases.",
   },
   {
-    icon: "https://cdn-icons-png.flaticon.com/512/4441/4441353.png",
+    icon: "https://cdn-icons-png.flaticon.com/512/17774/17774825.png",
     title: "Pediatric Care",
     description: "Specialized healthcare services for infants, children, and adolescents.",
   },
