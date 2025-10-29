@@ -11,7 +11,7 @@ const services = [
   {
     icon: "https://cdn-icons-png.flaticon.com/512/9354/9354551.png",
     title: "Diabetes Management",
-    description: "Specialized programs for prevention and management of diabetes.",
+    description: "AI Specialized programs for prevention and management of diabetes.",
   },
   {
     icon: "https://cdn-icons-png.flaticon.com/512/2382/2382461.png",
