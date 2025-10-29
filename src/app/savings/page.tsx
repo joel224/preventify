@@ -18,7 +18,6 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Wallet, Stethoscope, Pill, ChevronDown } from "lucide-react";
-import ShimmerText from "@/components/ShimmerText";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
 
@@ -136,11 +135,9 @@ const SavingsPage = () => {
             <div className="container mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
                     <div className="text-center md:text-left">
-                        <ShimmerText>
-                            <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-preventify-blue">
-                                How much can you save with the One Health Member Plan?
-                            </h1>
-                        </ShimmerText>
+                        <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-preventify-blue">
+                            How much can you save with the One Health Member Plan?
+                        </h1>
                         <p className="mt-4 text-lg max-w-xl text-preventify-dark-gray">
                             Explore the detailed savings and benefits of our membership.
                         </p>
