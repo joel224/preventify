@@ -1,4 +1,3 @@
-
 'use client';
 import { Card, CardContent } from "@/components/ui/card";
 
@@ -47,7 +46,7 @@ const ServicesSection = () => {
             Preventify offers a comprehensive range of healthcare services designed to keep you healthy and address your medical needs.
           </p>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 animate-fade-in">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-12 animate-fade-in">
             {services.map((service, index) => (
               <Card key={index} className="h-full hover:shadow-lg transition-shadow">
                   <CardContent className="p-6 text-center">
