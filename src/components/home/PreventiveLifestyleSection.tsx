@@ -1,10 +1,48 @@
 
+'use client';
+
+import { useState } from "react";
 import { Button } from "@/components/ui/button"
 import BookingDialog from "../BookingDialog"
-import Link from "next/link"
 import Image from "next/image"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Card, CardContent } from "../ui/card";
+
+// Data should ideally be fetched from an API, but using the hardcoded list for now
+// as it's consistent with the existing BookingDialog.
+const doctorsData = [
+    { id: '173208576372747', name: 'Dr. Rakesh K R', specialty: 'General Physician', clinicId: '673d87fdaa91c2001d716c91'},
+    { id: '173208610763786', name: 'Dr. Mohammed Faisal', specialty: 'General Practitioner', clinicId: '673d87fdaa91c2001d716c91'},
+    { id: '174497110921725', name: 'Dr. Hafsa Hussain', specialty: 'Pediatrics', clinicId: '673d87fdaa91c2001d716c91'},
+    { id: '173771631358722', name: 'Dr. Krishnendu U K', specialty: 'General Practitioner', clinicId: '673d87fdaa91c2001d716c91'},
+    { id: '175931883083616', name: 'Dr. Girish U', specialty: 'Dermatology', clinicId: '673d87fdaa91c2001d716c91'},
+    { id: '175949148741914', name: 'Dr. Ijas V. I.', specialty: 'Pulmonology', clinicId: '673d87fdaa91c2001d716c91'},
+    { id: '175949141398449', name: 'Dr. Husna V.', specialty: 'Gynecology', clinicId: '673d87fdaa91c2001d716c91'},
+    { id: '175931888074630', name: 'Dr. Neeharika V.', specialty: 'ENT', clinicId: '673d87fdaa91c2001d716c91'},
+    { id: '175931864615485', name: 'Dr. Sreedev N', specialty: 'Pulmonology', clinicId: '673d87fdaa91c2001d716c91'},
+    { id: '175949158258558', name: 'Dr. Ajay Biju', specialty: 'Resident Medical Officer', clinicId: '673d87fdaa91c2001d716c91'},
+    { id: '175949152812334', name: 'Dr. Renjith A.', specialty: 'Orthopedics', clinicId: '673d87fdaa91c2001d716c91'},
+    { id: '175949162376135', name: 'Dr. K.Y.Sanjay', specialty: 'Orthopedics', clinicId: '673d87fdaa91c2001d716c91'},
+];
+
+const clinicsData = [
+    { id: '673d87fdaa91c2001d716c91', name: 'Padinjarangadi' },
+    // Assuming a second clinic ID based on other parts of the app
+    { id: 'some-other-clinic-id', name: 'Vattamkulam' } 
+];
 
 const PreventiveLifestyleSection = () => {
+    const [selectedClinic, setSelectedClinic] = useState('');
+    const [selectedDoctor, setSelectedDoctor] = useState('');
+    const [doctorsInClinic, setDoctorsInClinic] = useState<typeof doctorsData>([]);
+    
+    const handleClinicChange = (clinicId: string) => {
+        setSelectedClinic(clinicId);
+        setSelectedDoctor(''); // Reset doctor selection
+        const filteredDoctors = doctorsData.filter(d => d.clinicId === clinicId);
+        setDoctorsInClinic(filteredDoctors);
+    };
+
     return (
         <section className="bg-white py-16 md:py-24 relative -mt-16 rounded-t-2xl shadow-xl">
              <div className="absolute -top-12 left-4 sm:left-6 lg:left-8 z-10">
@@ -24,18 +62,44 @@ const PreventiveLifestyleSection = () => {
                             AI-assisted evidence-based care across Kerala focused on prevention, early intervention, and better health outcomes for you and your family.
                         </p>
 
-                        <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                            <BookingDialog>
-                                <Button className="bg-primary hover:bg-primary/90 text-white text-lg py-6 px-8">
-                                    Book an Appointment
-                                </Button>
-                            </BookingDialog>
-                            <Link href="/services">
-                                <Button variant="outline" className="border-primary text-primary hover:bg-primary/5 text-lg py-6 px-8">
-                                    Our Services
-                                </Button>
-                            </Link>
-                        </div>
+                        <Card className="max-w-2xl mx-auto bg-gray-50/50">
+                            <CardContent className="p-6">
+                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 items-center">
+                                    <Select onValueChange={handleClinicChange} value={selectedClinic}>
+                                        <SelectTrigger className="w-full h-12 text-base">
+                                            <SelectValue placeholder="Select Clinic Location" />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                            {clinicsData.map(clinic => (
+                                                <SelectItem key={clinic.id} value={clinic.id}>{clinic.name}</SelectItem>
+                                            ))}
+                                        </SelectContent>
+                                    </Select>
+
+                                    <Select onValueChange={setSelectedDoctor} value={selectedDoctor} disabled={!selectedClinic}>
+                                        <SelectTrigger className="w-full h-12 text-base">
+                                            <SelectValue placeholder="Select Doctor/Specialty" />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                            {doctorsInClinic.map(doctor => (
+                                                <SelectItem key={doctor.id} value={doctor.id}>
+                                                    {doctor.name} ({doctor.specialty})
+                                                </SelectItem>
+                                            ))}
+                                        </SelectContent>
+                                    </Select>
+                                </div>
+                                {selectedDoctor && (
+                                     <div className="mt-4">
+                                        <BookingDialog>
+                                            <Button className="w-full bg-primary hover:bg-primary/90 text-white text-lg py-6 px-8">
+                                                Book Now
+                                            </Button>
+                                        </BookingDialog>
+                                     </div>
+                                )}
+                            </CardContent>
+                        </Card>
                     </div>
                 </div>
             </div>
