@@ -15,7 +15,7 @@ const HeroSection = () => {
   const desktopImages = [
     '/care.png',
     '/Fam.png',
-    '/doc.png',
+    '/edit_2.png',
     '/love.png',
   ];
 

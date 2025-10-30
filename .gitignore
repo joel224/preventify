@@ -8,7 +8,7 @@
 # Next.js
 /.next/
 /out/
-
+.next/
 # Backend build output
 /dist-server/
 

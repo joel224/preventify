@@ -65,7 +65,7 @@ const PreventiveLifestyleSection = () => {
                 <div className="grid grid-cols-1 gap-8 md:gap-12 items-center">
                     <div className="text-center">
                         <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4 text-preventify-dark-blue">
-                            AI assisted Modern Healthcare for a <span className="text-primary">Preventive Lifestyle</span>
+                            AI assisted Modern Healthcare for a <br className="hidden md:block" /><span className="text-primary">Preventive Lifestyle</span>
                         </h2>
                         
                         <p className="text-lg text-preventify-dark-gray mb-8 max-w-3xl mx-auto">
