@@ -25,7 +25,7 @@ const Navbar = () => {
   const topNavLinks = [
       { name: "About Us", path: "/about" },
       { name: "Blogs", path: "/blog" },
-      { name: "Search Website", path: "/search", icon: Search },
+      { name: "Search Website", path: "#", icon: Search, disabled: true },
   ];
 
   return (
@@ -35,7 +35,7 @@ const Navbar = () => {
           <div className="container mx-auto py-1.5 px-4 sm:px-6 lg:px-8 flex justify-between items-center text-xs text-slate-600">
                 <div className="flex items-center gap-4">
                     {topNavLinks.map(link => (
-                        <Link key={link.name} href={link.path} className="flex items-center gap-1 hover:text-primary transition-colors">
+                        <Link key={link.name} href={link.path} className={`flex items-center gap-1 ${link.disabled ? 'cursor-not-allowed text-gray-400' : 'hover:text-primary transition-colors'}`}>
                            {link.icon && <link.icon className="h-3 w-3" />}
                            {link.name}
                         </Link>
@@ -117,7 +117,7 @@ const Navbar = () => {
                 <Link
                   key={link.name}
                   href={link.path}
-                  className={`font-medium transition-colors py-2 ${pathname === link.path ? 'text-primary' : 'text-gray-700 hover:text-primary'}`}
+                  className={`font-medium transition-colors py-2 ${pathname === link.path ? 'text-primary' : 'text-gray-700 hover:text-primary'} ${link.disabled ? 'pointer-events-none text-gray-400' : ''}`}
                   onClick={() => setMobileMenuOpen(false)}
                 >
                   {link.name}
