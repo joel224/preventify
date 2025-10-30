@@ -17,8 +17,8 @@ const Navbar = () => {
 
   const mainNavLinks = [
     { name: "Our Services", path: "/services" },
-    { name: "Our Network", path: "/clinics" },
-    { name: "Aarogyam", path: "/programs" },
+    { name: "Our Clinics", path: "/clinics" },
+    { name: "Programs", path: "/programs" },
     { name: "One Health", path: "/savings" },
   ];
   
@@ -42,13 +42,13 @@ const Navbar = () => {
                     ))}
                 </div>
                 <div className="flex items-center gap-4">
-                    <a href="tel:18003090309" className="flex items-center gap-1 hover:text-primary transition-colors">
+                    <a href="tel:+918129334858" className="flex items-center gap-1 hover:text-primary transition-colors">
                         <Phone className="h-3 w-3" />
-                        1800-309-0309
+                        +91 8129334858
                     </a>
                      <button className="flex items-center gap-1 hover:text-primary transition-colors">
                         <ChevronDown className="h-3 w-3" />
-                        Bangalore
+                        Kerala
                     </button>
                     <Link href="/login" className="flex items-center gap-1 hover:text-primary transition-colors">
                         <User className="h-3 w-3" />
