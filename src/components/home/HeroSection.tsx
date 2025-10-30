@@ -12,31 +12,48 @@ import Autoplay from "embla-carousel-autoplay"
 import Image from "next/image"
 
 const HeroSection = () => {
-  const images = [
+  const desktopImages = [
     '/care.png',
-    `/Fam.png`,
-    `/doc.png`,
-    `/love.png`,
-   
+    '/Fam.png',
+    '/doc.png',
+    '/love.png',
+  ];
+
+  const mobileImages = [
+    '/mobile/care.png',
+    '/mobile/Fam.png',
+    '/mobile/doc.png',
+    '/mobile/love.png',
   ];
 
   return (
     <section className="relative w-full overflow-hidden hero-gradient">
-      <Carousel 
+      <Carousel
         className="w-full"
         plugins={[Autoplay({ delay: 8000, stopOnInteraction: true })]}
       >
         <CarouselContent>
-          {images.map((src, index) => (
+          {desktopImages.map((src, index) => (
             <CarouselItem key={index}>
-              <div className="w-full h-[480px] md:h-[560px] relative">
-                  <Image 
-                    src={src} 
-                    alt={`Hero Image ${index + 1}`} 
-                    fill 
-                    className="object-cover"
-                    priority={index === 0}
-                  />
+              {/* Mobile Image */}
+              <div className="w-full h-[480px] md:h-[560px] relative md:hidden">
+                <Image
+                  src={mobileImages[index]}
+                  alt={`Hero Image ${index + 1} (Mobile)`}
+                  fill
+                  className="object-cover"
+                  priority={index === 0}
+                />
+              </div>
+              {/* Desktop Image */}
+              <div className="w-full h-[480px] md:h-[560px] relative hidden md:block">
+                <Image
+                  src={src}
+                  alt={`Hero Image ${index + 1} (Desktop)`}
+                  fill
+                  className="object-cover"
+                  priority={index === 0}
+                />
               </div>
             </CarouselItem>
           ))}
