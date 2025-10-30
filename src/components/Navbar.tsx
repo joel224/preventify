@@ -50,10 +50,12 @@ const Navbar = () => {
                         <ChevronDown className="h-3 w-3" />
                         Kerala
                     </button>
-                    <Link href="/login" className="flex items-center gap-1 hover:text-primary transition-colors">
+                    <BookingDialog>
+                      <button className="flex items-center gap-1 hover:text-primary transition-colors">
                         <User className="h-3 w-3" />
                         Login
-                    </Link>
+                      </button>
+                    </BookingDialog>
                 </div>
           </div>
       </div>
