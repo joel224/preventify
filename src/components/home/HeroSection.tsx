@@ -22,12 +22,12 @@ const HeroSection = () => {
     <section className="relative w-full overflow-hidden hero-gradient">
       <Carousel 
         className="w-full"
-        plugins={[Autoplay({ delay: 5000, stopOnInteraction: true })]}
+        plugins={[Autoplay({ delay: 8000, stopOnInteraction: true })]}
       >
         <CarouselContent>
           {images.map((src, index) => (
             <CarouselItem key={index}>
-              <div className="w-full h-[480px] md:h-[560px] relative">
+              <div className="w-full aspect-[16/9] relative">
                   <Image src={src} alt={`Hero Image ${index + 1}`} fill className="object-cover"/>
               </div>
             </CarouselItem>
