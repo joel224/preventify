@@ -35,7 +35,22 @@ const FeaturesSection = () => {
             Our approach to healthcare combines modern medicine with preventive strategies for optimal health outcomes.
           </p>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        
+        {/* Mobile View: Vertical List */}
+        <div className="md:hidden space-y-8">
+          {features.map((feature, index) => (
+            <div key={index} className="flex items-start gap-4 p-4 bg-white rounded-lg shadow-sm">
+              <div className="flex-shrink-0">{feature.icon}</div>
+              <div>
+                <h3 className="text-lg font-semibold mb-1 text-preventify-blue">{feature.title}</h3>
+                <p className="text-preventify-dark-gray">{feature.description}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* Desktop View: Grid */}
+        <div className="hidden md:grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {features.map((feature, index) => (
             <div key={index} className="bg-white p-6 rounded-lg shadow-sm">
               <div className="mb-4">{feature.icon}</div>
