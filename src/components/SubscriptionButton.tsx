@@ -78,13 +78,7 @@ const SubscriptionButton = () => {
 
         <div className="grid grid-cols-1 lg:grid-cols-2 items-center">
           <div className="order-2 lg:order-1 p-6 md:p-8">
-            <ShimmerText isActive={activeShimmerLine === 0}>
-              <h3 className="tracking-tight text-2xl sm:text-3xl font-bold text-preventify-dark-blue mb-4 text-center lg:text-left">
-                Simplify health, save time, save money.
-              </h3>
-            </ShimmerText>
-
-            <div className="space-y-4 text-preventify-dark-gray">
+            <div className="space-y-4 text-preventify-dark-gray mt-4">
               <div className="flex items-start gap-3">
                 <Search className="h-8 w-8 text-preventify-green shrink-0" />
                 <ShimmerText isActive={activeShimmerLine === 1}>
