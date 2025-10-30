@@ -71,7 +71,7 @@ const SubscriptionButton = () => {
           </Button>
         </div>
       </DialogTrigger>
-      <DialogContent className="w-[95vw] sm:max-w-lg md:max-w-2xl lg:max-w-4xl bg-white p-0 rounded-lg">
+      <DialogContent className="w-[95vw] sm:max-w-md md:max-w-lg lg:max-w-2xl bg-white p-0 rounded-lg">
          <DialogHeader className="sr-only">
           <DialogTitle>One Health Member Plan</DialogTitle>
         </DialogHeader>
