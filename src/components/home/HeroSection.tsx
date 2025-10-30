@@ -13,22 +13,30 @@ import Image from "next/image"
 
 const HeroSection = () => {
   const images = [
-    `/edit1.png`,
-    `/edit.png`,
-    `/edit2.png`
+    '/care.png',
+    `/Fam.png`,
+    `/doc.png`,
+    `/love.png`,
+   
   ];
 
   return (
     <section className="relative w-full overflow-hidden hero-gradient">
       <Carousel 
         className="w-full"
-        plugins={[Autoplay({ delay: 5000, stopOnInteraction: true })]}
+        plugins={[Autoplay({ delay: 8000, stopOnInteraction: true })]}
       >
         <CarouselContent>
           {images.map((src, index) => (
             <CarouselItem key={index}>
               <div className="w-full h-[480px] md:h-[560px] relative">
-                  <Image src={src} alt={`Hero Image ${index + 1}`} fill className="object-cover"/>
+                  <Image 
+                    src={src} 
+                    alt={`Hero Image ${index + 1}`} 
+                    fill 
+                    className="object-cover"
+                    priority={index === 0}
+                  />
               </div>
             </CarouselItem>
           ))}

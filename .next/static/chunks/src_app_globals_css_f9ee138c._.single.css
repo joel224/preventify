@@ -744,7 +744,7 @@ h1, h2, h3, h4, h5, h6 {
   aspect-ratio: 1;
 }
 
-.aspect-video, .aspect-\[16\/9\] {
+.aspect-video {
   aspect-ratio: 16 / 9;
 }
 
