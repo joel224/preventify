@@ -1,3 +1,4 @@
+
 'use client';
 import { Card, CardContent } from "@/components/ui/card";
 
@@ -46,8 +47,24 @@ const ServicesSection = () => {
             Preventify offers a comprehensive range of healthcare services designed to keep you healthy and address your medical needs.
           </p>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-12 animate-fade-in">
+        <div className="md:grid md:grid-cols-3 md:gap-12 animate-fade-in">
+          <div className="flex md:hidden gap-4 overflow-x-auto pb-4 -mb-4">
             {services.map((service, index) => (
+              <Card key={index} className="h-full hover:shadow-lg transition-shadow w-64 flex-shrink-0">
+                  <CardContent className="p-6 text-center flex flex-col items-center justify-center h-full">
+                    <img
+                      src={service.icon}
+                      alt={service.title}
+                      className="w-16 h-16 mx-auto mb-4"
+                    />
+                    <h3 className="text-lg font-semibold mb-2 text-preventify-blue">{service.title}</h3>
+                    <p className="text-preventify-dark-gray text-sm">{service.description}</p>
+                  </CardContent>
+                </Card>
+            ))}
+          </div>
+          <div className="hidden md:grid md:grid-cols-3 md:gap-12 col-span-3">
+             {services.map((service, index) => (
               <Card key={index} className="h-full hover:shadow-lg transition-shadow">
                   <CardContent className="p-6 text-center">
                     <img
@@ -61,6 +78,7 @@ const ServicesSection = () => {
                 </Card>
             ))}
           </div>
+        </div>
       </div>
     </section>
   );
