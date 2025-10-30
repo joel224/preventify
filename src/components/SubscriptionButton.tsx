@@ -3,7 +3,7 @@
 
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import { Star, FileLock, Search, Building, X } from "lucide-react";
+import { Star, FileLock, Search, Building, X, CheckCircle2 } from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -18,6 +18,14 @@ import Link from "next/link";
 const SubscriptionButton = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
+
+  const benefits = [
+    { name: "General physician consultations", detail: "No per visit charge" },
+    { name: "Paediatrician consultations", detail: "No per visit charge" },
+    { name: "Medicines and vaccines", detail: "Save 25%*" },
+    { name: "Other OPD consultations", detail: "Special member prices" },
+    { name: "Lab tests", detail: "Special member prices" },
+  ];
 
   useEffect(() => {
     const handleScroll = () => {
@@ -53,47 +61,37 @@ const SubscriptionButton = () => {
           </Button>
         </div>
       </DialogTrigger>
-      <DialogContent className="w-[95vw] sm:max-w-md md:max-w-lg lg:max-w-2xl bg-off-white p-0 rounded-lg">
+      <DialogContent className="w-[95vw] sm:max-w-md bg-off-white p-0 rounded-lg">
          <DialogHeader className="sr-only">
           <DialogTitle>One Health Member Plan</DialogTitle>
         </DialogHeader>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 items-center">
-          <div className="order-2 lg:order-1 p-6 md:p-8">
-            <div className="space-y-4 text-dark-gray mt-4">
-              <div className="flex items-start gap-3">
-                <Search className="h-8 w-8 text-soft-teal shrink-0" />
-                <p className="text-sm sm:text-base">
-                  Instant access to lab results, anywhere you are.
-                </p>
-              </div>
-              <div className="flex items-start gap-3">
-                <Building className="h-8 w-8 text-soft-teal shrink-0" />
-                <p className="text-sm sm:text-base">
-                  Access records at clinics & partner pharmacies.
-                </p>
-              </div>
-              <div className="flex items-start gap-3">
-                <FileLock className="h-8 w-8 text-soft-teal shrink-0" />
-                <p className="text-sm sm:text-base">
-                  All your medical records files, reports, & bills. Secured online.
-                </p>
-              </div>
-            </div>
-          </div>
-          <div className="order-1 lg:order-2">
-             <div className="relative w-full aspect-[16/10] lg:h-full">
+        <div>
+            <div className="relative w-full aspect-video">
               <Image
                 src="/card.jpg"
                 alt="One Health Member Plan Card"
                 fill
-                className="rounded-t-lg lg:rounded-none lg:rounded-r-lg object-contain"
+                className="rounded-t-lg object-contain"
               />
+            </div>
+
+          <div className="p-6">
+             <div className="space-y-3 text-dark-gray mb-6">
+                {benefits.map((benefit) => (
+                    <div key={benefit.name} className="flex items-center justify-between gap-4">
+                        <div className="flex items-center gap-2">
+                           <CheckCircle2 className="h-4 w-4 text-soft-teal shrink-0" />
+                           <p className="text-sm">{benefit.name}</p>
+                        </div>
+                       <p className="text-sm font-semibold text-right whitespace-nowrap">{benefit.detail}</p>
+                    </div>
+                ))}
             </div>
           </div>
         </div>
 
-        <div className="p-6 border-t border-gray-200">
+        <div className="p-6 pt-0 border-t border-gray-200">
             <div className="text-center">
                  <p className="font-semibold text-dark-gray text-base">
                     Unlimited doctor services for just <span className="text-warm-coral">₹730/year</span>
