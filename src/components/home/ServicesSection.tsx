@@ -48,7 +48,7 @@ const ServicesSection = () => {
           </p>
         </div>
         <div className="md:grid md:grid-cols-3 md:gap-12 animate-fade-in">
-          <div className="flex md:hidden gap-4 overflow-x-auto pb-4 -mb-4">
+          <div className="flex md:hidden gap-4 overflow-x-auto pb-4 -mb-4 touch-pan-x">
             {services.map((service, index) => (
               <Card key={index} className="h-full hover:shadow-lg transition-shadow w-64 flex-shrink-0">
                   <CardContent className="p-6 text-center flex flex-col items-center justify-center h-full">

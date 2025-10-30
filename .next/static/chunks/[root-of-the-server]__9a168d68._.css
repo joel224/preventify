@@ -1407,6 +1407,11 @@ h1, h2, h3, h4, h5, h6 {
   touch-action: none;
 }
 
+.touch-pan-x {
+  --tw-pan-x: pan-x;
+  touch-action: var(--tw-pan-x) var(--tw-pan-y) var(--tw-pinch-zoom);
+}
+
 .select-none {
   user-select: none;
 }
