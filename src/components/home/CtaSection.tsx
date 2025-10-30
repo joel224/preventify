@@ -21,7 +21,7 @@ const CtaSection = () => {
               </Button>
             </BookingDialog>
             <Link href="/contact">
-                <Button variant="outline" className="border-white text-white hover:bg-white/10 text-lg py-6 px-8">
+                <Button variant="outline" className="bg-white text-preventify-blue hover:bg-preventify-light-gray/90 text-lg py-6 px-8">
                 Contact Us
                 </Button>
             </Link>
