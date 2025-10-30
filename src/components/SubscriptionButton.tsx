@@ -23,8 +23,8 @@ const SubscriptionButton = () => {
     { name: "General physician consultations", detail: "No per visit charge" },
     { name: "Paediatrician consultations", detail: "No per visit charge" },
     { name: "Medicines and vaccines", detail: "Save 25%*" },
-    { name: "Other OPD consultations", detail: "Special member prices" },
-    { name: "Lab tests", detail: "Special member prices" },
+    { name: "Other OPD consultations", detail: "view details", isLink: true },
+    { name: "Lab tests", detail: "view details", isLink: true },
   ];
 
   useEffect(() => {
@@ -67,7 +67,7 @@ const SubscriptionButton = () => {
         </DialogHeader>
 
         <div>
-            <div className="relative w-full aspect-video">
+            <div className="relative w-full aspect-[4/3] md:aspect-video">
               <Image
                 src="/card.jpg"
                 alt="One Health Member Plan Card"
@@ -84,7 +84,13 @@ const SubscriptionButton = () => {
                            <CheckCircle2 className="h-4 w-4 text-soft-teal shrink-0" />
                            <p className="text-sm">{benefit.name}</p>
                         </div>
-                       <p className="text-sm font-semibold text-right whitespace-nowrap">{benefit.detail}</p>
+                        {benefit.isLink ? (
+                           <Link href="/savings" onClick={() => setIsOpen(false)} className="text-sm font-semibold text-soft-teal underline whitespace-nowrap hover:text-soft-teal/80">
+                             {benefit.detail}
+                           </Link>
+                         ) : (
+                           <p className="text-sm font-semibold text-right whitespace-nowrap">{benefit.detail}</p>
+                         )}
                     </div>
                 ))}
             </div>

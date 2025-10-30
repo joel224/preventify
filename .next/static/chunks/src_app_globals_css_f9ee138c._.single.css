@@ -753,6 +753,10 @@ h1, h2, h3, h4, h5, h6 {
   aspect-ratio: 16 / 9;
 }
 
+.aspect-\[4\/3\] {
+  aspect-ratio: 4 / 3;
+}
+
 .size-4 {
   width: 1rem;
   height: 1rem;
@@ -2898,6 +2902,10 @@ h1, h2, h3, h4, h5, h6 {
   color: rgb(255 255 255 / var(--tw-text-opacity, 1));
 }
 
+.hover\:text-soft-teal\/80:hover {
+  color: #2ec4b6cc;
+}
+
 .hover\:underline:hover {
   text-decoration-line: underline;
 }
@@ -3794,6 +3802,10 @@ h1, h2, h3, h4, h5, h6 {
 
   .md\:hidden {
     display: none;
+  }
+
+  .md\:aspect-video {
+    aspect-ratio: 16 / 9;
   }
 
   .md\:h-\[560px\] {
