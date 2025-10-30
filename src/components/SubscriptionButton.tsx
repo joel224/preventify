@@ -3,7 +3,7 @@
 
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import { Star, FileLock, Search, Building, X, CheckCircle2 } from "lucide-react";
+import { Star, CheckCircle2 } from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -92,7 +92,7 @@ const SubscriptionButton = () => {
         </div>
 
         <div className="p-6 pt-0 border-t border-gray-200">
-            <div className="text-center">
+            <div className="text-center hidden sm:block">
                  <p className="font-semibold text-dark-gray text-base">
                     Unlimited doctor services for just <span className="text-warm-coral">₹730/year</span>
                 </p>
