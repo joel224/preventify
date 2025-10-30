@@ -1875,6 +1875,10 @@ h1, h2, h3, h4, h5, h6 {
   object-fit: cover;
 }
 
+.object-left {
+  object-position: left;
+}
+
 .p-0 {
   padding: 0;
 }
@@ -3764,6 +3768,10 @@ h1, h2, h3, h4, h5, h6 {
 
   .md\:gap-12 {
     gap: 3rem;
+  }
+
+  .md\:object-center {
+    object-position: center;
   }
 
   .md\:p-8 {

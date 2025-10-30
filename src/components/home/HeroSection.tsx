@@ -20,10 +20,10 @@ const HeroSection = () => {
   ];
 
   const mobileImages = [
-    '/mobile/care.png',
-    '/mobile/Fam.png',
-    '/mobile/doc.png',
-    '/mobile/love.png',
+    '/mobile/care_mobile.png',
+    '/mobile/fam_mobile.png',
+    '/mobile/doc_mobile.png',
+    '/mobile/love_mobile.png',
   ];
 
   return (
