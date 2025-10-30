@@ -13,29 +13,11 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import Image from "next/image";
-import ShimmerText from "./ShimmerText";
 import Link from "next/link";
 
 const SubscriptionButton = () => {
   const [isScrolled, setIsScrolled] = useState(false);
-  const [activeShimmerLine, setActiveShimmerLine] = useState(-1);
   const [isOpen, setIsOpen] = useState(false);
-
-  const shimmerLines = 6; // Total number of lines to animate
-
-  useEffect(() => {
-    if (isOpen) {
-      setActiveShimmerLine(0); // Start animation when dialog opens
-      const shimmerInterval = setInterval(() => {
-        setActiveShimmerLine((prevLine) => (prevLine + 1) % shimmerLines);
-      }, 1500); // Shimmer next line every 1.5 seconds
-
-      return () => clearInterval(shimmerInterval);
-    } else {
-      setActiveShimmerLine(-1); // Reset when dialog closes
-    }
-  }, [isOpen]);
-
 
   useEffect(() => {
     const handleScroll = () => {
@@ -71,38 +53,31 @@ const SubscriptionButton = () => {
           </Button>
         </div>
       </DialogTrigger>
-      <DialogContent className="w-[95vw] sm:max-w-md md:max-w-lg lg:max-w-2xl bg-white p-0 rounded-lg">
+      <DialogContent className="w-[95vw] sm:max-w-md md:max-w-lg lg:max-w-4xl bg-off-white p-0 rounded-lg">
          <DialogHeader className="sr-only">
           <DialogTitle>One Health Member Plan</DialogTitle>
         </DialogHeader>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 items-center">
           <div className="order-2 lg:order-1 p-6 md:p-8">
-            <div className="space-y-4 text-preventify-dark-gray mt-4">
+            <div className="space-y-4 text-dark-gray mt-4">
               <div className="flex items-start gap-3">
-                <Search className="h-8 w-8 text-preventify-green shrink-0" />
-                <ShimmerText isActive={activeShimmerLine === 1}>
-                  <p className="text-sm sm:text-base">
-                    Instant access to lab results, anywhere you are.
-                  </p>
-                </ShimmerText>
+                <Search className="h-8 w-8 text-soft-teal shrink-0" />
+                <p className="text-sm sm:text-base">
+                  Instant access to lab results, anywhere you are.
+                </p>
               </div>
               <div className="flex items-start gap-3">
-                <Building className="h-8 w-8 text-preventify-green shrink-0" />
-                <ShimmerText isActive={activeShimmerLine === 2}>
+                <Building className="h-8 w-8 text-soft-teal shrink-0" />
                 <p className="text-sm sm:text-base">
-                  Access records at clinics & partner pharmacies. Hassle-free.
+                  Access records at clinics & partner pharmacies.
                 </p>
-                </ShimmerText>
               </div>
               <div className="flex items-start gap-3">
-                <FileLock className="h-8 w-8 text-preventify-green shrink-0" />
-                <ShimmerText isActive={activeShimmerLine === 3}>
+                <FileLock className="h-8 w-8 text-soft-teal shrink-0" />
                 <p className="text-sm sm:text-base">
-                  All your medical records files, reports, & bills. Secured
-                  online.
+                  All your medical records files, reports, & bills. Secured online.
                 </p>
-                </ShimmerText>
               </div>
             </div>
           </div>
@@ -118,32 +93,26 @@ const SubscriptionButton = () => {
           </div>
         </div>
 
-        <div 
-          className="p-4 rounded-b-lg text-center"
-          style={{
-            background: 'linear-gradient(to right, #FDF5ED, #F5ECE5, #E4DBCC)',
-          }}
-        >
-          <ShimmerText isActive={activeShimmerLine === 4}>
-            <p className="font-semibold text-red-700 text-sm sm:text-base">
-              Unlimited doctor services for just{" "}
-              <span className="text-preventify-blue">₹730/year</span>
-            </p>
-          </ShimmerText>
-          <p className="text-xs text-preventify-dark-gray">for an individual</p>
-          <ShimmerText isActive={activeShimmerLine === 5}>
-            <p className="font-semibold text-preventify-blue mt-1 text-sm sm:text-base">
-              ₹1999/year for a family.
-            </p>
-          </ShimmerText>
-        
+        <div className="p-6 border-t border-gray-200">
+            <div className="text-center">
+                 <p className="font-semibold text-dark-gray text-base">
+                    Unlimited doctor services for just <span className="text-warm-coral">₹730/year</span>
+                </p>
+                <p className="text-xs text-light-gray">for an individual</p>
+                 <p className="font-semibold text-dark-gray mt-2 text-base">
+                    <span className="text-warm-coral">₹1999/year</span> for a family
+                </p>
+                <p className="text-xs text-light-gray">includes 4 members</p>
+            </div>
+            
             <DialogFooter className="sm:justify-center mt-4">
-               <Link href="/savings" onClick={() => setIsOpen(false)}>
-                <Button className="w-full bg-preventify-green hover:bg-preventify-dark-green text-white text-base py-3 px-6">
+               <Link href="/savings" onClick={() => setIsOpen(false)} className="w-full">
+                <Button className="w-full bg-soft-teal hover:bg-soft-teal/90 text-white text-base py-3 px-6 rounded-lg">
                   Claim My Peace of Mind
                 </Button>
               </Link>
             </DialogFooter>
+             <p className="text-xs text-center text-light-gray mt-4">Join 50,000+ members who never miss a dose or a check-up.</p>
         </div>
         
       </DialogContent>

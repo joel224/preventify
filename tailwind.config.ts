@@ -65,8 +65,8 @@ export default {
 				},
                 'top-bar': 'hsl(var(--top-bar))',
 				preventify: {
-					blue: '#0055A5', 
-					green: '#28B67A', 
+					blue: '#0F2C59', 
+					green: '#2EC4B6', 
 					gray: '#757575',
 					'light-blue': '#4A5AC5',
 					'light-green': '#3DD391',
@@ -74,7 +74,13 @@ export default {
 					'dark-green': '#1D9965',
 					'light-gray': '#F1F5F9',
 					'dark-gray': '#4B4B4B', 
-				}
+				},
+				'deep-navy-blue': '#0F2C59',
+				'soft-teal': '#2EC4B6',
+				'warm-coral': '#FF6B6B',
+				'off-white': '#F8F9FA',
+				'dark-gray': '#333333',
+				'light-gray': '#6C757D',
 			},
 			borderRadius: {
 				lg: 'var(--radius)',
@@ -154,5 +160,3 @@ export default {
 	},
 	plugins: [require("tailwindcss-animate")],
 } satisfies Config;
-
-    
