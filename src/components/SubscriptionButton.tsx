@@ -89,7 +89,7 @@ const SubscriptionButton = () => {
                              {benefit.detail}
                            </Link>
                          ) : (
-                           <p className="text-sm font-semibold text-right whitespace-nowrap">{benefit.detail}</p>
+                           <p className="text-xs md:text-sm font-semibold text-right whitespace-nowrap">{benefit.detail}</p>
                          )}
                     </div>
                 ))}
@@ -99,11 +99,11 @@ const SubscriptionButton = () => {
 
         <div className="p-6 pt-0 border-t border-gray-200">
             <div className="text-center hidden sm:block">
-                 <p className="font-semibold text-dark-gray text-base">
+                 <p className="font-semibold text-dark-gray text-sm md:text-base">
                     Unlimited doctor services for just <span className="text-warm-coral">₹730/year</span>
                 </p>
                 <p className="text-xs text-light-gray">for an individual</p>
-                 <p className="font-semibold text-dark-gray mt-2 text-base">
+                 <p className="font-semibold text-dark-gray mt-2 text-sm md:text-base">
                     <span className="text-warm-coral">₹1999/year</span> for a family
                 </p>
                 <p className="text-xs text-light-gray">includes 4 members</p>
