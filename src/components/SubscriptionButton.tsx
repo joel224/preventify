@@ -108,7 +108,7 @@ const SubscriptionButton = () => {
             <DialogFooter className="sm:justify-center mt-4">
                <Link href="/savings" onClick={() => setIsOpen(false)} className="w-full">
                 <Button className="w-full bg-soft-teal hover:bg-soft-teal/90 text-white text-base py-3 px-6 rounded-lg">
-                  Claim My Peace of Mind
+                  Subscribe Now
                 </Button>
               </Link>
             </DialogFooter>
