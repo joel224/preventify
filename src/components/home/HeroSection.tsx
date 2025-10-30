@@ -22,7 +22,7 @@ const HeroSection = () => {
     <section className="relative w-full overflow-hidden hero-gradient">
       <Carousel 
         className="w-full"
-        plugins={[Autoplay({ delay: 8000, stopOnInteraction: true })]}
+        plugins={[Autoplay({ delay: 5000, stopOnInteraction: true })]}
       >
         <CarouselContent>
           {images.map((src, index) => (
