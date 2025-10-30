@@ -332,7 +332,13 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
             gender: formatGenderAPI(foundPatientProfile.gender),
         };
     } else {
-        const newPatientValidation = newPatientSchema.safeParse(data);
+        const dataToValidate = {
+          dobYear: data.dobYear,
+          dobMonth: data.dobMonth,
+          dobDay: data.dobDay,
+          gender: data.gender
+        }
+        const newPatientValidation = newPatientSchema.safeParse(dataToValidate);
         if (!newPatientValidation.success) {
             console.error("Zod validation failed for new patient:", newPatientValidation.error.flatten());
             toast.error("Please fill in all required details for the new patient.");
@@ -779,5 +785,3 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
     </Dialog>
   );
 }
-
-      
