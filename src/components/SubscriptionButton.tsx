@@ -112,7 +112,7 @@ const SubscriptionButton = () => {
                 src="/card.jpg"
                 alt="One Health Member Plan Card"
                 fill
-                className="rounded-t-lg lg:rounded-none lg:rounded-r-lg object-cover"
+                className="rounded-t-lg lg:rounded-none lg:rounded-r-lg object-contain"
               />
             </div>
           </div>
