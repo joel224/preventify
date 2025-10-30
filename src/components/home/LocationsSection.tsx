@@ -16,7 +16,7 @@ const locations = [
   {
     city: "Kumbidi",
     name: "Preventify Family Care - Kumbidi( Coming soon)",
-    image: "https://images.unsplash.com/photo-1524230572899-a752b3835840?q=80&w=800&auto=format&fit=crop",
+    image: "/clcinic.jpg",
   },
   {
     city: "Koottanad",
