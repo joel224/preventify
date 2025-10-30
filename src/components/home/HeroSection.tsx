@@ -27,7 +27,7 @@ const HeroSection = () => {
         <CarouselContent>
           {images.map((src, index) => (
             <CarouselItem key={index}>
-              <div className="w-full aspect-[16/9] relative">
+              <div className="w-full h-[480px] md:h-[560px] relative">
                   <Image src={src} alt={`Hero Image ${index + 1}`} fill className="object-cover"/>
               </div>
             </CarouselItem>
