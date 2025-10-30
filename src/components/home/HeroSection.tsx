@@ -23,7 +23,7 @@ const HeroSection = () => {
     '/mobile/care_mobile.png',
     '/mobile/fam_mobile.png',
     '/mobile/doc_mobile.png',
-    '/mobile/love_mobile.png',
+    '/love.png', // Use desktop image as fallback for the 4th slide
   ];
 
   return (
