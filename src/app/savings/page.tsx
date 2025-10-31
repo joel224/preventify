@@ -68,7 +68,7 @@ const ValueCard = ({ title, annualFee, feeDetail, visitsToSave, savings, descrip
             </CardHeader>
             <CardContent className="flex-1 space-y-4">
                 <div className="bg-preventify-blue/5 p-4 rounded-lg">
-                    <p className="font-semibold">GP/Paediatrics Consults</p>
+                    <p className="font-semibold">GP/Paediatrics Consults <span className="text-preventify-gray font-normal text-xs">(General Physicians and Paediatricians)</span></p>
                     <p className="text-preventify-dark-gray">Unlimited Access {family && "for the Whole Family"}</p>
                 </div>
                 <div className="flex justify-around text-center">
