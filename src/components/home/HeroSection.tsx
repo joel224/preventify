@@ -23,7 +23,6 @@ const HeroSection = () => {
     '/mobile/mobile.png',
     '/mobile/fam_mobile.png',
     '/mobile/doc_mobile.png',
-    '/love.png', // Use desktop image as fallback for the 4th slide
   ];
 
   return (
@@ -36,15 +35,17 @@ const HeroSection = () => {
           {desktopImages.map((src, index) => (
             <CarouselItem key={index}>
               {/* Mobile Image */}
-              <div className="w-full h-[480px] md:h-[560px] relative md:hidden">
-                <Image
-                  src={mobileImages[index]}
-                  alt={`Hero Image ${index + 1} (Mobile)`}
-                  fill
-                  className="object-cover object-left"
-                  priority={index === 0}
-                />
-              </div>
+              {mobileImages[index] && (
+                <div className="w-full h-[480px] md:h-[560px] relative md:hidden">
+                  <Image
+                    src={mobileImages[index]}
+                    alt={`Hero Image ${index + 1} (Mobile)`}
+                    fill
+                    className="object-cover object-left"
+                    priority={index === 0}
+                  />
+                </div>
+              )}
               {/* Desktop Image */}
               <div className="w-full h-[480px] md:h-[560px] relative hidden md:block">
                 <Image
