@@ -8,6 +8,8 @@ import {
   CardContent,
   CardHeader,
   CardTitle,
+  CardDescription,
+  CardFooter
 } from "@/components/ui/card";
 import {
   Table,
@@ -17,69 +19,11 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Wallet, Stethoscope, Pill, ChevronDown } from "lucide-react";
+import { Wallet, Stethoscope, Pill, ChevronDown, CheckCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
+import { Separator } from "@/components/ui/separator";
 
-
-const savingsData = [
-    { service: "Complete Blood Count (CBC)", nonMember: 770, member: 300, save: 470 },
-    { service: "HbA1c", nonMember: 1550, member: 425, save: 1125 },
-    { service: "Lipid Profile (Chol, Trig, HDL, LDL, VLDL)", nonMember: 1900, member: 550, save: 1350 },
-    { service: "Fasting Blood Sugar (FBS)", nonMember: 350, member: 80, save: 270 },
-    { service: "Thyroid Stimulating Hormone (TSH)", nonMember: 920, member: 275, save: 645 },
-    { service: "Liver Function Test (LFT)", nonMember: 1750, member: 575, save: 1175 },
-    { service: "C-Reactive Protein (CRP)", nonMember: 1050, member: 425, save: 625 },
-    { service: "Post Prandial Blood Sugar (PPBS)", nonMember: 330, member: 80, save: 250 },
-    { service: "Vitamin B-12", nonMember: 2400, member: 950, save: 1450 },
-    { service: "Serum Creatinine", nonMember: 520, member: 190, save: 330 },
-    { service: "Vitamin D 25 Hydroxy (Vitamin D Total)", nonMember: 2800, member: 975, save: 1825 },
-    { service: "Thyroid Profile (T3, T4, TSH)", nonMember: 1670, member: 600, save: 1070 },
-    { service: "Erythrocyte Sedimentation Rate (ESR)", nonMember: 480, member: 150, save: 330 },
-    { service: "ECG", nonMember: 710, member: 350, save: 360 },
-    { service: "Echo Color Doppler", nonMember: 2590, member: 1750, save: 840 },
-    { service: "USG Abdomen & Pelvis", nonMember: 2840, member: 2050, save: 790 },
-    { service: "X-Ray Chest PA", nonMember: 650, member: 400, save: 250 },
-];
-
-
-const SavingsTable = ({ data, offset = 0 }: { data: typeof savingsData; offset?: number }) => (
-    <Card>
-      <CardContent className="p-0">
-        <Table>
-          <TableHeader>
-            <TableRow className="bg-preventify-blue/5 hover:bg-preventify-blue/10">
-              <TableHead>Service Name</TableHead>
-              <TableHead className="text-right font-bold text-preventify-green">You save</TableHead>
-              <TableHead className="text-right">Non-member</TableHead>
-              <TableHead className="text-right">Member</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {data.map((item, index) => (
-              <TableRow 
-                key={index} 
-                className="relative overflow-hidden even:bg-preventify-green/5 animate-shimmer-reveal"
-                style={{ animationDelay: `${(index + offset) * 100}ms` }}
-              >
-                <TableCell className="font-medium">{item.service}</TableCell>
-                <TableCell className="text-right font-extrabold text-preventify-green relative overflow-hidden">
-                  <span className="relative z-10">
-                    ₹{item.save.toLocaleString()}
-                  </span>
-                  <span 
-                    className="absolute inset-0 block w-full h-full bg-gradient-to-r from-transparent via-white/70 to-transparent animate-shimmer"
-                  />
-                </TableCell>
-                <TableCell className="text-right">₹{item.nonMember.toLocaleString()}</TableCell>
-                <TableCell className="text-right">₹{item.member.toLocaleString()}</TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </CardContent>
-    </Card>
-);
 
 const MagneticButton = () => {
     const containerRef = useRef<HTMLDivElement>(null);
@@ -94,7 +38,6 @@ const MagneticButton = () => {
         const x = e.clientX - (left + width / 2);
         const y = e.clientY - (top + height / 2);
 
-        // Strength of the magnetic effect
         const strength = 0.4;
         
         button.style.transform = `translate(${x * strength}px, ${y * strength}px)`;
@@ -123,11 +66,49 @@ const MagneticButton = () => {
     );
 };
 
+const ValueCard = ({ title, annualFee, feeDetail, visitsToSave, savings, description, family = false }: any) => {
+    return (
+        <Card className="flex flex-col">
+            <CardHeader>
+                <CardTitle className="text-2xl font-bold text-preventify-blue">{title}</CardTitle>
+                <CardDescription>{annualFee} <span className="font-semibold">{feeDetail}</span></CardDescription>
+            </CardHeader>
+            <CardContent className="flex-1 space-y-4">
+                <div className="bg-preventify-blue/5 p-4 rounded-lg">
+                    <p className="font-semibold">GP/Paediatrics Consults</p>
+                    <p className="text-preventify-dark-gray">Unlimited Access {family && "for the Whole Family"}</p>
+                </div>
+                <div className="flex justify-around text-center">
+                    <div>
+                        <p className="text-sm text-preventify-gray">Standard Cost</p>
+                        <p className="font-bold text-lg">₹800 - ₹1,500</p>
+                    </div>
+                    <div>
+                        <p className="text-sm text-preventify-gray">Sukham Card Price</p>
+                        <p className="font-bold text-lg text-preventify-green">₹0 Per Visit</p>
+                    </div>
+                </div>
+                <Separator />
+                <div className="space-y-2">
+                   <div className="flex justify-between items-center">
+                       <p className="text-preventify-dark-gray">Plan Pays for Itself In:</p>
+                       <p className="font-bold">{visitsToSave}</p>
+                   </div>
+                    <div className="flex justify-between items-center">
+                       <p className="text-preventify-dark-gray">Estimated Annual Savings ({family ? "8" : "4"} visits):</p>
+                       <p className="font-bold text-preventify-green">{savings}</p>
+                   </div>
+                </div>
+                 <p className="text-sm text-preventify-dark-gray pt-2">{description}</p>
+            </CardContent>
+            <CardFooter>
+                 <Button className="w-full bg-preventify-green hover:bg-preventify-dark-green">Get {title}</Button>
+            </CardFooter>
+        </Card>
+    )
+}
 
 const SavingsPage = () => {
-  const half = Math.ceil(savingsData.length / 2);
-  const firstHalf = savingsData.slice(0, half);
-  const secondHalf = savingsData.slice(half);
 
   return (
     <>
@@ -136,10 +117,10 @@ const SavingsPage = () => {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
                     <div className="text-center md:text-left">
                         <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-preventify-blue">
-                            How much can you save with the One Health Member Plan?
+                           The Sukham Card: Your 365-Day Health Passport
                         </h1>
                         <p className="mt-4 text-lg max-w-xl text-preventify-dark-gray">
-                            Explore the detailed savings and benefits of our membership.
+                            Predictable Health. Unpredictable Savings. Explore the detailed benefits of our membership.
                         </p>
                         <MagneticButton />
                     </div>
@@ -157,93 +138,32 @@ const SavingsPage = () => {
 
       <section id="savings-details" className="py-16 pt-8">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          {/* Top Info Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            <Card>
-              <CardHeader className="flex flex-row items-center gap-4">
-                <Wallet className="w-8 h-8 text-preventify-green" />
-                <CardTitle>The proof is in the saving</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-preventify-dark-gray mb-4">
-                  Most recovered more than their membership fee - many saved much more.
-                </p>
-                <div className="flex justify-between border-t pt-4">
-                    <div>
-                        <p className="font-bold text-preventify-blue">90% members saved</p>
-                        <p className="text-sm text-preventify-gray">₹2,000+ in a year</p>
-                    </div>
-                    <div>
-                        <p className="font-bold text-preventify-blue">50% saved</p>
-                        <p className="text-sm text-preventify-gray">₹17,000+ in a year</p>
-                    </div>
-                </div>
-              </CardContent>
-            </Card>
-            <Card>
-              <CardHeader className="flex flex-row items-center gap-4">
-                <Stethoscope className="w-8 h-8 text-preventify-green" />
-                <CardTitle>Plan pays for itself in two visits</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-preventify-dark-gray mb-4">
-                  2 visits = membership fee covered. Rest is pure savings.
-                </p>
-                <div className="flex justify-between border-t pt-4">
-                    <div className="space-y-2">
-                        <div>
-                            <p className="font-bold text-preventify-blue">GP/Paediatrics visit</p>
-                            <p className="text-sm text-preventify-gray">₹800-₹1,500</p>
-                        </div>
-                        <div>
-                           <p className="font-bold text-preventify-blue">Average family consults</p>
-                            <p className="text-sm text-preventify-gray">4 visits/year = ₹1,600-₹3,000 saved</p>
-                        </div>
-                         <div>
-                           <p className="font-bold text-preventify-blue">GP/Paediatric consults</p>
-                            <p className="text-sm text-preventify-gray">no charge per visit</p>
-                        </div>
-                    </div>
-                </div>
-              </CardContent>
-            </Card>
-            <Card>
-              <CardHeader className="flex flex-row items-center gap-4">
-                <Pill className="w-8 h-8 text-preventify-green" />
-                <CardTitle>Save more on medicines, every time</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-preventify-dark-gray mb-4">
-                  That's just on medicines. Everything else is extra savings.
-                </p>
-                <div className="flex justify-between border-t pt-4">
-                    <div>
-                        <p className="font-bold text-preventify-blue">Average monthly medicines bill = ₹1,000</p>
-                        <p className="text-sm text-preventify-gray">15% off + 10% Health Credits = ₹235/month</p>
-                    </div>
-                    <div>
-                        <p className="font-bold text-preventify-blue">x 12 months</p>
-                        <p className="text-sm text-preventify-gray">₹2,820 saved/year</p>
-                    </div>
-                </div>
-              </CardContent>
-            </Card>
+          
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
+            <ValueCard 
+                title="Individual Plan"
+                annualFee="₹730"
+                feeDetail="(Less than ₹2 per day!)"
+                visitsToSave="Two Visits"
+                savings="₹2,470 - ₹5,270 Saved"
+                description="Stop waiting for symptoms to get severe. With the Sukham Card, you can consult our General Physicians or Pediatricians for minor worries and preventive checks without worrying about the bill."
+            />
+             <ValueCard 
+                title="Family Plan"
+                family
+                annualFee="₹1,999"
+                feeDetail="(All members covered!)"
+                visitsToSave="Three Visits"
+                savings="₹4,401 - ₹10,001 Saved"
+                description="For less than the cost of one major specialist visit, your entire family is covered for a whole year! Protect your loved ones with guaranteed, unlimited access to daily care."
+            />
           </div>
 
-          {/* Savings Tables */}
-          <div className="mt-12">
-            <Card>
-                <CardHeader>
-                    <CardTitle>Service-wise Savings</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                      <SavingsTable data={firstHalf} />
-                      <SavingsTable data={secondHalf} offset={firstHalf.length} />
-                  </div>
-                </CardContent>
-            </Card>
+          <div className="text-center">
+             <h2 className="text-2xl font-bold text-preventify-dark-blue">Health is Now Unlimited.</h2>
+             <p className="text-preventify-gray">Get a consultation for just ₹0.</p>
           </div>
+
         </div>
       </section>
     </>
@@ -251,9 +171,3 @@ const SavingsPage = () => {
 };
 
 export default SavingsPage;
-
-    
-
-    
-
-    
