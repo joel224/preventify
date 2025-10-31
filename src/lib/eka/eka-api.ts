@@ -239,13 +239,16 @@ export async function getBusinessEntitiesAndDoctors(): Promise<any> {
 function sanitizeMobileNumber(mobile: string): string {
     let plainNumber = mobile.replace(/\D/g, '');
 
-    if (plainNumber.length === 12 && plainNumber.startsWith('91')) {
-        return plainNumber;
-    } else if (plainNumber.length === 10) {
+    if (plainNumber.length === 10) {
         return `91${plainNumber}`;
-    } else {
-        return `91${plainNumber.slice(-10)}`;
     }
+    
+    if (plainNumber.startsWith('91') && plainNumber.length === 12) {
+        return plainNumber;
+    }
+
+    // Fallback for other cases, might not be perfect
+    return `91${plainNumber.slice(-10)}`;
 }
 
 export async function searchPatientByMobile(mobile: string): Promise<any | null> {
@@ -359,3 +362,5 @@ export async function bookAppointment(data: any): Promise<any> {
         }
     }
 }
+
+    

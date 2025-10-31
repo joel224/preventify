@@ -100,7 +100,7 @@ const doctors: Doctor[] = [
 const stepOneSchema = z.object({
   firstName: z.string().min(1, 'First name is required.'),
   lastName: z.string().min(1, 'Last name is required.'),
-  phone: z.string().regex(/^\+?[0-9]{10,15}$/, 'Invalid phone number.'),
+  phone: z.string().regex(/^[0-9]{10}$/, 'Please enter a valid 10-digit phone number.'),
 });
 
 const stepTwoSchema = z.object({
@@ -436,9 +436,14 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
                   render={({ field }) => (
                       <FormItem>
                       <FormLabel>Phone Number</FormLabel>
-                      <FormControl>
-                          <Input placeholder="+919876543210" {...field} />
-                      </FormControl>
+                       <div className="relative">
+                            <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                                <span className="text-gray-500 sm:text-sm">+91</span>
+                            </div>
+                            <FormControl>
+                                <Input placeholder="9876543210" {...field} className="pl-10" />
+                            </FormControl>
+                        </div>
                       <FormMessage />
                       </FormItem>
                   )}
@@ -785,3 +790,5 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
     </Dialog>
   );
 }
+
+    
