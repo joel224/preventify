@@ -19,7 +19,7 @@ const Navbar = () => {
     { name: "Our Services", path: "/services" },
     { name: "Our Clinics", path: "/clinics" },
     { name: "Programs", path: "/programs" },
-    { name: "One Health", path: "/savings" },
+    { name: "Sugam Card", path: "/savings" },
   ];
   
   const topNavLinks = [
