@@ -22,7 +22,7 @@ const SubscriptionButton = () => {
   const benefits = [
     { name: "General physician consultations", detail: "No per visit charge" },
     { name: "Paediatrician consultations", detail: "No per visit charge" },
-    { name: "Unlimited doctor service", detail: "" },
+    { name: "Unlimited doctor service", detail: "On Daily basis" },
     { name: "Other OPD consultations", detail: "view details", isLink: true },
     { name: "Lab tests", detail: "view details", isLink: true },
   ];
