@@ -47,7 +47,8 @@ const ServicesSection = () => {
             Preventify offers a comprehensive range of healthcare services designed to keep you healthy and address your medical needs.
           </p>
         </div>
-        <div className="md:grid md:grid-cols-3 md:gap-12 animate-fade-in">
+        <div className="animate-fade-in">
+          {/* Mobile View: Horizontal Scroll */}
           <div className="flex md:hidden gap-4 overflow-x-auto pb-4 -mb-4 touch-pan-x">
             {services.map((service, index) => (
               <Card key={index} className="h-full hover:shadow-lg transition-shadow w-64 flex-shrink-0">
@@ -63,20 +64,42 @@ const ServicesSection = () => {
                 </Card>
             ))}
           </div>
-          <div className="hidden md:grid md:grid-cols-3 md:gap-12 col-span-3">
-             {services.map((service, index) => (
-              <Card key={index} className="h-full hover:shadow-lg transition-shadow">
-                  <CardContent className="p-6 text-center">
-                    <img
-                      src={service.icon}
-                      alt={service.title}
-                      className="w-16 h-16 mx-auto mb-4"
-                    />
-                    <h3 className="text-xl font-semibold mb-2 text-preventify-blue">{service.title}</h3>
-                    <p className="text-preventify-dark-gray">{service.description}</p>
-                  </CardContent>
-                </Card>
-            ))}
+
+          {/* Desktop View: Custom Grid */}
+          <div className="hidden md:flex flex-col gap-8">
+            {/* First Row: 2 Cards */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+              {services.slice(0, 2).map((service, index) => (
+                <Card key={index} className="h-full hover:shadow-lg transition-shadow">
+                    <CardContent className="p-6 text-center">
+                      <img
+                        src={service.icon}
+                        alt={service.title}
+                        className="w-16 h-16 mx-auto mb-4"
+                      />
+                      <h3 className="text-xl font-semibold mb-2 text-preventify-blue">{service.title}</h3>
+                      <p className="text-preventify-dark-gray">{service.description}</p>
+                    </CardContent>
+                  </Card>
+              ))}
+            </div>
+
+            {/* Second Row: 4 Cards */}
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+              {services.slice(2).map((service, index) => (
+                <Card key={index} className="h-full hover:shadow-lg transition-shadow">
+                    <CardContent className="p-6 text-center">
+                      <img
+                        src={service.icon}
+                        alt={service.title}
+                        className="w-16 h-16 mx-auto mb-4"
+                      />
+                      <h3 className="text-xl font-semibold mb-2 text-preventify-blue">{service.title}</h3>
+                      <p className="text-preventify-dark-gray">{service.description}</p>
+                    </CardContent>
+                  </Card>
+              ))}
+            </div>
           </div>
         </div>
       </div>
