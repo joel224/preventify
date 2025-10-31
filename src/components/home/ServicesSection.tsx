@@ -67,24 +67,36 @@ const ServicesSection = () => {
 
           {/* Desktop View: Custom Grid */}
           <div className="hidden md:flex flex-col gap-8">
-            {/* First Row: 2 Cards */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-              {services.slice(0, 2).map((service, index) => (
-                <Card key={index} className="h-full hover:shadow-lg transition-shadow">
+            {/* First Card in its own row */}
+            <div className="grid grid-cols-1">
+                <Card className="h-full hover:shadow-lg transition-shadow">
                     <CardContent className="p-6 text-center">
                       <img
-                        src={service.icon}
-                        alt={service.title}
+                        src={services[0].icon}
+                        alt={services[0].title}
                         className="w-16 h-16 mx-auto mb-4"
                       />
-                      <h3 className="text-xl font-semibold mb-2 text-preventify-blue">{service.title}</h3>
-                      <p className="text-preventify-dark-gray">{service.description}</p>
+                      <h3 className="text-xl font-semibold mb-2 text-preventify-blue">{services[0].title}</h3>
+                      <p className="text-preventify-dark-gray">{services[0].description}</p>
                     </CardContent>
                   </Card>
-              ))}
+            </div>
+             {/* Second Card in its own row */}
+             <div className="grid grid-cols-1">
+                 <Card className="h-full hover:shadow-lg transition-shadow">
+                    <CardContent className="p-6 text-center">
+                      <img
+                        src={services[1].icon}
+                        alt={services[1].title}
+                        className="w-16 h-16 mx-auto mb-4"
+                      />
+                      <h3 className="text-xl font-semibold mb-2 text-preventify-blue">{services[1].title}</h3>
+                      <p className="text-preventify-dark-gray">{services[1].description}</p>
+                    </CardContent>
+                  </Card>
             </div>
 
-            {/* Second Row: 4 Cards */}
+            {/* Remaining 4 Cards */}
             <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
               {services.slice(2).map((service, index) => (
                 <Card key={index} className="h-full hover:shadow-lg transition-shadow">
