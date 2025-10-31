@@ -11,19 +11,10 @@ import {
   CardDescription,
   CardFooter
 } from "@/components/ui/card";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
 import { Wallet, Stethoscope, Pill, ChevronDown, CheckCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import { Separator } from "@/components/ui/separator";
-import { toast } from "sonner";
 
 
 const MagneticButton = () => {
@@ -68,12 +59,6 @@ const MagneticButton = () => {
 };
 
 const ValueCard = ({ title, annualFee, feeDetail, visitsToSave, savings, description, family = false }: any) => {
-    
-    const handleGetPlan = () => {
-        toast.info("How to Subscribe", {
-            description: "To get your Sukham Card, please visit your nearest Preventify hospital.",
-        });
-    };
 
     return (
         <Card className="flex flex-col">
@@ -110,7 +95,7 @@ const ValueCard = ({ title, annualFee, feeDetail, visitsToSave, savings, descrip
                  <p className="text-sm text-preventify-dark-gray pt-2">{description}</p>
             </CardContent>
             <CardFooter>
-                 <Button onClick={handleGetPlan} className="w-full bg-preventify-green hover:bg-preventify-dark-green">Get {title}</Button>
+                 <p className="text-center w-full text-sm text-preventify-gray font-medium">Visit your nearest Preventify hospital to subscribe.</p>
             </CardFooter>
         </Card>
     )
