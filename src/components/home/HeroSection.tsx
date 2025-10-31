@@ -51,13 +51,21 @@ const HeroSection = () => {
               )}
               {/* Desktop Image */}
               <div className="w-full h-[480px] md:h-[560px] relative hidden md:block">
-                <Image
-                  src={src}
-                  alt={`Hero Image ${index + 1} (Desktop)`}
-                  fill
-                  className="object-cover"
-                  priority={index === 0}
-                />
+                {index === 2 ? (
+                   <img
+                    src={src}
+                    alt={`Hero Image ${index + 1} (Desktop)`}
+                    className="w-full h-full object-cover"
+                  />
+                ) : (
+                  <Image
+                    src={src}
+                    alt={`Hero Image ${index + 1} (Desktop)`}
+                    fill
+                    className="object-cover"
+                    priority={index === 0}
+                  />
+                )}
               </div>
             </CarouselItem>
           ))}
