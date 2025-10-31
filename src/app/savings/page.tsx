@@ -117,7 +117,7 @@ const SavingsPage = () => {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
                     <div className="text-center md:text-left">
                         <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-preventify-blue">
-                           The Sukham Card: Your 365-Day Health Passport
+                           Your 365-Day Health Passport
                         </h1>
                         <p className="mt-4 text-lg max-w-xl text-preventify-dark-gray">
                             Predictable Health. Unpredictable Savings. Explore the detailed benefits of our membership.
