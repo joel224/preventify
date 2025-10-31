@@ -190,13 +190,19 @@ const SavingsPage = () => {
                   2 visits = membership fee covered. Rest is pure savings.
                 </p>
                 <div className="flex justify-between border-t pt-4">
-                    <div>
-                        <p className="font-bold text-preventify-blue">GP/Paediatrics visit</p>
-                        <p className="text-sm text-preventify-gray">₹800-₹1,500 (no charge per visit)</p>
-                    </div>
-                    <div>
-                        <p className="font-bold text-preventify-blue">Average family consults</p>
-                        <p className="text-sm text-preventify-gray">4 visits/year = ₹1,600-₹3,000 saved</p>
+                    <div className="space-y-2">
+                        <div>
+                            <p className="font-bold text-preventify-blue">GP/Paediatrics visit</p>
+                            <p className="text-sm text-preventify-gray">₹800-₹1,500 (no charge per visit)</p>
+                        </div>
+                        <div>
+                           <p className="font-bold text-preventify-blue">Average family consults</p>
+                            <p className="text-sm text-preventify-gray">4 visits/year = ₹1,600-₹3,000 saved</p>
+                        </div>
+                         <div>
+                           <p className="font-bold text-preventify-blue">GP/Paediatric consults</p>
+                            <p className="text-sm text-preventify-gray">no charge per visit</p>
+                        </div>
                     </div>
                 </div>
               </CardContent>
