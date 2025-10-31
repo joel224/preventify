@@ -67,17 +67,22 @@ const ServicesSection = () => {
 
           {/* Desktop View: Custom Grid */}
           <div className="hidden md:flex flex-col gap-8">
-            {/* First Card in its own row */}
+            {/* First Card in its own row, with video */}
             <div className="grid grid-cols-1">
                 <Card className="h-full hover:shadow-lg transition-shadow">
-                    <CardContent className="p-6 text-center">
-                      <img
-                        src={services[0].icon}
-                        alt={services[0].title}
-                        className="w-16 h-16 mx-auto mb-4"
-                      />
-                      <h3 className="text-xl font-semibold mb-2 text-preventify-blue">{services[0].title}</h3>
-                      <p className="text-preventify-dark-gray">{services[0].description}</p>
+                    <CardContent className="p-6 grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+                      <div className="text-center">
+                        <img
+                          src={services[0].icon}
+                          alt={services[0].title}
+                          className="w-16 h-16 mx-auto mb-4"
+                        />
+                        <h3 className="text-xl font-semibold mb-2 text-preventify-blue">{services[0].title}</h3>
+                        <p className="text-preventify-dark-gray">{services[0].description}</p>
+                      </div>
+                      <div>
+                        <iframe   src="https://player.mux.com/022nTfgg1XsP0100V5mVYunDNi3crJuQuN00P2KFqn49B00Y?metadata-video-title=5373905_Coll_wavebreak_Senior_Citizen_3840x2160+%281%29&video-title=5373905_Coll_wavebreak_Senior_Citizen_3840x2160+%281%29"   style={{width: '100%', border: 'none', aspectRatio: '16/9', borderRadius: '0.5rem'}}   allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture;"   allowFullScreen ></iframe>
+                      </div>
                     </CardContent>
                   </Card>
             </div>
