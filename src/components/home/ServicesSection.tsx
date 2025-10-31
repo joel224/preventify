@@ -80,8 +80,9 @@ const ServicesSection = () => {
                         <h3 className="text-xl font-semibold mb-2 text-preventify-blue">{services[0].title}</h3>
                         <p className="text-preventify-dark-gray">{services[0].description}</p>
                       </div>
-                      <div>
-                        <iframe   src="https://player.mux.com/022nTfgg1XsP0100V5mVYunDNi3crJuQuN00P2KFqn49B00Y?loop=true&autoplay=muted&controls=false"   style={{width: '100%', border: 'none', aspectRatio: '16/9', borderRadius: '0.5rem'}}   allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture;"   allowFullScreen ></iframe>
+                      <div className="relative">
+                        <iframe   src="https://player.mux.com/022nTfgg1XsP0100V5mVYunDNi3crJuQuN00P2KFqn49B00Y?loop=true&autoplay=muted&controls=false"   style={{width: '100%', border: 'none', aspectRatio: '16/9', borderRadius: '0.5rem'}}   allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture;"    ></iframe>
+                        <div className="absolute inset-0"></div>
                       </div>
                     </CardContent>
                   </Card>
