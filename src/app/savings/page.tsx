@@ -193,7 +193,7 @@ const SavingsPage = () => {
                     <div className="space-y-2">
                         <div>
                             <p className="font-bold text-preventify-blue">GP/Paediatrics visit</p>
-                            <p className="text-sm text-preventify-gray">₹800-₹1,500 (no charge per visit)</p>
+                            <p className="text-sm text-preventify-gray">₹800-₹1,500</p>
                         </div>
                         <div>
                            <p className="font-bold text-preventify-blue">Average family consults</p>
