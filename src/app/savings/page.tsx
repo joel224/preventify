@@ -95,7 +95,7 @@ const ValueCard = ({ title, annualFee, feeDetail, visitsToSave, savings, descrip
                  <p className="text-sm text-preventify-dark-gray pt-2">{description}</p>
             </CardContent>
             <CardFooter>
-                 <div className="w-full text-center py-2 px-4 rounded-md bg-preventify-blue text-white text-sm font-medium">
+                 <div className="w-full text-center py-2 px-4 rounded-md bg-preventify-green text-white text-sm font-medium">
                     Visit your nearest Preventify hospital to subscribe.
                  </div>
             </CardFooter>
