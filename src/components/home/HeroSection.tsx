@@ -30,6 +30,9 @@ const HeroSection = () => {
       <Carousel
         className="w-full"
         plugins={[Autoplay({ delay: 2000, stopOnInteraction: true })]}
+        opts={{
+          loop: true,
+        }}
       >
         <CarouselContent>
           {desktopImages.map((src, index) => (
