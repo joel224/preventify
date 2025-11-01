@@ -17,6 +17,7 @@ const Navbar = () => {
 
   const mainNavLinks = [
     { name: "Our Services", path: "/services" },
+    { name: "Our Doctors", path: "/doctors" },
     { name: "Our Clinics", path: "/clinics" },
     { name: "Programs", path: "/programs" },
     { name: "Sugam Card", path: "/savings" },
