@@ -1892,6 +1892,10 @@ h1, h2, h3, h4, h5, h6 {
   object-position: left;
 }
 
+.object-center {
+  object-position: center;
+}
+
 .p-0 {
   padding: 0;
 }
@@ -2876,6 +2880,10 @@ h1, h2, h3, h4, h5, h6 {
 .hover\:text-white:hover {
   --tw-text-opacity: 1;
   color: rgb(255 255 255 / var(--tw-text-opacity, 1));
+}
+
+.hover\:text-white\/80:hover {
+  color: #fffc;
 }
 
 .hover\:underline:hover {

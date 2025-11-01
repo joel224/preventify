@@ -13,10 +13,10 @@ import Image from "next/image"
 
 const HeroSection = () => {
   const desktopImages = [
-    '/care.png',
-    '/Fam.png',
-    '/edit_2.png',
-    '/love.png',
+    '/care (1).webp',
+    '/Fam.webp',
+    '/edit_2 (1).webp',
+    '/love.webp',
   ];
 
   const mobileImages = [
@@ -24,6 +24,7 @@ const HeroSection = () => {
     '/mobile/fam_mobile.png',
     '/mobile/doc_mobile.png',
   ];
+
 
   return (
     <section className="relative w-full overflow-hidden hero-gradient">
