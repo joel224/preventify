@@ -105,8 +105,8 @@ const ServicesSection = () => {
               className="transition-transform duration-300 ease-out"
             >
                 <Card className="h-full border-transparent">
-                    <CardContent className="p-6 grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
-                      <div className="text-center">
+                    <CardContent className="p-6 grid grid-cols-1 md:grid-cols-5 gap-8 items-center">
+                      <div className="text-center md:col-span-3">
                         <img
                           src={services[0].icon}
                           alt={services[0].title}
@@ -115,8 +115,9 @@ const ServicesSection = () => {
                         <h3 className="text-xl font-semibold mb-2 text-preventify-blue">{services[0].title}</h3>
                         <p className="text-preventify-dark-gray">{services[0].description}</p>
                       </div>
-                      <div className="relative">
+                      <div className="relative md:col-span-2">
                         <iframe src="https://player.mux.com/022nTfgg1XsP0100V5mVYunDNi3crJuQuN00P2KFqn49B00Y?loop=true&autoplay=muted&controls=false" style={{width: '100%', border: 'none', aspectRatio: '16/9', borderRadius: '0.5rem'}} allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture;"></iframe>
+                        <div className="absolute inset-0"></div>
                       </div>
                     </CardContent>
                   </Card>
