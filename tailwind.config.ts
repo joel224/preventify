@@ -153,8 +153,8 @@ export default {
                 'vibrate': 'vibrate 4s ease-in-out infinite',
 			},
 			fontFamily: {
-				sans: ['Inter', 'sans-serif'],
-				display: ['Poppins', 'sans-serif'],
+				sans: ['var(--font-inter)', 'sans-serif'],
+				display: ['var(--font-poppins)', 'sans-serif'],
 			},
 		}
 	},
