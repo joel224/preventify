@@ -340,7 +340,7 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
         }
         const newPatientValidation = newPatientSchema.safeParse(dataToValidate);
         if (!newPatientValidation.success) {
-            console.error("Zod validation failed for new patient:", newPatientValidation.error.flatten());
+            
             toast.error("Please fill in all required details for the new patient.");
             setIsLoading(false);
             await form.trigger(['dobYear', 'dobMonth', 'dobDay', 'gender']);
