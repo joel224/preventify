@@ -626,10 +626,6 @@ h1, h2, h3, h4, h5, h6 {
   grid-column: span 3 / span 3;
 }
 
-.col-span-12 {
-  grid-column: span 12 / span 12;
-}
-
 .-mx-1 {
   margin-left: -.25rem;
   margin-right: -.25rem;
@@ -784,10 +780,6 @@ h1, h2, h3, h4, h5, h6 {
 
 .mt-auto {
   margin-top: auto;
-}
-
-.mt-16 {
-  margin-top: 4rem;
 }
 
 .line-clamp-2 {
@@ -1411,10 +1403,6 @@ h1, h2, h3, h4, h5, h6 {
   appearance: none;
 }
 
-.grid-flow-row-dense {
-  grid-auto-flow: row dense;
-}
-
 .grid-cols-1 {
   grid-template-columns: repeat(1, minmax(0, 1fr));
 }
@@ -1425,10 +1413,6 @@ h1, h2, h3, h4, h5, h6 {
 
 .grid-cols-3 {
   grid-template-columns: repeat(3, minmax(0, 1fr));
-}
-
-.grid-cols-12 {
-  grid-template-columns: repeat(12, minmax(0, 1fr));
 }
 
 .flex-row {
@@ -2146,8 +2130,16 @@ h1, h2, h3, h4, h5, h6 {
   padding-bottom: 1.5rem;
 }
 
+.pl-10 {
+  padding-left: 2.5rem;
+}
+
 .pl-2\.5 {
   padding-left: .625rem;
+}
+
+.pl-3 {
+  padding-left: .75rem;
 }
 
 .pl-6 {
@@ -2196,14 +2188,6 @@ h1, h2, h3, h4, h5, h6 {
 
 .pt-8 {
   padding-top: 2rem;
-}
-
-.pl-10 {
-  padding-left: 2.5rem;
-}
-
-.pl-3 {
-  padding-left: .75rem;
 }
 
 .text-left {
@@ -2358,6 +2342,11 @@ h1, h2, h3, h4, h5, h6 {
   color: rgb(209 213 219 / var(--tw-text-opacity, 1));
 }
 
+.text-gray-500 {
+  --tw-text-opacity: 1;
+  color: rgb(107 114 128 / var(--tw-text-opacity, 1));
+}
+
 .text-gray-600 {
   --tw-text-opacity: 1;
   color: rgb(75 85 99 / var(--tw-text-opacity, 1));
@@ -2478,11 +2467,6 @@ h1, h2, h3, h4, h5, h6 {
 
 .text-white\/80 {
   color: #fffc;
-}
-
-.text-gray-500 {
-  --tw-text-opacity: 1;
-  color: rgb(107 114 128 / var(--tw-text-opacity, 1));
 }
 
 .underline {
@@ -3768,10 +3752,6 @@ h1, h2, h3, h4, h5, h6 {
     top: auto;
   }
 
-  .sm\:col-span-6 {
-    grid-column: span 6 / span 6;
-  }
-
   .sm\:mt-0 {
     margin-top: 0;
   }
@@ -3890,10 +3870,6 @@ h1, h2, h3, h4, h5, h6 {
     grid-column: span 2 / span 2;
   }
 
-  .md\:col-span-4 {
-    grid-column: span 4 / span 4;
-  }
-
   .md\:block {
     display: block;
   }
@@ -3946,10 +3922,6 @@ h1, h2, h3, h4, h5, h6 {
     grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 
-  .md\:grid-cols-1 {
-    grid-template-columns: repeat(1, minmax(0, 1fr));
-  }
-
   .md\:grid-cols-4 {
     grid-template-columns: repeat(4, minmax(0, 1fr));
   }
@@ -3960,10 +3932,6 @@ h1, h2, h3, h4, h5, h6 {
 
   .md\:gap-12 {
     gap: 3rem;
-  }
-
-  .md\:gap-4 {
-    gap: 1rem;
   }
 
   .md\:py-12 {

@@ -1,5 +1,6 @@
 
 'use client';
+import { useState, useEffect, useRef } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 
 const services = [
@@ -36,8 +37,38 @@ const services = [
 ];
 
 const ServicesSection = () => {
+  const [scrollY, setScrollY] = useState(0);
+  const primaryCareRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setScrollY(window.scrollY);
+    };
+    window.addEventListener('scroll', handleScroll);
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+    };
+  }, []);
+
+  const getTransform = () => {
+    if (primaryCareRef.current) {
+      const rect = primaryCareRef.current.getBoundingClientRect();
+      const elementTop = rect.top + scrollY;
+      const start = elementTop - window.innerHeight;
+      const end = elementTop + rect.height;
+
+      if (scrollY > start && scrollY < end) {
+        const progress = (scrollY - start) / (end - start);
+        // Start from -100px and move to 0px. The multiplier makes it slow.
+        const translation = -100 + progress * 100 * 0.5;
+        return `translateX(${Math.min(translation, 0)}px)`;
+      }
+    }
+    return 'translateX(-50px)';
+  };
+  
   return (
-    <section className="bg-white py-16">
+    <section className="bg-white py-16 overflow-x-hidden">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-12">
           <h2 className="text-3xl md:text-4xl font-bold mb-4 text-preventify-blue">
@@ -68,7 +99,11 @@ const ServicesSection = () => {
           {/* Desktop View: Custom Grid */}
           <div className="hidden md:flex flex-col gap-8">
             {/* First Card in its own row, with video */}
-            <div className="grid grid-cols-1">
+            <div 
+              ref={primaryCareRef}
+              style={{ transform: getTransform() }}
+              className="transition-transform duration-300 ease-out"
+            >
                 <Card className="h-full border-transparent">
                     <CardContent className="p-6 grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
                       <div className="text-center">
@@ -81,8 +116,7 @@ const ServicesSection = () => {
                         <p className="text-preventify-dark-gray">{services[0].description}</p>
                       </div>
                       <div className="relative">
-                        <iframe   src="https://player.mux.com/022nTfgg1XsP0100V5mVYunDNi3crJuQuN00P2KFqn49B00Y?loop=true&autoplay=muted&controls=false"   style={{width: '100%', border: 'none', aspectRatio: '16/9', borderRadius: '0.5rem'}}   allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture;"    ></iframe>
-                        <div className="absolute inset-0"></div>
+                        <iframe src="https://player.mux.com/022nTfgg1XsP0100V5mVYunDNi3crJuQuN00P2KFqn49B00Y?loop=true&autoplay=muted&controls=false" style={{width: '100%', border: 'none', aspectRatio: '16/9', borderRadius: '0.5rem'}} allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture;"></iframe>
                       </div>
                     </CardContent>
                   </Card>
