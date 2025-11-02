@@ -64,7 +64,7 @@ const ValueCard = ({ title, annualFee, feeDetail, visitsToSave, savings, descrip
         <Card className="flex flex-col">
             <CardHeader>
                 <CardTitle className="text-2xl font-bold text-preventify-blue">{title}</CardTitle>
-                <CardDescription>{annualFee} <span className="font-semibold">{feeDetail}</span></CardDescription>
+                <CardDescription className="text-preventify-dark-gray">{annualFee} <span className="font-semibold">{feeDetail}</span></CardDescription>
             </CardHeader>
             <CardContent className="flex-1 space-y-4">
                 <div className="bg-preventify-blue/5 p-4 rounded-lg">
