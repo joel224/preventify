@@ -22,11 +22,11 @@ const ClinicsPage = () => {
     },
     {
       id: 3,
-      name: "Preventify Family Care - Kumbidi",
+      name: "Peekay's Preventify Clinic - Kanjirathani",
       location: "Kumbidi",
       address: "Near Panchayat Office, Kumbidi, Palakkad 679563",
       phone: "+91 466 345 6789",
-      image: "https://images.unsplash.com/photo-1574169208507-84376144848b?q=80&w=800&auto=format&fit=crop",
+      image: "/clcinic.jpg",
     },
     {
       id: 4,
