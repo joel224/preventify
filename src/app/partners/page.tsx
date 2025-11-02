@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { CheckCircle2 } from "lucide-react";
+import { CheckCircle2, Phone, Mail, MapPin } from "lucide-react";
 
 const PartnersPage = () => {
   const handleSubmit = (event: React.FormEvent) => {
@@ -132,69 +132,32 @@ const PartnersPage = () => {
         </div>
       </section>
 
-      {/* Partner Inquiry Form */}
+      {/* Partner Inquiry Section */}
       <section className="py-16">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="max-w-3xl mx-auto">
             <div className="text-center mb-12">
               <h2 className="text-3xl font-bold mb-4">Interested in Partnering?</h2>
               <p className="text-gray-600">
-                Fill out the form below with your information, and our partnership team will contact you to discuss potential collaboration opportunities.
+                Contact us to discuss potential collaboration opportunities.
               </p>
             </div>
             <div className="bg-white p-8 rounded-lg shadow-md border border-gray-100">
-              <form onSubmit={handleSubmit}>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-                  <div className="space-y-2">
-                    <Label htmlFor="name">Full Name</Label>
-                    <Input id="name" placeholder="Your full name" required />
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="organization">Organization Name</Label>
-                    <Input id="organization" placeholder="Your organization" required />
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="email">Email Address</Label>
-                    <Input id="email" type="email" placeholder="you@example.com" required />
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="phone">Phone Number</Label>
-                    <Input id="phone" placeholder="Your contact number" required />
-                  </div>
-                  <div className="space-y-2 md:col-span-2">
-                    <Label htmlFor="location">Organization Location</Label>
-                    <Input id="location" placeholder="City, District" required />
-                  </div>
-                  <div className="space-y-2 md:col-span-2">
-                    <Label htmlFor="partnership">Partnership Interest</Label>
-                    <select
-                      id="partnership"
-                      className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-preventify-purple"
-                      required
-                    >
-                      <option value="">Select partnership type</option>
-                      <option value="Clinic Affiliation">Clinic Affiliation</option>
-                      <option value="Joint Venture">Joint Venture</option>
-                      <option value="Franchise">Franchise</option>
-                      <option value="Other">Other</option>
-                    </select>
-                  </div>
-                  <div className="space-y-2 md:col-span-2">
-                    <Label htmlFor="message">Additional Information</Label>
-                    <Textarea
-                      id="message"
-                      placeholder="Please share details about your organization and partnership interests"
-                      className="min-h-[120px]"
-                    />
-                  </div>
+                <h3 className="text-2xl font-bold text-center mb-6">Contact Us</h3>
+                <div className="space-y-4 text-center text-lg">
+                    <p className="flex items-center justify-center">
+                        <MapPin className="h-5 w-5 mr-2 text-preventify-purple" />
+                        Headquarters: Vattamkulam, Malappuram, Kerala, India
+                    </p>
+                    <p className="flex items-center justify-center">
+                        <Phone className="h-5 w-5 mr-2 text-preventify-purple" />
+                        +91 8129334858
+                    </p>
+                    <p className="flex items-center justify-center">
+                        <Mail className="h-5 w-5 mr-2 text-preventify-purple" />
+                        contact@preventify.me
+                    </p>
                 </div>
-                <Button
-                  type="submit"
-                  className="w-full bg-preventify-purple hover:bg-preventify-dark-purple text-white py-6"
-                >
-                  Submit Partnership Inquiry
-                </Button>
-              </form>
             </div>
           </div>
         </div>
