@@ -44,12 +44,12 @@ export default function RootLayout({
                 </main>
                 <Footer />
               </div>
-              <SubscriptionButton />
             </div>
             <Toaster />
             <Sonner />
           </TooltipProvider>
         </div>
+        <SubscriptionButton />
       </body>
     </html>
   );
