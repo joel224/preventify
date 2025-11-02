@@ -77,7 +77,7 @@ const ValueCard = ({ title, annualFee, feeDetail, visitsToSave, savings, descrip
                         <p className="font-bold text-lg">₹800 - ₹1,500</p>
                     </div>
                     <div>
-                        <p className="text-sm text-preventify-gray">Sukham Card Price</p>
+                        <p className="text-sm text-preventify-gray">With Subscription</p>
                         <p className="font-bold text-lg text-preventify-green">₹0 Per Visit</p>
                     </div>
                 </div>
