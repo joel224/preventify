@@ -74,11 +74,7 @@ const ClinicsPage = () => {
           </div>
           <div className="bg-white p-4 rounded-lg shadow-sm">
             <div className="aspect-video relative">
-              <img 
-                src="https://upload.wikimedia.org/wikipedia/commons/thumb/d/d4/Kerala_districts_map.svg/1200px-Kerala_districts_map.svg.png" 
-                alt="Kerala Map with Preventify Locations" 
-                className="w-full h-full object-contain"
-              />
+               <iframe src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d979.829247099384!2d76.067362!3d10.787016!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3ba7b9f2a0c650cb%3A0x3b26acf0d5721cbd!2sDr%20Rakesh's%20Preventify.Me%20Hospital!5e0!3m2!1sen!2sin!4v1762073524829!5m2!1sen!2sin" width="600" height="450" style={{border:0}} allowFullScreen loading="lazy" referrerPolicy="no-referrer-when-downgrade"></iframe>
             </div>
           </div>
         </div>
