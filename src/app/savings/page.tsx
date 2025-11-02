@@ -11,7 +11,7 @@ import {
   CardDescription,
   CardFooter
 } from "@/components/ui/card";
-import { Wallet, Stethoscope, Pill, ChevronDown, CheckCircle, Hospital, UserMd, BookMedical } from "lucide-react";
+import { Wallet, Stethoscope, Pill, ChevronDown, CheckCircle, Hospital, UserMd, ClipboardList } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import { Separator } from "@/components/ui/separator";
@@ -239,7 +239,7 @@ const SavingsPage = () => {
                   <Card>
                       <CardHeader>
                           <CardTitle className="flex items-center gap-2">
-                              <BookMedical className="h-5 w-5 text-preventify-green" />
+                              <ClipboardList className="h-5 w-5 text-preventify-green" />
                               Medical Departments
                           </CardTitle>
                       </CardHeader>
@@ -301,5 +301,7 @@ const SavingsPage = () => {
 };
 
 export default SavingsPage;
+
+    
 
     
