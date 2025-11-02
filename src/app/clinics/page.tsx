@@ -75,7 +75,7 @@ const ClinicsPage = () => {
           <div className="bg-white p-4 rounded-lg shadow-sm">
             <div className="aspect-video relative">
               <img 
-                src="https://www.mapsofindia.com/maps/kerala/kerala-district.jpg" 
+                src="https://upload.wikimedia.org/wikipedia/commons/thumb/d/d4/Kerala_districts_map.svg/1200px-Kerala_districts_map.svg.png" 
                 alt="Kerala Map with Preventify Locations" 
                 className="w-full h-full object-contain"
               />
