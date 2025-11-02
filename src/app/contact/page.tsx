@@ -266,9 +266,10 @@ const ContactPage = () => {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
               <div className="aspect-video relative rounded-md overflow-hidden shadow-md border">
                 <iframe
-                  src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d489.91458054112263!2d76.0675154!3d10.7870424!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3ba7b9f2a0c650cb%3A0x3b26acf0d5721cbd!2sDr%20Rakesh's%20Preventify.Me%20Hospital!5e0!3m2!1sen!2sin!4v1747716276439!5m2!1sen!2sin"
+                  src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d979.829247099384!2d76.067362!3d10.787016!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3ba7b9f2a0c650cb%3A0x3b26acf0d5721cbd!2sDr%20Rakesh's%20Preventify.Me%20Hospital!5e0!3m2!1sen!2sin!4v1762073524829!5m2!1sen!2sin"
                   width="600"
                   height="450"
+                  style={{border:0}}
                   allowFullScreen
                   loading="lazy"
                   referrerPolicy="no-referrer-when-downgrade"
@@ -350,3 +351,5 @@ const ContactPage = () => {
 };
 
 export default ContactPage;
+
+    
