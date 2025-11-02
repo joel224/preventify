@@ -310,6 +310,26 @@ h1, h2, h3, h4, h5, h6 {
   font-family: var(--font-poppins), sans-serif;
 }
 
+@media only screen and (width >= 1025px) {
+  #scale-wrapper {
+    transform-origin: top;
+    width: 111.11%;
+    margin-left: -5.555%;
+    margin-right: -5.555%;
+    overflow-x: hidden;
+    transform: scale(.9);
+  }
+}
+
+@media only screen and (width <= 1024px) {
+  #scale-wrapper {
+    width: 100%;
+    margin: 0;
+    overflow-x: hidden;
+    transform: none;
+  }
+}
+
 .\!container {
   width: 100% !important;
   margin-left: auto !important;
@@ -1699,6 +1719,10 @@ h1, h2, h3, h4, h5, h6 {
   background-color: hsl(var(--background));
 }
 
+.bg-black\/20 {
+  background-color: #0003;
+}
+
 .bg-black\/80 {
   background-color: #000c;
 }
@@ -1890,10 +1914,6 @@ h1, h2, h3, h4, h5, h6 {
 
 .object-left {
   object-position: left;
-}
-
-.object-center {
-  object-position: center;
 }
 
 .p-0 {
@@ -2882,10 +2902,6 @@ h1, h2, h3, h4, h5, h6 {
   color: rgb(255 255 255 / var(--tw-text-opacity, 1));
 }
 
-.hover\:text-white\/80:hover {
-  color: #fffc;
-}
-
 .hover\:underline:hover {
   text-decoration-line: underline;
 }
@@ -3772,10 +3788,6 @@ h1, h2, h3, h4, h5, h6 {
     grid-column: span 2 / span 2;
   }
 
-  .md\:col-span-3 {
-    grid-column: span 3 / span 3;
-  }
-
   .md\:block {
     display: block;
   }
@@ -3826,10 +3838,6 @@ h1, h2, h3, h4, h5, h6 {
 
   .md\:grid-cols-4 {
     grid-template-columns: repeat(4, minmax(0, 1fr));
-  }
-
-  .md\:grid-cols-5 {
-    grid-template-columns: repeat(5, minmax(0, 1fr));
   }
 
   .md\:flex-row {
