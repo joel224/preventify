@@ -73,8 +73,13 @@ const ClinicsPage = () => {
             </p>
           </div>
           <div className="bg-white p-4 rounded-lg shadow-sm">
-            <div className="aspect-video relative">
-               <iframe src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d979.829247099384!2d76.067362!3d10.787016!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3ba7b9f2a0c650cb%3A0x3b26acf0d5721cbd!2sDr%20Rakesh's%20Preventify.Me%20Hospital!5e0!3m2!1sen!2sin!4v1762073524829!5m2!1sen!2sin" width="600" height="450" style={{border:0}} allowFullScreen loading="lazy" referrerPolicy="no-referrer-when-downgrade"></iframe>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="aspect-video relative">
+                <iframe src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d979.829247099384!2d76.067362!3d10.787016!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3ba7b9f2a0c650cb%3A0x3b26acf0d5721cbd!2sDr%20Rakesh's%20Preventify.Me%20Hospital!5e0!3m2!1sen!2sin!4v1762073524829!5m2!1sen!2sin" width="100%" height="100%" style={{border:0}} allowFullScreen loading="lazy" referrerPolicy="no-referrer-when-downgrade"></iframe>
+              </div>
+              <div className="aspect-video relative">
+                <iframe src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d7838.6963192812755!2d76.018061!3d10.784624!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3ba7b90b671ae7ad%3A0x578848312f43e2e0!2sPreventify%20Hospital%20Clinic!5e0!3m2!1sen!2sin!4v1762074404677!5m2!1sen!2sin" width="100%" height="100%" style={{border:0}} allowFullScreen loading="lazy" referrerPolicy="no-referrer-when-downgrade"></iframe>
+              </div>
             </div>
           </div>
         </div>
