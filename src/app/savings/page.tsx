@@ -196,10 +196,6 @@ const SavingsPage = () => {
             />
           </div>
 
-          <div className="text-center">
-             <h2 className="text-2xl font-bold text-preventify-dark-blue">Health is Now Unlimited.</h2>
-             <p className="text-preventify-gray">Get a consultation for just ₹0.</p>
-          </div>
         </div>
       </section>
 
