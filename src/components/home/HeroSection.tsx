@@ -37,7 +37,7 @@ const TempHeroPage = () => {
                             
                             {/* CONTROLS FOR THE BLUE CIRCLE: */}
                             <motion.div 
-                                className="absolute bg-primary rounded-full w-[760px] h-[760px] overflow-hidden"
+                                className="absolute bg-[#4e6bff] rounded-full w-[760px] h-[760px] overflow-hidden"
                                 animate={{ y: '-15%', x: '10%' }}
                             >
                                 {/* The image is now a child of the blue circle */}

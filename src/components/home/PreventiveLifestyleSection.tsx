@@ -2,7 +2,8 @@
 
 'use client';
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useRef } from "react";
+import { motion, useScroll, useTransform } from "framer-motion";
 import { Button } from "@/components/ui/button"
 import BookingDialog from "../BookingDialog"
 import Image from "next/image"
@@ -35,6 +36,15 @@ const PreventiveLifestyleSection = () => {
     const [selectedClinic, setSelectedClinic] = useState('');
     const [selectedSpecialty, setSelectedSpecialty] = useState('');
 
+    const containerRef = useRef(null);
+    const { scrollYProgress } = useScroll({
+      target: containerRef,
+      offset: ["start start", "end start"]
+    });
+
+    const scale = useTransform(scrollYProgress, [0, 0.5, 1], [1, 0.7, 0.5]);
+    const opacity = useTransform(scrollYProgress, [0, 0.5, 1], [1, 0.8, 0]);
+
     const availableSpecialties = useMemo(() => {
         if (!selectedClinic) return [];
         // This logic needs to be more robust if clinics have different doctors.
@@ -54,12 +64,15 @@ const PreventiveLifestyleSection = () => {
     };
 
     return (
-        <section className="bg-white py-16 md:py-24 relative -mt-20 rounded-t-2xl shadow-xl">
-             <div className="absolute -top-12 left-4 sm:left-6 lg:left-8 z-10">
+        <section ref={containerRef} className="bg-white py-16 md:py-24 relative -mt-20 rounded-t-2xl shadow-xl">
+             <motion.div 
+                style={{ scale, opacity }}
+                className="absolute -top-12 left-4 sm:left-6 lg:left-8 z-10"
+              >
                     <div className="inline-flex items-center gap-2 bg-white rounded-full p-8 shadow border border-gray-200/80">
                         <Image src="/logo.png" alt="Preventify Logo" width={88} height={88} />
                     </div>
-                </div>
+              </motion.div>
             <div className="container mx-auto px-4 sm:px-6 lg:px-8">
                 
                 <div className="grid grid-cols-1 gap-8 md:gap-12 items-center">
