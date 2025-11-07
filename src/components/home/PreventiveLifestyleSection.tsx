@@ -36,14 +36,14 @@ const PreventiveLifestyleSection = () => {
     const [selectedClinic, setSelectedClinic] = useState('');
     const [selectedSpecialty, setSelectedSpecialty] = useState('');
 
-    const containerRef = useRef(null);
+    const targetRef = useRef<HTMLDivElement>(null);
     const { scrollYProgress } = useScroll({
-      target: containerRef,
+      target: targetRef,
       offset: ["start start", "end start"]
     });
 
-    const scale = useTransform(scrollYProgress, [0, 0.5, 1], [1, 0.7, 0.5]);
-    const opacity = useTransform(scrollYProgress, [0, 0.5, 1], [1, 0.8, 0]);
+    const scale = useTransform(scrollYProgress, [0, 0.1, 0.4], [1, 0.8, 0]);
+    const opacity = useTransform(scrollYProgress, [0, 0.1, 0.3], [1, 1, 0]);
 
     const availableSpecialties = useMemo(() => {
         if (!selectedClinic) return [];
@@ -64,7 +64,7 @@ const PreventiveLifestyleSection = () => {
     };
 
     return (
-        <section ref={containerRef} className="bg-white py-16 md:py-24 relative -mt-20 rounded-t-2xl shadow-xl">
+        <section ref={targetRef} className="bg-white py-16 md:py-24 relative -mt-20 rounded-t-2xl shadow-xl">
              <motion.div 
                 style={{ scale, opacity }}
                 className="absolute -top-12 left-4 sm:left-6 lg:left-8 z-10"
