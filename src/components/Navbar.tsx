@@ -63,10 +63,9 @@ const Navbar = () => {
 
   return (
     <header className="absolute top-0 left-0 right-0 z-50 group">
-      {/* Combined Header with hover effect */}
       <div className="transition-all duration-300 group-hover:bg-white group-hover:shadow-md">
-        {/* Top Bar */}
-        <div className="container mx-auto py-1.5 px-4 sm:px-6 lg:px-8 flex justify-end items-center text-xs text-slate-600">
+        {/* Top Bar - Hidden by default on desktop, appears on hover */}
+        <div className="container mx-auto py-1.5 px-4 sm:px-6 lg:px-8 flex justify-end items-center text-xs text-slate-600 transition-opacity duration-300 lg:opacity-0 group-hover:opacity-100">
               <div className="flex items-center gap-4">
                   <a href="tel:+918129334858" className="flex items-center gap-1 hover:text-primary transition-colors">
                       <Phone className="h-3 w-3" />
