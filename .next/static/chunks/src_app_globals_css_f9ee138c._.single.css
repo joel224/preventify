@@ -694,6 +694,10 @@ h1, h2, h3, h4, h5, h6 {
   margin-top: 3rem;
 }
 
+.mt-16 {
+  margin-top: 4rem;
+}
+
 .mt-2 {
   margin-top: .5rem;
 }
@@ -714,8 +718,8 @@ h1, h2, h3, h4, h5, h6 {
   margin-top: auto;
 }
 
-.mt-16 {
-  margin-top: 4rem;
+.mt-6 {
+  margin-top: 1.5rem;
 }
 
 .line-clamp-2 {
@@ -902,6 +906,22 @@ h1, h2, h3, h4, h5, h6 {
   height: 100svh;
 }
 
+.h-96 {
+  height: 24rem;
+}
+
+.h-\[600px\] {
+  height: 600px;
+}
+
+.h-\[740px\] {
+  height: 740px;
+}
+
+.h-\[750px\] {
+  height: 750px;
+}
+
 .max-h-0 {
   max-height: 0;
 }
@@ -1068,6 +1088,18 @@ h1, h2, h3, h4, h5, h6 {
 
 .w-px {
   width: 1px;
+}
+
+.w-96 {
+  width: 24rem;
+}
+
+.w-\[740px\] {
+  width: 740px;
+}
+
+.w-\[750px\] {
+  width: 750px;
 }
 
 .min-w-0 {
@@ -1431,12 +1463,12 @@ h1, h2, h3, h4, h5, h6 {
   column-gap: 2rem;
 }
 
-.gap-y-6 {
-  row-gap: 1.5rem;
-}
-
 .gap-y-4 {
   row-gap: 1rem;
+}
+
+.gap-y-6 {
+  row-gap: 1.5rem;
 }
 
 .space-x-1 > :not([hidden]) ~ :not([hidden]) {
@@ -2126,6 +2158,18 @@ h1, h2, h3, h4, h5, h6 {
   padding-top: 2rem;
 }
 
+.pb-16 {
+  padding-bottom: 4rem;
+}
+
+.pt-16 {
+  padding-top: 4rem;
+}
+
+.pt-\[120px\] {
+  padding-top: 120px;
+}
+
 .text-left {
   text-align: left;
 }
@@ -2221,6 +2265,10 @@ h1, h2, h3, h4, h5, h6 {
 
 .leading-none {
   line-height: 1;
+}
+
+.leading-tight {
+  line-height: 1.25;
 }
 
 .tracking-tight {
@@ -2391,11 +2439,6 @@ h1, h2, h3, h4, h5, h6 {
   color: rgb(46 196 182 / var(--tw-text-opacity, 1));
 }
 
-.text-warm-coral {
-  --tw-text-opacity: 1;
-  color: rgb(255 107 107 / var(--tw-text-opacity, 1));
-}
-
 .text-white {
   --tw-text-opacity: 1;
   color: rgb(255 255 255 / var(--tw-text-opacity, 1));
@@ -2403,6 +2446,11 @@ h1, h2, h3, h4, h5, h6 {
 
 .text-white\/80 {
   color: #fffc;
+}
+
+.text-gray-900 {
+  --tw-text-opacity: 1;
+  color: rgb(17 24 39 / var(--tw-text-opacity, 1));
 }
 
 .underline {
@@ -3682,10 +3730,6 @@ h1, h2, h3, h4, h5, h6 {
     margin-top: 0;
   }
 
-  .sm\:block {
-    display: block;
-  }
-
   .sm\:flex {
     display: flex;
   }
@@ -3884,14 +3928,14 @@ h1, h2, h3, h4, h5, h6 {
     line-height: 2.5rem;
   }
 
-  .md\:text-base {
-    font-size: 1rem;
-    line-height: 1.5rem;
-  }
-
   .md\:text-sm {
     font-size: .875rem;
     line-height: 1.25rem;
+  }
+
+  .md\:text-5xl {
+    font-size: 3rem;
+    line-height: 1;
   }
 
   .md\:opacity-0 {
@@ -3929,6 +3973,10 @@ h1, h2, h3, h4, h5, h6 {
 @media (width >= 1024px) {
   .lg\:left-8 {
     left: 2rem;
+  }
+
+  .lg\:block {
+    display: block;
   }
 
   .lg\:flex {
@@ -3970,8 +4018,18 @@ h1, h2, h3, h4, h5, h6 {
     padding-right: 2rem;
   }
 
+  .lg\:py-12 {
+    padding-top: 3rem;
+    padding-bottom: 3rem;
+  }
+
   .lg\:text-5xl {
     font-size: 3rem;
+    line-height: 1;
+  }
+
+  .lg\:text-6xl {
+    font-size: 3.75rem;
     line-height: 1;
   }
 }
