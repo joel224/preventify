@@ -30,18 +30,10 @@ const Navbar = () => {
   ];
 
   return (
-    <header className="bg-white shadow-sm sticky top-0 z-50 group">
+    <header className="absolute top-0 left-0 right-0 z-50 bg-transparent group">
       {/* Top Bar */}
-      <div className="bg-top-bar border-b border-border/50 transition-all duration-300 max-h-0 opacity-0 group-hover:max-h-12 group-hover:opacity-100 overflow-hidden">
-          <div className="container mx-auto py-1.5 px-4 sm:px-6 lg:px-8 flex justify-between items-center text-xs text-slate-600">
-                <div className="flex items-center gap-4">
-                    {topNavLinks.map(link => (
-                        <Link key={link.name} href={link.path} className={`flex items-center gap-1 hover:text-primary transition-colors`}>
-                           {link.icon && <link.icon className="h-3 w-3" />}
-                           {link.name}
-                        </Link>
-                    ))}
-                </div>
+      <div className="bg-transparent transition-all duration-300">
+          <div className="container mx-auto py-1.5 px-4 sm:px-6 lg:px-8 flex justify-end items-center text-xs text-slate-600">
                 <div className="flex items-center gap-4">
                     <a href="tel:+918129334858" className="flex items-center gap-1 hover:text-primary transition-colors">
                         <Phone className="h-3 w-3" />
@@ -112,8 +104,8 @@ const Navbar = () => {
 
         {/* Mobile Navigation */}
         {mobileMenuOpen && (
-          <div className="lg:hidden mt-4 pb-4 animate-fade-in">
-            <div className="flex flex-col space-y-3">
+          <div className="lg:hidden mt-4 pb-4 animate-fade-in bg-white rounded-lg shadow-lg">
+            <div className="flex flex-col space-y-3 p-4">
               {[...mainNavLinks, ...topNavLinks].map((link) => (
                 <Link
                   key={link.name}
