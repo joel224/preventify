@@ -6,6 +6,43 @@ import { Button } from "@/components/ui/button";
 import { Menu, X, Search, Phone, ChevronDown, User, AlertTriangle } from "lucide-react";
 import { usePathname } from "next/navigation";
 import BookingDialog from "@/components/BookingDialog";
+import {
+  NavigationMenu,
+  NavigationMenuContent,
+  NavigationMenuItem,
+  NavigationMenuLink,
+  NavigationMenuList,
+  NavigationMenuTrigger,
+  navigationMenuTriggerStyle,
+} from "@/components/ui/navigation-menu"
+import ListItem from "@/components/ListItem"
+
+const programs: { title: string; href: string; description: string }[] = [
+  {
+    title: "Diabetes Prevention",
+    href: "/programs",
+    description:
+      "A structured program to prevent or delay type 2 diabetes.",
+  },
+  {
+    title: "Weight Management",
+    href: "/programs",
+    description:
+      "Achieve and maintain a healthy weight through sustainable lifestyle changes.",
+  },
+  {
+    title: "Heart Health Program",
+    href: "/programs",
+    description:
+      "Reduce cardiovascular risk factors and promote heart health.",
+  },
+  {
+    title: "Corporate Wellness",
+    href: "/programs",
+    description:
+      "Customized wellness programs to improve employee health and productivity.",
+  },
+]
 
 const Navbar = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -16,10 +53,6 @@ const Navbar = () => {
   };
 
   const mainNavLinks = [
-    { name: "Our Services", path: "/services" },
-    { name: "Our Doctors", path: "/doctors" },
-    { name: "Our Clinics", path: "/clinics" },
-    { name: "Programs", path: "/programs" },
     { name: "Sugam Card", path: "/savings" },
   ];
   
@@ -64,15 +97,58 @@ const Navbar = () => {
 
           {/* Desktop Navigation */}
           <nav className="hidden lg:flex space-x-6 items-center">
-            {mainNavLinks.map((link) => (
-              <Link
-                key={link.name}
-                href={link.path}
-                className={`font-medium transition-colors text-sm ${pathname === link.path ? 'text-primary' : 'text-gray-700 hover:text-primary'}`}
-              >
-                {link.name}
-              </Link>
-            ))}
+            <NavigationMenu>
+              <NavigationMenuList>
+                <NavigationMenuItem>
+                  <Link href="/services" legacyBehavior passHref>
+                    <NavigationMenuLink className={navigationMenuTriggerStyle()}>
+                      Our Services
+                    </NavigationMenuLink>
+                  </Link>
+                </NavigationMenuItem>
+                <NavigationMenuItem>
+                  <Link href="/doctors" legacyBehavior passHref>
+                    <NavigationMenuLink className={navigationMenuTriggerStyle()}>
+                      Our Doctors
+                    </NavigationMenuLink>
+                  </Link>
+                </NavigationMenuItem>
+                <NavigationMenuItem>
+                  <Link href="/clinics" legacyBehavior passHref>
+                    <NavigationMenuLink className={navigationMenuTriggerStyle()}>
+                      Our Clinics
+                    </NavigationMenuLink>
+                  </Link>
+                </NavigationMenuItem>
+                <NavigationMenuItem>
+                  <NavigationMenuTrigger>Programs</NavigationMenuTrigger>
+                  <NavigationMenuContent>
+                    <ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px] ">
+                      {programs.map((program) => (
+                        <ListItem
+                          key={program.title}
+                          title={program.title}
+                          href={program.href}
+                        >
+                          {program.description}
+                        </ListItem>
+                      ))}
+                    </ul>
+                  </NavigationMenuContent>
+                </NavigationMenuItem>
+
+                {mainNavLinks.map((link) => (
+                  <NavigationMenuItem key={link.name}>
+                    <Link href={link.path} legacyBehavior passHref>
+                      <NavigationMenuLink className={navigationMenuTriggerStyle()}>
+                        {link.name}
+                      </NavigationMenuLink>
+                    </Link>
+                  </NavigationMenuItem>
+                ))}
+              </NavigationMenuList>
+            </NavigationMenu>
+
              <Link href="/emergency" className="flex items-center gap-1 text-red-600 font-medium text-sm hover:text-red-800 transition-colors">
                 <AlertTriangle className="h-4 w-4" />
                 24/7 Emergency

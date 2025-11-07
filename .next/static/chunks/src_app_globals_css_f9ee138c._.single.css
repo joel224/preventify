@@ -922,6 +922,10 @@ h1, h2, h3, h4, h5, h6 {
   height: 850px;
 }
 
+.h-\[760px\] {
+  height: 760px;
+}
+
 .max-h-0 {
   max-height: 0;
 }
@@ -1108,6 +1112,10 @@ h1, h2, h3, h4, h5, h6 {
 
 .w-\[850px\] {
   width: 850px;
+}
+
+.w-\[760px\] {
+  width: 760px;
 }
 
 .min-w-0 {
