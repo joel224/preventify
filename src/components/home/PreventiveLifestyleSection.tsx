@@ -37,11 +37,11 @@ const PreventiveLifestyleSection = () => {
     const targetRef = useRef<HTMLDivElement>(null);
     const { scrollYProgress } = useScroll({
       target: targetRef,
-      offset: ["start end", "end start"]
+      offset: ["end end", "start start"]
     });
 
     const y = useTransform(scrollYProgress, [0, 1], ["25%", "-25%"]);
-    const logoX = useTransform(scrollYProgress, [0.2, 0.8], ["100vw", "-100vw"]);
+    const logoX = useTransform(scrollYProgress, [0, 1], ["100vw", "-100vw"]);
     const logoY = useTransform(scrollYProgress, [0, 1], ["-10%", "10%"]);
 
     const availableSpecialties = useMemo(() => {
