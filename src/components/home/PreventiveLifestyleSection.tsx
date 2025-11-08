@@ -41,8 +41,10 @@ const PreventiveLifestyleSection = () => {
       offset: ["start end", "end start"]
     });
 
-    const x = useTransform(scrollYProgress, [0, 1], ["0%", "-100%"]);
-    
+    const y = useTransform(scrollYProgress, [0, 1], ["25%", "-25%"]);
+    const logoX = useTransform(scrollYProgress, [0.1, 0.9], ["50%", "-100%"]);
+    const logoY = useTransform(scrollYProgress, [0, 1], ["-10%", "10%"]);
+
     const availableSpecialties = useMemo(() => {
         if (!selectedClinic) return [];
         // This logic needs to be more robust if clinics have different doctors.
@@ -62,16 +64,16 @@ const PreventiveLifestyleSection = () => {
     };
 
     return (
-        <section ref={targetRef} className="bg-white py-16 md:py-24 relative rounded-t-2xl shadow-xl z-10">
+        <section ref={targetRef} className="bg-white py-16 md:py-24 relative rounded-t-2xl shadow-xl z-10 -mt-[15vh] overflow-hidden">
              <motion.div 
-                style={{ x }}
-                className="absolute -top-12 right-4 sm:right-6 lg:right-8 z-10"
+                style={{ x: logoX, y: logoY }}
+                className="absolute -top-12 right-0 z-10"
               >
                     <div className="inline-flex items-center gap-2 bg-white rounded-full p-8 shadow border border-gray-200/80">
                         <Image src="/logo.png" alt="Preventify Logo" width={88} height={88} />
                     </div>
               </motion.div>
-            <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+            <motion.div style={{ y }} className="container mx-auto px-4 sm:px-6 lg:px-8">
                 
                 <div className="grid grid-cols-1 gap-8 md:gap-12 items-center">
                     <div className="text-center">
@@ -119,7 +121,7 @@ const PreventiveLifestyleSection = () => {
                         </div>
                     </div>
                 </div>
-            </div>
+            </motion.div>
         </section>
     )
 }

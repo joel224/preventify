@@ -722,6 +722,10 @@ h1, h2, h3, h4, h5, h6 {
   margin-right: .25em;
 }
 
+.-mt-\[15vh\] {
+  margin-top: -15vh;
+}
+
 .line-clamp-2 {
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
