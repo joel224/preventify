@@ -39,12 +39,11 @@ const PreventiveLifestyleSection = () => {
     const targetRef = useRef<HTMLDivElement>(null);
     const { scrollYProgress } = useScroll({
       target: targetRef,
-      offset: ["start start", "end start"]
+      offset: ["start end", "end start"]
     });
 
-    const scale = useTransform(scrollYProgress, [0, 0.1, 0.4], [1, 0.8, 0]);
-    const opacity = useTransform(scrollYProgress, [0, 0.1, 0.3], [1, 1, 0]);
-
+    const x = useTransform(scrollYProgress, [0, 0.4], ["0%", "-100%"]);
+    
     const availableSpecialties = useMemo(() => {
         if (!selectedClinic) return [];
         // This logic needs to be more robust if clinics have different doctors.
@@ -66,8 +65,8 @@ const PreventiveLifestyleSection = () => {
     return (
         <section ref={targetRef} className="bg-white py-16 md:py-24 relative -mt-20 rounded-t-2xl shadow-xl">
              <motion.div 
-                style={{ scale, opacity }}
-                className="absolute -top-12 left-4 sm:left-6 lg:left-8 z-10"
+                style={{ x }}
+                className="absolute -top-12 right-4 sm:right-6 lg:right-8 z-10"
               >
                     <div className="inline-flex items-center gap-2 bg-white rounded-full p-8 shadow border border-gray-200/80">
                         <Image src="/logo.png" alt="Preventify Logo" width={88} height={88} />

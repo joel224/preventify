@@ -14,7 +14,7 @@ const TempHeroPage = () => {
             
             <main className="container mx-auto px-6 lg:py-12 pb-16 pt-[120px]">
                 <div className="grid lg:grid-cols-2 gap-12 items-center">
-                    <div className="pt-16">
+                    <div className="pt-19">
                         <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 leading-tight">
                             AI assisted Modern Healthcare for a Preventive Lifestyle
                         </h1>
