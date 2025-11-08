@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useState, useMemo, useRef } from "react";
@@ -67,7 +66,7 @@ const PreventiveLifestyleSection = () => {
         <section ref={targetRef} className="bg-white py-16 md:py-24 relative rounded-t-2xl shadow-xl z-10 -mt-[15vh] overflow-hidden">
              <motion.div 
                 style={{ x: logoX, y: logoY }}
-                className="absolute -top-12 left-0 z-10"
+                className="absolute -top-12 left-0 z-20"
               >
                     <div className="inline-flex items-center gap-2 bg-white rounded-full p-8 shadow border border-gray-200/80">
                         <Image src="/logo.png" alt="Preventify Logo" width={88} height={88} />
