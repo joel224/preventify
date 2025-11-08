@@ -41,7 +41,7 @@ const PreventiveLifestyleSection = () => {
       offset: ["start end", "end start"]
     });
 
-    const x = useTransform(scrollYProgress, [0, 0.4], ["0%", "-100%"]);
+    const x = useTransform(scrollYProgress, [0, 1], ["0%", "-100%"]);
     
     const availableSpecialties = useMemo(() => {
         if (!selectedClinic) return [];
@@ -62,7 +62,7 @@ const PreventiveLifestyleSection = () => {
     };
 
     return (
-        <section ref={targetRef} className="bg-white py-16 md:py-24 relative -mt-16 rounded-t-2xl shadow-xl">
+        <section ref={targetRef} className="bg-white py-16 md:py-24 relative rounded-t-2xl shadow-xl z-10">
              <motion.div 
                 style={{ x }}
                 className="absolute -top-12 right-4 sm:right-6 lg:right-8 z-10"
