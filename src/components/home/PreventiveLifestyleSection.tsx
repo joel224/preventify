@@ -41,7 +41,7 @@ const PreventiveLifestyleSection = () => {
     });
 
     const y = useTransform(scrollYProgress, [0, 1], ["25%", "-25%"]);
-    const logoX = useTransform(scrollYProgress, [0.1, 0.9], ["-100%", "50%"]);
+    const logoX = useTransform(scrollYProgress, [0.1, 0.9], ["100%", "-100%"]);
     const logoY = useTransform(scrollYProgress, [0, 1], ["-10%", "10%"]);
 
     const availableSpecialties = useMemo(() => {
@@ -66,10 +66,10 @@ const PreventiveLifestyleSection = () => {
         <section ref={targetRef} className="bg-white py-16 md:py-24 relative rounded-t-2xl shadow-xl z-10 -mt-[15vh] overflow-hidden">
              <motion.div 
                 style={{ x: logoX, y: logoY }}
-                className="absolute -top-8 left-0 z-20"
+                className="absolute -top-8 right-0 z-20"
               >
-                    <div className="inline-flex items-center gap-2 bg-white rounded-full p-8 shadow border border-gray-200/80">
-                        <Image src="/logo.png" alt="Preventify Logo" width={88} height={88} />
+                    <div className="inline-flex items-center gap-2 bg-white rounded-full p-6 shadow border border-gray-200/80">
+                        <Image src="/logo.png" alt="Preventify Logo" width={64} height={64} />
                     </div>
               </motion.div>
             <motion.div style={{ y }} className="container mx-auto px-4 sm:px-6 lg:px-8">
