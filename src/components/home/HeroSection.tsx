@@ -2,11 +2,21 @@
 import { Button } from "@/components/ui/button";
 import { PlayCircle } from "lucide-react";
 import Image from "next/image";
-import { motion } from "framer-motion";
+import { motion, useScroll, useTransform } from "framer-motion";
 import BookingDialog from "../BookingDialog";
 import ShimmerText from "../ShimmerText";
+import { useRef } from "react";
 
 const HeroSection = () => {
+    const targetRef = useRef<HTMLDivElement>(null);
+    const { scrollYProgress } = useScroll({
+      target: targetRef,
+      offset: ["start start", "end start"],
+    });
+
+    const scale = useTransform(scrollYProgress, [0, 0.5], [1, 0.8]);
+    const opacity = useTransform(scrollYProgress, [0, 0.5], [1, 0]);
+
     const FADE_IN_ANIMATION_VARIANTS = {
         hidden: { opacity: 0, y: 10 },
         show: { opacity: 1, y: 0, transition: { type: "spring" } },
@@ -14,10 +24,12 @@ const HeroSection = () => {
 
     return (
         <section
-            className="h-screen bg-white"
+            ref={targetRef}
+            className="h-screen bg-white relative"
         >
-            <div
-                className="top-0 flex h-full flex-col justify-center"
+            <motion.div
+                style={{ scale, opacity }}
+                className="top-0 sticky flex h-full flex-col justify-center"
             >
                 <main className="container mx-auto px-6">
                     <div className="grid lg:grid-cols-2 gap-12 items-center">
@@ -79,7 +91,7 @@ const HeroSection = () => {
                         </div>
                     </div>
                 </main>
-            </div>
+            </motion.div>
         </section>
     )
 }
