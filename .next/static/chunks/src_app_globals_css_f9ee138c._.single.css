@@ -918,6 +918,10 @@ h1, h2, h3, h4, h5, h6 {
   height: 150vh;
 }
 
+.h-\[200vh\] {
+  height: 200vh;
+}
+
 .max-h-0 {
   max-height: 0;
 }
