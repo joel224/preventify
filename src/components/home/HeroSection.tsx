@@ -5,6 +5,7 @@ import { PlayCircle } from "lucide-react";
 import Image from "next/image";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { useRef } from "react";
+import BookingDialog from "../BookingDialog";
 
 const TempHeroPage = () => {
     const targetRef = useRef<HTMLDivElement>(null);
@@ -36,10 +37,12 @@ const TempHeroPage = () => {
                                 AI assisted Modern Healthcare for a Preventive Lifestyle
                             </h1>
                             <p className="mt-6 text-gray-600">
-                                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque fringilla magna mauris. Nulla fermentum viverra sem eu rhoncus consequat varius nisi quis, posuere magna.
+                                AI-assisted evidence-based care across Kerala focused on prevention, early intervention, and better health outcomes for you and your family.
                             </p>
                             <div className="mt-8 flex flex-col sm:flex-row items-center gap-6">
-                                <Button size="lg">Get Started Now</Button>
+                                <BookingDialog>
+                                    <Button size="lg">Get Started Now</Button>
+                                </BookingDialog>
                                 <div className="flex items-center gap-2 text-gray-600 hover:text-primary cursor-pointer">
                                     <PlayCircle className="h-8 w-8"/>
                                     <span className="font-semibold">Watch Video</span>
