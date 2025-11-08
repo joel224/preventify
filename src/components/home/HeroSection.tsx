@@ -41,7 +41,7 @@ const HeroSection = () => {
                                 />
 
                                 <motion.p
-                                    className="mt-6 text-gray-600"
+                                    className="mt-6 text-preventify-dark-gray"
                                     variants={FADE_IN_ANIMATION_VARIANTS}
                                 >
                                     AI-assisted evidence-based care across Kerala focused on prevention, early intervention, and better health outcomes for you and your family.
@@ -50,13 +50,7 @@ const HeroSection = () => {
                                     className="mt-8 flex flex-col sm:flex-row items-center gap-6"
                                     variants={FADE_IN_ANIMATION_VARIANTS}
                                 >
-                                    <BookingDialog>
-                                        <Button size="lg">Get Started Now</Button>
-                                    </BookingDialog>
-                                    <div className="flex items-center gap-2 text-gray-600 hover:text-primary cursor-pointer">
-                                        <PlayCircle className="h-8 w-8" />
-                                        <span className="font-semibold">Watch Video</span>
-                                    </div>
+                                
                                 </motion.div>
                             </motion.div>
                         </div>
