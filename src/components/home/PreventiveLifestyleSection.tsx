@@ -1,5 +1,4 @@
 
-
 'use client';
 
 import { useState, useMemo, useRef } from "react";
@@ -63,7 +62,7 @@ const PreventiveLifestyleSection = () => {
     };
 
     return (
-        <section ref={targetRef} className="bg-white py-16 md:py-24 relative -mt-20 rounded-t-2xl shadow-xl">
+        <section ref={targetRef} className="bg-white py-16 md:py-24 relative -mt-16 rounded-t-2xl shadow-xl">
              <motion.div 
                 style={{ x }}
                 className="absolute -top-12 right-4 sm:right-6 lg:right-8 z-10"
