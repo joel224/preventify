@@ -36,7 +36,7 @@ const HeroSection = () => {
                                 }}
                             >
                                 <ShimmerText
-                                    text="AI assisted Modern Healthcare for a Preventive Lifestyle"
+                                    text="AI assisted Modern Healthcare<br />for a Preventive Lifestyle"
                                     className="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 leading-tight"
                                 />
 
