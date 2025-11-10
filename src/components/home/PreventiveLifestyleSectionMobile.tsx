@@ -62,7 +62,7 @@ const PreventiveLifestyleSectionMobile = () => {
                                 <div className="flex flex-col sm:flex-row justify-center items-center gap-4">
                                      <motion.div layout onHoverStart={() => handleClinicOpen(true)} className="w-full sm:w-auto">
                                         <Select onValueChange={handleClinicChange} value={selectedClinic} onOpenChange={handleClinicOpen}>
-                                            <SelectTrigger className={`w-full h-12 text-base bg-primary text-primary-foreground ${isSplit ? 'sm:min-w-[200px]' : 'sm:min-w-[416px]'}`}>
+                                            <SelectTrigger className={`w-full h-12 text-base bg-preventify-subtle-blue text-white ${isSplit ? 'sm:min-w-[200px]' : 'sm:min-w-[416px]'}`}>
                                                 <SelectValue placeholder="Select Clinic" />
                                             </SelectTrigger>
                                             <SelectContent>
