@@ -526,6 +526,10 @@ h1, h2, h3, h4, h5, h6 {
   left: 1rem;
 }
 
+.-top-8 {
+  top: -2rem;
+}
+
 .-z-0 {
   z-index: 0;
 }
@@ -2191,6 +2195,14 @@ h1, h2, h3, h4, h5, h6 {
 
 .pt-4 {
   padding-top: 1rem;
+}
+
+.pb-8 {
+  padding-bottom: 2rem;
+}
+
+.pt-16 {
+  padding-top: 4rem;
 }
 
 .text-left {
