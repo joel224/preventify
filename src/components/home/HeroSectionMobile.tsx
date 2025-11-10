@@ -10,7 +10,7 @@ import Autoplay from "embla-carousel-autoplay";
 
 const HeroSectionMobile = () => {
     const mobileImages = [
-      '/mobile/mobile.png',
+      '/mobile/care_mobile.png',
       '/mobile/fam_mobile.png',
       '/mobile/doc_mobile.png',
     ];
