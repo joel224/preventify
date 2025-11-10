@@ -13,6 +13,8 @@ export default function HomePage() {
     <>
       <div className="relative">
         <HeroSection />
+      </div>
+      <div className="relative">
         <HeroSectionTwo />
       </div>
       <PreventiveLifestyleSection />
