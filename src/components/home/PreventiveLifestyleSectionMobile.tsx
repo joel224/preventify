@@ -48,8 +48,8 @@ const PreventiveLifestyleSectionMobile = () => {
     };
 
     return (
-        <section className="bg-white py-16 md:py-24 relative -mt-20 rounded-t-2xl shadow-xl">
-            <div className="absolute -top-12 left-4 sm:left-6 lg:left-8 z-10">
+        <section className="bg-white py-16 md:py-24 relative -mt-20 rounded-t-2xl shadow-xl z-10">
+             <div className="absolute -top-12 left-4 sm:left-6 lg:left-8 z-20">
                     <div className="inline-flex items-center gap-2 bg-white rounded-full p-2 shadow-md border border-gray-200/80">
                         <Image src="/logo.png" alt="Preventify Logo" width={44} height={44} />
                     </div>
