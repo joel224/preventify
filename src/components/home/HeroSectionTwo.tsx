@@ -3,7 +3,7 @@
 
 import { Suspense } from "react";
 import HeroSectionTwoDesktop from "./HeroSectionTwoDesktop";
-import HeroSectionTwoMobile from "./HeroSectionTwoMobile";
+import HeroSectionMobile from "./HeroSectionMobile";
 import { useIsMobile } from "@/hooks/use-mobile";
 
 
@@ -18,7 +18,7 @@ export default function HeroSectionTwo() {
 
     return (
         <Suspense fallback={<div>Loading...</div>}>
-            {isMobile ? <HeroSectionTwoMobile /> : <HeroSectionTwoDesktop />}
+            {isMobile ? <HeroSectionMobile /> : <HeroSectionTwoDesktop />}
         </Suspense>
     );
 }

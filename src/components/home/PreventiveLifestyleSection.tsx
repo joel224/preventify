@@ -1,3 +1,4 @@
+
 'use client';
 
 import { Suspense } from "react";
@@ -9,12 +10,14 @@ export default function PreventiveLifestyleSection() {
     const isMobile = useIsMobile();
 
     if (isMobile === undefined) {
-        return null;
+        return <div className="bg-white h-96" />;
     }
 
     return (
-        <Suspense fallback={<div>Loading...</div>}>
-            {isMobile ? <PreventiveLifestyleSectionMobile /> : <PreventiveLifestyleSectionDesktop />}
-        </Suspense>
+        <div className="relative z-10 bg-white">
+            <Suspense fallback={<div>Loading...</div>}>
+                {isMobile ? <PreventiveLifestyleSectionMobile /> : <PreventiveLifestyleSectionDesktop />}
+            </Suspense>
+        </div>
     );
 }
