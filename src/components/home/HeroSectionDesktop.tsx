@@ -11,7 +11,6 @@ const HeroSectionDesktop = () => {
       offset: ["end end", "end start"],
     });
 
-    const opacity = useTransform(scrollYProgress, [0, 0.7], [1, 0]);
     const scale = useTransform(scrollYProgress, [0, 1], [1, 0.8]);
     const y = useTransform(scrollYProgress, [0, 1], ["0%", "50%"]);
 
@@ -21,7 +20,7 @@ const HeroSectionDesktop = () => {
             className="h-screen bg-white relative"
         >
             <motion.div
-                style={{ opacity, y, scale }}
+                style={{ y, scale }}
                 className="top-0 sticky flex h-full flex-col justify-center"
             >
                 <main className="container mx-auto px-6">
