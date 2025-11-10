@@ -522,7 +522,8 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
                     </DialogHeader>
                     <div className="py-4 space-y-4">
                         <Textarea
-                            placeholder="e.g., 'I have a sore throat and a fever for two days.'"
+                            placeholder="e.g., 'I have a sore throat and a fever for two days. ' 
+                            'iniki randu days aayi sore throat, fever ind '"
                             value={symptoms}
                             onChange={(e) => setSymptoms(e.target.value)}
                             rows={4}

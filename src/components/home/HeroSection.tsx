@@ -34,7 +34,7 @@ const HeroSection = () => {
                 <main className="container mx-auto px-6">
                     <div className="grid lg:grid-cols-2 gap-12 items-center">
                         <div className="pt-19">
-                            <ScrollRevealText className="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 leading-tight">
+                            <ScrollRevealText className="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 leading-tight lg:leading-snug">
                                 Care That Follows Up, So You Stay on Track
                             </ScrollRevealText>
 
