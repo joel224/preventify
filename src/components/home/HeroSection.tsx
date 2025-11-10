@@ -6,6 +6,13 @@ import { motion, useScroll, useTransform } from "framer-motion";
 import BookingDialog from "../BookingDialog";
 import ScrollRevealText from "../ScrollRevealText";
 import { useRef } from "react";
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+} from "@/components/ui/carousel";
+import Autoplay from "embla-carousel-autoplay";
+
 
 const HeroSection = () => {
     const targetRef = useRef<HTMLDivElement>(null);
@@ -21,6 +28,18 @@ const HeroSection = () => {
         hidden: { opacity: 0, y: 10 },
         show: { opacity: 1, y: 0, transition: { type: "spring" } },
     };
+
+    const mobileImages = [
+      '/mobile/mobile.png',
+      '/mobile/fam_mobile.png',
+      '/mobile/doc_mobile.png',
+    ];
+
+    const desktopImages = [
+        "/desktop/desktop.png",
+        "/desktop/fam_desktop.png",
+        "/desktop/doc_desktop.png"
+    ]
 
     return (
         <section
@@ -57,7 +76,33 @@ const HeroSection = () => {
                             
                             </motion.div>
                         </div>
+                        
+                        {/* Mobile Carousel */}
+                        <div className="lg:hidden relative w-full h-[480px]">
+                             <Carousel
+                                className="w-full h-full"
+                                plugins={[Autoplay({ delay: 2000, stopOnInteraction: true })]}
+                                opts={{ loop: true }}
+                              >
+                                <CarouselContent>
+                                  {mobileImages.map((src, index) => (
+                                    <CarouselItem key={index}>
+                                      <div className="w-full h-[480px] relative">
+                                          <Image
+                                            src={src}
+                                            alt={`Hero Image ${index + 1} (Mobile)`}
+                                            fill
+                                            className="object-cover object-center"
+                                            priority={index === 0}
+                                          />
+                                        </div>
+                                    </CarouselItem>
+                                  ))}
+                                </CarouselContent>
+                              </Carousel>
+                        </div>
 
+                        {/* Desktop View */}
                         <div className="relative h-[600px] hidden lg:block">
                             <div className="absolute inset-0 flex justify-center items-center">
                                 <motion.div

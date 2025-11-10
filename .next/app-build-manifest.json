@@ -1,6 +1,6 @@
 {
   "pages": {
-    "/emergency/page": [
+    "/_not-found/page": [
       "static/chunks/[root-of-the-server]__404d4b59._.css",
       "static/chunks/src_32f54b01._.js",
       "static/chunks/node_modules_next_d6661594._.js",

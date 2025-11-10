@@ -1,6 +1,4 @@
 {
-  "/api/search-patient/route": "app/api/search-patient/route.js",
-  "/api/suggest-doctor/route": "app/api/suggest-doctor/route.js",
-  "/emergency/page": "app/emergency/page.js",
+  "/_not-found/page": "app/_not-found/page.js",
   "/page": "app/page.js"
 }
