@@ -50,10 +50,10 @@ const PreventiveLifestyleSectionMobile = () => {
     return (
         <section className="bg-white py-16 md:py-24 relative -mt-20 rounded-t-2xl shadow-xl">
             <div className="absolute -top-12 left-4 sm:left-6 lg:left-8 z-10">
-                <div className="inline-flex items-center gap-2 bg-white rounded-full p-2 shadow-md border border-gray-200/80">
-                    <Image src="/logo.png" alt="Preventify Logo" width={44} height={44} />
+                    <div className="inline-flex items-center gap-2 bg-white rounded-full p-2 shadow-md border border-gray-200/80">
+                        <Image src="/logo.png" alt="Preventify Logo" width={44} height={44} />
+                    </div>
                 </div>
-            </div>
             <div className="container mx-auto px-4 sm:px-6 lg:px-8 pt-4">
                 <div className="text-center">
                     <h2 className="font-display text-3xl md:text-4xl lg:text-5xl font-bold mb-4 text-preventify-dark-blue">
