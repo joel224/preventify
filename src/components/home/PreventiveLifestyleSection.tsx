@@ -57,6 +57,9 @@ const PreventiveLifestyleSection = () => {
     const handleClinicChange = (clinicId: string) => {
         setSelectedClinic(clinicId);
         setSelectedSpecialty('');
+        if (clinicId && !isSplit) {
+            setIsSplit(true);
+        }
     };
 
     const handleSpecialtyChange = (specialty: string) => {
@@ -70,7 +73,7 @@ const PreventiveLifestyleSection = () => {
     }
 
     return (
-        <section ref={targetRef} className="bg-white py-16 md:py-24 relative rounded-t-2xl shadow-xl -mt-[15vh] overflow-hidden">
+        <section ref={targetRef} className="bg-white py-16 md:py-24 relative overflow-hidden">
             <motion.div style={{ y }} className="container mx-auto px-4 sm:px-6 lg:px-8">
                 
                 <div className="grid grid-cols-1 gap-8 md:gap-12 items-center">
@@ -85,9 +88,9 @@ const PreventiveLifestyleSection = () => {
 
                         <div className="max-w-2xl mx-auto p-6 rounded-lg">
                                 <div className="flex flex-col sm:flex-row justify-center items-center gap-4">
-                                     <motion.div layout className="w-full sm:w-auto">
+                                     <motion.div layout onHoverStart={() => handleClinicOpen(true)} className="w-full sm:w-auto">
                                         <Select onValueChange={handleClinicChange} value={selectedClinic} onOpenChange={handleClinicOpen}>
-                                            <SelectTrigger className={`w-full h-12 text-base bg-primary text-primary-foreground ${isSplit ? 'sm:min-w-[200px]' : 'sm:min-w-[416px]'}`}>
+                                            <SelectTrigger className={`w-full h-12 text-base bg-preventify-subtle-blue text-white ${isSplit ? 'sm:min-w-[200px]' : 'sm:min-w-[416px]'}`}>
                                                 <SelectValue placeholder="Select Clinic" />
                                             </SelectTrigger>
                                             <SelectContent>
@@ -109,7 +112,7 @@ const PreventiveLifestyleSection = () => {
                                                 className="w-full sm:w-auto"
                                             >
                                                 <Select onValueChange={handleSpecialtyChange} value={selectedSpecialty} disabled={!selectedClinic}>
-                                                    <SelectTrigger className="w-full sm:min-w-[200px] h-12 text-base border-primary text-primary bg-white">
+                                                    <SelectTrigger className="w-full sm:min-w-[200px] h-12 text-base border-preventify-subtle-blue text-preventify-subtle-blue bg-white">
                                                         <SelectValue placeholder="Select Specialty" />
                                                     </SelectTrigger>
                                                     <SelectContent>
@@ -125,7 +128,7 @@ const PreventiveLifestyleSection = () => {
                                 {selectedSpecialty && (
                                      <div className="mt-4">
                                         <BookingDialog>
-                                            <Button className="w-full bg-primary hover:bg-primary/90 text-white text-lg py-6 px-8">
+                                            <Button className="w-full bg-secondary hover:bg-secondary/90 text-secondary-foreground text-lg py-6 px-8">
                                                 Book Now
                                             </Button>
                                         </BookingDialog>
