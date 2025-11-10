@@ -47,11 +47,11 @@ const HeroSectionTwoDesktop = () => {
                                     animate={{ y: '-15%', x: '10%' }}
                                 >
                                     <motion.div
-                                        className="w-96 h-96 overflow-hidden relative rounded-full w-[740px] h-[740px]"
-                                        animate={{ y: '15%', x: '-7%' }}
+                                        className="w-96 h-96 overflow-hidden relative  w-[600px] h-[600px]"
+                                        animate={{ y: '26%', x: '12%' }}
                                     >
                                         <Image
-                                            src="/RAW_IMG/Adobe Express - file (16).png"
+                                            src="/RAW_IMG/Adobe Express - file (4).png"
                                             alt="Happy professional working on a laptop"
                                             width={1000}
                                             height={1000}

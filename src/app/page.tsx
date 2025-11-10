@@ -7,6 +7,7 @@ import BlogPreviewSection from "@/components/home/BlogPreviewSection";
 import LocationsSection from "@/components/home/LocationsSection";
 import CtaSection from "@/components/home/CtaSection";
 import PreventiveLifestyleSection from "@/components/home/PreventiveLifestyleSection";
+import MarqueeText from "@/components/home/MarqueeText";
 
 export default function HomePage() {
   return (
@@ -22,6 +23,7 @@ export default function HomePage() {
       <FeaturesSection />
       <BlogPreviewSection />
       <LocationsSection />
+      <MarqueeText />
       <CtaSection />
     </>
   );

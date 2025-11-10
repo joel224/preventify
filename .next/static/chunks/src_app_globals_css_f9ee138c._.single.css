@@ -550,6 +550,10 @@ h1, h2, h3, h4, h5, h6 {
   z-index: 1;
 }
 
+.z-0 {
+  z-index: 0;
+}
+
 .col-span-3 {
   grid-column: span 3 / span 3;
 }
@@ -917,6 +921,10 @@ h1, h2, h3, h4, h5, h6 {
   height: 100svh;
 }
 
+.h-\[700px\] {
+  height: 700px;
+}
+
 .max-h-0 {
   max-height: 0;
 }
@@ -1099,6 +1107,18 @@ h1, h2, h3, h4, h5, h6 {
 
 .w-px {
   width: 1px;
+}
+
+.w-\[700px\] {
+  width: 700px;
+}
+
+.w-\[600px\] {
+  width: 600px;
+}
+
+.w-\[670px\] {
+  width: 670px;
 }
 
 .min-w-0 {
@@ -2255,6 +2275,11 @@ h1, h2, h3, h4, h5, h6 {
   line-height: 1rem;
 }
 
+.text-6xl {
+  font-size: 3.75rem;
+  line-height: 1;
+}
+
 .font-bold {
   font-weight: 700;
 }
@@ -2269,6 +2294,10 @@ h1, h2, h3, h4, h5, h6 {
 
 .font-semibold {
   font-weight: 600;
+}
+
+.uppercase {
+  text-transform: uppercase;
 }
 
 .italic {
@@ -2508,6 +2537,10 @@ h1, h2, h3, h4, h5, h6 {
 
 .opacity-90 {
   opacity: .9;
+}
+
+.opacity-80 {
+  opacity: .8;
 }
 
 .shadow-\[0_0_0_1px_hsl\(var\(--sidebar-border\)\)\] {
@@ -3982,6 +4015,11 @@ h1, h2, h3, h4, h5, h6 {
     line-height: 1.25rem;
   }
 
+  .md\:text-8xl {
+    font-size: 6rem;
+    line-height: 1;
+  }
+
   .md\:opacity-0 {
     opacity: 0;
   }
@@ -4065,6 +4103,11 @@ h1, h2, h3, h4, h5, h6 {
 
   .lg\:text-6xl {
     font-size: 3.75rem;
+    line-height: 1;
+  }
+
+  .lg\:text-9xl {
+    font-size: 8rem;
     line-height: 1;
   }
 
