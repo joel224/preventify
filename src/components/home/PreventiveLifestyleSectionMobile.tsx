@@ -60,11 +60,11 @@ const PreventiveLifestyleSectionMobile = () => {
                         </ScrollRevealText>
 
                         <div className="max-w-2xl mx-auto p-4 rounded-lg">
-                            <div className="relative group">
+                            <div className="relative">
                                 <div className="flex flex-col sm:flex-row justify-center items-center gap-4">
                                      <motion.div layout onHoverStart={() => handleClinicOpen(true)} className="w-full sm:w-auto">
                                         <Select onValueChange={handleClinicChange} value={selectedClinic} onOpenChange={handleClinicOpen}>
-                                            <SelectTrigger className={`w-full h-12 text-base bg-preventify-cta-primary hover:bg-preventify-cta-primary/90 text-white ${isSplit ? 'sm:min-w-[200px]' : 'sm:min-w-[416px]'}`}>
+                                            <SelectTrigger className={`w-full h-12 text-base bg-preventify-cta-primary hover:bg-preventify-cta-primary/90 text-white font-bold ${isSplit ? 'sm:min-w-[200px]' : 'sm:min-w-[416px]'}`}>
                                                 <SelectValue placeholder="Select Clinic" />
                                             </SelectTrigger>
                                             <SelectContent>
@@ -86,7 +86,7 @@ const PreventiveLifestyleSectionMobile = () => {
                                                 className="w-full"
                                             >
                                                 <BookingDialog>
-                                                    <Button className="w-full h-12 text-base bg-secondary hover:bg-secondary/90 text-secondary-foreground">
+                                                    <Button className="w-full h-12 text-base bg-secondary hover:bg-secondary/90 text-secondary-foreground font-bold">
                                                         Book Now
                                                     </Button>
                                                 </BookingDialog>
@@ -94,9 +94,19 @@ const PreventiveLifestyleSectionMobile = () => {
                                         )}
                                     </AnimatePresence>
                                 </div>
-                                <p className="mt-3 text-sm text-preventify-gray opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                                    Get started with an AI-powered booking
-                                </p>
+                                <AnimatePresence>
+                                {isSplit && (
+                                    <motion.p 
+                                        initial={{ opacity: 0, y: 10 }}
+                                        animate={{ opacity: 1, y: 0 }}
+                                        exit={{ opacity: 0, y: 10 }}
+                                        transition={{ duration: 0.3, delay: 0.2 }}
+                                        className="mt-3 text-sm text-preventify-gray"
+                                    >
+                                        Get started with an AI-powered booking
+                                    </motion.p>
+                                )}
+                                </AnimatePresence>
                             </div>
                         </div>
                     </div>
