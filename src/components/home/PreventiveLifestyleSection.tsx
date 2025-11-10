@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button"
 import BookingDialog from "../BookingDialog"
 import Image from "next/image"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import ShimmerText from "@/components/ui/ShimmerText";
 
 // Data should ideally be fetched from an API, but using the hardcoded list for now
 // as it's consistent with the existing BookingDialog.
@@ -41,7 +42,7 @@ const PreventiveLifestyleSection = () => {
     });
 
     const y = useTransform(scrollYProgress, [0, 1], ["25%", "-25%"]);
-
+    
     const availableSpecialties = useMemo(() => {
         if (!selectedClinic) return [];
         // This logic needs to be more robust if clinics have different doctors.
@@ -70,9 +71,9 @@ const PreventiveLifestyleSection = () => {
                             AI assisted Modern Healthcare for a <span className="text-primary">Preventive <br className="hidden md:block" /> Lifestyle</span>
                         </h2>
                         
-                        <p className="text-lg text-preventify-dark-gray mb-8 max-w-3xl mx-auto">
+                        <ShimmerText className="text-lg text-preventify-dark-gray mb-8 max-w-3xl mx-auto">
                            AI-assisted evidence-based care across Kerala focused on prevention, early intervention, and better health outcomes for you and your family.
-                        </p>
+                        </ShimmerText>
 
                         <div className="max-w-2xl mx-auto p-6 rounded-lg">
                                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 items-center">
