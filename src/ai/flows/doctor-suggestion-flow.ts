@@ -63,8 +63,7 @@ const suggestDoctorFlow = ai.defineFlow(
     outputSchema: DoctorSuggestionOutputSchema,
   },
   async (input) => {
-    const { output } = await prompt({
-      input,
+    const { output } = await prompt(input, {
       model: googleAI.model('gemini-flash-lite-latest'),
     });
     return output!;
