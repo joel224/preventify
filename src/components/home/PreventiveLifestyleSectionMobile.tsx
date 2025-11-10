@@ -9,21 +9,6 @@ import ScrollRevealText from "../ScrollRevealText";
 import { motion, AnimatePresence, useScroll, useTransform } from "framer-motion";
 
 
-const doctorsData = [
-    { id: '173208576372747', name: 'Dr. Rakesh K R', specialty: 'General Physician', clinicId: '673d87fdaa91c2001d716c91'},
-    { id: '173208610763786', name: 'Dr. Mohammed Faisal', specialty: 'General Practitioner', clinicId: '673d87fdaa91c2001d716c91'},
-    { id: '174497110921725', name: 'Dr. Hafsa Hussain', specialty: 'Pediatrics', clinicId: '673d87fdaa91c2001d716c91'},
-    { id: '173771631358722', name: 'Dr. Krishnendu U K', specialty: 'General Practitioner', clinicId: '673d87fdaa91c2001d716c91'},
-    { id: '175931883083616', name: 'Dr. Girish U', specialty: 'Dermatology', clinicId: '673d87fdaa91c2001d716c91'},
-    { id: '175949148741914', name: 'Dr. Ijas V. I.', specialty: 'Pulmonology', clinicId: '673d87fdaa91c2001d716c91'},
-    { id: '175949141398449', name: 'Dr. Husna V.', specialty: 'Gynecology', clinicId: '673d87fdaa91c2001d716c91'},
-    { id: '175931888074630', name: 'Dr. Neeharika V.', specialty: 'ENT', clinicId: '673d87fdaa91c2001d716c91'},
-    { id: '175931864615485', name: 'Dr. Sreedev N', specialty: 'Pulmonology', clinicId: '673d87fdaa91c2001d716c91'},
-    { id: '175949158258558', name: 'Dr. Ajay Biju', specialty: 'Resident Medical Officer', clinicId: '673d87fdaa91c2001d716c91'},
-    { id: '175949152812334', name: 'Dr. Renjith A.', specialty: 'Orthopedics', clinicId: '673d87fdaa91c2001d716c91'},
-    { id: '175949162376135', name: 'Dr. K.Y.Sanjay', specialty: 'Orthopedics', clinicId: '673d87fdaa91c2001d716c91'},
-];
-
 const clinicsData = [
     { id: '673d87fdaa91c2001d716c91', name: 'Padinjarangadi' },
     { id: 'some-other-clinic-id', name: 'Vattamkulam' } 
@@ -31,7 +16,6 @@ const clinicsData = [
 
 const PreventiveLifestyleSectionMobile = () => {
     const [selectedClinic, setSelectedClinic] = useState('');
-    const [selectedSpecialty, setSelectedSpecialty] = useState('');
     const [isSplit, setIsSplit] = useState(false);
 
     const targetRef = useRef<HTMLDivElement>(null);
@@ -42,22 +26,11 @@ const PreventiveLifestyleSectionMobile = () => {
 
     const y = useTransform(scrollYProgress, [0, 1], ["25%", "-25%"]);
 
-    const availableSpecialties = useMemo(() => {
-        if (!selectedClinic) return [];
-        const allSpecialties = doctorsData.map(d => d.specialty);
-        return [...new Set(allSpecialties)];
-    }, [selectedClinic]);
-
     const handleClinicChange = (clinicId: string) => {
         setSelectedClinic(clinicId);
-        setSelectedSpecialty('');
          if (clinicId && !isSplit) {
             setIsSplit(true);
         }
-    };
-
-    const handleSpecialtyChange = (specialty: string) => {
-        setSelectedSpecialty(specialty);
     };
 
     const handleClinicOpen = (open: boolean) => {
@@ -104,35 +77,21 @@ const PreventiveLifestyleSectionMobile = () => {
                                         {isSplit && (
                                             <motion.div
                                                 layout
-                                                initial={{ opacity: 0, width: 0 }}
-                                                animate={{ opacity: 1, width: '100%' }}
-                                                exit={{ opacity: 0, width: 0 }}
+                                                initial={{ opacity: 0, height: 0, marginTop: 0 }}
+                                                animate={{ opacity: 1, height: 'auto', marginTop: '1rem' }}
+                                                exit={{ opacity: 0, height: 0, marginTop: 0 }}
                                                 transition={{ duration: 0.4, ease: "easeInOut" }}
-                                                className="w-full sm:w-auto"
+                                                className="w-full"
                                             >
-                                                <Select onValueChange={handleSpecialtyChange} value={selectedSpecialty} disabled={!selectedClinic}>
-                                                    <SelectTrigger className="w-full sm:min-w-[200px] h-12 text-base border-preventify-subtle-blue text-preventify-subtle-blue bg-white">
-                                                        <SelectValue placeholder="Select Specialty" />
-                                                    </SelectTrigger>
-                                                    <SelectContent>
-                                                        {availableSpecialties.map(specialty => (
-                                                            <SelectItem key={specialty} value={specialty}>{specialty}</SelectItem>
-                                                        ))}
-                                                    </SelectContent>
-                                                </Select>
+                                                <BookingDialog>
+                                                    <Button className="w-full h-12 text-base bg-secondary hover:bg-secondary/90 text-secondary-foreground">
+                                                        Book Now
+                                                    </Button>
+                                                </BookingDialog>
                                             </motion.div>
                                         )}
                                     </AnimatePresence>
                                 </div>
-                                {selectedSpecialty && (
-                                     <div className="mt-4">
-                                        <BookingDialog>
-                                            <Button className="w-full bg-secondary hover:bg-secondary/90 text-secondary-foreground text-lg py-6 px-8">
-                                                Book Now
-                                            </Button>
-                                        </BookingDialog>
-                                     </div>
-                                )}
                         </div>
                     </div>
                 </div>

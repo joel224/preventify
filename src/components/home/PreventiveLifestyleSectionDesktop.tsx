@@ -8,23 +8,6 @@ import Image from "next/image"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import ScrollRevealText from "../ScrollRevealText";
 
-// Data should ideally be fetched from an API, but using the hardcoded list for now
-// as it's consistent with the existing BookingDialog.
-const doctorsData = [
-    { id: '173208576372747', name: 'Dr. Rakesh K R', specialty: 'General Physician', clinicId: '673d87fdaa91c2001d716c91'},
-    { id: '173208610763786', name: 'Dr. Mohammed Faisal', specialty: 'General Practitioner', clinicId: '673d87fdaa91c2001d716c91'},
-    { id: '174497110921725', name: 'Dr. Hafsa Hussain', specialty: 'Pediatrics', clinicId: '673d87fdaa91c2001d716c91'},
-    { id: '173771631358722', name: 'Dr. Krishnendu U K', specialty: 'General Practitioner', clinicId: '673d87fdaa91c2001d716c91'},
-    { id: '175931883083616', name: 'Dr. Girish U', specialty: 'Dermatology', clinicId: '673d87fdaa91c2001d716c91'},
-    { id: '175949148741914', name: 'Dr. Ijas V. I.', specialty: 'Pulmonology', clinicId: '673d87fdaa91c2001d716c91'},
-    { id: '175949141398449', name: 'Dr. Husna V.', specialty: 'Gynecology', clinicId: '673d87fdaa91c2001d716c91'},
-    { id: '175931888074630', name: 'Dr. Neeharika V.', specialty: 'ENT', clinicId: '673d87fdaa91c2001d716c91'},
-    { id: '175931864615485', name: 'Dr. Sreedev N', specialty: 'Pulmonology', clinicId: '673d87fdaa91c2001d716c91'},
-    { id: '175949158258558', name: 'Dr. Ajay Biju', specialty: 'Resident Medical Officer', clinicId: '673d87fdaa91c2001d716c91'},
-    { id: '175949152812334', name: 'Dr. Renjith A.', specialty: 'Orthopedics', clinicId: '673d87fdaa91c2001d716c91'},
-    { id: '175949162376135', name: 'Dr. K.Y.Sanjay', specialty: 'Orthopedics', clinicId: '673d87fdaa91c2001d716c91'},
-];
-
 const clinicsData = [
     { id: '673d87fdaa91c2001d716c91', name: 'Padinjarangadi' },
     // Assuming a second clinic ID based on other parts of the app
@@ -33,7 +16,6 @@ const clinicsData = [
 
 const PreventiveLifestyleSectionDesktop = () => {
     const [selectedClinic, setSelectedClinic] = useState('');
-    const [selectedSpecialty, setSelectedSpecialty] = useState('');
     const [isSplit, setIsSplit] = useState(false);
 
     const targetRef = useRef<HTMLDivElement>(null);
@@ -44,25 +26,11 @@ const PreventiveLifestyleSectionDesktop = () => {
 
     const y = useTransform(scrollYProgress, [0, 1], ["25%", "-25%"]);
     
-    const availableSpecialties = useMemo(() => {
-        if (!selectedClinic) return [];
-        // This logic needs to be more robust if clinics have different doctors.
-        // For now, we assume specialties are universal or tied to the available doctors list.
-        const allSpecialties = doctorsData.map(d => d.specialty);
-        return [...new Set(allSpecialties)];
-    }, [selectedClinic]);
-
-
     const handleClinicChange = (clinicId: string) => {
         setSelectedClinic(clinicId);
-        setSelectedSpecialty('');
         if (clinicId && !isSplit) {
             setIsSplit(true);
         }
-    };
-
-    const handleSpecialtyChange = (specialty: string) => {
-        setSelectedSpecialty(specialty);
     };
 
     const handleClinicOpen = (open: boolean) => {
@@ -110,29 +78,15 @@ const PreventiveLifestyleSectionDesktop = () => {
                                                 transition={{ duration: 0.4, ease: "easeInOut" }}
                                                 className="w-full sm:w-auto"
                                             >
-                                                <Select onValueChange={handleSpecialtyChange} value={selectedSpecialty} disabled={!selectedClinic}>
-                                                    <SelectTrigger className="w-full sm:min-w-[200px] h-12 text-base border-preventify-subtle-blue text-preventify-subtle-blue bg-white">
-                                                        <SelectValue placeholder="Select Specialty" />
-                                                    </SelectTrigger>
-                                                    <SelectContent>
-                                                        {availableSpecialties.map(specialty => (
-                                                            <SelectItem key={specialty} value={specialty}>{specialty}</SelectItem>
-                                                        ))}
-                                                    </SelectContent>
-                                                </Select>
+                                                <BookingDialog>
+                                                    <Button className="w-full sm:min-w-[200px] h-12 text-base bg-secondary hover:bg-secondary/90 text-secondary-foreground">
+                                                        Book Now
+                                                    </Button>
+                                                </BookingDialog>
                                             </motion.div>
                                         )}
                                     </AnimatePresence>
                                 </div>
-                                {selectedSpecialty && (
-                                     <div className="mt-4">
-                                        <BookingDialog>
-                                            <Button className="w-full bg-secondary hover:bg-secondary/90 text-secondary-foreground text-lg py-6 px-8">
-                                                Book Now
-                                            </Button>
-                                        </BookingDialog>
-                                     </div>
-                                )}
                         </div>
                     </div>
                 </div>
