@@ -35,7 +35,7 @@ const HeroSection = () => {
                     <div className="grid lg:grid-cols-2 gap-12 items-center">
                         <div className="pt-19">
                             <ScrollRevealText className="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 leading-tight">
-                                AI assisted Modern Healthcare<br />for a Preventive Lifestyle
+                                Care That Follows Up, So You Stay on Track
                             </ScrollRevealText>
 
                             <motion.p
