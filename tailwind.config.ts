@@ -74,7 +74,7 @@ export default {
 					'dark-green': '#1D9965',
 					'light-gray': '#F1F5F9',
 					'dark-gray': '#4B4B4B',
-                    'subtle-blue': '#607D8B',
+                    'cta-primary': 'hsl(var(--secondary))',
 				},
 				'deep-navy-blue': '#0F2C59',
 				'soft-teal': '#2EC4B6',

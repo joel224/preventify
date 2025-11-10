@@ -254,7 +254,7 @@ img, video {
   --popover-foreground: 222.2 84% 4.9%;
   --primary: 217 91% 60%;
   --primary-foreground: 210 40% 98%;
-  --secondary: 165 100% 36%;
+  --secondary: 173 64% 46%;
   --secondary-foreground: 210 40% 98%;
   --muted: 210 40% 96.1%;
   --muted-foreground: 215.4 16.3% 46.9%;
@@ -693,6 +693,10 @@ h1, h2, h3, h4, h5, h6 {
   margin-top: 6rem;
 }
 
+.mt-3 {
+  margin-top: .75rem;
+}
+
 .mt-4 {
   margin-top: 1rem;
 }
@@ -707,10 +711,6 @@ h1, h2, h3, h4, h5, h6 {
 
 .mt-auto {
   margin-top: auto;
-}
-
-.mt-3 {
-  margin-top: .75rem;
 }
 
 .line-clamp-2 {
@@ -1838,6 +1838,10 @@ h1, h2, h3, h4, h5, h6 {
   background-color: #0f2c590d;
 }
 
+.bg-preventify-cta-primary {
+  background-color: hsl(var(--secondary));
+}
+
 .bg-preventify-dark-gray {
   --tw-bg-opacity: 1;
   background-color: rgb(75 75 75 / var(--tw-bg-opacity, 1));
@@ -1903,11 +1907,6 @@ h1, h2, h3, h4, h5, h6 {
 .bg-white {
   --tw-bg-opacity: 1;
   background-color: rgb(255 255 255 / var(--tw-bg-opacity, 1));
-}
-
-.bg-preventify-subtle-blue {
-  --tw-bg-opacity: 1;
-  background-color: rgb(96 125 139 / var(--tw-bg-opacity, 1));
 }
 
 .bg-gradient-to-br {
@@ -2873,6 +2872,10 @@ h1, h2, h3, h4, h5, h6 {
 
 .hover\:bg-muted\/50:hover {
   background-color: hsl(var(--muted) / .5);
+}
+
+.hover\:bg-preventify-cta-primary\/90:hover {
+  background-color: hsl(var(--secondary) / .9);
 }
 
 .hover\:bg-preventify-dark-blue:hover {
