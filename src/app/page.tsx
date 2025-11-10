@@ -11,6 +11,7 @@ export default function HomePage() {
   return (
     <>
       <HeroSection />
+      <HeroSection />
       <PreventiveLifestyleSection />
       <ServicesSection />
       <FeaturesSection />
