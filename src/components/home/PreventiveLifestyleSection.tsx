@@ -1,7 +1,8 @@
+
 'use client';
 
 import { useState, useMemo, useRef } from "react";
-import { motion, useScroll, useTransform } from "framer-motion";
+import { motion, useScroll, useTransform, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button"
 import BookingDialog from "../BookingDialog"
 import Image from "next/image"
@@ -76,9 +77,9 @@ const PreventiveLifestyleSection = () => {
                         </ScrollRevealText>
 
                         <div className="max-w-2xl mx-auto p-6 rounded-lg">
-                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 items-center">
+                                <div className="flex flex-col sm:flex-row justify-center items-center gap-4">
                                     <Select onValueChange={handleClinicChange} value={selectedClinic}>
-                                        <SelectTrigger className="w-full h-12 text-base bg-primary text-primary-foreground">
+                                        <SelectTrigger className="w-full sm:w-auto sm:min-w-[200px] h-12 text-base bg-primary text-primary-foreground">
                                             <SelectValue placeholder="Select Clinic" />
                                         </SelectTrigger>
                                         <SelectContent>
@@ -88,18 +89,28 @@ const PreventiveLifestyleSection = () => {
                                         </SelectContent>
                                     </Select>
 
-                                    {selectedClinic && (
-                                        <Select onValueChange={handleSpecialtyChange} value={selectedSpecialty} disabled={!selectedClinic}>
-                                            <SelectTrigger className="w-full h-12 text-base border-primary text-primary bg-white">
-                                                <SelectValue placeholder="Select Specialty" />
-                                            </SelectTrigger>
-                                            <SelectContent>
-                                                {availableSpecialties.map(specialty => (
-                                                    <SelectItem key={specialty} value={specialty}>{specialty}</SelectItem>
-                                                ))}
-                                            </SelectContent>
-                                        </Select>
-                                    )}
+                                    <AnimatePresence>
+                                        {selectedClinic && (
+                                            <motion.div
+                                                initial={{ opacity: 0, y: -10 }}
+                                                animate={{ opacity: 1, y: 0 }}
+                                                exit={{ opacity: 0, y: -10 }}
+                                                transition={{ duration: 0.3, ease: "easeInOut" }}
+                                                className="w-full sm:w-auto"
+                                            >
+                                                <Select onValueChange={handleSpecialtyChange} value={selectedSpecialty} disabled={!selectedClinic}>
+                                                    <SelectTrigger className="w-full sm:min-w-[200px] h-12 text-base border-primary text-primary bg-white">
+                                                        <SelectValue placeholder="Select Specialty" />
+                                                    </SelectTrigger>
+                                                    <SelectContent>
+                                                        {availableSpecialties.map(specialty => (
+                                                            <SelectItem key={specialty} value={specialty}>{specialty}</SelectItem>
+                                                        ))}
+                                                    </SelectContent>
+                                                </Select>
+                                            </motion.div>
+                                        )}
+                                    </AnimatePresence>
                                 </div>
                                 {selectedSpecialty && (
                                      <div className="mt-4">
