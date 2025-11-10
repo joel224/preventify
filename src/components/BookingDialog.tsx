@@ -1,7 +1,8 @@
-/*
-curl --request POST \   --url https://api.eka.care/connect-auth/v1/account/login   \   --header 'Content-Type: application/json' \   --data '{   "api_key": "<string>",   "client_id": "<string>",   "client_secret": "<string>",   "user_token": "<string>" }'  This is the Connect Login API used for authentication. It generates an access token and refresh token by providing your client_id, client_secret, api_key, and user_token. These tokens authenticate your API requests to Eka's services.  The access token is included in the auth header for subsequent API calls. When it expires (returns 401), use the refresh token to get a new one. .  curl --request POST \   --url https://api.eka.care/connect-auth/v1/account/refresh-token   \   --header 'Authorization: <authorization>' \   --header 'Client-Id: <client-id>' \   --header 'Content-Type: application/json' \   --data '{   "access_token": "<string>",   "refresh_token": "<string>" }'  This is the refresh token endpoint for Eka's authentication system. It gets you a new access token when your current one expires.  How it works:  Send your expired access_token and refresh_token in the request body Include Authorization header with Bearer token and Client-Id header Returns a fresh access_token and refresh_token with new expiration times When to use: Call this when you get a 401 Unauthorized error, indicating your access token has expired. This lets you continue using the API without re-authenticating from scratch.   Login API (/account/login): Gets initial access token and refresh token when you first authenticate with credentials.  Refresh API (/account/refresh): Gets a new access token using your refresh token when the current access token expires (401 error).  Scenarios:  Initial authentication: Use login API with credentials Access token expired: Use refresh API with refresh token to get new access token Continuous operation: Implement auto-refresh logic to maintain uninterrupted API access Session management: Refresh tokens have longer expiry than access tokens  1. Initial Authentication When: First time connecting to Eka APIs  What happens:  You call /connect-auth/v1/account/login with your client_id, client_secret, api_key, and user_token Server validates credentials Returns two tokens: Access token (~30 min expiry) - for API requests Refresh token (longer expiry) - to get new access tokens Store both tokens securely 2. Access Token Expired When: Access token expires after ~30 minutes  What happens:  API returns 401 Unauthorized error Use /connect-auth/v1/account/refresh with your refresh token Get a new access token without re-entering credentials Continue making API calls with new token No user interruption - happens in background 3. Continuous Operation When: Long-running applications (batch jobs, background services)  What happens:  Implement auto-refresh logic before token expires Monitor token expiry time (returned in login response) Proactively refresh ~5 minutes before expiry Prevents service interruption Example: Cron job refreshes token every 25 minutes 4. Session Management When: Managing user sessions across devices/apps  What happens:  Access tokens expire quickly (30 min) for security Refresh tokens last longer (hours/days) for convenience User stays logged in via refresh token Access token refreshes automatically Logout = delete both tokens  5. Token expiry management: Access tokens expire in ~30 minutes. Use refresh API proactively before expiry to avoid service interruption.  6. Multi-device sessions: When users access from multiple devices, each needs separate login but can share refresh tokens for synchronized sessions.  7. Long-running processes: For batch operations or background jobs, implement automatic token refresh to maintain continuous API access.  8. Security breach recovery: If credentials are compromised, use login API to generate new tokens and invalidate old ones.  9. Session extension: When user activity is detected, use refresh API to extend session without re-authentication.  10. SDK initialization: SDKs (iOS, Web) require tokens during initialization - login provides initial tokens, refresh maintains them throughout app lifecycle.   Real Usage Examples:  Example 1. Search Patient by Mobile Number:  Login → Get access token Call Search API (GET /dr/v1/business/patients/search?mobile=9876543210) with access token in auth header Returns patient profiles matching that mobile number Refresh token when access token expires (401 error) Example 2. Upload Medical Records:  Login → Get tokens Upload files to medical records API with access token Auto-refresh token in background if long upload Commit transaction after upload completes Example 3. Book Appointment:  Login → Authenticate user Search patient by mobile to get patient_id Create appointment with patient_id and doctor_id Refresh token periodically during session  "periodically during session" means refreshing the access token before it expires to maintain continuous API access without interruption.  Why? Access tokens expire in ~30 minutes. If your appointment booking flow takes longer (user browsing doctors, filling forms, etc.), the token might expire mid-process.  Solution: Implement proactive refresh - check token expiry time and refresh it ~5 minutes before expiration, ensuring seamless user experience throughout the session.      The Connect Login API is used for initial authentication, returning an access token and a refresh token . The Connect Refresh API is used to obtain a new access token when the current one expires, using the refresh token . These tokens are essential for authenticating subsequent API requests to Eka's services
-*/
 
+
+/*
+ curl --request POST \   --url https://api.eka.care/connect-auth/v1/account/login   \   --header 'Content-Type: application/json' \   --data '{   "api_key": "<string>",   "client_id": "<string>",   "client_secret": "<string>",   "user_token": "<string>" }'  This is the Connect Login API used for authentication. It generates an access token and refresh token by providing your client_id, client_secret, api_key, and user_token. These tokens authenticate your API requests to Eka's services.  The access token is included in the auth header for subsequent API calls. When it expires (returns 401), use the refresh token to get a new one. .  curl --request POST \   --url https://api.eka.care/connect-auth/v1/account/refresh-token   \   --header 'Authorization: <authorization>' \   --header 'Client-Id: <client-id>' \   --header 'Content-Type: application/json' \   --data '{   "access_token": "<string>",   "refresh_token": "<string>" }'  This is the refresh token endpoint for Eka's authentication system. It gets you a new access token when your current one expires.  How it works:  Send your expired access_token and refresh_token in the request body Include Authorization header with Bearer token and Client-Id header Returns a fresh access_token and refresh_token with new expiration times When to use: Call this when you get a 401 Unauthorized error, indicating your access token has expired. This lets you continue using the API without re-authenticating from scratch.   Login API (/account/login): Gets initial access token and refresh token when you first authenticate with credentials.  Refresh API (/account/refresh): Gets a new access token using your refresh token when the current access token expires (401 error).  Scenarios:  Initial authentication: Use login API with credentials Access token expired: Use refresh API with refresh token to get new access token Continuous operation: Implement auto-refresh logic to maintain uninterrupted API access Session management: Refresh tokens have longer expiry than access tokens  1. Initial Authentication When: First time connecting to Eka APIs  What happens:  You call /connect-auth/v1/account/login with your client_id, client_secret, api_key, and user_token Server validates credentials Returns two tokens: Access token (~30 min expiry) - for API requests Refresh token (longer expiry) - to get new access tokens Store both tokens securely 2. Access Token Expired When: Access token expires after ~30 minutes  What happens:  API returns 401 Unauthorized error Use /connect-auth/v1/account/refresh with your refresh token Get a new access token without re-entering credentials Continue making API calls with new token No user interruption - happens in background 3. Continuous Operation When: Long-running applications (batch jobs, background services)  What happens:  Implement auto-refresh logic before token expires Monitor token expiry time (returned in login response) Proactively refresh ~5 minutes before expiry Prevents service interruption Example: Cron job refreshes token every 25 minutes 4. Session Management When: Managing user sessions across devices/apps  What happens:  Access tokens expire quickly (30 min) for security Refresh tokens last longer (hours/days) for convenience User stays logged in via refresh token Access token refreshes automatically Logout = delete both tokens  5. Token expiry management: Access tokens expire in ~30 minutes. Use refresh API proactively before expiry to avoid service interruption.  6. Multi-device sessions: When users access from multiple devices, each needs separate login but can share refresh tokens for synchronized sessions.  7. Long-running processes: For batch operations or background jobs, implement automatic token refresh to maintain continuous API access.  8. Security breach recovery: If credentials are compromised, use login API to generate new tokens and invalidate old ones.  9. Session extension: When user activity is detected, use refresh API to extend session without re-authentication.  10. SDK initialization: SDKs (iOS, Web) require tokens during initialization - login provides initial tokens, refresh maintains them throughout app lifecycle.   Real Usage Examples:  Example 1. Search Patient by Mobile Number:  Login → Get access token Call Search API (GET /dr/v1/business/patients/search?mobile=9876543210) with access token in auth header Returns patient profiles matching that mobile number Refresh token when access token expires (401 error) Example 2. Upload Medical Records:  Login → Get tokens Upload files to medical records API with access token Auto-refresh token in background if long upload Commit transaction after upload completes Example 3. Book Appointment:  Login → Authenticate user Search patient by mobile to get patient_id Create appointment with patient_id and doctor_id Refresh token periodically during session  "periodically during session" means refreshing the access token before it expires to maintain continuous API access without interruption.  Why? Access tokens expire in ~30 minutes. If your appointment booking flow takes longer (user browsing doctors, filling forms, etc.), the token might expire mid-process.  Solution: Implement proactive refresh - check token expiry time and refresh it ~5 minutes before expiration, ensuring seamless user experience throughout the session.      The Connect Login API is used for initial authentication, returning an access token and a refresh token . The Connect Refresh API is used to obtain a new access token when the current one expires, using the refresh token . These tokens are essential for authenticating subsequent API requests to Eka's services
+*/
 'use client';
 
 import {
@@ -49,9 +50,10 @@ import { useForm, useWatch } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useState, useEffect, useMemo } from 'react';
 import { format, parseISO, addMinutes, getHours, setHours, addDays, getYear, getMonth, getDate } from 'date-fns';
-import { Loader2, CheckCircle, XCircle, Check, ChevronsUpDown } from 'lucide-react';
+import { Loader2, CheckCircle, XCircle, Check, ChevronsUpDown, Sparkles } from 'lucide-react';
 import { cn } from "@/lib/utils";
 import { DialogTrigger } from '@radix-ui/react-dialog';
+import { Textarea } from './ui/textarea';
 
 // Types
 interface Doctor {
@@ -147,6 +149,8 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
   const [bookingResponse, setBookingResponse] = useState<any>(null);
   const [comboboxOpen, setComboboxOpen] = useState(false);
   const [foundPatientProfile, setFoundPatientProfile] = useState<FoundPatientProfile | null>(null);
+  const [showAiHelp, setShowAiHelp] = useState(false);
+  const [symptoms, setSymptoms] = useState("");
 
   const form = useForm<CombinedFormData>({
     resolver: zodResolver(combinedSchema),
@@ -180,6 +184,8 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
       setBookingStatus('idle');
       setAvailableSlots([]);
       setFoundPatientProfile(null);
+      setShowAiHelp(false);
+      setSymptoms("");
     }
   }, [open, form]);
   
@@ -308,6 +314,10 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
   };
 
   const handlePrevStep = () => {
+    if (showAiHelp) {
+        setShowAiHelp(false);
+        return;
+    }
     setStep(step - 1);
   };
   
@@ -394,6 +404,47 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
     }
   };
 
+  const handleAiSuggestion = async () => {
+    if (!symptoms.trim()) {
+        toast.error("Please describe your symptoms.");
+        return;
+    }
+    setIsLoading(true);
+    try {
+        const response = await fetch('/api/suggest-doctor', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                symptoms: symptoms,
+                doctors: doctors,
+            }),
+        });
+
+        if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.message || "Failed to get AI suggestion.");
+        }
+
+        const { doctorId } = await response.json();
+        
+        if (doctorId && doctors.some(d => d.id === doctorId)) {
+            form.setValue('doctorId', doctorId, { shouldValidate: true });
+            const recommendedDoctor = doctors.find(d => d.id === doctorId);
+            toast.success(`We recommend ${recommendedDoctor?.name} for you.`);
+            setShowAiHelp(false);
+            // Don't auto-advance, let the user confirm the selection and click next.
+        } else {
+            throw new Error("AI could not suggest a valid doctor.");
+        }
+
+    } catch (error: any) {
+        toast.error(error.message);
+    } finally {
+        setIsLoading(false);
+    }
+};
+
+
   const renderStepContent = () => {
     switch (step) {
       case 1:
@@ -460,15 +511,42 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
           </>
         );
       case 2:
+        if (showAiHelp) {
+            return (
+                <>
+                    <DialogHeader>
+                        <DialogTitle>Describe Your Symptoms</DialogTitle>
+                        <DialogDescription>
+                            Tell us what's bothering you, and our AI will suggest the right doctor.
+                        </DialogDescription>
+                    </DialogHeader>
+                    <div className="py-4 space-y-4">
+                        <Textarea
+                            placeholder="e.g., 'I have a sore throat and a fever for two days.'"
+                            value={symptoms}
+                            onChange={(e) => setSymptoms(e.target.value)}
+                            rows={4}
+                        />
+                    </div>
+                    <DialogFooter>
+                        <Button variant="outline" onClick={() => setShowAiHelp(false)} type="button">Cancel</Button>
+                        <Button onClick={handleAiSuggestion} disabled={isLoading} type="button">
+                            {isLoading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Sparkles className="mr-2 h-4 w-4" />}
+                            Get AI Suggestion
+                        </Button>
+                    </DialogFooter>
+                </>
+            );
+        }
         return (
           <>
             <DialogHeader>
-              <DialogTitle>Step 2: Select a Doctor</DialogTitle>
+              
               <DialogDescription>
                 Booking an appointment at a Preventify clinic.
               </DialogDescription>
             </DialogHeader>
-            <div className="py-4">
+            <div className="py-4 space-y-4">
               <FormField
                 control={form.control}
                 name="doctorId"
@@ -490,7 +568,7 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
                               ? doctors.find(
                                   (doctor) => doctor.id === field.value
                                 )?.name
-                              : "Select doctor"}
+                              : " Our Doctors "}
                             <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                           </Button>
                         </FormControl>
@@ -533,6 +611,12 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
                   </FormItem>
                 )}
               />
+                <div className="text-center">
+                    <Button variant="link" onClick={() => setShowAiHelp(true)} type="button">
+                        <Sparkles className="mr-2 h-4 w-4" />
+                        Help me choose a doctor
+                    </Button>
+                </div>
             </div>
             <DialogFooter>
               <Button variant="outline" onClick={handlePrevStep} type="button">Back</Button>
@@ -550,7 +634,7 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
         return (
           <>
             <DialogHeader>
-              <DialogTitle>Step 3: Select Date & Time</DialogTitle>
+              
               <DialogDescription>
                 {`Booking for ${selectedDoctor?.name}`}
               </DialogDescription>
@@ -792,3 +876,5 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
     </Dialog>
   );
 }
+
+    
