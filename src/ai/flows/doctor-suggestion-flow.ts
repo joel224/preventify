@@ -8,6 +8,7 @@
  */
 
 import { ai } from '@/ai/genkit';
+import { googleAI } from '@genkit-ai/google-genai';
 import { z } from 'genkit';
 
 const DoctorSchema = z.object({
@@ -62,7 +63,10 @@ const suggestDoctorFlow = ai.defineFlow(
     outputSchema: DoctorSuggestionOutputSchema,
   },
   async (input) => {
-    const { output } = await prompt(input);
+    const { output } = await prompt({
+      input,
+      model: googleAI.model('gemini-flash-lite-latest'),
+    });
     return output!;
   }
 );
