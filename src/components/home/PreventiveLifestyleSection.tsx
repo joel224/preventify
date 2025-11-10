@@ -88,16 +88,18 @@ const PreventiveLifestyleSection = () => {
                                         </SelectContent>
                                     </Select>
 
-                                    <Select onValueChange={handleSpecialtyChange} value={selectedSpecialty} disabled={!selectedClinic}>
-                                        <SelectTrigger className="w-full h-12 text-base border-primary text-primary bg-white">
-                                            <SelectValue placeholder="Select Specialty" />
-                                        </SelectTrigger>
-                                        <SelectContent>
-                                            {availableSpecialties.map(specialty => (
-                                                <SelectItem key={specialty} value={specialty}>{specialty}</SelectItem>
-                                            ))}
-                                        </SelectContent>
-                                    </Select>
+                                    {selectedClinic && (
+                                        <Select onValueChange={handleSpecialtyChange} value={selectedSpecialty} disabled={!selectedClinic}>
+                                            <SelectTrigger className="w-full h-12 text-base border-primary text-primary bg-white">
+                                                <SelectValue placeholder="Select Specialty" />
+                                            </SelectTrigger>
+                                            <SelectContent>
+                                                {availableSpecialties.map(specialty => (
+                                                    <SelectItem key={specialty} value={specialty}>{specialty}</SelectItem>
+                                                ))}
+                                            </SelectContent>
+                                        </Select>
+                                    )}
                                 </div>
                                 {selectedSpecialty && (
                                      <div className="mt-4">
