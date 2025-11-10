@@ -3789,6 +3789,10 @@ h1, h2, h3, h4, h5, h6 {
     border-radius: var(--radius);
   }
 
+  .sm\:rounded-xl {
+    border-radius: .75rem;
+  }
+
   .sm\:p-6 {
     padding: 1.5rem;
   }

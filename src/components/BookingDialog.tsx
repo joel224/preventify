@@ -398,7 +398,7 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
         return (
           <>
             <DialogHeader>
-              <DialogTitle>Step 1: Your Information</DialogTitle>
+              <DialogTitle>You're leaving the Chrome Web Store</DialogTitle>
               <DialogDescription>Please provide your contact details. If you are a returning patient, we'll find your details.</DialogDescription>
             </DialogHeader>
             <div className="space-y-4 py-4">
@@ -790,5 +790,7 @@ export default function BookingDialog({ children }: { children: React.ReactNode 
     </Dialog>
   );
 }
+
+    
 
     
