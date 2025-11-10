@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState, useMemo } from "react";
@@ -49,11 +50,11 @@ const PreventiveLifestyleSectionMobile = () => {
 
     return (
         <section className="bg-white pt-16 pb-8 md:py-24 relative -mt-20 rounded-t-2xl shadow-xl z-10">
-             <div className="absolute -top-8 left-4 sm:left-6 z-20">
-                <div className="inline-flex items-center justify-center bg-white rounded-full p-3 shadow-md border border-gray-200/80 w-20 h-20">
-                    <Image src="/logo.png" alt="Preventify Logo" width={56} height={56} />
+             <div className="absolute -top-12 left-4 sm:left-6 lg:left-8 z-20">
+                    <div className="inline-flex items-center justify-center bg-white rounded-3xl p-4 shadow-sm border border-gray-200/80 w-24 h-24">
+                        <Image src="/logo.png" alt="Preventify Logo" width={64} height={64} />
+                    </div>
                 </div>
-            </div>
             <div className="container mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="text-center">
                     <h2 className="font-display text-3xl md:text-4xl lg:text-5xl font-bold mb-4 text-preventify-dark-blue">
