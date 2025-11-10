@@ -10,8 +10,12 @@ import PreventiveLifestyleSection from "@/components/home/PreventiveLifestyleSec
 export default function HomePage() {
   return (
     <>
-      <HeroSection />
-      <HeroSection />
+      <div className="relative">
+        <HeroSection />
+      </div>
+      <div className="relative">
+        <HeroSection />
+      </div>
       <PreventiveLifestyleSection />
       <ServicesSection />
       <FeaturesSection />

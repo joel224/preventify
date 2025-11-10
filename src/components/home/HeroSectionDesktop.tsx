@@ -12,7 +12,7 @@ const HeroSectionDesktop = () => {
       offset: ["end end", "end start"],
     });
 
-    const scale = useTransform(scrollYProgress, [0, 1], [1, 0.8]);
+    const scale = useTransform(scrollYProgress, [0, 0.5], [1, 0.8]);
     const y = useTransform(scrollYProgress, [0, 1], ["0%", "50%"]);
     const filter = useTransform(
       scrollYProgress,
@@ -23,7 +23,7 @@ const HeroSectionDesktop = () => {
     return (
         <section
             ref={targetRef}
-            className="h-screen bg-white relative"
+            className="h-screen bg-white"
         >
             <motion.div
                 style={{ y, scale, filter }}
