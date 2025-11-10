@@ -709,6 +709,10 @@ h1, h2, h3, h4, h5, h6 {
   margin-top: auto;
 }
 
+.mt-3 {
+  margin-top: .75rem;
+}
+
 .line-clamp-2 {
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;

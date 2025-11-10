@@ -54,6 +54,7 @@ const PreventiveLifestyleSectionDesktop = () => {
                         </ScrollRevealText>
 
                         <div className="max-w-2xl mx-auto p-6 rounded-lg">
+                            <div className="relative group">
                                 <div className="flex flex-col sm:flex-row justify-center items-center gap-4">
                                      <motion.div layout onHoverStart={() => handleClinicOpen(true)} className="w-full sm:w-auto">
                                         <Select onValueChange={handleClinicChange} value={selectedClinic} onOpenChange={handleClinicOpen}>
@@ -87,6 +88,10 @@ const PreventiveLifestyleSectionDesktop = () => {
                                         )}
                                     </AnimatePresence>
                                 </div>
+                                <p className="mt-3 text-sm text-preventify-gray opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                                    Get started with an AI-powered booking
+                                </p>
+                            </div>
                         </div>
                     </div>
                 </div>
