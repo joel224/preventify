@@ -861,6 +861,10 @@ h1, h2, h3, h4, h5, h6 {
   height: 1px;
 }
 
+.h-\[480px\] {
+  height: 480px;
+}
+
 .h-\[600px\] {
   height: 600px;
 }
@@ -1948,6 +1952,10 @@ h1, h2, h3, h4, h5, h6 {
 
 .object-cover {
   object-fit: cover;
+}
+
+.object-center {
+  object-position: center;
 }
 
 .p-0 {
