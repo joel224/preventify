@@ -31,12 +31,12 @@ const EmergencyPage = () => {
                   Press the button below for immediate assistance.
                 </p>
                 
-                <a href={telLink} className="block mb-6">
+                <a href={telLink} className="inline-block mb-6">
                   <Button
                     size="lg"
-                    className="w-full h-20 bg-red-600 hover:bg-red-700 text-white text-xl py-6 px-8 flex items-center gap-4"
+                    className="w-40 h-40 rounded-full bg-red-600 hover:bg-red-700 text-white text-xl flex flex-col items-center justify-center gap-2"
                   >
-                    <Phone className="h-8 w-8" />
+                    <Phone className="h-10 w-10" />
                     <span className="animate-emergency-blink">Call Now</span>
                   </Button>
                 </a>
