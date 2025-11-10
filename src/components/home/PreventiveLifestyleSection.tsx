@@ -61,7 +61,7 @@ const PreventiveLifestyleSection = () => {
     };
 
     return (
-        <section ref={targetRef} className="bg-white py-16 md:py-24 relative rounded-t-2xl shadow-xl z-10 -mt-[15vh] overflow-hidden">
+        <section ref={targetRef} className="bg-white py-16 md:py-24 relative rounded-t-2xl shadow-xl -mt-[15vh] overflow-hidden">
             <motion.div style={{ y }} className="container mx-auto px-4 sm:px-6 lg:px-8">
                 
                 <div className="grid grid-cols-1 gap-8 md:gap-12 items-center">
