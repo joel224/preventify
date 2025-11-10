@@ -1242,17 +1242,17 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 @keyframes emergency-blink {
-  0%, 100% {
+  0%, 95%, 100% {
     color: #fff;
   }
 
-  1% {
+  96% {
     color: hsl(var(--primary));
   }
 }
 
 .animate-emergency-blink {
-  animation: 1s step-end infinite emergency-blink;
+  animation: 2s ease-out infinite emergency-blink;
 }
 
 @keyframes fade-in {
