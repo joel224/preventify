@@ -1,3 +1,4 @@
+
 'use client';
 import Image from "next/image";
 import { motion, useScroll, useTransform } from "framer-motion";
@@ -16,7 +17,7 @@ const HeroSectionDesktop = () => {
     const filter = useTransform(
       scrollYProgress,
       [0, 0.5],
-      ["blur(0px)", "blur(8px)"]
+      ["blur(0px)", "blur(2px)"]
     );
 
     return (
