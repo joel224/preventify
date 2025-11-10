@@ -13,6 +13,11 @@ const HeroSectionDesktop = () => {
 
     const scale = useTransform(scrollYProgress, [0, 1], [1, 0.8]);
     const y = useTransform(scrollYProgress, [0, 1], ["0%", "50%"]);
+    const filter = useTransform(
+      scrollYProgress,
+      [0, 0.5],
+      ["blur(0px)", "blur(8px)"]
+    );
 
     return (
         <section
@@ -20,7 +25,7 @@ const HeroSectionDesktop = () => {
             className="h-screen bg-white relative"
         >
             <motion.div
-                style={{ y, scale }}
+                style={{ y, scale, filter }}
                 className="top-0 sticky flex h-full flex-col justify-center"
             >
                 <main className="container mx-auto px-6">
