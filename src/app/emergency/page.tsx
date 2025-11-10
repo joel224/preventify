@@ -37,7 +37,7 @@ const EmergencyPage = () => {
                     className="w-full h-20 bg-red-600 hover:bg-red-700 text-white text-xl py-6 px-8 flex items-center gap-4"
                   >
                     <Phone className="h-8 w-8" />
-                    Call Now
+                    <span className="animate-emergency-blink">Call Now</span>
                   </Button>
                 </a>
                 
@@ -53,7 +53,7 @@ const EmergencyPage = () => {
             </Card>
             
             <div className="mt-8 text-center text-preventify-gray">
-                <p>This number is for our 24/7 emergency services at our Vattamkulam and Padinjarangadi locations.</p>
+                <p>This number is for our emergency services at our Vattamkulam and Padinjarangadi locations.</p>
                 <p className="mt-2 font-semibold">Please do not hesitate to call for urgent medical situations.</p>
             </div>
           </div>

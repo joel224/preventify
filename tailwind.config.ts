@@ -143,6 +143,10 @@ export default {
                   '5%': { transform: 'translateX(3px)' },
                   '7.5%': { transform: 'translateX(-3px)' },
                   '10%': { transform: 'translateX(3px)' },
+                },
+                'emergency-blink': {
+                  '0%, 100%': { color: 'white' },
+                  '1%': { color: 'hsl(var(--primary))' },
                 }
 			},
 			animation: {
@@ -152,6 +156,7 @@ export default {
                 'shimmer': 'shimmer 1.5s infinite',
                 'shimmer-reveal': 'shimmer-reveal 1s ease-out forwards',
                 'vibrate': 'vibrate 4s ease-in-out infinite',
+                'emergency-blink': 'emergency-blink 1s steps(1, end) infinite',
 			},
 			fontFamily: {
 				sans: ['var(--font-inter)', 'sans-serif'],
