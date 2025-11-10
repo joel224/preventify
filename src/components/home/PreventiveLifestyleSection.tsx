@@ -35,6 +35,7 @@ const clinicsData = [
 const PreventiveLifestyleSection = () => {
     const [selectedClinic, setSelectedClinic] = useState('');
     const [selectedSpecialty, setSelectedSpecialty] = useState('');
+    const [isSplit, setIsSplit] = useState(false);
 
     const targetRef = useRef<HTMLDivElement>(null);
     const { scrollYProgress } = useScroll({
@@ -62,6 +63,12 @@ const PreventiveLifestyleSection = () => {
         setSelectedSpecialty(specialty);
     };
 
+    const handleClinicOpen = (open: boolean) => {
+        if (open && !isSplit) {
+            setIsSplit(true);
+        }
+    }
+
     return (
         <section ref={targetRef} className="bg-white py-16 md:py-24 relative rounded-t-2xl shadow-xl -mt-[15vh] overflow-hidden">
             <motion.div style={{ y }} className="container mx-auto px-4 sm:px-6 lg:px-8">
@@ -78,24 +85,27 @@ const PreventiveLifestyleSection = () => {
 
                         <div className="max-w-2xl mx-auto p-6 rounded-lg">
                                 <div className="flex flex-col sm:flex-row justify-center items-center gap-4">
-                                    <Select onValueChange={handleClinicChange} value={selectedClinic}>
-                                        <SelectTrigger className="w-full sm:w-auto sm:min-w-[200px] h-12 text-base bg-primary text-primary-foreground">
-                                            <SelectValue placeholder="Select Clinic" />
-                                        </SelectTrigger>
-                                        <SelectContent>
-                                            {clinicsData.map(clinic => (
-                                                <SelectItem key={clinic.id} value={clinic.id}>{clinic.name}</SelectItem>
-                                            ))}
-                                        </SelectContent>
-                                    </Select>
+                                     <motion.div layout className="w-full sm:w-auto">
+                                        <Select onValueChange={handleClinicChange} value={selectedClinic} onOpenChange={handleClinicOpen}>
+                                            <SelectTrigger className={`w-full h-12 text-base bg-primary text-primary-foreground ${isSplit ? 'sm:min-w-[200px]' : 'sm:min-w-[416px]'}`}>
+                                                <SelectValue placeholder="Select Clinic" />
+                                            </SelectTrigger>
+                                            <SelectContent>
+                                                {clinicsData.map(clinic => (
+                                                    <SelectItem key={clinic.id} value={clinic.id}>{clinic.name}</SelectItem>
+                                                ))}
+                                            </SelectContent>
+                                        </Select>
+                                     </motion.div>
 
                                     <AnimatePresence>
-                                        {selectedClinic && (
+                                        {isSplit && (
                                             <motion.div
-                                                initial={{ opacity: 0, y: -10 }}
-                                                animate={{ opacity: 1, y: 0 }}
-                                                exit={{ opacity: 0, y: -10 }}
-                                                transition={{ duration: 0.3, ease: "easeInOut" }}
+                                                layout
+                                                initial={{ opacity: 0, width: 0 }}
+                                                animate={{ opacity: 1, width: 'auto' }}
+                                                exit={{ opacity: 0, width: 0 }}
+                                                transition={{ duration: 0.4, ease: "easeInOut" }}
                                                 className="w-full sm:w-auto"
                                             >
                                                 <Select onValueChange={handleSpecialtyChange} value={selectedSpecialty} disabled={!selectedClinic}>

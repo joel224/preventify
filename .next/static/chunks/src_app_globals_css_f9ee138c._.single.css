@@ -3723,6 +3723,10 @@ h1, h2, h3, h4, h5, h6 {
     min-width: 200px;
   }
 
+  .sm\:min-w-\[416px\] {
+    min-width: 416px;
+  }
+
   .sm\:max-w-md {
     max-width: 28rem;
   }
