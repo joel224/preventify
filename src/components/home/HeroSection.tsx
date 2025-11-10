@@ -4,7 +4,7 @@ import { PlayCircle } from "lucide-react";
 import Image from "next/image";
 import { motion, useScroll, useTransform } from "framer-motion";
 import BookingDialog from "../BookingDialog";
-import ShimmerText from "../ShimmerText";
+import ScrollRevealText from "../ScrollRevealText";
 import { useRef } from "react";
 
 const HeroSection = () => {
@@ -34,36 +34,27 @@ const HeroSection = () => {
                 <main className="container mx-auto px-6">
                     <div className="grid lg:grid-cols-2 gap-12 items-center">
                         <div className="pt-19">
-                            <motion.div
+                            <ScrollRevealText className="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 leading-tight">
+                                AI assisted Modern Healthcare<br />for a Preventive Lifestyle
+                            </ScrollRevealText>
+
+                            <motion.p
+                                className="mt-6 text-preventify-dark-gray"
+                                variants={FADE_IN_ANIMATION_VARIANTS}
                                 initial="hidden"
                                 animate="show"
                                 viewport={{ once: true }}
-                                variants={{
-                                    hidden: {},
-                                    show: {
-                                        transition: {
-                                            staggerChildren: 0.15,
-                                        },
-                                    },
-                                }}
                             >
-                                <ShimmerText
-                                    text="AI assisted Modern Healthcare<br />for a Preventive Lifestyle"
-                                    className="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 leading-tight"
-                                />
-
-                                <motion.p
-                                    className="mt-6 text-preventify-dark-gray"
-                                    variants={FADE_IN_ANIMATION_VARIANTS}
-                                >
-                                    AI-assisted evidence-based care across Kerala focused on prevention, early intervention, and better health outcomes for you and your family.
-                                </motion.p>
-                                <motion.div
-                                    className="mt-8 flex flex-col sm:flex-row items-center gap-6"
-                                    variants={FADE_IN_ANIMATION_VARIANTS}
-                                >
-                                
-                                </motion.div>
+                                AI-assisted evidence-based care across Kerala focused on prevention, early intervention, and better health outcomes for you and your family.
+                            </motion.p>
+                            <motion.div
+                                className="mt-8 flex flex-col sm:flex-row items-center gap-6"
+                                variants={FADE_IN_ANIMATION_VARIANTS}
+                                initial="hidden"
+                                animate="show"
+                                viewport={{ once: true }}
+                            >
+                            
                             </motion.div>
                         </div>
 
