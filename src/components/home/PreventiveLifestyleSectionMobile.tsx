@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useState, useMemo } from "react";
@@ -7,6 +6,7 @@ import BookingDialog from "../BookingDialog";
 import Image from "next/image";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import ScrollRevealText from "../ScrollRevealText";
+import { motion, AnimatePresence } from "framer-motion";
 
 
 const doctorsData = [
@@ -32,6 +32,7 @@ const clinicsData = [
 const PreventiveLifestyleSectionMobile = () => {
     const [selectedClinic, setSelectedClinic] = useState('');
     const [selectedSpecialty, setSelectedSpecialty] = useState('');
+    const [isSplit, setIsSplit] = useState(false);
 
     const availableSpecialties = useMemo(() => {
         if (!selectedClinic) return [];
@@ -42,15 +43,24 @@ const PreventiveLifestyleSectionMobile = () => {
     const handleClinicChange = (clinicId: string) => {
         setSelectedClinic(clinicId);
         setSelectedSpecialty('');
+         if (clinicId && !isSplit) {
+            setIsSplit(true);
+        }
     };
 
     const handleSpecialtyChange = (specialty: string) => {
         setSelectedSpecialty(specialty);
     };
 
+    const handleClinicOpen = (open: boolean) => {
+        if (open && !isSplit) {
+            setIsSplit(true);
+        }
+    }
+
     return (
         <section className="bg-white pt-16 pb-8 md:py-24 relative -mt-20 rounded-t-2xl shadow-xl z-10">
-             <div className="absolute -top-12 left-4 sm:left-6 lg:left-8 z-20">
+             <div className="absolute -top-12 left-4 sm:left-6 lg:left-8 z-10">
                     <div className="inline-flex items-center justify-center bg-white rounded-3xl p-4 shadow-sm border border-gray-200/80 w-24 h-24">
                         <Image src="/logo.png" alt="Preventify Logo" width={64} height={64} />
                     </div>
@@ -63,27 +73,42 @@ const PreventiveLifestyleSectionMobile = () => {
 
                     <div className="max-w-2xl mx-auto p-4 rounded-lg">
                         <div className="flex flex-col sm:flex-row justify-center items-center gap-4">
-                            <Select onValueChange={handleClinicChange} value={selectedClinic}>
-                                <SelectTrigger className="w-full h-12 text-base">
-                                    <SelectValue placeholder="Select Clinic" />
-                                </SelectTrigger>
-                                <SelectContent>
-                                    {clinicsData.map(clinic => (
-                                        <SelectItem key={clinic.id} value={clinic.id}>{clinic.name}</SelectItem>
-                                    ))}
-                                </SelectContent>
-                            </Select>
+                            <motion.div layout onHoverStart={() => handleClinicOpen(true)} className="w-full sm:w-auto">
+                                <Select onValueChange={handleClinicChange} value={selectedClinic} onOpenChange={handleClinicOpen}>
+                                    <SelectTrigger className={`w-full h-12 text-base bg-preventify-subtle-blue text-white ${isSplit ? 'sm:min-w-[200px]' : 'sm:min-w-[416px]'}`}>
+                                        <SelectValue placeholder="Select Clinic" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        {clinicsData.map(clinic => (
+                                            <SelectItem key={clinic.id} value={clinic.id}>{clinic.name}</SelectItem>
+                                        ))}
+                                    </SelectContent>
+                                </Select>
+                            </motion.div>
 
-                            <Select onValueChange={handleSpecialtyChange} value={selectedSpecialty} disabled={!selectedClinic}>
-                                <SelectTrigger className="w-full h-12 text-base">
-                                    <SelectValue placeholder="Select Specialty" />
-                                </SelectTrigger>
-                                <SelectContent>
-                                    {availableSpecialties.map(specialty => (
-                                        <SelectItem key={specialty} value={specialty}>{specialty}</SelectItem>
-                                    ))}
-                                </SelectContent>
-                            </Select>
+                            <AnimatePresence>
+                                {isSplit && (
+                                    <motion.div
+                                        layout
+                                        initial={{ opacity: 0, width: 0 }}
+                                        animate={{ opacity: 1, width: '100%' }}
+                                        exit={{ opacity: 0, width: 0 }}
+                                        transition={{ duration: 0.4, ease: "easeInOut" }}
+                                        className="w-full sm:w-auto"
+                                    >
+                                        <Select onValueChange={handleSpecialtyChange} value={selectedSpecialty} disabled={!selectedClinic}>
+                                            <SelectTrigger className="w-full sm:min-w-[200px] h-12 text-base border-preventify-subtle-blue text-preventify-subtle-blue bg-white">
+                                                <SelectValue placeholder="Select Specialty" />
+                                            </SelectTrigger>
+                                            <SelectContent>
+                                                {availableSpecialties.map(specialty => (
+                                                    <SelectItem key={specialty} value={specialty}>{specialty}</SelectItem>
+                                                ))}
+                                            </SelectContent>
+                                        </Select>
+                                    </motion.div>
+                                )}
+                            </AnimatePresence>
                         </div>
                         {selectedSpecialty && (
                             <div className="mt-4">
