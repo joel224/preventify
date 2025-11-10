@@ -19,7 +19,7 @@ const EmergencyPage = () => {
       <section className="py-16">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="max-w-2xl mx-auto">
-            <Card className="shadow-lg">
+            <Card className="shadow-lg border-red-500/50">
               <CardHeader className="text-center">
                 <AlertTriangle className="mx-auto h-12 w-12 text-red-600" />
                 <CardTitle className="text-2xl font-bold text-red-700 mt-2">
@@ -28,25 +28,27 @@ const EmergencyPage = () => {
               </CardHeader>
               <CardContent className="text-center">
                 <p className="text-preventify-dark-gray mb-6">
-                  Please call the number below directly for immediate attention.
+                  Press the button below for immediate assistance.
                 </p>
-                <div className="bg-red-50 p-6 rounded-lg mb-6">
-                  <p className="text-sm font-semibold text-red-800">
-                    Emergency Hotline
-                  </p>
-                  <p className="text-4xl font-bold my-2 text-red-900 tracking-wider">
-                    {emergencyNumber}
-                  </p>
-                </div>
-                <a href={telLink}>
+                
+                <a href={telLink} className="block mb-6">
                   <Button
                     size="lg"
-                    className="w-full bg-red-600 hover:bg-red-700 text-white text-lg py-6 px-8 flex items-center gap-2"
+                    className="w-full h-20 bg-red-600 hover:bg-red-700 text-white text-xl py-6 px-8 flex items-center gap-4"
                   >
-                    <Phone className="h-5 w-5" />
+                    <Phone className="h-8 w-8" />
                     Call Now
                   </Button>
                 </a>
+                
+                <div className="bg-red-50 p-4 rounded-lg">
+                  <p className="text-sm font-semibold text-red-800">
+                    Or dial our Emergency Hotline
+                  </p>
+                  <p className="text-3xl font-bold my-1 text-red-900 tracking-wider">
+                    {emergencyNumber}
+                  </p>
+                </div>
               </CardContent>
             </Card>
             
