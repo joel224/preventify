@@ -43,22 +43,17 @@ const HeroSectionTwoDesktop = () => {
                         <div className="relative h-[600px]">
                             <div className="absolute inset-0 flex justify-center items-center">
                                 <motion.div
-                                    className="absolute bg-[#4e6bff] rounded-full w-[760px] h-[760px] overflow-hidden"
-                                    animate={{ y: '-15%', x: '10%' }}
+                                    className="relative overflow-hidden w-[600px] h-[600px] rounded-full"
+                                    animate={{ y: '11%', x: '22%' }}
                                 >
-                                    <motion.div
-                                        className="w-96 h-96 overflow-hidden relative  w-[600px] h-[600px]"
-                                        animate={{ y: '26%', x: '12%' }}
-                                    >
-                                        <Image
-                                            src="/RAW_IMG/Adobe Express - file (4).png"
-                                            alt="Happy professional working on a laptop"
-                                            width={1000}
-                                            height={1000}
-                                            className="object-cover w-full h-full"
-                                            data-ai-hint="people working"
-                                        />
-                                    </motion.div>
+                                    <Image
+                                        src="/RAW_IMG/Adobe Express - file (16).png"
+                                        alt="Happy professional working on a laptop"
+                                        width={1000}
+                                        height={1000}
+                                        className="object-cover w-full h-full"
+                                        data-ai-hint="people working"
+                                    />
                                 </motion.div>
                             </div>
                         </div>
