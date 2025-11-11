@@ -30,8 +30,17 @@ const HeroSectionTwoDesktop = () => {
 
           {/* LEFT COLUMN: Text Content */}
           <div className="space-y-8">
-            {/* Headline - Now with Typewriter/Blur Effect */}
-            <ScrollRevealText className="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 leading-tight">
+            {/* 
+              HOW TO CONTROL THE ANIMATION:
+              - wordDelay:  Time in seconds between each word appearing. Higher number = slower typing.
+              - lineDelay:  Time in seconds between each line starting.
+              - className:  Use Tailwind's tracking classes for letter spacing (e.g., "tracking-wide", "tracking-tight").
+            */}
+            <ScrollRevealText 
+              className="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 leading-tight"
+              wordDelay={0.08}
+              lineDelay={0.1}
+            >
               Prevention powered by always-on intelligence
             </ScrollRevealText>
 

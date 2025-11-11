@@ -6,9 +6,16 @@ import { cn } from "@/lib/utils";
 interface ScrollRevealTextProps {
   children: React.ReactNode;
   className?: string;
+  wordDelay?: number;
+  lineDelay?: number;
 }
 
-const ScrollRevealText = ({ children, className }: ScrollRevealTextProps) => {
+const ScrollRevealText = ({ 
+  children, 
+  className,
+  wordDelay = 0.08,
+  lineDelay = 0.1
+}: ScrollRevealTextProps) => {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, amount: 0.5 });
 
@@ -19,7 +26,7 @@ const ScrollRevealText = ({ children, className }: ScrollRevealTextProps) => {
     hidden: {},
     visible: {
       transition: {
-        staggerChildren: 0.1,
+        staggerChildren: lineDelay,
       },
     },
   };
@@ -28,16 +35,17 @@ const ScrollRevealText = ({ children, className }: ScrollRevealTextProps) => {
     hidden: {},
     visible: {
       transition: {
-        staggerChildren: 0.08,
+        staggerChildren: wordDelay,
       },
     },
   };
   
   const wordVariants = {
-    hidden: { opacity: 0, y: 10 },
+    hidden: { opacity: 0, y: 10, filter: "blur(4px)" },
     visible: {
       opacity: 1,
       y: 0,
+      filter: "blur(0px)",
       transition: {
         type: 'spring',
         stiffness: 50,
