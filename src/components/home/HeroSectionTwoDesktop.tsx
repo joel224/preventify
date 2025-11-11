@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { motion, useInView } from "framer-motion";
 import { useRef } from "react";
+import ScrollRevealText from "../ScrollRevealText";
 
 const HeroSectionTwoDesktop = () => {
   const ref = useRef<HTMLDivElement>(null);
@@ -10,16 +11,10 @@ const HeroSectionTwoDesktop = () => {
 
   // === ANIMATIONS ===
 
-  // Headline: Fade In + Slide Up
-  const headlineVariants = {
-    hidden: { opacity: 0, y: 20 },
-    visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut" } }
-  };
-
   // Sub-headline: Fade In after headline
   const subHeadlineVariants = {
     hidden: { opacity: 0, y: 20 },
-    visible: { opacity: 1, y: 0, transition: { delay: 0.3, duration: 0.6, ease: "easeOut" } }
+    visible: { opacity: 1, y: 0, transition: { delay: 0.8, duration: 0.6, ease: "easeOut" } }
   };
 
   // Image: Blur → Clear + Scale Up
@@ -35,15 +30,10 @@ const HeroSectionTwoDesktop = () => {
 
           {/* LEFT COLUMN: Text Content */}
           <div className="space-y-8">
-            {/* Headline - Fade In + Slide Up */}
-            <motion.h1
-              initial="hidden"
-              animate={isInView ? "visible" : "hidden"}
-              variants={headlineVariants}
-              className="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 leading-tight"
-            >
-              Care That Follows Up, So You Stay on Track
-            </motion.h1>
+            {/* Headline - Now with Typewriter/Blur Effect */}
+            <ScrollRevealText className="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 leading-tight">
+              Prevention powered by always-on intelligence
+            </ScrollRevealText>
 
             {/* Sub-headline - Fade In after headline */}
             <motion.p
@@ -52,7 +42,7 @@ const HeroSectionTwoDesktop = () => {
               variants={subHeadlineVariants}
               className="mt-6 text-preventify-dark-gray"
             >
-              AI-assisted evidence-based care across Kerala focused on prevention, early intervention, and better health outcomes for you and your family.
+             Prevention that works continuously across Kerala for better healthier families.
             </motion.p>
           </div>
 

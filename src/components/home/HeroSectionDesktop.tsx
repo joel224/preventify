@@ -39,7 +39,7 @@ const HeroSectionDesktop = () => {
             <motion.div style={{ y: textY }} className="col-span-12 md:col-span-5 space-y-8">
               {/* Main Headline - LEFT ALIGNED */}
               <motion.h1
-                animate={{ y: '-150%', x: '0%', scale: 1.1 }}
+                animate={{ y: '-110%', x: '0%', scale: 1.1 }}
                 className="text-5xl lg:text-5xl font-bold text-gray-740 leading-tight text-left"
               >
                 Care That Follows Up, So You Stay on Track
@@ -81,7 +81,7 @@ const HeroSectionDesktop = () => {
                         </svg>
                       ))}
                     </div>
-                    <p className="text-xs text-gray-600 mt-1">2500+ Happy Customers</p>
+                    <p className="text-xs text-gray-600 mt-1">30,000+ Happy Patients</p>
                   </div>
                 </div>
               </div>

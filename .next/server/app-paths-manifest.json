@@ -1,3 +1,5 @@
 {
+  "/api/available-slots/route": "app/api/available-slots/route.js",
+  "/api/search-patient/route": "app/api/search-patient/route.js",
   "/page": "app/page.js"
 }
