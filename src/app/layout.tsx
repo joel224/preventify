@@ -82,7 +82,6 @@ export default function RootLayout({
         <TooltipProvider>
           <SmoothScroll>
             <div className="flex flex-col min-h-screen">
-              <FixedWatermark />
               <Navbar />
               <main className="flex-grow">
                 {children}
@@ -92,6 +91,7 @@ export default function RootLayout({
             <Toaster />
             <Sonner />
           </SmoothScroll>
+          <FixedWatermark />
         </TooltipProvider>
         <SubscriptionButton />
       </body>

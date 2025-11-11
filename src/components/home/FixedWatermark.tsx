@@ -3,7 +3,7 @@
 const FixedWatermark = () => {
   return (
     <div
-      className="fixed bottom-0 left-0 w-full h-auto pointer-events-none z-10"
+      className="fixed bottom-0 left-0 w-full h-auto pointer-events-none z-50"
       style={{
         opacity: 0.05,
         fontSize: '200px',
