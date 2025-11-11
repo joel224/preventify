@@ -13,14 +13,10 @@ import FixedWatermark from "@/components/home/FixedWatermark";
 export default function HomePage() {
   return (
     <>
-      <div className="relative" style={{ backgroundColor: "#f8f5f0" }}>
-        <FixedWatermark />
-        <div className="relative z-10">
-          <HeroSection />
-        </div>
-        <div className="relative z-0">
-          <HeroSectionTwo />
-        </div>
+      <FixedWatermark />
+      <div style={{ backgroundColor: "#f8f5f0" }}>
+        <HeroSection />
+        <HeroSectionTwo />
       </div>
       <PreventiveLifestyleSection />
       <ServicesSection />
