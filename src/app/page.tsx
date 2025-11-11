@@ -8,15 +8,19 @@ import LocationsSection from "@/components/home/LocationsSection";
 import CtaSection from "@/components/home/CtaSection";
 import PreventiveLifestyleSection from "@/components/home/PreventiveLifestyleSection";
 import MarqueeText from "@/components/home/MarqueeText";
+import FixedWatermark from "@/components/home/FixedWatermark";
 
 export default function HomePage() {
   return (
     <>
-      <div className="relative z-10">
-        <HeroSection />
-      </div>
-      <div className="relative z-0">
-        <HeroSectionTwo />
+      <div className="relative" style={{ backgroundColor: "#f8f5f0" }}>
+        <FixedWatermark />
+        <div className="relative z-10">
+          <HeroSection />
+        </div>
+        <div className="relative z-0">
+          <HeroSectionTwo />
+        </div>
       </div>
       <PreventiveLifestyleSection />
       <ServicesSection />

@@ -1,3 +1,4 @@
+
 'use client';
 import Image from "next/image";
 import { motion, useScroll, useTransform } from "framer-motion";
@@ -28,7 +29,7 @@ const HeroSectionTwoDesktop = () => {
   return (
     <section
       ref={targetRef}
-      className="h-screen bg-white relative overflow-hidden"
+      className="h-screen bg-transparent relative overflow-hidden"
     >
       {/* Sticky Container */}
       <div className="sticky top-0 h-full flex items-center px-6">
