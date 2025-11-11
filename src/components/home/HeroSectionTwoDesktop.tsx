@@ -1,9 +1,7 @@
-
 'use client';
 import Image from "next/image";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { useRef } from "react";
-import FixedWatermark from "./FixedWatermark";
 
 const HeroSectionTwoDesktop = () => {
   const targetRef = useRef<HTMLDivElement>(null);
@@ -80,7 +78,6 @@ const HeroSectionTwoDesktop = () => {
           </div>
         </div>
       </div>
-      <FixedWatermark />
     </section>
   );
 };
