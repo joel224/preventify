@@ -1935,6 +1935,10 @@ h1, h2, h3, h4, h5, h6 {
   background-color: #fffc;
 }
 
+.bg-\[\#f8f5f0\]\/80 {
+  background-color: #f8f5f0cc;
+}
+
 .bg-gradient-to-br {
   background-image: linear-gradient(to bottom right, var(--tw-gradient-stops));
 }
@@ -2535,6 +2539,16 @@ h1, h2, h3, h4, h5, h6 {
 .text-yellow-400 {
   --tw-text-opacity: 1;
   color: rgb(250 204 21 / var(--tw-text-opacity, 1));
+}
+
+.text-\[\#3a3d38\] {
+  --tw-text-opacity: 1;
+  color: rgb(58 61 56 / var(--tw-text-opacity, 1));
+}
+
+.text-gray-400 {
+  --tw-text-opacity: 1;
+  color: rgb(156 163 175 / var(--tw-text-opacity, 1));
 }
 
 .underline {

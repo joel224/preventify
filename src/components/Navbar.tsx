@@ -1,4 +1,3 @@
-
 'use client'
 import { useState } from "react";
 import Link from "next/link";
@@ -29,7 +28,7 @@ const Navbar = () => {
   ];
 
   return (
-    <header className="bg-white/80 shadow-sm sticky top-0 z-50 group backdrop-blur-sm">
+    <header className="bg-[#f8f5f0]/80 shadow-sm sticky top-0 z-50 group backdrop-blur-sm">
       {/* Top Bar */}
       <div className="bg-top-bar border-b border-border/50 transition-all duration-300 max-h-0 opacity-0 group-hover:max-h-12 group-hover:opacity-100 overflow-hidden">
           <div className="container mx-auto py-1.5 px-4 sm:px-6 lg:px-8 flex justify-between items-center text-xs text-slate-600">

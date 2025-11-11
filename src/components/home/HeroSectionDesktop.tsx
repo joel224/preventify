@@ -39,9 +39,8 @@ const HeroSectionDesktop = () => {
             <motion.div style={{ y: textY }} className="col-span-12 md:col-span-5 space-y-8">
               {/* Main Headline - LEFT ALIGNED */}
               <motion.h1
-                animate={{ y: '-18%', x: '0%', scale: 1.4 }}
-                className="text-5xl lg:text-6xl font-medium text-gray-800 leading-tight text-left"
-                style={{ fontFamily: 'Arial, sans-serif' }}
+                animate={{ y: '-18%', x: '0%', scale: 1 }}
+                className="text-5xl lg:text-6xl font-bold text-gray-740 leading-tight text-left"
               >
                 Care That Follows Up, So You Stay on Track
               </motion.h1>
