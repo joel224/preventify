@@ -1,7 +1,9 @@
+
 'use client';
 import Image from "next/image";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { useRef } from "react";
+import FixedWatermark from "./FixedWatermark";
 
 const doctorImages = [
   "https://res.cloudinary.com/dyf8umlda/image/upload/v1748262006/Dr_Rakesh_xngrlx.jpg",
@@ -79,7 +81,7 @@ const HeroSectionDesktop = () => {
             {/* MIDDLE COLUMN: Product Image (Spans 2 columns) */}
             <motion.div
               style={{ y: imageY }}
-              animate={{ y: '20%', x: '0%', scale: 1 }}
+              animate={{ y: '20%', x: '0%', scale: 1.1 }}
               className="col-span-12 md:col-span-2 flex justify-center z-10 w-[250px] h-[250px]"
             >
               <div
@@ -123,26 +125,7 @@ const HeroSectionDesktop = () => {
         </div>
       </div>
 
-      {/* 🔤 FIXED Background Watermark "Preventify" - No Animation, No Movement */}
-      <div
-        className="absolute bottom-0 left-0 w-full h-auto pointer-events-none z-0"
-        style={{
-          opacity: 0.1,
-          fontSize: '200px',
-          fontWeight: 'bold',
-          fontFamily: 'sans-serif',
-          color: '#000',
-          textAlign: 'center',
-          lineHeight: '1',
-          WebkitTextStroke: '1px #fff',
-          textShadow: '0 0 20px rgba(255,255,255,0.8)',
-          pointerEvents: 'none',
-          userSelect: 'none',
-        }}
-      >
-        Preventify
-      </div>
-
+      <FixedWatermark />
     </section>
   );
 };

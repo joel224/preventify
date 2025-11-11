@@ -593,6 +593,11 @@ h1, h2, h3, h4, h5, h6 {
   margin-bottom: .25rem;
 }
 
+.mx-1 {
+  margin-left: .25rem;
+  margin-right: .25rem;
+}
+
 .-mb-4 {
   margin-bottom: -1rem;
 }
@@ -730,6 +735,10 @@ h1, h2, h3, h4, h5, h6 {
 
 .inline-block {
   display: inline-block;
+}
+
+.inline {
+  display: inline;
 }
 
 .flex {
@@ -919,6 +928,18 @@ h1, h2, h3, h4, h5, h6 {
 
 .h-svh {
   height: 100svh;
+}
+
+.h-\[300vh\] {
+  height: 300vh;
+}
+
+.h-\[150vh\] {
+  height: 150vh;
+}
+
+.h-\[200vh\] {
+  height: 200vh;
 }
 
 .max-h-0 {
@@ -2765,6 +2786,10 @@ h1, h2, h3, h4, h5, h6 {
   transition-duration: .5s;
 }
 
+.duration-150 {
+  transition-duration: .15s;
+}
+
 .ease-in-out {
   transition-timing-function: cubic-bezier(.4, 0, .2, 1);
 }
@@ -2827,6 +2852,10 @@ h1, h2, h3, h4, h5, h6 {
 
 .duration-500 {
   animation-duration: .5s;
+}
+
+.duration-150 {
+  animation-duration: .15s;
 }
 
 .ease-in-out {
