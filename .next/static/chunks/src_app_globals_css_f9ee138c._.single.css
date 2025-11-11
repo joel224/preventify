@@ -857,6 +857,10 @@ h1, h2, h3, h4, h5, h6 {
   height: 1px;
 }
 
+.h-\[200vh\] {
+  height: 200vh;
+}
+
 .h-\[250px\] {
   height: 250px;
 }
@@ -2715,6 +2719,10 @@ h1, h2, h3, h4, h5, h6 {
 
 .ease-out {
   transition-timing-function: cubic-bezier(0, 0, .2, 1);
+}
+
+.will-change-transform {
+  will-change: transform;
 }
 
 @keyframes enter {
