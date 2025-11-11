@@ -25,7 +25,8 @@ const HeroSectionDesktop = () => {
   return (
     <section
       ref={targetRef}
-      className="h-screen bg-white relative overflow-hidden"
+      className="h-screen relative overflow-hidden"
+      style={{ backgroundColor: "#f8f5f0" }}
     >
       
       {/* Main Hero Content - 12-Column Grid System */}
