@@ -79,7 +79,7 @@ const HeroSectionDesktop = () => {
             {/* MIDDLE COLUMN: Product Image (Spans 2 columns) */}
             <motion.div
               style={{ y: imageY }}
-              animate={{ y: '20%', x: '0%', scale: 1.1 }}
+              animate={{ y: '20%', x: '0%', scale: 1. }}
               className="col-span-12 md:col-span-2 flex justify-center z-10 w-[250px] h-[250px]"
             >
               <div

@@ -23,8 +23,8 @@ export default function HomePage() {
       <FeaturesSection />
       <BlogPreviewSection />
       <LocationsSection />
-      <MarqueeText />
       <CtaSection />
+      <MarqueeText />
     </>
   );
 }
