@@ -10,6 +10,7 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import SubscriptionButton from "@/components/SubscriptionButton";
 import { motion, useScroll, useSpring, useTransform } from "framer-motion";
+import FixedWatermark from "@/components/home/FixedWatermark";
 
 const inter = Inter({ 
   subsets: ["latin"],
@@ -81,6 +82,7 @@ export default function RootLayout({
         <TooltipProvider>
           <SmoothScroll>
             <div className="flex flex-col min-h-screen">
+              <FixedWatermark />
               <Navbar />
               <main className="flex-grow">
                 {children}

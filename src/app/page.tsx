@@ -8,12 +8,10 @@ import LocationsSection from "@/components/home/LocationsSection";
 import CtaSection from "@/components/home/CtaSection";
 import PreventiveLifestyleSection from "@/components/home/PreventiveLifestyleSection";
 import MarqueeText from "@/components/home/MarqueeText";
-import FixedWatermark from "@/components/home/FixedWatermark";
 
 export default function HomePage() {
   return (
     <>
-      <FixedWatermark />
       <div style={{ backgroundColor: "#f8f5f0" }}>
         <HeroSection />
         <HeroSectionTwo />
