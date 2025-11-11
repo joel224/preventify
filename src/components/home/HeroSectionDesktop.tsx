@@ -39,8 +39,9 @@ const HeroSectionDesktop = () => {
             <motion.div style={{ y: textY }} className="col-span-12 md:col-span-5 space-y-8">
               {/* Main Headline - LEFT ALIGNED */}
               <motion.h1
-                animate={{ y: '-15%', x: '0%', scale: 1 }}
-                className="text-5xl lg:text-6xl font-bold text-gray-800 leading-tight text-left"
+                animate={{ y: '-18%', x: '0%', scale: 1.4 }}
+                className="text-5xl lg:text-6xl font-medium text-gray-800 leading-tight text-left"
+                style={{ fontFamily: 'Arial, sans-serif' }}
               >
                 Care That Follows Up, So You Stay on Track
               </motion.h1>
@@ -105,13 +106,18 @@ const HeroSectionDesktop = () => {
             <motion.div
               style={{
                 opacity: 1,
-                y: textY,
+                position: 'relative',
+                  left: '0px',   // ← adjust horizontally
+                  top: '-15px',    // ← adjust vertically
+                  zIndex: 10,
               }}
               className="col-span-12 md:col-span-5 max-w-md text-right ml-auto"
             >
+              
               <p className="text-xl lg:text-2xl font-medium text-gray-700 leading-relaxed">
                 We strip away the unnecessary to focus on what truly works.
               </p>
+              
             </motion.div>
 
           </div>
