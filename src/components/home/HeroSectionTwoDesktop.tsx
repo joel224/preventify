@@ -38,7 +38,7 @@ const HeroSectionTwoDesktop = () => {
             */}
             <ScrollRevealText 
               className="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 leading-tight"
-              wordDelay={0.08}
+              wordDelay={0.4}
               lineDelay={0.1}
             >
               Prevention powered by always-on intelligence
