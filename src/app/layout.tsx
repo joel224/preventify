@@ -1,6 +1,6 @@
 
 'use client';
-import type { Metadata } from "next";
+import React, { useEffect, useRef, useState } from "react";
 import { Inter, Poppins } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "@/components/ui/toaster";
@@ -9,9 +9,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import SubscriptionButton from "@/components/SubscriptionButton";
-import { useScroll, useSpring, motion } from "framer-motion";
-import { useEffect, useRef, useState } from "react";
-import * as React from 'react';
+import { motion, useScroll, useSpring, useTransform } from "framer-motion";
 
 const inter = Inter({ 
   subsets: ["latin"],
@@ -48,16 +46,18 @@ const SmoothScroll = ({ children }: { children: React.ReactNode }) => {
   const { scrollY } = useScroll();
 
   // This is where you control the smoothness.
-  // Lower damping/stiffness and higher mass = more "glide" and momentum.
   const springConfig = { damping: 30, stiffness: 120, mass: 0.5 };
   const smoothY = useSpring(scrollY, springConfig);
+
+  // Apply a negative transform to the smoothY value to scroll in the correct direction
+  const y = useTransform(smoothY, (value) => -value);
 
 
   return (
     <>
       <motion.div 
         ref={contentRef} 
-        style={{ y: smoothY }}
+        style={{ y }}
         className="fixed top-0 left-0 w-full will-change-transform"
       >
         {children}
