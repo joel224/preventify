@@ -1,4 +1,3 @@
-
 'use client';
 import React, { useEffect, useRef, useState } from "react";
 import { Inter, Poppins } from "next/font/google";
@@ -11,6 +10,7 @@ import Footer from "@/components/Footer";
 import SubscriptionButton from "@/components/SubscriptionButton";
 import { motion, useScroll, useSpring, useTransform } from "framer-motion";
 import FixedWatermark from "@/components/home/FixedWatermark";
+import MarqueeText from "@/components/home/MarqueeText";
 
 const inter = Inter({ 
   subsets: ["latin"],
@@ -87,6 +87,7 @@ export default function RootLayout({
                 {children}
               </main>
               <Footer />
+              <MarqueeText />
             </div>
             <Toaster />
             <Sonner />
