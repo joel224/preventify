@@ -33,19 +33,17 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${inter.variable} ${poppins.variable} scroll-smooth`}>
       <body>
-        <div id="scale-wrapper">
-          <TooltipProvider>
-            <div className="flex flex-col min-h-screen">
-              <Navbar />
-              <main className="flex-grow">
-                {children}
-              </main>
-              <Footer />
-            </div>
-            <Toaster />
-            <Sonner />
-          </TooltipProvider>
-        </div>
+        <TooltipProvider>
+          <div className="flex flex-col min-h-screen">
+            <Navbar />
+            <main className="flex-grow">
+              {children}
+            </main>
+            <Footer />
+          </div>
+          <Toaster />
+          <Sonner />
+        </TooltipProvider>
         <SubscriptionButton />
       </body>
     </html>

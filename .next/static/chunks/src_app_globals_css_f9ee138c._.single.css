@@ -310,26 +310,6 @@ h1, h2, h3, h4, h5, h6 {
   font-family: var(--font-poppins), sans-serif;
 }
 
-@media only screen and (width >= 1025px) {
-  #scale-wrapper {
-    transform-origin: top;
-    width: 111.11%;
-    margin-left: -5.555%;
-    margin-right: -5.555%;
-    overflow-x: hidden;
-    transform: scale(.9);
-  }
-}
-
-@media only screen and (width <= 1024px) {
-  #scale-wrapper {
-    width: 100%;
-    margin: 0;
-    overflow-x: hidden;
-    transform: none;
-  }
-}
-
 .\!container {
   width: 100% !important;
   margin-left: auto !important;
@@ -593,11 +573,6 @@ h1, h2, h3, h4, h5, h6 {
   margin-bottom: .25rem;
 }
 
-.mx-1 {
-  margin-left: .25rem;
-  margin-right: .25rem;
-}
-
 .-mb-4 {
   margin-bottom: -1rem;
 }
@@ -735,10 +710,6 @@ h1, h2, h3, h4, h5, h6 {
 
 .inline-block {
   display: inline-block;
-}
-
-.inline {
-  display: inline;
 }
 
 .flex {
@@ -898,10 +869,6 @@ h1, h2, h3, h4, h5, h6 {
   height: 60vh;
 }
 
-.h-\[760px\] {
-  height: 760px;
-}
-
 .h-\[var\(--radix-navigation-menu-viewport-height\)\] {
   height: var(--radix-navigation-menu-viewport-height);
 }
@@ -928,18 +895,6 @@ h1, h2, h3, h4, h5, h6 {
 
 .h-svh {
   height: 100svh;
-}
-
-.h-\[300vh\] {
-  height: 300vh;
-}
-
-.h-\[150vh\] {
-  height: 150vh;
-}
-
-.h-\[200vh\] {
-  height: 200vh;
 }
 
 .max-h-0 {
@@ -1078,10 +1033,6 @@ h1, h2, h3, h4, h5, h6 {
   width: 2.25rem;
 }
 
-.w-96 {
-  width: 24rem;
-}
-
 .w-\[--radix-popover-trigger-width\] {
   width: var(--radix-popover-trigger-width);
 }
@@ -1104,10 +1055,6 @@ h1, h2, h3, h4, h5, h6 {
 
 .w-\[600px\] {
   width: 600px;
-}
-
-.w-\[760px\] {
-  width: 760px;
 }
 
 .w-\[95vw\] {
@@ -1796,11 +1743,6 @@ h1, h2, h3, h4, h5, h6 {
   border-top-color: #0000;
 }
 
-.bg-\[\#4e6bff\] {
-  --tw-bg-opacity: 1;
-  background-color: rgb(78 107 255 / var(--tw-bg-opacity, 1));
-}
-
 .bg-\[--color-bg\] {
   background-color: var(--color-bg);
 }
@@ -1881,10 +1823,6 @@ h1, h2, h3, h4, h5, h6 {
   background-color: #0f2c590d;
 }
 
-.bg-preventify-cta-primary {
-  background-color: hsl(var(--secondary));
-}
-
 .bg-preventify-dark-gray {
   --tw-bg-opacity: 1;
   background-color: rgb(75 75 75 / var(--tw-bg-opacity, 1));
@@ -1954,10 +1892,6 @@ h1, h2, h3, h4, h5, h6 {
 
 .bg-white\/80 {
   background-color: #fffc;
-}
-
-.bg-\[\#f8f5f0\]\/80 {
-  background-color: #f8f5f0cc;
 }
 
 .bg-gradient-to-br {
@@ -2148,6 +2082,11 @@ h1, h2, h3, h4, h5, h6 {
   padding-bottom: 1rem;
 }
 
+.py-5 {
+  padding-top: 1.25rem;
+  padding-bottom: 1.25rem;
+}
+
 .py-6 {
   padding-top: 1.5rem;
   padding-bottom: 1.5rem;
@@ -2156,11 +2095,6 @@ h1, h2, h3, h4, h5, h6 {
 .py-8 {
   padding-top: 2rem;
   padding-bottom: 2rem;
-}
-
-.py-5 {
-  padding-top: 1.25rem;
-  padding-bottom: 1.25rem;
 }
 
 .pb-2 {
@@ -2436,11 +2370,6 @@ h1, h2, h3, h4, h5, h6 {
   color: rgb(55 65 81 / var(--tw-text-opacity, 1));
 }
 
-.text-gray-800 {
-  --tw-text-opacity: 1;
-  color: rgb(31 41 55 / var(--tw-text-opacity, 1));
-}
-
 .text-gray-900 {
   --tw-text-opacity: 1;
   color: rgb(17 24 39 / var(--tw-text-opacity, 1));
@@ -2560,16 +2489,6 @@ h1, h2, h3, h4, h5, h6 {
 .text-yellow-400 {
   --tw-text-opacity: 1;
   color: rgb(250 204 21 / var(--tw-text-opacity, 1));
-}
-
-.text-\[\#3a3d38\] {
-  --tw-text-opacity: 1;
-  color: rgb(58 61 56 / var(--tw-text-opacity, 1));
-}
-
-.text-gray-400 {
-  --tw-text-opacity: 1;
-  color: rgb(156 163 175 / var(--tw-text-opacity, 1));
 }
 
 .underline {
@@ -2786,10 +2705,6 @@ h1, h2, h3, h4, h5, h6 {
   transition-duration: .5s;
 }
 
-.duration-150 {
-  transition-duration: .15s;
-}
-
 .ease-in-out {
   transition-timing-function: cubic-bezier(.4, 0, .2, 1);
 }
@@ -2852,10 +2767,6 @@ h1, h2, h3, h4, h5, h6 {
 
 .duration-500 {
   animation-duration: .5s;
-}
-
-.duration-150 {
-  animation-duration: .15s;
 }
 
 .ease-in-out {
@@ -2982,10 +2893,6 @@ h1, h2, h3, h4, h5, h6 {
 
 .hover\:bg-muted\/50:hover {
   background-color: hsl(var(--muted) / .5);
-}
-
-.hover\:bg-preventify-cta-primary\/90:hover {
-  background-color: hsl(var(--secondary) / .9);
 }
 
 .hover\:bg-preventify-dark-blue:hover {
@@ -4195,10 +4102,6 @@ h1, h2, h3, h4, h5, h6 {
   .lg\:text-9xl {
     font-size: 8rem;
     line-height: 1;
-  }
-
-  .lg\:leading-snug {
-    line-height: 1.375;
   }
 }
 
