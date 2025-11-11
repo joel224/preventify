@@ -36,6 +36,8 @@
     --radius: 0.5rem;
     
     --top-bar: 0 0% 98%;
+
+    --marquee-background: 216 33% 97%;
   }
 
   .dark {
@@ -68,6 +70,8 @@
     --ring: 217 91% 60%;
     
     --top-bar: 222.2 84% 4.9%;
+
+    --marquee-background: 222.2 84% 4.9%;
   }
 }
 
