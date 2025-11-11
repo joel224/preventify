@@ -1,4 +1,3 @@
-
 'use client';
 import Image from "next/image";
 import { motion, useScroll, useTransform } from "framer-motion";
@@ -8,32 +7,34 @@ const HeroSectionTwoDesktop = () => {
   const targetRef = useRef<HTMLDivElement>(null);
   const { scrollYProgress } = useScroll({
     target: targetRef,
-    offset: ["start end", "end start"], // ← Trigger earlier: when section STARTS entering viewport
+    offset: ["start start", "end end"],
   });
 
   // === ANIMATIONS ===
 
-  // Headline: Fade In + Slide Up (starts early)
+  // Headline: Fade In + Slide Up
   const headlineOpacity = useTransform(scrollYProgress, [0, 0.2], [0, 1]);
-  const headlineY = useTransform(scrollYProgress, [0, 0.2], ["20%", "0%"]);
+  const headlineY = useTransform(scrollYProgress, [0, 0.2], ["20px", "0px"]);
 
   // Sub-headline: Fade In after headline
   const subHeadlineOpacity = useTransform(scrollYProgress, [0.1, 0.3], [0, 1]);
-  const subHeadlineY = useTransform(scrollYProgress, [0.1, 0.3], ["20%", "0%"]);
+  const subHeadlineY = useTransform(scrollYProgress, [0.1, 0.3], ["20px", "0px"]);
 
-  // Image: Blur → Clear + Scale Up (starts after text)
-  const imageOpacity = useTransform(scrollYProgress, [0.2, 0.4], [0, 1]);
-  const imageScale = useTransform(scrollYProgress, [0.2, 0.4], [0.8, 1]);
-  const imageBlur = useTransform(scrollYProgress, [0.2, 0.4], ["blur(10px)", "blur(0px)"]);
+  // Image: Blur → Clear + Scale Up
+  const imageOpacity = useTransform(scrollYProgress, [0.2, 0.5], [0, 1]);
+  const imageScale = useTransform(scrollYProgress, [0.2, 0.5], [0.8, 1]);
+  const imageBlur = useTransform(scrollYProgress, [0.2, 0.5], ["blur(10px)", "blur(0px)"]);
+
+  // Section fade out at the end
+  const sectionOpacity = useTransform(scrollYProgress, [0.9, 1], [1, 0]);
 
   return (
-    <section
-      ref={targetRef}
-      className="h-screen bg-transparent relative overflow-hidden"
-    >
-      {/* Sticky Container */}
-      <div className="sticky top-0 h-full flex items-center px-6">
-        <div className="container mx-auto">
+    <div ref={targetRef} className="h-[200vh] relative">
+      <div className="sticky top-0 h-screen flex items-center overflow-hidden">
+        <motion.section
+          style={{ opacity: sectionOpacity }}
+          className="container mx-auto px-6"
+        >
           <div className="grid lg:grid-cols-2 gap-12 items-center">
 
             {/* LEFT COLUMN: Text Content */}
@@ -77,9 +78,9 @@ const HeroSectionTwoDesktop = () => {
             </motion.div>
 
           </div>
-        </div>
+        </motion.section>
       </div>
-    </section>
+    </div>
   );
 };
 
