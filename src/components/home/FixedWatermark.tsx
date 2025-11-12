@@ -4,9 +4,9 @@ import { motion, useScroll, useTransform } from 'framer-motion';
 const FixedWatermark = () => {
   const { scrollY } = useScroll();
 
-  // The watermark will be fully visible at the top (scrollY: 0)
-  // and will fade out completely as the user scrolls down 2000 pixels.
-  // You can adjust the `[0, 2000]` range to control how quickly it fades.
+  // The watermark will start at 9% opacity at the very top (scrollY: 0)
+  // and will fade out completely to 0% opacity as the user scrolls down 2000 pixels.
+  // This ensures it is only visible for the first few sections of the page.
   const opacity = useTransform(scrollY, [0, 2000], [0.09, 0]);
 
   return (

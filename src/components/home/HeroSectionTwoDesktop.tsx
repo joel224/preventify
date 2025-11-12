@@ -51,7 +51,7 @@ const HeroSectionTwoDesktop = () => {
               variants={subHeadlineVariants}
               className="mt-6 text-preventify-dark-gray"
             >
-             Prevention that works continuously across Kerala for better healthier families.
+             Kerala's AI-assisted, evidence-based care for early intervention and better health for your family.
             </motion.p>
           </div>
 
@@ -73,6 +73,7 @@ const HeroSectionTwoDesktop = () => {
               />
             </div>
           </motion.div>
+          
 
         </div>
       </div>

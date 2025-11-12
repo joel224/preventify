@@ -1,4 +1,3 @@
-
 'use client';
 import Image from "next/image";
 import { motion, useScroll, useTransform } from "framer-motion";
@@ -22,7 +21,6 @@ const HeroSectionDesktop = () => {
   const imageY = useTransform(scrollYProgress, [0, 1], ["0%", "70%"]);
   const textY = useTransform(scrollYProgress, [0, 1], ["0%", "-70%"]);
 
-
   return (
     <section
       ref={targetRef}
@@ -39,20 +37,19 @@ const HeroSectionDesktop = () => {
             <motion.div style={{ y: textY }} className="col-span-12 md:col-span-5 space-y-8">
               {/* Main Headline - LEFT ALIGNED */}
               <motion.h1
-                animate={{ y: '-110%', x: '0%', scale: 1.1 }}
+                animate={{ y: '-170%', x: '2%', scale: 1.2 }}
                 className="text-5xl lg:text-5xl font-bold text-gray-740 leading-tight text-left"
               >
                 Care That Follows Up, So You Stay on Track
               </motion.h1>
 
-              
               {/* Customer Avatars + Stars + Count - MANUAL POSITION CONTROL */}
               <div
                 style={{
                   // ✅ YOU CONTROL THESE VALUES MANUALLY
                   position: 'relative',
                   left: '0px',   // ← adjust horizontally
-                  top: '-100px',    // ← adjust vertically
+                  top: '-130px',    // ← adjust vertically
                   zIndex: 9,
                 }}
               >
@@ -90,7 +87,7 @@ const HeroSectionDesktop = () => {
             {/* MIDDLE COLUMN: Product Image (Spans 2 columns) */}
             <motion.div
               style={{ y: imageY }}
-              animate={{ y: '-23%', x: '0%', scale: 1 }}
+              animate={{ y: '-23%', x: '0%', scale: 1.2 }}
               className="col-span-12 md:col-span-2 flex justify-center z-10 w-[250px] h-[250px]"
             >
               <div
@@ -117,21 +114,40 @@ const HeroSectionDesktop = () => {
               style={{
                 opacity: 1,
                 position: 'relative',
-                  left: '0px',   // ← adjust horizontally
-                  top: '15px',    // ← adjust vertically
-                  zIndex: 10,
+                left: '0px',   // ← adjust horizontally
+                top: '15px',    // ← adjust vertically
+                zIndex: 10,
               }}
               className="col-span-12 md:col-span-5 max-w-md text-right ml-auto"
             >
-              
               <p className="text-xl lg:text-2xl font-medium text-gray-700 leading-relaxed">
                 We strip away the unnecessary to focus on what truly works.
               </p>
-              
             </motion.div>
 
           </div>
         </div>
+      </div>
+
+      {/* 🖐️ HAND IMAGE - ABSOLUTE POSITIONED BELOW PRODUCT JAR */}
+      <div
+        className="absolute z-9 pointer-events-none"
+        style={{
+          // ✅ YOU CONTROL THESE VALUES MANUALLY
+          left: '50%',     // ← Center horizontally
+          top: '80%',      // ← Adjust vertical position (increase to move down)
+          transform: 'translate(-50%, -50%)', // ← Perfect centering
+          width: '300px',  // ← Adjust size as needed
+          height: 'auto',
+        }}
+      >
+        <Image
+          src="/RAW_IMG/hand.avif"
+          alt="Presenting hand"
+          width={300}
+          height={200}
+          className="object-contain"
+        />
       </div>
 
     </section>
