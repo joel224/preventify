@@ -1,6 +1,7 @@
+
 'use client';
 import Image from "next/image";
-import { motion, useScroll, useTransform } from "framer-motion";
+import { motion, useScroll, useTransform, useSpring } from "framer-motion";
 import { useRef } from "react";
 
 const doctorImages = [
@@ -18,8 +19,16 @@ const HeroSectionDesktop = () => {
     offset: ["start start", "end start"],
   });
 
-  const imageY = useTransform(scrollYProgress, [0, 1], ["0%", "70%"]);
-  const textY = useTransform(scrollYProgress, [0, 1], ["0%", "-70%"]);
+  // Add spring physics for smoother animations
+  const smoothYProgress = useSpring(scrollYProgress, {
+    stiffness: 100,
+    damping: 30,
+    restDelta: 0.001
+  });
+
+  const imageY = useTransform(smoothYProgress, [0, 1], ["0%", "50%"]);
+  const handY = useTransform(smoothYProgress, [0, 1], ["0%", "120%"]); // Moves faster
+  const textY = useTransform(smoothYProgress, [0, 1], ["0%", "-70%"]);
 
   return (
     <section
@@ -130,15 +139,16 @@ const HeroSectionDesktop = () => {
       </div>
 
       {/* 🖐️ HAND IMAGE - ABSOLUTE POSITIONED BELOW PRODUCT JAR */}
-      <div
+      <motion.div
+        style={{ y: handY }}
         className="absolute z-9 pointer-events-none"
-        style={{
-          // ✅ YOU CONTROL THESE VALUES MANUALLY
-          left: '50%',     // ← Center horizontally
-          top: '80%',      // ← Adjust vertical position (increase to move down)
-          transform: 'translate(-50%, -50%)', // ← Perfect centering
-          width: '300px',  // ← Adjust size as needed
-          height: 'auto',
+        // ✅ YOU CONTROL THESE VALUES MANUALLY
+        initial={{
+          left: '50%',
+          top: '80%',
+          transform: 'translate(-50%, -50%)',
+          width: '300px',
+          height: 'auto'
         }}
       >
         <Image
@@ -148,7 +158,7 @@ const HeroSectionDesktop = () => {
           height={200}
           className="object-contain"
         />
-      </div>
+      </motion.div>
 
     </section>
   );
