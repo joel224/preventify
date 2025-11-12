@@ -28,12 +28,14 @@ const HeroSectionDesktop = () => {
 
   const imageY = useTransform(smoothYProgress, [0, 1], ["0%", "50%"]);
   const handY = useTransform(smoothYProgress, [0, 1], ["0%", "120%"]); // Moves faster
-  const textY = useTransform(smoothYProgress, [0, 1], ["0%", "-70%"]);
+  const textY = useTransform(smoothYProgress, [0, 1], ["0%", "200%"]);
+  const opacity = useTransform(smoothYProgress, [0, 0.5, 1], [1, 1, 0]);
 
   return (
-    <section
+    <motion.section
       ref={targetRef}
-      className="h-screen relative overflow-hidden"
+      className="h-screen sticky top-0"
+      style={{ opacity }}
     >
       
       {/* Main Hero Content - 12-Column Grid System */}
@@ -46,7 +48,7 @@ const HeroSectionDesktop = () => {
             <motion.div style={{ y: textY }} className="col-span-12 md:col-span-5 space-y-8">
               {/* Main Headline - LEFT ALIGNED */}
               <motion.h1
-                animate={{ y: '-170%', x: '2%', scale: 1.2 }}
+                initial={{ y: 0, x: 0, scale: 1 }}
                 className="text-5xl lg:text-5xl font-bold text-gray-740 leading-tight text-left"
               >
                 Care That Follows Up, So You Stay on Track
@@ -96,7 +98,7 @@ const HeroSectionDesktop = () => {
             {/* MIDDLE COLUMN: Product Image (Spans 2 columns) */}
             <motion.div
               style={{ y: imageY }}
-              animate={{ y: '-23%', x: '0%', scale: 1.2 }}
+              initial={{ y: '0%', x: '0%', scale: 1 }}
               className="col-span-12 md:col-span-2 flex justify-center z-10 w-[250px] h-[250px]"
             >
               <div
@@ -121,7 +123,7 @@ const HeroSectionDesktop = () => {
             {/* RIGHT COLUMN: Sub-headline (Spans 5 columns) */}
             <motion.div
               style={{
-                opacity: 1,
+                y: textY,
                 position: 'relative',
                 left: '0px',   // ← adjust horizontally
                 top: '15px',    // ← adjust vertically
@@ -160,7 +162,7 @@ const HeroSectionDesktop = () => {
         />
       </motion.div>
 
-    </section>
+    </motion.section>
   );
 };
 

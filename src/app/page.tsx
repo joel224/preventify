@@ -11,7 +11,7 @@ import PreventiveLifestyleSection from "@/components/home/PreventiveLifestyleSec
 export default function HomePage() {
   return (
     <>
-      <div style={{ backgroundColor: "#f8f5f0" }}>
+      <div style={{ backgroundColor: "#f8f5f0" }} className="relative h-[200vh]">
         <HeroSection />
         <HeroSectionTwo />
       </div>

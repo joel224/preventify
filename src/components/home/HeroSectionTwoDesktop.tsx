@@ -1,30 +1,27 @@
+
 // src/components/home/HeroSectionTwoDesktop.tsx
 'use client';
 import Image from "next/image";
-import { motion, useInView } from "framer-motion";
+import { motion, useInView, useScroll, useTransform } from "framer-motion";
 import { useRef } from "react";
 import ScrollRevealText from "../ScrollRevealText";
 
 const HeroSectionTwoDesktop = () => {
-  const ref = useRef<HTMLDivElement>(null);
-  const isInView = useInView(ref, { once: true, margin: "-100px" });
+  const targetRef = useRef<HTMLDivElement>(null);
+  const { scrollYProgress } = useScroll({
+    target: targetRef,
+    offset: ["start end", "end start"],
+  });
 
-  // === ANIMATIONS ===
-
-  // Sub-headline: Fade In after headline
-  const subHeadlineVariants = {
-    hidden: { opacity: 0, y: 20 },
-    visible: { opacity: 1, y: 0, transition: { delay: 0.8, duration: 0.6, ease: "easeOut" } }
-  };
-
-  // Image: Blur → Clear + Scale Up
-  const imageVariants = {
-    hidden: { opacity: 0, scale: 0.8, filter: "blur(10px)" },
-    visible: { opacity: 1, scale: 1, filter: "blur(0px)", transition: { delay: 0.6, duration: 0.8, ease: "easeOut" } }
-  };
+  const opacity = useTransform(scrollYProgress, [0.3, 0.5], [0, 1]);
+  const scale = useTransform(scrollYProgress, [0.3, 0.5], [0.8, 1]);
 
   return (
-    <div ref={ref} className="h-screen relative flex items-center">
+    <motion.div 
+      ref={targetRef} 
+      className="h-screen sticky top-0 flex items-center"
+      style={{ opacity, scale }}
+    >
       <div className="container mx-auto px-6">
         <div className="grid lg:grid-cols-2 gap-12 items-center">
 
@@ -38,7 +35,7 @@ const HeroSectionTwoDesktop = () => {
             */}
             <ScrollRevealText 
               className="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 leading-tight"
-              wordDelay={0.4}
+              wordDelay={0.08}
               lineDelay={0.1}
             >
               Prevention powered by always-on intelligence
@@ -46,9 +43,6 @@ const HeroSectionTwoDesktop = () => {
 
             {/* Sub-headline - Fade In after headline */}
             <motion.p
-              initial="hidden"
-              animate={isInView ? "visible" : "hidden"}
-              variants={subHeadlineVariants}
               className="mt-6 text-preventify-dark-gray"
             >
              Kerala's AI-assisted, evidence-based care for early intervention and better health for your family.
@@ -57,9 +51,6 @@ const HeroSectionTwoDesktop = () => {
 
           {/* RIGHT COLUMN: Image */}
           <motion.div
-            initial="hidden"
-            animate={isInView ? "visible" : "hidden"}
-            variants={imageVariants}
             className="relative h-[600px] flex justify-center items-center"
           >
             <div className="w-[600px] h-[600px] rounded-full overflow-hidden">
@@ -77,7 +68,7 @@ const HeroSectionTwoDesktop = () => {
 
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 };
 
