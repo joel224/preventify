@@ -5,9 +5,9 @@ const FixedWatermark = () => {
   const { scrollY } = useScroll();
 
   // The watermark will start at 9% opacity at the very top (scrollY: 0)
-  // and will fade out completely to 0% opacity as the user scrolls down 2000 pixels.
+  // and will fade out completely to 0% opacity as the user scrolls down 1500 pixels.
   // This ensures it is only visible for the first few sections of the page.
-  const opacity = useTransform(scrollY, [0, 2000], [0.09, 0]);
+  const opacity = useTransform(scrollY, [0, 1500], [0.09, 0]);
 
   return (
     <motion.div
