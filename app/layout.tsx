@@ -1,4 +1,4 @@
-// src/app/layout.tsx
+// app/layout.tsx (UNCHANGED - Your code is fine as-is)
 'use client';
 import React from "react";
 import { Inter, Poppins } from "next/font/google";
@@ -32,10 +32,6 @@ export default function RootLayout({
     <html lang="en" className={`${inter.variable} ${poppins.variable}`}>
       <body>
         <TooltipProvider>
-          {/* 👇
-            - We removed the <SmoothScroll> wrapper.
-            - The page now scrolls normally.
-          👇 */}
           <div className="flex flex-col min-h-screen">
             <Navbar />
             <main className="flex-grow">
@@ -46,7 +42,6 @@ export default function RootLayout({
           </div>
           <Toaster />
           <Sonner />
-          
         </TooltipProvider>
         <FixedWatermark />
         <SubscriptionButton />

@@ -1,4 +1,4 @@
-// src/app/layout.tsx
+// app/layout.tsx (UNCHANGED - Your code is fine as-is)
 'use client';
 import React from "react";
 import { Inter, Poppins } from "next/font/google";
@@ -9,6 +9,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import SubscriptionButton from "@/components/SubscriptionButton";
+import FixedWatermark from "@/components/home/FixedWatermark";
 import MarqueeText from "@/components/home/MarqueeText";
 
 const inter = Inter({ 
@@ -31,10 +32,6 @@ export default function RootLayout({
     <html lang="en" className={`${inter.variable} ${poppins.variable}`}>
       <body>
         <TooltipProvider>
-          {/* 👇
-            - We removed the <SmoothScroll> wrapper.
-            - The page now scrolls normally.
-          👇 */}
           <div className="flex flex-col min-h-screen">
             <Navbar />
             <main className="flex-grow">
@@ -45,8 +42,8 @@ export default function RootLayout({
           </div>
           <Toaster />
           <Sonner />
-          
         </TooltipProvider>
+        <FixedWatermark />
         <SubscriptionButton />
       </body>
     </html>

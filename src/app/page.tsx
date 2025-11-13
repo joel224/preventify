@@ -1,6 +1,9 @@
-// app/page.tsx
-import HeroSection from "@/components/home/HeroSection";
-import HeroSectionTwo from "@/components/home/HeroSectionTwo";
+// app/page.tsx (UPDATED - SIMPLIFIED)
+// Remove HeroSectionTwo import and usage.
+// Extend the wrapper height to 400vh to match the combined animation duration.
+// FixedWatermark stays.
+
+import HeroSection from "@/components/home/HeroSection"; // Now the combined one
 import ServicesSection from "@/components/home/ServicesSection";
 import FeaturesSection from "@/components/home/FeaturesSection";
 import BlogPreviewSection from "@/components/home/BlogPreviewSection";
@@ -12,9 +15,8 @@ import FixedWatermark from "@/components/home/FixedWatermark";
 export default function Home() {
   return (
     <>
-      <div style={{ backgroundColor: "#f8f5f0" }} className="relative h-[200vh]">
-        <HeroSection />
-        <HeroSectionTwo />
+      <div style={{ backgroundColor: "#f8f5f0" }} className="relative h-[400vh]"> {/* Extended for full choreo */}
+        <HeroSection /> {/* Single component now handles both phases */}
         <FixedWatermark />
       </div>
       <PreventiveLifestyleSection />

@@ -1,7 +1,7 @@
 // src/components/home/HeroSectionDesktop.tsx
 'use client';
 import Image from "next/image";
-import { motion, useScroll, useTransform, useSpring } from "framer-motion";
+import { motion, useScroll, useTransform, useSpring, MotionValue } from "framer-motion";
 import { useRef } from "react";
 
 // NOTE: I'm using the original Essentia image paths. 
@@ -14,78 +14,37 @@ const customerImages = [
   "https://res.cloudinary.com/dyf8umlda/image/upload/v1748255860/Dr_girish_wcph4p.jpg" 
 ].map((url) => url.trim()); // Assuming 5 images like before
 
-
 const HeroSectionDesktop = () => {
-  // 1. Create a ref for the TALL parent wrapper
   const targetRef = useRef<HTMLDivElement>(null);
-
-  // 2. Track the scroll progress of the 300vh parent
-  //    offset: ["start start", "end end"] means:
-  //    - Start at 0 when the top of the 300vh div hits the top of the screen.
-  //    - End at 1 when the bottom of the 300vh div hits the bottom of the screen.
   const { scrollYProgress } = useScroll({
     target: targetRef,
-    offset: ["start start", "end end"],
+    offset: ["start end", "end start"]
   });
 
-  // Add spring for smoothness
-  const smoothYProgress = useSpring(scrollYProgress, {
-    stiffness: 100,
-    damping: 30,
-    restDelta: 0.001
-  });
-
-  // === ANIMATIONS MAPPED TO THE 300VH SCROLL ===
-  // These ranges (e.g., [0, 0.3]) fine-tune *when* during the
-  // 300vh scroll each animation happens.
-
-  // Headline moves UP and OUT
-  const headlineY = useTransform(smoothYProgress, [0, 0.3], ["0%", "-150%"]);
-  const headlineOpacity = useTransform(smoothYProgress, [0, 0.25], [1, 0]);
-
-  // Product jar moves DOWN (not up)
-  // This creates the effect from the images!
-  const productY = useTransform(smoothYProgress, [0, 1], ["0%", "150%"]);
-  const productOpacity = useTransform(smoothYProgress, [0.05, 0.2], [1, 0]); // Fades out quick
-
-  // Hand moves DOWN and OUT (faster)
-  const handY = useTransform(smoothYProgress, [0, 1], ["0%", "250%"]);
-  const handOpacity = useTransform(smoothYProgress, [0, 0.25], [1, 0]);
-
-  // Sub-headline moves UP and OUT
-  const subHeadlineY = useTransform(smoothYProgress, [0, 0.3], ["0%", "-100%"]);
-  const subHeadlineOpacity = useTransform(smoothYProgress, [0, 0.25], [1, 0]);
-
- 
+  // Headline moves UP (Fast).
+  const headlineY = useTransform(scrollYProgress, [0, 0.5], ["0%", "-200%"]);
+  // Sub-Headline moves UP (Normal).
+  const subHeadlineY = useTransform(scrollYProgress, [0, 0.5], ["0%", "-150%"]);
+  // Skincare cream jar moves UP (Slow).
+  const productY = useTransform(scrollYProgress, [0, 0.5], ["0%", "-100%"]);
+  // Hand moves DOWN (Fast).
+  const handY = useTransform(scrollYProgress, [0, 0.5], ["0%", "200%"]);
 
   return (
-    // 3. This is the 300vh parent wrapper.
-    //    We attach the ref here.
-    <section
-      ref={targetRef}
-      className="h-[300vh] relative" // Set the "pinning" duration
-    >
-      {/* 4. This is the STICKY container that holds the content.
-           It stays pinned for the entire 300vh. */}
-      <div className="h-screen sticky top-0 overflow-hidden">
-        
-        
-
+    <div ref={targetRef} className="h-screen relative overflow-hidden">
         {/* Main Hero Content - 12-Column Grid System */}
         <div className="absolute inset-0 flex items-center px-6 z-10">
           <div className="container mx-auto">
             <div className="grid grid-cols-12 gap-x-8 items-center">
 
               {/* LEFT COLUMN: Headline + Social Proof */}
-              <motion.div style={{ y: headlineY, opacity: headlineOpacity }} className="col-span-12 md:col-span-5 space-y-8 z-10">
+              <motion.div style={{ y: headlineY }} className="col-span-12 md:col-span-5 space-y-8 z-10">
                 {/* Main Headline - LEFT ALIGNED */}
-              <motion.h1
-                initial={{ y: 0, x: 0, scale: 1 }}
-                animate={{ y: '-100%', x: '2%', scale: 1.2 }}
+              <h1
                 className="text-5xl lg:text-5xl font-bold text-gray-740 leading-tight text-left"
               >
                 Care That Follows Up, So You Stay on Track
-              </motion.h1>
+              </h1>
                 
                 {/* Customer Avatars + Stars + Count - MANUAL POSITION CONTROL */}
                 <div
@@ -130,7 +89,7 @@ const HeroSectionDesktop = () => {
 
               {/* MIDDLE COLUMN: Product Image */}
               <motion.div
-                style={{ y: productY, opacity: productOpacity }}
+                style={{ y: productY }}
                 className="col-span-12 md:col-span-2 flex justify-center z-10"
               >
                 <div
@@ -154,7 +113,7 @@ const HeroSectionDesktop = () => {
 
               {/* RIGHT COLUMN: Sub-headline */}
               <motion.div
-                style={{ y: subHeadlineY, opacity: subHeadlineOpacity }}
+                style={{ y: subHeadlineY }}
                 className="col-span-12 md:col-span-5 max-w-md text-right ml-auto z-10"
               >
                 <p className="text-xl lg:text-2xl font-medium text-gray-700 leading-relaxed">
@@ -167,7 +126,7 @@ const HeroSectionDesktop = () => {
 
         {/* 🖐️ HAND IMAGE - MANUAL POSITION CONTROL ADDED */}
         <motion.div
-          style={{ y: handY, opacity: handOpacity }}
+          style={{ y: handY }}
           className="absolute z-0" // Removed left-1/2 -translate-x-1/2 bottom-0 to allow manual control
         >
           {/* Wrap the Image in a div with manual positioning */}
@@ -176,7 +135,7 @@ const HeroSectionDesktop = () => {
               // ✅ YOU CONTROL THESE VALUES MANUALLY FOR THE HAND
               position: 'relative',
               left: '290px',   // ← adjust hand horizontally
-              top: '250px',    // ← adjust hand vertically
+              top: '258px',    // ← adjust hand vertically
               zIndex: 1,     // Adjust if needed relative to other elements
             }}
           >
@@ -189,8 +148,7 @@ const HeroSectionDesktop = () => {
             />
           </div>
         </motion.div>
-      </div>
-    </section>
+    </div>
   );
 };
 
