@@ -1,3 +1,4 @@
+// src/components/FixedWatermark.tsx
 'use client';
 import { motion, useScroll, useTransform } from 'framer-motion';
 
@@ -11,7 +12,7 @@ const FixedWatermark = () => {
 
   return (
     <motion.div
-      className="fixed bottom-0 left-0 w-full h-auto pointer-events-none z-[-1]"
+      className="fixed bottom-0 left-0 w-full h-auto pointer-events-none z-[-11]"
       style={{
         opacity,
         fontSize: '200px',

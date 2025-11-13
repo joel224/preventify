@@ -177,7 +177,7 @@ const HeroSectionDesktop = () => {
               position: 'relative',
               left: '290px',   // ← adjust hand horizontally
               top: '250px',    // ← adjust hand vertically
-              zIndex: 0,     // Adjust if needed relative to other elements
+              zIndex: 1,     // Adjust if needed relative to other elements
             }}
           >
             <Image
