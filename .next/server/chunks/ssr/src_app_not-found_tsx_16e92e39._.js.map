@@ -1,6 +1,0 @@
-{
-  "version": 3,
-  "sources": [],
-  "sections": [
-    {"offset": {"line": 7, "column": 0}, "map": {"version":3,"sources":["file:///home/user/studio/src/app/not-found.tsx"],"sourcesContent":["\nimport Link from 'next/link'\n \nexport default function NotFound() {\n  return (\n    <div className=\"min-h-screen flex items-center justify-center bg-gray-100\">\n      <div className=\"text-center\">\n        <h1 className=\"text-4xl font-bold mb-4\">404</h1>\n        <p className=\"text-xl text-gray-600 mb-4\">Oops! Page not found</p>\n        <Link href=\"/\" className=\"text-blue-500 hover:text-blue-700 underline\">\n          Return to Home\n        </Link>\n      </div>\n    </div>\n  )\n}\n"],"names":[],"mappings":";;;;AACA;;;AAEe,SAAS;IACtB,qBACE,8OAAC;QAAI,WAAU;kBACb,cAAA,8OAAC;YAAI,WAAU;;8BACb,8OAAC;oBAAG,WAAU;8BAA0B;;;;;;8BACxC,8OAAC;oBAAE,WAAU;8BAA6B;;;;;;8BAC1C,8OAAC,4JAAA,CAAA,UAAI;oBAAC,MAAK;oBAAI,WAAU;8BAA8C;;;;;;;;;;;;;;;;;AAM/E","debugId":null}}]
-}

@@ -1,8 +1,7 @@
-
 // src/components/home/HeroSectionTwoDesktop.tsx
 'use client';
 import Image from "next/image";
-import { motion, useInView, useScroll, useTransform } from "framer-motion";
+import { motion, useScroll, useTransform } from "framer-motion";
 import { useRef } from "react";
 import ScrollRevealText from "../ScrollRevealText";
 
@@ -13,46 +12,40 @@ const HeroSectionTwoDesktop = () => {
     offset: ["start end", "end start"],
   });
 
+  // === PAGE 2 ENTER ANIMATIONS ===
+
+  // Fade in as Page 1 exits
   const opacity = useTransform(scrollYProgress, [0.3, 0.5], [0, 1]);
-  const scale = useTransform(scrollYProgress, [0.3, 0.5], [0.8, 1]);
+  const scale = useTransform(scrollYProgress, [0.3, 0.5], [0.9, 1]);
+
+  // Slight delay for staggered reveal
+  const textDelay = useTransform(scrollYProgress, [0.3, 0.5], [0.2, 0]);
 
   return (
-    <motion.div 
-      ref={targetRef} 
+    <motion.div
+      ref={targetRef}
+      style={{ opacity }}
       className="h-screen sticky top-0 flex items-center"
-      style={{ opacity, scale }}
     >
       <div className="container mx-auto px-6">
-        <div className="grid lg:grid-cols-2 gap-12 items-center">
-
+        <motion.div style={{ scale }} className="grid lg:grid-cols-2 gap-12 items-center">
           {/* LEFT COLUMN: Text Content */}
           <div className="space-y-8">
-            {/* 
-              HOW TO CONTROL THE ANIMATION:
-              - wordDelay:  Time in seconds between each word appearing. Higher number = slower typing.
-              - lineDelay:  Time in seconds between each line starting.
-              - className:  Use Tailwind's tracking classes for letter spacing (e.g., "tracking-wide", "tracking-tight").
-            */}
             <ScrollRevealText 
               className="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 leading-tight"
               wordDelay={0.08}
               lineDelay={0.1}
+              style={{ delay: textDelay }}
             >
               Prevention powered by always-on intelligence
             </ScrollRevealText>
-
-            {/* Sub-headline - Fade In after headline */}
-            <motion.p
-              className="mt-6 text-preventify-dark-gray"
-            >
-             Kerala's AI-assisted, evidence-based care for early intervention and better health for your family.
-            </motion.p>
+            <p className="mt-6 text-preventify-dark-gray">
+              Kerala's AI-assisted, evidence-based care for early intervention and better health for your family.
+            </p>
           </div>
 
           {/* RIGHT COLUMN: Image */}
-          <motion.div
-            className="relative h-[600px] flex justify-center items-center"
-          >
+          <div className="relative h-[600px] flex justify-center items-center">
             <div className="w-[600px] h-[600px] rounded-full overflow-hidden">
               <Image
                 src="/RAW_IMG/Adobe Express - file (16).png"
@@ -63,10 +56,8 @@ const HeroSectionTwoDesktop = () => {
                 data-ai-hint="people working"
               />
             </div>
-          </motion.div>
-          
-
-        </div>
+          </div>
+        </motion.div>
       </div>
     </motion.div>
   );
