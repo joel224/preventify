@@ -77,7 +77,7 @@ const HeroSectionDesktop = () => {
             <div className="grid grid-cols-12 gap-x-8 items-center">
 
               {/* LEFT COLUMN: Headline + Social Proof */}
-              <motion.div style={{ y: headlineY, opacity: headlineOpacity }} className="col-span-12 md:col-span-5 space-y-8">
+              <motion.div style={{ y: headlineY, opacity: headlineOpacity }} className="col-span-12 md:col-span-5 space-y-8 z-10">
                 {/* Main Headline - LEFT ALIGNED */}
               <motion.h1
                 initial={{ y: 0, x: 0, scale: 1 }}
@@ -155,7 +155,7 @@ const HeroSectionDesktop = () => {
               {/* RIGHT COLUMN: Sub-headline */}
               <motion.div
                 style={{ y: subHeadlineY, opacity: subHeadlineOpacity }}
-                className="col-span-12 md:col-span-5 max-w-md text-right ml-auto"
+                className="col-span-12 md:col-span-5 max-w-md text-right ml-auto z-10"
               >
                 <p className="text-xl lg:text-2xl font-medium text-gray-700 leading-relaxed">
                   We strip away the unnecessary to focus on what truly works.

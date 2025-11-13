@@ -11,7 +11,7 @@ const FixedWatermark = () => {
 
   return (
     <motion.div
-      className="fixed bottom-0 left-0 w-full h-auto pointer-events-none z-0"
+      className="fixed bottom-0 left-0 w-full h-auto pointer-events-none z-[-1]"
       style={{
         opacity,
         fontSize: '200px',
