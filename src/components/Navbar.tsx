@@ -1,6 +1,5 @@
-
 'use client'
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Menu, X, Search, Phone, ChevronDown, User, AlertTriangle } from "lucide-react";
@@ -10,6 +9,7 @@ import BookingDialog from "@/components/BookingDialog";
 const Navbar = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const pathname = usePathname();
+  const [navbarHeight, setNavbarHeight] = useState(80); // Default height
 
   const toggleMenu = () => {
     setMobileMenuOpen(!mobileMenuOpen);
@@ -28,8 +28,44 @@ const Navbar = () => {
       { name: "Blogs", path: "/blog" },
   ];
 
+  // Calculate navbar height dynamically
+  useEffect(() => {
+    const updateNavbarHeight = () => {
+      const navbar = document.querySelector('header[data-navbar="main"]');
+      if (navbar) {
+        const height = navbar.getBoundingClientRect().height;
+        setNavbarHeight(height);
+      }
+    };
+
+    // Update on mount and resize
+    updateNavbarHeight();
+    window.addEventListener('resize', updateNavbarHeight);
+    
+    // Update when mobile menu opens/closes
+    const observer = new MutationObserver(updateNavbarHeight);
+    const navbar = document.querySelector('header[data-navbar="main"]');
+    if (navbar) {
+      observer.observe(navbar, {
+        childList: true,
+        subtree: true,
+        attributes: true,
+        attributeFilter: ['class', 'style']
+      });
+    }
+
+    return () => {
+      window.removeEventListener('resize', updateNavbarHeight);
+      observer.disconnect();
+    };
+  }, []);
+
   return (
-    <header className="bg-white/80 shadow-sm sticky top-0 z-50 group backdrop-blur-sm">
+    <header 
+      className="bg-white/80 shadow-sm sticky top-0 z-50 group backdrop-blur-sm"
+      data-navbar="main"
+      style={{ '--navbar-height': `${navbarHeight}px` } as React.CSSProperties}
+    >
       {/* Top Bar */}
       <div className="bg-top-bar border-b border-border/50 transition-all duration-300 max-h-0 opacity-0 group-hover:max-h-12 group-hover:opacity-100 overflow-hidden">
           <div className="container mx-auto py-1.5 px-4 sm:px-6 lg:px-8 flex justify-between items-center text-xs text-slate-600">

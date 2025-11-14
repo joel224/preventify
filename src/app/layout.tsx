@@ -1,7 +1,8 @@
-// app/layout.tsx (UNCHANGED - Your code is fine as-is)
+// app/layout.tsx
 'use client';
 import React from "react";
 import { Inter, Poppins } from "next/font/google";
+import { Montserrat } from "next/font/google"; // We'll use Montserrat as a fallback
 import "./globals.css";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
@@ -23,13 +24,26 @@ const poppins = Poppins({
   variable: '--font-poppins',
 });
 
+// Add Stack Sans Headline font
+const stackSans = Montserrat({
+  subsets: ["latin"],
+  weight: ['400', '500', '600', '700'],
+  variable: '--font-stack-sans',
+  display: 'swap',
+});
+
 export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${inter.variable} ${poppins.variable}`}>
+    <html lang="en" className={`${inter.variable} ${poppins.variable} ${stackSans.variable}`}>
+      <head>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link href="https://fonts.googleapis.com/css2?family=Stack+Sans+Headline:wght@200..700&display=swap" rel="stylesheet" />
+      </head>
       <body>
         <TooltipProvider>
           <div className="flex flex-col min-h-screen">
