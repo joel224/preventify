@@ -10,57 +10,43 @@ import { useWindowSize } from "@/hooks/use-window-size";
    REFERENCE LAYOUT – Based on 1366x768 screen
    ============================================================== */
 const refWidth = 1366;
-const refHeight = 768; // While not used in every calculation, it's good for context
+const refHeight = 768;
 
 /* ==============================================================
    DYNAMIC CONFIGURATION – Calculates layout based on screen size
    ============================================================== */
 const getDynamicConfig = (width: number, height: number) => {
-    // If width is not available yet (on initial render), return a default static config
     if (!width || !height) {
+        // Return a default config for the server render or if window size is not available
         return {
-            totalHeightVh: 200,
-            phase1End: 0.5,
+            totalHeightVh: 300,
             headlineExitStart: 0,
-            headlineExitEnd: 0.25,
+            headlineExitEnd: 100,
             headlineY: "-100%",
-            headlineOpacityEnd: 0.2,
-            headlineAnimateX: '5%',
-            headlineAnimateY: '-69%',
+            headlineOpacityEnd: 0,
+            headlineAnimateX: '0px',
+            headlineAnimateY: '0px',
             subHeadlineExitStart: 0,
-            subHeadlineExitEnd: 0.35,
-            subHeadlineY: "-150%",
-            subHeadlineOpacityEnd: 0.25,
+            subHeadlineExitEnd: 100,
+            subHeadlineY: "-100%",
+            subHeadlineOpacityEnd: 0,
             jarExitStart: 0,
-            jarExitEnd: 0.35,
+            jarExitEnd: 100,
             jarY: "-100%",
-            jarOpacityEnd: 0.25,
+            jarOpacityEnd: 0,
             handExitStart: 0,
-            handExitEnd: 0.8,
-            handY: "50%",
+            handExitEnd: 150,
+            handY: "180%",
             handOpacityEnd: 1,
             text: {
-                appearStart: 0.5,
-                appearEnd: 0.6,
+                appearStart: 100,
+                appearEnd: 150,
                 blurAmount: 12,
-                yPosition: "0vh",
+                yPosition: "50vh",
             },
-            hand: {
-                left: 350,
-                top: 110,
-                width: 550,
-                height: 400,
-            },
-            jar: {
-                left: 0,
-                top: 0,
-                width: 250,
-                height: 250,
-            },
-            socialProof: {
-                left: 0,
-                top: -75,
-            },
+            hand: { left: 0, top: 0, width: 1, height: 1 },
+            jar: { left: 0, top: 0, width: 1, height: 1 },
+            socialProof: { left: 0, top: 0 },
         };
     }
     
@@ -68,44 +54,41 @@ const getDynamicConfig = (width: number, height: number) => {
 
     return {
         /** How tall the whole scroll-area is (vh) */
-        totalHeightVh: 300, // Increased to 300vh for ~3 pages of scroll, adding more "down" space after text centers
-
-        /** When the first phase ends (0-1) – i.e. when the second hero starts */
-        phase1End: 0.5,
+        totalHeightVh: 300,
 
         /** ---- PHASE 1 (Essentia exit) ---- */
         // headline
-        headlineExitStart: 0,
-        headlineExitEnd: 0.25,
+        headlineExitStart: 0, // Starts animating at scroll 0vh
+        headlineExitEnd: 100, // Finishes exiting at scroll 100vh
         headlineY: "-100%",
-        headlineOpacityEnd: 0.2,
-        headlineAnimateX: `${(3 / 100) * width}px`, // 5% of current width
-        headlineAnimateY: `${(-20 / 100) * height}px`, // -69% of current height
+        headlineOpacityEnd: 0, // Fade out completely
+        headlineAnimateX: `${(3 / 100) * width}px`,
+        headlineAnimateY: `${(-20 / 100) * height}px`,
 
         // sub-headline
         subHeadlineExitStart: 0,
-        subHeadlineExitEnd: 0.35,
+        subHeadlineExitEnd: 100,
         subHeadlineY: "-100%",
-        subHeadlineOpacityEnd: 0.25,
+        subHeadlineOpacityEnd: 0,
 
         // product jar (exits faster)
         jarExitStart: 0,
-        jarExitEnd: 0.35,
+        jarExitEnd: 100,
         jarY: "-100%",
-        jarOpacityEnd: 0.25,
+        jarOpacityEnd: 0,
 
         // hand (moves down continuously)
-        handExitStart: 0,
-        handExitEnd: 0.8,          // ← Hand moves until 80% scroll
-        handY: "50%",             // ← Moves down by 50% of its own height
-        handOpacityEnd: 1,         // ← No fade
+        handExitStart: 0, // Starts moving at 0vh
+        handExitEnd: 150, // Finishes moving at 150vh
+        handY: "180%", // Moves down by 180% of its height
+        handOpacityEnd: 1, // Doesn't fade
 
         /** ---- FINAL TEXT CONTROLS ---- */
         text: {
-            appearStart: 0.5,        // Text starts appearing at 50% scroll (start of second page)
-            appearEnd: 0.6,          // Fully visible by 60% scroll
+            appearStart: 100, // Text starts appearing after 100vh of scroll
+            appearEnd: 150,   // Fully visible after 150vh of scroll
             blurAmount: 12,
-            yPosition: `0vh`, // Centers perfectly with items-center; no offset needed for more space below
+            yPosition: "50vh", // Final position is centered vertically
         },
 
         /** ---- HAND POSITION & SIZE (Dynamic) ---- */
@@ -118,15 +101,15 @@ const getDynamicConfig = (width: number, height: number) => {
 
         /** ---- JAR POSITION & SIZE (Dynamic) ---- */
         jar: {
-            left: 0, // Remains relative to its container
-            top: 0,  // Remains relative to its container
+            left: 0,
+            top: 0,
             width: 250 * scaleFactor,
             height: 250 * scaleFactor,
         },
 
         /** ---- SOCIAL PROOF POSITION (Dynamic) ---- */
         socialProof: {
-            left: 0, // Remains relative
+            left: 0,
             top: -75 * scaleFactor,
         },
     };
@@ -136,28 +119,25 @@ const getDynamicConfig = (width: number, height: number) => {
    END OF DYNAMIC CONFIGURATION
    ============================================================== */
 
-   const customerImages = [
-    "https://res.cloudinary.com/dyf8umlda/image/upload/v1748262006/Dr_Rakesh_xngrlx.jpg",
-    "https://res.cloudinary.com/dyf8umlda/image/upload/v1748257298/Dr_Faisal_stbx3w.jpg",
-    "https://res.cloudinary.com/dyf8umlda/image/upload/v1748255660/Dr_Hafsa_tq7r.jpg",
-    "https://res.cloudinary.com/dyf8umlda/image/upload/v1748255860/Dr_Krishnendhu_dxtah5.jpg",
-    "https://res.cloudinary.com/dyf8umlda/image/upload/v1748255860/Dr_girish_wcph4p.jpg",
-  ].map((url) => url.trim());
+const customerImages = [
+  "https://res.cloudinary.com/dyf8umlda/image/upload/v1748262006/Dr_Rakesh_xngrlx.jpg",
+  "https://res.cloudinary.com/dyf8umlda/image/upload/v1748257298/Dr_Faisal_stbx3w.jpg",
+  "https://res.cloudinary.com/dyf8umlda/image/upload/v1748255660/Dr_Hafsa_tq7r.jpg",
+  "https://res.cloudinary.com/dyf8umlda/image/upload/v1748255860/Dr_Krishnendhu_dxtah5.jpg",
+  "https://res.cloudinary.com/dyf8umlda/image/upload/v1748255860/Dr_girish_wcph4p.jpg",
+].map((url) => url.trim());
 
 export default function HeroSectionDesktop() {
   const targetRef = useRef<HTMLDivElement>(null);
   const [navbarHeight, setNavbarHeight] = useState(0);
   const { width, height } = useWindowSize();
 
-  // Your entire CONFIG is now recalculated whenever the window size changes
   const CONFIG = useMemo(() => getDynamicConfig(width!, height!), [width, height]);
 
-  // Get navbar height on mount
   useEffect(() => {
     const navbar = document.querySelector('header[data-navbar="main"]');
     if (navbar) {
-      const height = navbar.getBoundingClientRect().height;
-      setNavbarHeight(height);
+      setNavbarHeight(navbar.getBoundingClientRect().height);
     }
   }, []);
 
@@ -166,7 +146,9 @@ export default function HeroSectionDesktop() {
     offset: [`start ${navbarHeight}px`, `end end`],
   });
 
-  const smooth = useSpring(scrollYProgress, {
+  const scrollVh = useTransform(scrollYProgress, [0, 1], [0, CONFIG.totalHeightVh]);
+  
+  const smooth = useSpring(scrollVh, {
     stiffness: 100,
     damping: 30,
     restDelta: 0.001,
@@ -181,7 +163,7 @@ export default function HeroSectionDesktop() {
   const headlineOpacity = useTransform(
     smooth,
     [CONFIG.headlineExitStart, CONFIG.headlineExitEnd],
-    [1, CONFIG.headlineOpacityEnd] // Using the value from config
+    [1, CONFIG.headlineOpacityEnd]
   );
 
   const subHeadlineY = useTransform(
@@ -192,7 +174,7 @@ export default function HeroSectionDesktop() {
   const subHeadlineOpacity = useTransform(
     smooth,
     [CONFIG.subHeadlineExitStart, CONFIG.subHeadlineExitEnd],
-    [1, CONFIG.subHeadlineOpacityEnd] // Using the value from config
+    [1, CONFIG.subHeadlineOpacityEnd]
   );
 
   const jarY = useTransform(
@@ -203,22 +185,20 @@ export default function HeroSectionDesktop() {
   const jarOpacity = useTransform(
     smooth,
     [CONFIG.jarExitStart, CONFIG.jarExitEnd],
-    [1, CONFIG.jarOpacityEnd] // Using the value from config
+    [1, CONFIG.jarOpacityEnd]
   );
 
   /* -------------------- HAND ANIMATION -------------------- */
   const handY = useTransform(
     smooth,
-    [0, 0.8],
-    ["0%", "180%"]
+    [CONFIG.handExitStart, CONFIG.handExitEnd],
+    ["0%", CONFIG.handY]
   );
-
   const handOpacity = useTransform(
     smooth,
-    [0, 0.8],
-    [1, 1]
+    [CONFIG.handExitStart, CONFIG.handExitEnd],
+    [1, CONFIG.handOpacityEnd]
   );
-
 
   /* -------------------- FINAL TEXT ANIMATION -------------------- */
   const textOpacity = useTransform(
@@ -226,18 +206,15 @@ export default function HeroSectionDesktop() {
     [CONFIG.text.appearStart, CONFIG.text.appearEnd],
     [0, 1]
   );
-
   const textBlur = useTransform(
     smooth,
     [CONFIG.text.appearStart, CONFIG.text.appearEnd],
     [`blur(${CONFIG.text.blurAmount}px)`, 'blur(0px)']
   );
-
-  // 👇 CONTROL TEXT VERTICAL POSITION HERE – Enters during second page (0.5-0.6) and centers
   const textY = useTransform(
     smooth,
     [CONFIG.text.appearStart, CONFIG.text.appearEnd],
-    ["100vh", CONFIG.text.yPosition] // Starts from bottom of viewport, settles at center (0vh) by end of entrance
+    ["100vh", CONFIG.text.yPosition]
   );
 
   return (
@@ -264,8 +241,8 @@ export default function HeroSectionDesktop() {
                 <motion.h1
                   initial={{ y: -100, x: 0, scale: 1 }}
                   animate={{ 
-                    y: CONFIG.headlineAnimateY, // Dynamic value
-                    x: CONFIG.headlineAnimateX, // Dynamic value
+                    y: CONFIG.headlineAnimateY,
+                    x: CONFIG.headlineAnimateX,
                     scale: 1.2 
                   }}
                   className="text-5xl lg:text-6xl font-semibold text-gray-700 leading-tight text-left font-stack-sans"
@@ -370,7 +347,7 @@ export default function HeroSectionDesktop() {
             opacity: handOpacity,
             position: "absolute",
             left: `${CONFIG.hand.left}px`,
-            bottom: "0px",
+            top: `${CONFIG.hand.top}px`,
             zIndex: 1,
             willChange: 'transform, opacity'
           }}
@@ -391,7 +368,7 @@ export default function HeroSectionDesktop() {
             filter: textBlur,
             y: textY
           }}
-          className="absolute top-0 left-0 w-full h-screen flex items-center justify-center z-30"
+          className="absolute top-0 left-0 w-full h-screen flex items-center justify-center z-30 pointer-events-none"
         >
           <div className="text-center max-w-4xl px-4">
             <ScrollRevealText className="text-2xl md:text-3xl font-medium text-gray-800 leading-relaxed">
@@ -403,5 +380,3 @@ export default function HeroSectionDesktop() {
     </section>
   );
 }
-
-    
