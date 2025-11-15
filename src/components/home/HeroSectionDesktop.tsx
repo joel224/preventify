@@ -143,7 +143,7 @@ export default function HeroSectionDesktop() {
 
   const { scrollYProgress } = useScroll({
     target: targetRef,
-    offset: [`start ${navbarHeight}px`, `end end`],
+    offset: ["start start", "end end"],
   });
 
   const scrollVh = useTransform(scrollYProgress, [0, 1], [0, CONFIG.totalHeightVh]);
