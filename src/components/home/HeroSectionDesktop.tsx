@@ -29,7 +29,7 @@ const getDynamicConfig = (width: number, height: number) => {
             headlineAnimateY: '-69%',
             subHeadlineExitStart: 0,
             subHeadlineExitEnd: 0.35,
-            subHeadlineY: "-100%",
+            subHeadlineY: "-150%",
             subHeadlineOpacityEnd: 0.25,
             jarExitStart: 0,
             jarExitEnd: 0.35,
@@ -40,10 +40,10 @@ const getDynamicConfig = (width: number, height: number) => {
             handY: "50%",
             handOpacityEnd: 1,
             text: {
-                appearStart: 0.4,
-                appearEnd: 0.5,
+                appearStart: 0.5,
+                appearEnd: 0.6,
                 blurAmount: 12,
-                yPosition: "calc(0vh - 100px)",
+                yPosition: "0vh",
             },
             hand: {
                 left: 350,
@@ -68,7 +68,7 @@ const getDynamicConfig = (width: number, height: number) => {
 
     return {
         /** How tall the whole scroll-area is (vh) */
-        totalHeightVh: 200,
+        totalHeightVh: 300, // Increased to 300vh for ~3 pages of scroll, adding more "down" space after text centers
 
         /** When the first phase ends (0-1) – i.e. when the second hero starts */
         phase1End: 0.5,
@@ -79,8 +79,8 @@ const getDynamicConfig = (width: number, height: number) => {
         headlineExitEnd: 0.25,
         headlineY: "-100%",
         headlineOpacityEnd: 0.2,
-        headlineAnimateX: `${(5 / 100) * width}px`, // 5% of current width
-        headlineAnimateY: `${(-69 / 100) * height}px`, // -69% of current height
+        headlineAnimateX: `${(3 / 100) * width}px`, // 5% of current width
+        headlineAnimateY: `${(-20 / 100) * height}px`, // -69% of current height
 
         // sub-headline
         subHeadlineExitStart: 0,
@@ -102,10 +102,10 @@ const getDynamicConfig = (width: number, height: number) => {
 
         /** ---- FINAL TEXT CONTROLS ---- */
         text: {
-            appearStart: 0.4,        // Text starts appearing at 40% scroll
-            appearEnd: 0.5,          // Fully visible by 50% scroll
+            appearStart: 0.5,        // Text starts appearing at 50% scroll (start of second page)
+            appearEnd: 0.6,          // Fully visible by 60% scroll
             blurAmount: 12,
-            yPosition: `calc(50vh - ${100 * scaleFactor}px)`, // Adjusts the 100px shift proportionally
+            yPosition: `0vh`, // Centers perfectly with items-center; no offset needed for more space below
         },
 
         /** ---- HAND POSITION & SIZE (Dynamic) ---- */
@@ -136,13 +136,13 @@ const getDynamicConfig = (width: number, height: number) => {
    END OF DYNAMIC CONFIGURATION
    ============================================================== */
 
-const customerImages = [
-  "https://res.cloudinary.com/dyf8umlda/image/upload/v1748262006/Dr_Rakesh_xngrlx.jpg",
-  "https://res.cloudinary.com/dyf8umlda/image/upload/v1748257298/Dr_Faisal_stbx3w.jpg",
-  "https://res.cloudinary.com/dyf8umlda/image/upload/v1748255660/Dr_Hafsa_tq7r.jpg",
-  "https://res.cloudinary.com/dyf8umlda/image/upload/v1748255860/Dr_Krishnendhu_dxtah5.jpg",
-  "https://res.cloudinary.com/dyf8umlda/image/upload/v1748255860/Dr_girish_wcph4p.jpg",
-].map((url) => url.trim());
+   const customerImages = [
+    "https://res.cloudinary.com/dyf8umlda/image/upload/v1748262006/Dr_Rakesh_xngrlx.jpg",
+    "https://res.cloudinary.com/dyf8umlda/image/upload/v1748257298/Dr_Faisal_stbx3w.jpg",
+    "https://res.cloudinary.com/dyf8umlda/image/upload/v1748255660/Dr_Hafsa_tq7r.jpg",
+    "https://res.cloudinary.com/dyf8umlda/image/upload/v1748255860/Dr_Krishnendhu_dxtah5.jpg",
+    "https://res.cloudinary.com/dyf8umlda/image/upload/v1748255860/Dr_girish_wcph4p.jpg",
+  ].map((url) => url.trim());
 
 export default function HeroSectionDesktop() {
   const targetRef = useRef<HTMLDivElement>(null);
@@ -209,15 +209,16 @@ export default function HeroSectionDesktop() {
   /* -------------------- HAND ANIMATION -------------------- */
   const handY = useTransform(
     smooth,
-    [CONFIG.handExitStart, CONFIG.handExitEnd],
-    ["0%", CONFIG.handY]
+    [0, 0.8],
+    ["0%", "180%"]
   );
 
   const handOpacity = useTransform(
     smooth,
-    [CONFIG.handExitStart, CONFIG.handExitEnd],
-    [1, CONFIG.handOpacityEnd]
+    [0, 0.8],
+    [1, 1]
   );
+
 
   /* -------------------- FINAL TEXT ANIMATION -------------------- */
   const textOpacity = useTransform(
@@ -232,11 +233,11 @@ export default function HeroSectionDesktop() {
     [`blur(${CONFIG.text.blurAmount}px)`, 'blur(0px)']
   );
 
-  // 👇 CONTROL TEXT VERTICAL POSITION HERE
+  // 👇 CONTROL TEXT VERTICAL POSITION HERE – Enters during second page (0.5-0.6) and centers
   const textY = useTransform(
     smooth,
-    [0, 1],
-    ["100vh", CONFIG.text.yPosition] // ← This is your control point!
+    [CONFIG.text.appearStart, CONFIG.text.appearEnd],
+    ["100vh", CONFIG.text.yPosition] // Starts from bottom of viewport, settles at center (0vh) by end of entrance
   );
 
   return (
@@ -261,7 +262,7 @@ export default function HeroSectionDesktop() {
                 className="col-span-12 md:col-span-5 space-y-8"
               >
                 <motion.h1
-                  initial={{ y: 0, x: 0, scale: 1 }}
+                  initial={{ y: -100, x: 0, scale: 1 }}
                   animate={{ 
                     y: CONFIG.headlineAnimateY, // Dynamic value
                     x: CONFIG.headlineAnimateX, // Dynamic value
@@ -287,7 +288,7 @@ export default function HeroSectionDesktop() {
                       {customerImages.map((src, i) => (
                         <div
                           key={i}
-                          className="w-8 h-8 rounded-full overflow-hidden border-2 border-white"
+                          className="w-8 h-8 rounded-md overflow-hidden border-2 border-white"
                         >
                           <Image
                             src={src}
@@ -313,7 +314,7 @@ export default function HeroSectionDesktop() {
                         ))}
                       </div>
                       <p className="text-xs text-gray-600 mt-1">
-                        2500+ Happy Customers
+                        35,0000+ Happy Patients 
                       </p>
                     </div>
                   </div>
@@ -362,39 +363,33 @@ export default function HeroSectionDesktop() {
           </div>
         </div>
 
-        {/* HAND – MOVES DOWN SMOOTHLY */}
+        {/* HAND – MOVES DOWN SMOOTHLY AND STICKS TO BOTTOM */}
         <motion.div
           style={{
             y: handY,
             opacity: handOpacity,
+            position: "absolute",
+            left: `${CONFIG.hand.left}px`,
+            bottom: "0px",
+            zIndex: 1,
             willChange: 'transform, opacity'
           }}
-          className="absolute z-0"
         >
-          <div
-            style={{
-              position: "relative",
-              left: `${CONFIG.hand.left}px`,
-              top: `${CONFIG.hand.top}px`,
-              zIndex: 1,
-            }}
-          >
-            <Image
-              src="/RAW_IMG/hand.avif"
-              alt="Presenting hand"
-              width={CONFIG.hand.width}
-              height={CONFIG.hand.height}
-              className="object-contain"
-            />
-          </div>
+          <Image
+            src="/RAW_IMG/hand.avif"
+            alt="Presenting hand"
+            width={CONFIG.hand.width}
+            height={CONFIG.hand.height}
+            className="object-contain"
+          />
         </motion.div>
 
-        {/* FINAL TEXT – FULLY CONTROLLED POSITION */}
+        {/* FINAL TEXT – CENTERED WITH DYNAMIC POSITIONING */}
         <motion.div
           style={{ 
             opacity: textOpacity,
             filter: textBlur,
-            y: textY  // ← Controlled by CONFIG.text.yPosition
+            y: textY
           }}
           className="absolute top-0 left-0 w-full h-screen flex items-center justify-center z-30"
         >
@@ -408,3 +403,5 @@ export default function HeroSectionDesktop() {
     </section>
   );
 }
+
+    
