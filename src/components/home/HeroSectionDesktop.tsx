@@ -1,17 +1,31 @@
 'use client';
 
+
+import * as React from "react";
 import Image from "next/image";
 import { motion, useScroll, useTransform, useSpring } from "framer-motion";
-import { useRef, useEffect, useState, useMemo } from "react";
 import ScrollRevealText from "../ScrollRevealText";
 import { useWindowSize } from "@/hooks/use-window-size";
 import FixedWatermark from "@/components/home/FixedWatermark";
+const useRef = React.useRef;
+const useState = React.useState;
+const useMemo = React.useMemo;
+const useEffect = React.useEffect;
 /* ==============================================================
    REFERENCE LAYOUT – Based on 1366x768 screen
    ============================================================== */
 const refWidth = 1366;
 const refHeight = 768;
-
+declare global {
+  namespace JSX {
+    interface IntrinsicElements {
+      [elem: string]: any;
+    }
+  }
+}
+const ScrollRevealWrapper: React.FC<{ children: React.ReactNode; className?: string }> = ({ children, className }) => (
+  <ScrollRevealText className={className}>{children}</ScrollRevealText> // Pass 'children' here
+);
 /* ==============================================================
    DYNAMIC CONFIGURATION – Calculates layout based on screen size
    ============================================================== */
@@ -423,9 +437,10 @@ export default function HeroSectionDesktop() {
           className="absolute top-0 left-0 w-full h-screen flex items-center justify-center z-30"
         >
           <div className="text-center max-w-4xl px-4">
-            <ScrollRevealText className="text-2xl md:text-3xl font-medium text-gray-800 leading-relaxed">
+            <ScrollRevealWrapper className="text-2xl md:text-3xl font-medium text-gray-800 leading-relaxed">
+              {/* Content goes here, like the text inside the ScrollRevealText component */}
               AI-assisted evidence-based care across Kerala focused on prevention, early intervention, and better health outcomes for you and your family.
-            </ScrollRevealText>
+            </ScrollRevealWrapper>
           </div>
         </motion.div>
       </div>

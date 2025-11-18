@@ -14,18 +14,18 @@ import PreventiveLifestyleSection from "@/components/home/PreventiveLifestyleSec
 export default function Home() {
   return (
     <>
-      {/* <div style={{ backgroundColor: "#f8f5f0" }} className="relative h-[200vh]">
-        <HeroSection />
-        <FixedWatermark />
-        <HeroSectionTwo />
-      </div> */}
       <HeroSection />
-      <PreventiveLifestyleSection />
-      <ServicesSection />
-      <FeaturesSection />
-      <BlogPreviewSection />
-      <LocationsSection />
-      <CtaSection />
+      {/* The relative and z-index style here is the minimal patch required. 
+          It ensures the content below does not render on top of the 
+          300vh hero animation space. */}
+      <div className="relative z-10 bg-background">
+        <PreventiveLifestyleSection />
+        <ServicesSection />
+        <FeaturesSection />
+        <BlogPreviewSection />
+        <LocationsSection />
+        <CtaSection />
+      </div>
     </>
   );
 }
