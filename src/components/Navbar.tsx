@@ -1,4 +1,5 @@
 'use client'
+
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
@@ -62,38 +63,38 @@ const Navbar = () => {
 
   return (
     <header 
-      className="bg-white/80 shadow-sm sticky top-0 z-50 group backdrop-blur-sm"
+      className="bg-white/5 backdrop-blur-xl shadow-sm sticky top-0 z-50 group border-b border-white/20"
       data-navbar="main"
       style={{ '--navbar-height': `${navbarHeight}px` } as React.CSSProperties}
     >
       {/* Top Bar */}
-      <div className="bg-top-bar border-b border-border/50 transition-all duration-300 max-h-0 opacity-0 group-hover:max-h-12 group-hover:opacity-100 overflow-hidden">
-          <div className="container mx-auto py-1.5 px-4 sm:px-6 lg:px-8 flex justify-between items-center text-xs text-slate-600">
-                <div className="flex items-center gap-4">
-                    {topNavLinks.map(link => (
-                        <Link key={link.name} href={link.path} className={`flex items-center gap-1 hover:text-primary transition-colors`}>
-                           {link.icon && <link.icon className="h-3 w-3" />}
-                           {link.name}
-                        </Link>
-                    ))}
-                </div>
-                <div className="flex items-center gap-4">
-                    <a href="tel:+918129334858" className="flex items-center gap-1 hover:text-primary transition-colors">
-                        <Phone className="h-3 w-3" />
-                        +91 8129334858
-                    </a>
-                     <button className="flex items-center gap-1 hover:text-primary transition-colors">
-                        <ChevronDown className="h-3 w-3" />
-                        Kerala
-                    </button>
-                    <BookingDialog>
-                      <button className="flex items-center gap-1 hover:text-primary transition-colors">
-                        <User className="h-3 w-3" />
-                        Login
-                      </button>
-                    </BookingDialog>
-                </div>
+      <div className="bg-white/5 border-b border-white/20 transition-all duration-300 max-h-0 opacity-0 group-hover:max-h-12 group-hover:opacity-100 overflow-hidden">
+        <div className="container mx-auto py-1.5 px-4 sm:px-6 lg:px-8 flex justify-between items-center text-xs text-slate-600">
+          <div className="flex items-center gap-4">
+            {topNavLinks.map(link => (
+              <Link key={link.name} href={link.path} className={`flex items-center gap-1 hover:text-primary transition-colors`}>
+                {link.icon && <link.icon className="h-3 w-3" />}
+                {link.name}
+              </Link>
+            ))}
           </div>
+          <div className="flex items-center gap-4">
+            <a href="tel:+918129334858" className="flex items-center gap-1 hover:text-primary transition-colors">
+              <Phone className="h-3 w-3" />
+              +91 8129334858
+            </a>
+            <button className="flex items-center gap-1 hover:text-primary transition-colors">
+              <ChevronDown className="h-3 w-3" />
+              Kerala
+            </button>
+            <BookingDialog>
+              <button className="flex items-center gap-1 hover:text-primary transition-colors">
+                <User className="h-3 w-3" />
+                Login
+              </button>
+            </BookingDialog>
+          </div>
+        </div>
       </div>
       
       {/* Main Navigation */}
@@ -124,9 +125,10 @@ const Navbar = () => {
 
           <div className="hidden lg:flex items-center space-x-4">
              <BookingDialog>
-              <Button className="bg-primary hover:bg-primary/90 text-white">
-                Book Appointment
-              </Button>
+              <button className="relative px-6 py-2 bg-primary text-white font-medium rounded-full transition-all duration-300 overflow-hidden group">
+                <span className="relative z-10">Book Appointment</span>
+                <div className="absolute inset-0 bg-black/30 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left"></div>
+              </button>
             </BookingDialog>
           </div>
 
@@ -165,9 +167,10 @@ const Navbar = () => {
               </Link>
               <div className="flex flex-col space-y-2 pt-3">
                 <BookingDialog>
-                  <Button className="bg-primary hover:bg-primary/90 text-white w-full">
-                    Book Appointment
-                  </Button>
+                  <button className="relative px-6 py-2 bg-primary text-white font-medium rounded-full transition-all duration-300 overflow-hidden group w-full">
+                    <span className="relative z-10">Book Appointment</span>
+                    <div className="absolute inset-0 bg-black/30 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left"></div>
+                  </button>
                 </BookingDialog>
               </div>
             </div>

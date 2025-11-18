@@ -11,6 +11,7 @@ import Footer from "@/components/Footer";
 import SubscriptionButton from "@/components/SubscriptionButton";
 import FixedWatermark from "@/components/home/FixedWatermark";
 import MarqueeText from "@/components/home/MarqueeText";
+import HeroSection from "@/components/home/HeroSection";
 
 const inter = Inter({ 
   subsets: ["latin"],
@@ -29,6 +30,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
+    
     <html lang="en" className={`${inter.variable} ${poppins.variable}`}>
       <body>
         <TooltipProvider>

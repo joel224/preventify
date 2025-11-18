@@ -15,6 +15,7 @@ const FixedWatermark = () => {
       className="fixed bottom-0 left-0 w-full h-auto pointer-events-none z-[-11]"
       style={{
         opacity,
+        scale: 1.05,
         fontSize: '200px',
         fontWeight: 'bold',
         fontFamily: 'sans-serif',

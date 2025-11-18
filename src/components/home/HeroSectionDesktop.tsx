@@ -5,7 +5,7 @@ import { motion, useScroll, useTransform, useSpring } from "framer-motion";
 import { useRef, useEffect, useState, useMemo } from "react";
 import ScrollRevealText from "../ScrollRevealText";
 import { useWindowSize } from "@/hooks/use-window-size";
-
+import FixedWatermark from "@/components/home/FixedWatermark";
 /* ==============================================================
    REFERENCE LAYOUT – Based on 1366x768 screen
    ============================================================== */
@@ -16,101 +16,128 @@ const refHeight = 768;
    DYNAMIC CONFIGURATION – Calculates layout based on screen size
    ============================================================== */
 const getDynamicConfig = (width: number, height: number) => {
+    // Fixed aspect ratios for images
+    const handAspectRatio = 400 / 550; // height / width
+    const jarAspectRatio = 250 / 250; // square
+    
+    // Base sizes adjustable here
+    const baseHandWidth = 450; // Reduced from 550 for smaller hand (adjust as needed, e.g., 400 for even smaller)
+    const baseJarWidth = 300; // Increased to 350 for larger jar visibility
+    const baseHandLeft = 450; // Adjusted from 350 to move hand slightly to the right (increase this value to move further right)
+
     if (!width || !height) {
-        // Return a default config for the server render or if window size is not available
         return {
-            totalHeightVh: 300,
+            totalHeightVh: 200,
             headlineExitStart: 0,
-            headlineExitEnd: 100,
+            headlineExitEnd: 0.25,
             headlineY: "-100%",
-            headlineOpacityEnd: 0,
-            headlineAnimateX: '0px',
-            headlineAnimateY: '0px',
+            headlineOpacityEnd: 0.2,
             subHeadlineExitStart: 0,
-            subHeadlineExitEnd: 100,
+            subHeadlineExitEnd: 0.35,
             subHeadlineY: "-100%",
-            subHeadlineOpacityEnd: 0,
+            subHeadlineOpacityEnd: 0.25,
             jarExitStart: 0,
-            jarExitEnd: 100,
+            jarExitEnd: 0.35,
             jarY: "-100%",
-            jarOpacityEnd: 0,
+            jarOpacityEnd: 0.25,
             handExitStart: 0,
-            handExitEnd: 150,
-            handY: "180%",
+            handExitEnd: 0.2,
+            handY: "40vh",
+            handBottomOffset: 12,
             handOpacityEnd: 1,
             text: {
-                appearStart: 100,
-                appearEnd: 150,
+                appearStart: 0.4,
+                appearEnd: 0.5,
                 blurAmount: 12,
-                yPosition: "50vh",
+                shiftPct: 13.02,
             },
-            hand: { left: 0, top: 0, width: 1, height: 1 },
-            jar: { left: 0, top: 0, width: 1, height: 1 },
-            socialProof: { left: 0, top: 0 },
+            hand: {
+                leftPct: (baseHandLeft / refWidth) * 100,
+                topPct: (110 / refHeight) * 100,
+                widthPct: (baseHandWidth / refWidth) * 100,
+                paddingBottomPct: handAspectRatio * 100,
+            },
+            jar: {
+                leftPct: 10,
+                topPct: 0,
+                widthPct: (baseJarWidth / refWidth) * 100,
+                paddingBottomPct: jarAspectRatio * 100,
+            },
+            socialProof: {
+                leftPct: 0,
+                topPct: (-75 / refHeight) * 100,
+            },
         };
     }
     
-    const scaleFactor = width / refWidth;
+    // Calculate percentages based on current screen size (positions scale with screen)
+    const handLeftPct = (baseHandLeft / refWidth) * 100;
+    const handTopPct = (450 / refHeight) * 100;
+    const handWidthPct = (baseHandWidth / refWidth) * 100;
+    
+    const jarLeftPct = (-50 / refWidth) * 100;
+    const jarTopPct = (0 / refHeight) * 100;
+    const jarWidthPct = (baseJarWidth / refWidth) * 100;
+    
+    const socialLeftPct = (0 / refWidth) * 100;
+    const socialTopPct = (-75 / refHeight) * 100;
 
     return {
-        /** How tall the whole scroll-area is (vh) */
-        totalHeightVh: 300,
+        totalHeightVh: 200,
 
         /** ---- PHASE 1 (Essentia exit) ---- */
         // headline
-        headlineExitStart: 0, // Starts animating at scroll 0vh
-        headlineExitEnd: 100, // Finishes exiting at scroll 100vh
+        headlineExitStart: 0,
+        headlineExitEnd: 0.25,
         headlineY: "-100%",
-        headlineOpacityEnd: 0, // Fade out completely
-        headlineAnimateX: `${(3 / 100) * width}px`,
-        headlineAnimateY: `${(-20 / 100) * height}px`,
+        headlineOpacityEnd: 0.2,
 
         // sub-headline
         subHeadlineExitStart: 0,
-        subHeadlineExitEnd: 100,
+        subHeadlineExitEnd: 0.35,
         subHeadlineY: "-100%",
-        subHeadlineOpacityEnd: 0,
+        subHeadlineOpacityEnd: 0.25,
 
-        // product jar (exits faster)
+        // product jar
         jarExitStart: 0,
-        jarExitEnd: 100,
+        jarExitEnd: 0.35,
         jarY: "-100%",
-        jarOpacityEnd: 0,
+        jarOpacityEnd: 0.25,
 
-        // hand (moves down continuously)
-        handExitStart: 0, // Starts moving at 0vh
-        handExitEnd: 150, // Finishes moving at 150vh
-        handY: "180%", // Moves down by 180% of its height
-        handOpacityEnd: 1, // Doesn't fade
+        // hand
+        handExitStart: 0,
+        handExitEnd: 0.7,
+        handY: "40vh",
+        handOpacityEnd: 1,
 
         /** ---- FINAL TEXT CONTROLS ---- */
         text: {
-            appearStart: 100, // Text starts appearing after 100vh of scroll
-            appearEnd: 150,   // Fully visible after 150vh of scroll
+            appearStart: 0.3,
+            appearEnd: 0.6,
             blurAmount: 12,
-            yPosition: "50vh", // Final position is centered vertically
+            shiftPct: (100 / height) * 100, // Dynamic shift based on current height (~13vh equivalent)
         },
 
-        /** ---- HAND POSITION & SIZE (Dynamic) ---- */
+        /** ---- HAND POSITION & SIZE (% of vw/vh) ---- */
         hand: {
-            left: (350 / refWidth) * width,
-            top: (110 / refHeight) * height,
-            width: 550 * scaleFactor,
-            height: 400 * scaleFactor,
+            leftPct: handLeftPct,
+            topPct: handTopPct,
+            widthPct: handWidthPct,
+            paddingBottomPct: handAspectRatio * 100, // Fixed aspect ratio
         },
 
-        /** ---- JAR POSITION & SIZE (Dynamic) ---- */
+        /** ---- JAR POSITION & SIZE (% of vw/vh) ---- */
         jar: {
-            left: 0,
-            top: 0,
-            width: 250 * scaleFactor,
-            height: 250 * scaleFactor,
+            leftPct: jarLeftPct,
+            topPct: jarTopPct,
+            widthPct: jarWidthPct,
+            paddingBottomPct: jarAspectRatio * 100, // Fixed aspect ratio
         },
 
-        /** ---- SOCIAL PROOF POSITION (Dynamic) ---- */
+        /** ---- SOCIAL PROOF POSITION (% of vw/vh) ---- */
         socialProof: {
-            left: 0,
-            top: -75 * scaleFactor,
+            leftPct: socialLeftPct,
+            topPct: socialTopPct,
         },
     };
 };
@@ -122,7 +149,8 @@ const getDynamicConfig = (width: number, height: number) => {
 const customerImages = [
   "https://res.cloudinary.com/dyf8umlda/image/upload/v1748262006/Dr_Rakesh_xngrlx.jpg",
   "https://res.cloudinary.com/dyf8umlda/image/upload/v1748257298/Dr_Faisal_stbx3w.jpg",
-  "https://res.cloudinary.com/dyf8umlda/image/upload/v1748255660/Dr_Hafsa_tq7r.jpg",
+  "https://res.cloudinary.com/dyf8umlda/image/upload/v1748255660/Dr_Hafsa_t3qk7r.jpg",
+
   "https://res.cloudinary.com/dyf8umlda/image/upload/v1748255860/Dr_Krishnendhu_dxtah5.jpg",
   "https://res.cloudinary.com/dyf8umlda/image/upload/v1748255860/Dr_girish_wcph4p.jpg",
 ].map((url) => url.trim());
@@ -132,28 +160,40 @@ export default function HeroSectionDesktop() {
   const [navbarHeight, setNavbarHeight] = useState(0);
   const { width, height } = useWindowSize();
 
-  const CONFIG = useMemo(() => getDynamicConfig(width!, height!), [width, height]);
+  // Your entire CONFIG is now recalculated whenever the window size changes
+  const CONFIG = useMemo(() => getDynamicConfig(width || 1366, height || 768), [width, height]);
 
+  // Dynamic grid spans (total 12 columns) - adjusted for better jar space on smaller screens
+  const leftSpan = useMemo(() => width && width < 1280 ? 4 : 5, [width]);
+  const middleSpan = useMemo(() => width && width < 1280 ? 4 : 3, [width]); // Increased middle span slightly for more jar room
+  const rightSpan = useMemo(() => 12 - leftSpan - middleSpan, [leftSpan, middleSpan]);
+  const middleStart = useMemo(() => leftSpan + 1, [leftSpan]);
+
+  // Get navbar height on mount
   useEffect(() => {
     const navbar = document.querySelector('header[data-navbar="main"]');
     if (navbar) {
-      setNavbarHeight(navbar.getBoundingClientRect().height);
+      const height = navbar.getBoundingClientRect().height;
+      setNavbarHeight(height);
     }
   }, []);
 
   const { scrollYProgress } = useScroll({
     target: targetRef,
-    offset: ["start start", "end end"],
+    offset: [`start ${navbarHeight}px`, `end end`],
   });
 
-  const scrollVh = useTransform(scrollYProgress, [0, 1], [0, CONFIG.totalHeightVh]);
-  
-  const smooth = useSpring(scrollVh, {
+  const smooth = useSpring(scrollYProgress, {
     stiffness: 100,
     damping: 30,
     restDelta: 0.001,
   });
-
+// Add this function inside your component (before the return statement)
+  const getFallDistance = () => {
+    if (!height) return '0vh'; // Fallback if height is undefined
+    let x =0.3 +0.0150;
+    return `${height * x }px`; // 50% of screen height
+  };
   /* -------------------- PHASE 1 TRANSFORMS -------------------- */
   const headlineY = useTransform(
     smooth,
@@ -163,9 +203,8 @@ export default function HeroSectionDesktop() {
   const headlineOpacity = useTransform(
     smooth,
     [CONFIG.headlineExitStart, CONFIG.headlineExitEnd],
-    [1, CONFIG.headlineOpacityEnd]
+    [1, 0]
   );
-
   const subHeadlineY = useTransform(
     smooth,
     [CONFIG.subHeadlineExitStart, CONFIG.subHeadlineExitEnd],
@@ -174,9 +213,8 @@ export default function HeroSectionDesktop() {
   const subHeadlineOpacity = useTransform(
     smooth,
     [CONFIG.subHeadlineExitStart, CONFIG.subHeadlineExitEnd],
-    [1, CONFIG.subHeadlineOpacityEnd]
+    [1, 0]
   );
-
   const jarY = useTransform(
     smooth,
     [CONFIG.jarExitStart, CONFIG.jarExitEnd],
@@ -185,14 +223,14 @@ export default function HeroSectionDesktop() {
   const jarOpacity = useTransform(
     smooth,
     [CONFIG.jarExitStart, CONFIG.jarExitEnd],
-    [1, CONFIG.jarOpacityEnd]
+    [1, 0]
   );
 
   /* -------------------- HAND ANIMATION -------------------- */
   const handY = useTransform(
     smooth,
     [CONFIG.handExitStart, CONFIG.handExitEnd],
-    ["0%", CONFIG.handY]
+    ["15vh", CONFIG.handY]
   );
   const handOpacity = useTransform(
     smooth,
@@ -211,10 +249,11 @@ export default function HeroSectionDesktop() {
     [CONFIG.text.appearStart, CONFIG.text.appearEnd],
     [`blur(${CONFIG.text.blurAmount}px)`, 'blur(0px)']
   );
+  const textYEnd = `calc(0vh - ${CONFIG.text.shiftPct}vh)`;
   const textY = useTransform(
     smooth,
-    [CONFIG.text.appearStart, CONFIG.text.appearEnd],
-    ["100vh", CONFIG.text.yPosition]
+    [0, 1],
+    ["100vh", textYEnd]
   );
 
   return (
@@ -229,35 +268,31 @@ export default function HeroSectionDesktop() {
         <div className="absolute inset-0 px-6 z-10 pointer-events-none">
           <div className="container mx-auto h-full">
             <div className="grid grid-cols-12 gap-x-8 h-full items-center">
-
               {/* LEFT – HEADLINE + SOCIAL */}
               <motion.div
-                style={{ 
-                  y: headlineY, 
-                  opacity: headlineOpacity 
+                style={{
+                  y: headlineY,
+                  opacity: headlineOpacity,
+                  gridColumn: `span ${leftSpan}`,
                 }}
-                className="col-span-12 md:col-span-5 space-y-8"
+                className="space-y-8"
               >
                 <motion.h1
-                  initial={{ y: -100, x: 0, scale: 1 }}
-                  animate={{ 
-                    y: CONFIG.headlineAnimateY,
-                    x: CONFIG.headlineAnimateX,
-                    scale: 1.2 
-                  }}
-                  className="text-5xl lg:text-6xl font-semibold text-gray-700 leading-tight text-left font-stack-sans"
-                  style={{ fontWeight: 600 }} 
+                  initial={{ y: 0, x: 0, scale: 1 }}
+                  animate={{ y: "-57%", x: "0%", scale: 1.05 }}
+                  transition={{ duration: 1.5, ease: "easeOut" }}
+                  className="text-5xl lg:text-6xl font-semibold text-[#3d3d3d]  leading-tight text-left font-sans-serif"
+                  style={{ fontSize: '72px', lineHeight: '1.1', fontWeight: 500 }}
                 >
                   Support That Never Leaves You.
                 </motion.h1>
-
-                {/* SOCIAL PROOF – custom position */}
+                {/* SOCIAL PROOF – custom position (vh/vw responsive) */}
                 <div
                   style={{
                     position: "relative",
-                    left: `${CONFIG.socialProof.left}px`,
-                    top: `${CONFIG.socialProof.top}px`,
-                    zIndex: 9,
+                    left: `${CONFIG.socialProof.leftPct}vw`,
+                    top: `${CONFIG.socialProof.topPct}vh`,
+                    zIndex: 10,
                   }}
                 >
                   <div className="flex items-start space-x-4">
@@ -265,14 +300,14 @@ export default function HeroSectionDesktop() {
                       {customerImages.map((src, i) => (
                         <div
                           key={i}
-                          className="w-8 h-8 rounded-md overflow-hidden border-2 border-white"
+                          className="w-8 h-8 rounded overflow-hidden border border-white"
                         >
                           <Image
                             src={src}
                             alt={`Customer ${i + 1}`}
                             width={32}
                             height={32}
-                            className="w-full h-full object-cover"
+                            className="w-full h-full bg-gradient-to-br from-[#e8d4c4] to-[#c4b4a8]"
                           />
                         </div>
                       ))}
@@ -286,51 +321,53 @@ export default function HeroSectionDesktop() {
                             className="h-4 w-4 fill-current"
                             viewBox="0 0 20 20"
                           >
-                            <path d="M9.049 2.917c1.927-1.823 5.008-1.823 6.936 0L18 5.142l-2.136 7.86A2 2 0 0114.136 16H5.864a2 2 0 01-1.765-1.142L2 12.142V5.142C2 3.33 3.33 2 5.142 2h3.908z" />
+                           <path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z" />
                           </svg>
                         ))}
                       </div>
-                      <p className="text-xs text-gray-600 mt-1">
-                        35,0000+ Happy Patients 
+                      <p className="text-xs text-[#3d3d3d] mt-1" style={{ fontSize: '14px' }}>
+                        35,000+ Happy Patients
                       </p>
                     </div>
                   </div>
                 </div>
               </motion.div>
-
               {/* MIDDLE – JAR */}
               <motion.div
-                style={{ 
-                  y: jarY, 
-                  opacity: jarOpacity 
+                style={{
+                  y: jarY,
+                  opacity: jarOpacity,
+                  gridColumn: `${middleStart} / span ${middleSpan}`,
                 }}
-                className="col-span-12 md:col-span-2 flex justify-center"
+                className="flex justify-center items-center" // Added items-center for better vertical alignment
               >
                 <div
                   style={{
                     position: "relative",
-                    left: `${CONFIG.jar.left}px`,
-                    top: `${CONFIG.jar.top}px`,
+                    left: `${CONFIG.jar.leftPct}vw`,
+                    top: `calc(${CONFIG.jar.topPct}vh -60px)`,
+                    width: `${CONFIG.jar.widthPct}vw`,
+                    paddingBottom: `${CONFIG.jar.paddingBottomPct}%`,
                     zIndex: 10,
                   }}
                 >
                   <Image
                     src="/RAW_IMG/11475317.png"
                     alt="Skincare cream jar"
-                    width={CONFIG.jar.width}
-                    height={CONFIG.jar.height}
-                    className="object-contain max-w-none"
+                    fill
+                    sizes={`${CONFIG.jar.widthPct}vw`}
+                    className="object-contain"
                   />
                 </div>
               </motion.div>
-
               {/* RIGHT – SUB-HEADLINE */}
               <motion.div
-                style={{ 
-                  y: subHeadlineY, 
-                  opacity: subHeadlineOpacity 
+                style={{
+                  y: subHeadlineY,
+                  opacity: subHeadlineOpacity,
+                  gridColumn: `span ${rightSpan} / -1`,
                 }}
-                className="col-span-12 md:col-span-5 max-w-md text-right ml-auto"
+                className="max-w-md text-right ml-auto" // Added ml-auto to push to right if needed
               >
                 <p className="text-xl lg:text-2xl font-medium text-gray-700 leading-relaxed">
                   We strip away the unnecessary to focus on what truly works.
@@ -339,40 +376,55 @@ export default function HeroSectionDesktop() {
             </div>
           </div>
         </div>
-
-        {/* HAND – MOVES DOWN SMOOTHLY AND STICKS TO BOTTOM */}
+        {/* HAND – MOVES DOWN SMOOTHLY */}
+        {/* HAND – FALLS FROM JAR THEN STAYS FIXED */}
         <motion.div
+        style={{
+          opacity: handOpacity,
+          willChange: 'opacity',
+          position: 'absolute',
+          left: `${CONFIG.hand.leftPct}vw`,
+          bottom: `${CONFIG.handBottomOffset}px`,
+        }}
+        animate={{
+          y: [1, getFallDistance()], // ← Falls from 0 to getFallDistance()
+          transition: { 
+            duration: 1.5, 
+            ease: "easeOut" 
+          }
+        }}
+        className="absolute z-0"
+      >
+        <div
           style={{
-            y: handY,
-            opacity: handOpacity,
-            position: "absolute",
-            left: `${CONFIG.hand.left}px`,
-            top: `${CONFIG.hand.top}px`,
+            position: "relative",
+            width: `${CONFIG.hand.widthPct}vw`,
+            paddingBottom: `${CONFIG.hand.paddingBottomPct}%`,
             zIndex: 1,
-            willChange: 'transform, opacity'
           }}
         >
           <Image
             src="/RAW_IMG/hand.avif"
             alt="Presenting hand"
-            width={CONFIG.hand.width}
-            height={CONFIG.hand.height}
+            fill
+            sizes={`${CONFIG.hand.widthPct}vw`}
             className="object-contain"
           />
-        </motion.div>
-
-        {/* FINAL TEXT – CENTERED WITH DYNAMIC POSITIONING */}
+        </div>
+      </motion.div>
+      <FixedWatermark />
+        {/* FINAL TEXT – FULLY CONTROLLED POSITION */}
         <motion.div
-          style={{ 
+          style={{
             opacity: textOpacity,
             filter: textBlur,
             y: textY
           }}
-          className="absolute top-0 left-0 w-full h-screen flex items-center justify-center z-30 pointer-events-none"
+          className="absolute top-0 left-0 w-full h-screen flex items-center justify-center z-30"
         >
           <div className="text-center max-w-4xl px-4">
             <ScrollRevealText className="text-2xl md:text-3xl font-medium text-gray-800 leading-relaxed">
-              AI-assisted evidence-based care across Kerala focused on prevention, early intervention, and better health outcomes for you and your family. Select Clinic
+              AI-assisted evidence-based care across Kerala focused on prevention, early intervention, and better health outcomes for you and your family.
             </ScrollRevealText>
           </div>
         </motion.div>

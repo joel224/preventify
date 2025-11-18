@@ -1,119 +1,116 @@
 
+
 'use client';
 
-import { useState, useMemo, useRef } from "react";
-import { Button } from "@/components/ui/button";
-import BookingDialog from "../BookingDialog";
-import Image from "next/image";
+import { useState, useMemo } from "react";
+import { Button } from "@/components/ui/button"
+import BookingDialog from "../BookingDialog"
+import Image from "next/image"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import ScrollRevealText from "../ScrollRevealText";
-import { motion, AnimatePresence, useScroll, useTransform } from "framer-motion";
 
+// Data should ideally be fetched from an API, but using the hardcoded list for now
+// as it's consistent with the existing BookingDialog.
+const doctorsData = [
+    { id: '173208576372747', name: 'Dr. Rakesh K R', specialty: 'General Physician', clinicId: '673d87fdaa91c2001d716c91'},
+    { id: '173208610763786', name: 'Dr. Mohammed Faisal', specialty: 'General Practitioner', clinicId: '673d87fdaa91c2001d716c91'},
+    { id: '174497110921725', name: 'Dr. Hafsa Hussain', specialty: 'Pediatrics', clinicId: '673d87fdaa91c2001d716c91'},
+    { id: '173771631358722', name: 'Dr. Krishnendu U K', specialty: 'General Practitioner', clinicId: '673d87fdaa91c2001d716c91'},
+    { id: '175931883083616', name: 'Dr. Girish U', specialty: 'Dermatology', clinicId: '673d87fdaa91c2001d716c91'},
+    { id: '175949148741914', name: 'Dr. Ijas V. I.', specialty: 'Pulmonology', clinicId: '673d87fdaa91c2001d716c91'},
+    { id: '175949141398449', name: 'Dr. Husna V.', specialty: 'Gynecology', clinicId: '673d87fdaa91c2001d716c91'},
+    { id: '175931888074630', name: 'Dr. Neeharika V.', specialty: 'ENT', clinicId: '673d87fdaa91c2001d716c91'},
+    { id: '175931864615485', name: 'Dr. Sreedev N', specialty: 'Pulmonology', clinicId: '673d87fdaa91c2001d716c91'},
+    { id: '175949158258558', name: 'Dr. Ajay Biju', specialty: 'Resident Medical Officer', clinicId: '673d87fdaa91c2001d716c91'},
+    { id: '175949152812334', name: 'Dr. Renjith A.', specialty: 'Orthopedics', clinicId: '673d87fdaa91c2001d716c91'},
+    { id: '175949162376135', name: 'Dr. K.Y.Sanjay', specialty: 'Orthopedics', clinicId: '673d87fdaa91c2001d716c91'},
+];
 
 const clinicsData = [
     { id: '673d87fdaa91c2001d716c91', name: 'Padinjarangadi' },
+    // Assuming a second clinic ID based on other parts of the app
     { id: 'some-other-clinic-id', name: 'Vattamkulam' } 
 ];
 
-const PreventiveLifestyleSectionMobile = () => {
+const PreventiveLifestyleSection = () => {
     const [selectedClinic, setSelectedClinic] = useState('');
-    const [isSplit, setIsSplit] = useState(false);
+    const [selectedSpecialty, setSelectedSpecialty] = useState('');
 
-    const targetRef = useRef<HTMLDivElement>(null);
-    const { scrollYProgress } = useScroll({
-      target: targetRef,
-      offset: ["start end", "end start"]
-    });
+    const availableSpecialties = useMemo(() => {
+        if (!selectedClinic) return [];
+        // This logic needs to be more robust if clinics have different doctors.
+        // For now, we assume specialties are universal or tied to the available doctors list.
+        const allSpecialties = doctorsData.map(d => d.specialty);
+        return [...new Set(allSpecialties)];
+    }, [selectedClinic]);
 
-    const y = useTransform(scrollYProgress, [0, 1], ["25%", "-25%"]);
 
     const handleClinicChange = (clinicId: string) => {
         setSelectedClinic(clinicId);
-         if (clinicId && !isSplit) {
-            setIsSplit(true);
-        }
+        setSelectedSpecialty('');
     };
 
-    const handleClinicOpen = (open: boolean) => {
-        if (open && !isSplit) {
-            setIsSplit(true);
-        }
-    }
+    const handleSpecialtyChange = (specialty: string) => {
+        setSelectedSpecialty(specialty);
+    };
 
     return (
-        <section ref={targetRef} className="bg-white py-16 md:py-24 relative -mt-20 rounded-t-2xl shadow-xl z-10 overflow-hidden">
-             <div className="absolute -top-12 left-4 sm:left-6 lg:left-8 z-20">
-                    <div className="inline-flex items-center justify-center bg-white rounded-3xl p-4 shadow-sm border border-gray-200/80 w-24 h-24">
-                        <Image src="/logo.png" alt="Preventify Logo" width={64} height={64} />
+        <section className="bg-white py-16 md:py-24 relative -mt-20 rounded-t-2xl shadow-xl">
+             <div className="absolute -top-12 left-4 sm:left-6 lg:left-8 z-10">
+                    <div className="inline-flex items-center gap-2 bg-white rounded-full p-8 shadow border border-gray-200/80">
+                        <Image src="/logo.png" alt="Preventify Logo" width={88} height={88} />
                     </div>
                 </div>
-            <motion.div style={{ y }} className="container mx-auto px-4 sm:px-6 lg:px-8 pt-16">
+            <div className="container mx-auto px-4 sm:px-6 lg:px-8">
                 
                 <div className="grid grid-cols-1 gap-8 md:gap-12 items-center">
                     <div className="text-center">
                         <h2 className="font-display text-3xl md:text-4xl lg:text-5xl font-bold mb-4 text-preventify-dark-blue">
-                            AI assisted Modern Healthcare for a <span className="text-primary">Preventive Lifestyle</span>
+                            AI assisted Modern Healthcare for a <span className="text-primary">Preventive <br className="hidden md:block" /> Lifestyle</span>
                         </h2>
                         
-                        <ScrollRevealText className="text-lg text-preventify-dark-gray mb-8 max-w-3xl mx-auto">
+                        <p className="text-lg text-preventify-dark-gray mb-8 max-w-3xl mx-auto">
                            AI-assisted evidence-based care across Kerala focused on prevention, early intervention, and better health outcomes for you and your family.
-                        </ScrollRevealText>
+                        </p>
 
-                        <div className="max-w-2xl mx-auto p-4 rounded-lg">
-                            <div className="relative">
-                                <div className="flex flex-col sm:flex-row justify-center items-center gap-4">
-                                     <motion.div layout onHoverStart={() => handleClinicOpen(true)} className="w-full sm:w-auto">
-                                        <Select onValueChange={handleClinicChange} value={selectedClinic} onOpenChange={handleClinicOpen}>
-                                            <SelectTrigger className={`w-full h-12 text-base bg-preventify-blue hover:bg-preventify-dark-blue text-white font-bold ${isSplit ? 'sm:min-w-[200px]' : 'sm:min-w-[416px]'}`}>
-                                                <SelectValue placeholder="Select Clinic" />
-                                            </SelectTrigger>
-                                            <SelectContent>
-                                                {clinicsData.map(clinic => (
-                                                    <SelectItem key={clinic.id} value={clinic.id}>{clinic.name}</SelectItem>
-                                                ))}
-                                            </SelectContent>
-                                        </Select>
-                                     </motion.div>
+                        <div className="max-w-2xl mx-auto p-6 rounded-lg">
+                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 items-center">
+                                    <Select onValueChange={handleClinicChange} value={selectedClinic}>
+                                        <SelectTrigger className="w-full h-12 text-base bg-primary text-primary-foreground">
+                                            <SelectValue placeholder="Select Clinic" />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                            {clinicsData.map(clinic => (
+                                                <SelectItem key={clinic.id} value={clinic.id}>{clinic.name}</SelectItem>
+                                            ))}
+                                        </SelectContent>
+                                    </Select>
 
-                                    <AnimatePresence>
-                                        {isSplit && (
-                                            <motion.div
-                                                layout
-                                                initial={{ opacity: 0, height: 0, marginTop: 0 }}
-                                                animate={{ opacity: 1, height: 'auto', marginTop: '1rem' }}
-                                                exit={{ opacity: 0, height: 0, marginTop: 0 }}
-                                                transition={{ duration: 0.4, ease: "easeInOut" }}
-                                                className="w-full"
-                                            >
-                                                <BookingDialog>
-                                                    <Button className="w-full h-12 text-base bg-secondary hover:bg-secondary/90 text-secondary-foreground font-bold">
-                                                        Book Now
-                                                    </Button>
-                                                </BookingDialog>
-                                            </motion.div>
-                                        )}
-                                    </AnimatePresence>
+                                    <Select onValueChange={handleSpecialtyChange} value={selectedSpecialty} disabled={!selectedClinic}>
+                                        <SelectTrigger className="w-full h-12 text-base border-primary text-primary bg-white">
+                                            <SelectValue placeholder="Select Specialty" />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                            {availableSpecialties.map(specialty => (
+                                                <SelectItem key={specialty} value={specialty}>{specialty}</SelectItem>
+                                            ))}
+                                        </SelectContent>
+                                    </Select>
                                 </div>
-                                <AnimatePresence>
-                                {isSplit && (
-                                    <motion.p 
-                                        initial={{ opacity: 0, y: 10 }}
-                                        animate={{ opacity: 1, y: 0 }}
-                                        exit={{ opacity: 0, y: 10 }}
-                                        transition={{ duration: 0.3, delay: 0.2 }}
-                                        className="mt-3 text-sm text-preventify-gray"
-                                    >
-                                        Get started with an AI-powered booking
-                                    </motion.p>
+                                {selectedSpecialty && (
+                                     <div className="mt-4">
+                                        <BookingDialog>
+                                            <Button className="w-full bg-primary hover:bg-primary/90 text-white text-lg py-6 px-8">
+                                                Book Now
+                                            </Button>
+                                        </BookingDialog>
+                                     </div>
                                 )}
-                                </AnimatePresence>
-                            </div>
                         </div>
                     </div>
                 </div>
-            </motion.div>
+            </div>
         </section>
     )
 }
 
-export default PreventiveLifestyleSectionMobile;
+export default PreventiveLifestyleSection;

@@ -1,17 +1,13 @@
-
 'use client';
 
-import { useState, useMemo, useRef } from "react";
+import { useState, useRef } from "react";
 import { motion, useScroll, useTransform, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button"
 import BookingDialog from "../BookingDialog"
-import Image from "next/image"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import ScrollRevealText from "../ScrollRevealText";
 
 const clinicsData = [
     { id: '673d87fdaa91c2001d716c91', name: 'Padinjarangadi' },
-    // Assuming a second clinic ID based on other parts of the app
     { id: 'some-other-clinic-id', name: 'Vattamkulam' } 
 ];
 
@@ -38,26 +34,31 @@ const PreventiveLifestyleSectionDesktop = () => {
         if (open && !isSplit) {
             setIsSplit(true);
         }
-    }
+    };
 
     return (
-        <section ref={targetRef} className="bg-white py-16 md:py-24 relative overflow-hidden z-10">
+        <section ref={targetRef} className="py-16 md:py-24 relative overflow-hidden z-10" style={{ backgroundColor: '#ffffff' }}>
             <motion.div style={{ y }} className="container mx-auto px-4 sm:px-6 lg:px-8">
-                
                 <div className="grid grid-cols-1 gap-8 md:gap-12 items-center">
                     <div className="text-center">
                         <h2 className="font-display text-3xl md:text-4xl lg:text-5xl font-bold mb-4 text-preventify-dark-blue">
                             AI assisted Modern Healthcare for a <span className="text-primary">Preventive <br className="hidden md:block" /> Lifestyle</span>
                         </h2>
                         
-                        <ScrollRevealText className="text-lg text-preventify-dark-gray mb-8 max-w-3xl mx-auto">
-                           AI-assisted evidence-based care across Kerala focused on prevention, early intervention, and better health outcomes for you and your family.
-                        </ScrollRevealText>
+                        <motion.p 
+                            initial={{ opacity: 0, y: 20 }}
+                            whileInView={{ opacity: 1, y: 0 }}
+                            viewport={{ once: true }}
+                            transition={{ duration: 0.6, ease: "easeOut" }}
+                            className="text-lg text-preventify-dark-gray mb-8 max-w-3xl mx-auto"
+                        >
+                            AI-assisted evidence-based care across Kerala focused on prevention, early intervention, and better health outcomes for you and your family.
+                        </motion.p>
 
                         <div className="max-w-2xl mx-auto p-6 rounded-lg">
                             <div className="relative">
                                 <div className="flex flex-col sm:flex-row justify-center items-center gap-4">
-                                     <motion.div layout onHoverStart={() => handleClinicOpen(true)} className="w-full sm:w-auto">
+                                    <motion.div layout onHoverStart={() => handleClinicOpen(true)} className="w-full sm:w-auto">
                                         <Select onValueChange={handleClinicChange} value={selectedClinic} onOpenChange={handleClinicOpen}>
                                             <SelectTrigger className={`w-full h-12 text-base bg-preventify-blue hover:bg-preventify-dark-blue text-white font-bold ${isSplit ? 'sm:min-w-[200px]' : 'sm:min-w-[416px]'}`}>
                                                 <SelectValue placeholder="Select Clinic" />
@@ -68,7 +69,7 @@ const PreventiveLifestyleSectionDesktop = () => {
                                                 ))}
                                             </SelectContent>
                                         </Select>
-                                     </motion.div>
+                                    </motion.div>
 
                                     <AnimatePresence>
                                         {isSplit && (
@@ -90,17 +91,17 @@ const PreventiveLifestyleSectionDesktop = () => {
                                     </AnimatePresence>
                                 </div>
                                 <AnimatePresence>
-                                {isSplit && (
-                                    <motion.p 
-                                        initial={{ opacity: 0, y: 10 }}
-                                        animate={{ opacity: 1, y: 0 }}
-                                        exit={{ opacity: 0, y: 10 }}
-                                        transition={{ duration: 0.3, delay: 0.2 }}
-                                        className="mt-3 text-sm text-preventify-gray"
-                                    >
-                                        Get started with an AI-powered booking
-                                    </motion.p>
-                                )}
+                                    {isSplit && (
+                                        <motion.p 
+                                            initial={{ opacity: 0, y: 10 }}
+                                            animate={{ opacity: 1, y: 0 }}
+                                            exit={{ opacity: 0, y: 10 }}
+                                            transition={{ duration: 0.3, delay: 0.2 }}
+                                            className="mt-3 text-sm text-preventify-gray"
+                                        >
+                                            Get started with an AI-powered booking
+                                        </motion.p>
+                                    )}
                                 </AnimatePresence>
                             </div>
                         </div>
