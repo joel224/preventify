@@ -3,14 +3,50 @@
 
 import * as React from "react";
 import Image from "next/image";
-import { motion, useScroll, useTransform, useSpring } from "framer-motion";
+import { motion, useScroll, useTransform, useSpring, MotionValue } from "framer-motion";
 import ScrollRevealText from "../ScrollRevealText";
 import { useWindowSize } from "@/hooks/use-window-size";
 import FixedWatermark from "@/components/home/FixedWatermark";
-const useRef = React.useRef;
-const useState = React.useState;
-const useMemo = React.useMemo;
-const useEffect = React.useEffect;
+const { useRef, useState, useMemo, useEffect } = React;
+const ScrollTypewriter = ({ 
+  text, 
+  progress, 
+  start, 
+  end, 
+  className 
+}: { 
+  text: string, 
+  progress: MotionValue<number>, 
+  start: number, 
+  end: number, 
+  className?: string 
+}) => {
+  const words = text.split(" ");
+  // We calculate the step size based on the total range (end - start) divided by word count
+  const range = end - start;
+  const step = range / words.length;
+
+  return (
+    <span className={className}>
+      {words.map((word, i) => {
+        // Calculate the specific scroll range for this word
+        const wordStart = start + (i * step);
+        // We make the word fade in quickly within its specific slice
+        const wordEnd = wordStart + step; 
+        
+        // Map scroll progress to opacity: starts dim (0.15) and turns fully visible (1)
+        const opacity = useTransform(progress, [wordStart, wordEnd], [0, 1]);
+        
+        return (
+          <motion.span key={i} style={{ opacity }} className="inline-block mr-[0.25em]">
+            {word}
+          </motion.span>
+        );
+      })}
+    </span>
+  );
+};
+
 /* ==============================================================
    REFERENCE LAYOUT – Based on 1366x768 screen
    ============================================================== */
@@ -24,7 +60,7 @@ declare global {
   }
 }
 const ScrollRevealWrapper: React.FC<{ children: React.ReactNode; className?: string }> = ({ children, className }) => (
-  <ScrollRevealText className={className}>{children}</ScrollRevealText> // Pass 'children' here
+  <ScrollRevealText className={className}>{children}</ScrollRevealText>
 );
 /* ==============================================================
    DYNAMIC CONFIGURATION – Calculates layout based on screen size
@@ -94,7 +130,7 @@ const getDynamicConfig = (width: number, height: number) => {
     const jarWidthPct = (baseJarWidth / refWidth) * 100;
     
     const socialLeftPct = (0 / refWidth) * 100;
-    const socialTopPct = (-75 / refHeight) * 100;
+    const socialTopPct = (-110 / refHeight) * 100;
 
     return {
         totalHeightVh: 200,
@@ -127,9 +163,9 @@ const getDynamicConfig = (width: number, height: number) => {
         /** ---- FINAL TEXT CONTROLS ---- */
         text: {
             appearStart: 0.3,
-            appearEnd: 0.6,
-            blurAmount: 12,
-            shiftPct: (100 / height) * 100, // Dynamic shift based on current height (~13vh equivalent)
+            appearEnd: 0.9,
+            blurAmount: 1.4,
+            shiftPct: (80 / height) * 100, // Dynamic shift based on current height (~13vh equivalent)
         },
 
         /** ---- HAND POSITION & SIZE (% of vw/vh) ---- */
@@ -232,7 +268,7 @@ export default function HeroSectionDesktop() {
   const jarY = useTransform(
     smooth,
     [CONFIG.jarExitStart, CONFIG.jarExitEnd],
-    ["0%", CONFIG.jarY]
+    ["-20%", "0%"]
   );
   const jarOpacity = useTransform(
     smooth,
@@ -267,14 +303,17 @@ export default function HeroSectionDesktop() {
   const textY = useTransform(
     smooth,
     [0, 1],
-    ["100vh", textYEnd]
+    ["150vh", textYEnd]
   );
 
   return (
     <section
       ref={targetRef}
-      style={{ backgroundColor: "#f8f5f0" }}
-      className={`relative h-[${CONFIG.totalHeightVh}vh]`}
+      style={{ 
+        backgroundColor: "#f8f5f0",
+        height: `${CONFIG.totalHeightVh}vh`   // ← THIS is the fix
+      }}
+      className="relative"
     >
       {/* STICKY CONTAINER */}
       <div className="h-screen sticky top-0 overflow-hidden flex items-center">
@@ -293,12 +332,17 @@ export default function HeroSectionDesktop() {
               >
                 <motion.h1
                   initial={{ y: 0, x: 0, scale: 1 }}
-                  animate={{ y: "-57%", x: "0%", scale: 1.05 }}
+                  animate={{ y: "-57%", x: "0%", scale: 1 }}
                   transition={{ duration: 1.5, ease: "easeOut" }}
                   className="text-5xl lg:text-6xl font-semibold text-[#3d3d3d]  leading-tight text-left font-sans-serif"
                   style={{ fontSize: '72px', lineHeight: '1.1', fontWeight: 500 }}
                 >
-                  Support That Never Leaves You.
+                  <span 
+                  className="inline-block bg-[#255cc9] text-white font-sans-serif text-[#3d3d3d] font-semibold " 
+                style={{ padding: '0 4px', borderRadius: '0px' }}
+                    >
+                     
+                  </span>Support That Never Leaves You.
                 </motion.h1>
                 {/* SOCIAL PROOF – custom position (vh/vw responsive) */}
                 <div
@@ -314,14 +358,14 @@ export default function HeroSectionDesktop() {
                       {customerImages.map((src, i) => (
                         <div
                           key={i}
-                          className="w-8 h-8 rounded overflow-hidden border border-white"
+                          className="w-8 h-9 rounded overflow-hidden border-3.5 border-white"
                         >
                           <Image
                             src={src}
                             alt={`Customer ${i + 1}`}
                             width={32}
                             height={32}
-                            className="w-full h-full bg-gradient-to-br from-[#e8d4c4] to-[#c4b4a8]"
+                            className="w-full h-full object-cover"
                           />
                         </div>
                       ))}
@@ -430,20 +474,25 @@ export default function HeroSectionDesktop() {
         {/* FINAL TEXT – FULLY CONTROLLED POSITION */}
         <motion.div
           style={{
-            opacity: textOpacity,
+            // opacity: textOpacity, <--- REMOVED THIS so the typewriter handles visibility
             filter: textBlur,
             y: textY
           }}
           className="absolute top-0 left-0 w-full h-screen flex items-center justify-center z-30"
         >
           <div className="text-center max-w-4xl px-4">
-            <ScrollRevealWrapper className="text-2xl md:text-3xl font-medium text-gray-800 leading-relaxed">
-              {/* Content goes here, like the text inside the ScrollRevealText component */}
-              AI-assisted evidence-based care across Kerala focused on prevention, early intervention, and better health outcomes for you and your family.
-            </ScrollRevealWrapper>
+            {/* REPLACED ScrollRevealWrapper WITH ScrollTypewriter */}
+            <ScrollTypewriter 
+              text="AI-assisted evidence-based care across Kerala focused on prevention, early intervention, and better health outcomes for you and your family."
+              progress={smooth}
+              start={CONFIG.text.appearStart}
+              end={CONFIG.text.appearEnd}
+              className="text-2xl md:text-3xl font-medium text-gray-800 leading-relaxed"
+            />
           </div>
         </motion.div>
       </div>
     </section>
+   
   );
 }

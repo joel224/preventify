@@ -11,7 +11,7 @@ import Footer from "@/components/Footer";
 import SubscriptionButton from "@/components/SubscriptionButton";
 import FixedWatermark from "@/components/home/FixedWatermark";
 import MarqueeText from "@/components/home/MarqueeText";
-import HeroSection from "@/components/home/HeroSection";
+import WebsiteSharpener from '@/components/WebsiteSharpener';
 
 const inter = Inter({ 
   subsets: ["latin"],
@@ -47,6 +47,7 @@ export default function RootLayout({
         </TooltipProvider>
         <FixedWatermark />
         <SubscriptionButton />
+        <WebsiteSharpener />
       </body>
     </html>
   );

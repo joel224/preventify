@@ -1,159 +1,250 @@
-
 'use client';
-import { useState, useEffect, useRef } from "react";
+
+import { useRef } from "react";
 import { Card, CardContent } from "@/components/ui/card";
+import { motion, useScroll, useTransform } from "framer-motion";
+
+// =====================================================================
+// 🎛️ THE MASTER KEY (CONFIGURATION)
+// =====================================================================
+// Adjust these values to control the look without breaking the code.
+const WAVE_CONFIG = {
+  layout: {
+    containerHeight: "140px",   // How tall the wave area is
+    marginBottom: "20px",       // Space between Wave and Heading
+  },
+  mainLine: {
+    width: "85%",               // Width of the center line image (0% to 100%)
+    opacity: 1,
+    yOffset: 0,                 // Move center line Up (-) or Down (+) in px
+  },
+  icons: {
+    size: 60,                   // Size of the pulse icons in px
+    opacity: 0.8,
+    yOffset: 5,                 // Move icons Up (-) or Down (+) relative to center
+    xOffset: 0,                 // Move icons Inward (-) or Outward (+)
+  }
+};
+// =====================================================================
 
 const services = [
   {
     icon: "https://cdn-icons-png.flaticon.com/512/2966/2966334.png",
     title: "Primary Care",
-    description: "Comprehensive healthcare services for individuals and families.",
+    description: "Comprehensive healthcare services for individuals and families, focusing on long-term health and wellness.",
+    type: "card"
   },
   {
     icon: "https://cdn-icons-png.flaticon.com/512/9354/9354551.png",
     title: "Diabetes Management",
-    description: "AI Specialized programs for prevention and management of diabetes.",
+    description: "AI-driven specialized programs for the prevention, monitoring, and management of diabetes.",
+    type: "card"
   },
   {
     icon: "https://cdn-icons-png.flaticon.com/512/2382/2382461.png",
     title: "Lifestyle Medicine",
-    description: "Evidence-based approach to treating and preventing chronic diseases.",
+    description: "Evidence-based therapeutic approaches to treat, prevent and often reverse chronic diseases.",
+    type: "video",
+    videoUrl: "https://player.mux.com/bU1COBRBk00DfgHV3L9vk5TL2uXEiu9o2hp6Dfbox1F00?loop=true&autoplay=muted&controls=false&max_resolution=480p"
   },
   {
     icon: "https://cdn-icons-png.flaticon.com/512/17774/17774825.png",
     title: "Pediatric Care",
-    description: "Specialized healthcare services for infants, children, and adolescents.",
+    description: "Specialized, compassionate healthcare services tailored for infants, children, and adolescents.",
+    type: "card"
   },
   {
     icon: "https://cdn-icons-png.flaticon.com/512/8657/8657426.png",
     title: "Women's Health",
-    description: "Comprehensive care addressing women's unique health needs.",
+    description: "Comprehensive care addressing women's unique health needs at every stage of life.",
+    type: "card"
   },
   {
     icon: "https://cdn-icons-png.flaticon.com/512/4087/4087640.png",
     title: "Preventive Screenings",
-    description: "Early detection tests to identify potential health issues.",
+    description: "Advanced early detection tests to identify potential health issues before they become serious.",
+    type: "card"
   },
 ];
 
-const ServicesSection = () => {
-  const [scrollY, setScrollY] = useState(0);
-  const primaryCareRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const handleScroll = () => {
-      setScrollY(window.scrollY);
-    };
-    window.addEventListener('scroll', handleScroll);
-    return () => {
-      window.removeEventListener('scroll', handleScroll);
-    };
-  }, []);
-
-  const getTransform = () => {
-    if (primaryCareRef.current) {
-      const rect = primaryCareRef.current.getBoundingClientRect();
-      const elementTop = rect.top + scrollY;
-      const start = elementTop - window.innerHeight;
-      const end = elementTop + rect.height;
-
-      if (scrollY > start && scrollY < end) {
-        const progress = (scrollY - start) / (end - start);
-        // Start from -100px and move to 0px. The multiplier makes it slow.
-        const translation = -100 + progress * 100 * 0.5;
-        return `translateX(${Math.min(translation, 0)}px)`;
-      }
-    }
-    return 'translateX(-50px)';
-  };
+const StickyCard = ({ 
+  children, 
+  index 
+}: { 
+  children: React.ReactNode; 
+  index: number; 
+}) => {
+  const cardRef = useRef<HTMLDivElement>(null);
   
+  const { scrollYProgress } = useScroll({
+    target: cardRef,
+    offset: ["start end", "start start"]
+  });
+
+  const scale = useTransform(scrollYProgress, [0, 1], [0.9, 1]);
+  const opacity = useTransform(scrollYProgress, [0, 0.8], [0, 1]);
+
   return (
-    <section className="bg-white py-16 overflow-x-hidden">
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-12">
-          <h2 className="text-3xl md:text-4xl font-bold mb-4 text-preventify-blue">
+    <motion.div 
+      ref={cardRef}
+      // Sticky Position Control
+      className="sticky top-40 mb-24 last:mb-0" 
+      style={{ 
+        scale, 
+        opacity,
+        zIndex: index 
+      }}
+    >
+      {children}
+    </motion.div>
+  );
+};
+
+const ServicesSection = () => {
+  const videoService = services.find(s => s.type === 'video');
+  const cardServices = services.filter(s => s.type === 'card');
+
+  return (
+    <section className="bg-[#f8f9fa] relative py-12">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl">
+        
+        {/* ============================================================ */}
+        {/* 1. THE DYNAMIC WAVE SECTION (Controlled by WAVE_CONFIG)      */}
+        {/* ============================================================ */}
+        <motion.div 
+           initial={{ opacity: 0, scaleX: 0.8 }}
+           whileInView={{ opacity: 1, scaleX: 1 }}
+           viewport={{ once: true }}
+           transition={{ duration: 0.8 }}
+           className="relative w-full mx-auto flex items-center justify-center"
+           style={{ 
+             height: WAVE_CONFIG.layout.containerHeight,
+             marginBottom: WAVE_CONFIG.layout.marginBottom 
+           }}
+        >
+            {/* --- LEFT PULSE ICON --- */}
+            <img 
+              src="https://cdn-icons-png.flaticon.com/512/8011/8011552.png" 
+              alt="Pulse Start"
+              className="absolute left-0 object-contain"
+              style={{ 
+                width: `${WAVE_CONFIG.icons.size}px`,
+                height: `${WAVE_CONFIG.icons.size}px`,
+                opacity: WAVE_CONFIG.icons.opacity,
+                filter: "hue-rotate(180deg)",
+                // X/Y Dynamic Control
+                transform: `translate(${WAVE_CONFIG.icons.xOffset}px, ${WAVE_CONFIG.icons.yOffset}px)`
+              }}
+            />
+
+            {/* --- CENTER LINE IMAGE --- */}
+            <div 
+              className="flex items-center justify-center h-full"
+              style={{ width: WAVE_CONFIG.mainLine.width }}
+            >
+              <img 
+                src="public/vectorink-download (1).svg" 
+                alt="Healthcare Pulse Line"
+                className="w-full h-full object-contain"
+                style={{ 
+                    opacity: WAVE_CONFIG.mainLine.opacity,
+                    transform: `translateY(${WAVE_CONFIG.mainLine.yOffset}px)`
+                }}
+              />
+            </div>
+
+            {/* --- RIGHT PULSE ICON --- */}
+            <img 
+              src="https://cdn-icons-png.flaticon.com/512/8011/8011552.png" 
+              alt="Pulse End"
+              className="absolute right-0 object-contain"
+              style={{ 
+                width: `${WAVE_CONFIG.icons.size}px`,
+                height: `${WAVE_CONFIG.icons.size}px`,
+                opacity: WAVE_CONFIG.icons.opacity,
+                filter: "hue-rotate(90deg)",
+                // X/Y Dynamic Control (Mirroring X offset for symmetry)
+                transform: `translate(${-WAVE_CONFIG.icons.xOffset}px, ${WAVE_CONFIG.icons.yOffset}px)`
+              }}
+            />
+        </motion.div>
+        {/* ============================================================ */}
+
+
+        {/* 2. HEADER (Now below the wave) */}
+        <motion.div 
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6 }}
+          // Added extra margin bottom to separate from cards
+          className="text-center mb-24" 
+        >
+          <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-6 text-[#1a365d]">
             Our Healthcare Services
           </h2>
-          <p className="text-preventify-gray max-w-3xl mx-auto">
+          <p className="text-gray-600 max-w-2xl mx-auto text-lg">
             Preventify offers a comprehensive range of healthcare services designed to keep you healthy and address your medical needs.
           </p>
-        </div>
-        <div className="animate-fade-in">
-          {/* Mobile View: Horizontal Scroll */}
-          <div className="flex md:hidden gap-4 overflow-x-auto pb-4 -mb-4 touch-pan-x">
-            {services.map((service, index) => (
-              <Card key={index} className="h-full hover:shadow-lg transition-shadow w-64 flex-shrink-0">
-                  <CardContent className="p-6 text-center flex flex-col items-center justify-center h-full">
-                    <img
-                      src={service.icon}
-                      alt={service.title}
-                      className="w-16 h-16 mx-auto mb-4"
-                    />
-                    <h3 className="text-lg font-semibold mb-2 text-preventify-blue">{service.title}</h3>
-                    <p className="text-preventify-dark-gray text-sm">{service.description}</p>
-                  </CardContent>
-                </Card>
-            ))}
-          </div>
+        </motion.div>
 
-          {/* Desktop View: Custom Grid */}
-          <div className="hidden md:flex flex-col gap-8">
-            {/* First Card in its own row, with video */}
-            <div 
-              ref={primaryCareRef}
-              style={{ transform: getTransform() }}
-              className="transition-transform duration-300 ease-out"
-            >
-                <Card className="h-full border-transparent">
-                    <CardContent className="p-6 grid grid-cols-1 md:grid-cols-3 gap-8 items-center">
-                      <div className="text-center md:col-span-2">
-                        <img
-                          src={services[0].icon}
-                          alt={services[0].title}
-                          className="w-16 h-16 mx-auto mb-4"
-                        />
-                        <h3 className="text-xl font-semibold mb-2 text-preventify-blue">{services[0].title}</h3>
-                        <p className="text-preventify-dark-gray">{services[0].description}</p>
-                      </div>
-                      <div className="relative">
-                        <iframe src="https://player.mux.com/bU1COBRBk00DfgHV3L9vk5TL2uXEiu9o2hp6Dfbox1F00?loop=true&autoplay=muted&controls=false&max_resolution=480p" style={{width: '100%', border: 'none', aspectRatio: '16/9', borderRadius: '0.5rem'}} allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture;"></iframe>
-                        <div className="absolute inset-0 bg-black/20 rounded-md"></div>
-                      </div>
-                    </CardContent>
-                  </Card>
-            </div>
-             {/* Second Card in its own row */}
-             <div className="grid grid-cols-1">
-                 <Card className="h-full hover:shadow-lg transition-shadow">
-                    <CardContent className="p-6 text-center">
-                      <img
-                        src={services[1].icon}
-                        alt={services[1].title}
-                        className="w-16 h-16 mx-auto mb-4"
-                      />
-                      <h3 className="text-xl font-semibold mb-2 text-preventify-blue">{services[1].title}</h3>
-                      <p className="text-preventify-dark-gray">{services[1].description}</p>
-                    </CardContent>
-                  </Card>
-            </div>
-
-            {/* Remaining 4 Cards */}
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-              {services.slice(2).map((service, index) => (
-                <Card key={index} className="h-full hover:shadow-lg transition-shadow">
-                    <CardContent className="p-6 text-center">
+        {/* 3. MAIN CONTENT ROW */}
+        <div className="flex flex-col lg:flex-row gap-8 lg:gap-16 items-start justify-center">
+          
+          {/* Left Column: Cards */}
+          <div className="w-full lg:w-1/2 relative pb-[20vh]">
+            {cardServices.map((service, index) => (
+              <StickyCard key={index} index={index}>
+                <Card className="bg-white border-none rounded-2xl shadow-sm overflow-hidden">
+                  <CardContent className="px-8 py-8 flex flex-col md:flex-row items-start gap-6">
+                    <div className="flex-shrink-0 p-4 bg-blue-50 rounded-2xl">
                       <img
                         src={service.icon}
                         alt={service.title}
-                        className="w-16 h-16 mx-auto mb-4"
+                        className="w-10 h-10 object-contain"
                       />
-                      <h3 className="text-xl font-semibold mb-2 text-preventify-blue">{service.title}</h3>
-                      <p className="text-preventify-dark-gray">{service.description}</p>
-                    </CardContent>
-                  </Card>
-              ))}
+                    </div>
+                    <div className="flex-1">
+                      <div className="flex items-center justify-between mb-3">
+                        <h3 className="text-xl md:text-2xl font-bold text-[#1a365d]">
+                          {service.title}
+                        </h3>
+                        <span className="text-sm font-bold text-gray-300">
+                           0{index + 1}
+                        </span>
+                      </div>
+                      <p className="text-gray-600 leading-relaxed text-base md:text-lg">
+                        {service.description}
+                      </p>
+                    </div>
+                  </CardContent>
+                </Card>
+              </StickyCard>
+            ))}
+          </div>
+
+          {/* Right Column: Sticky Video */}
+          <div className="hidden lg:block w-full lg:w-1/2 sticky top-40 h-auto flex items-start justify-center">
+            <div className="relative w-full aspect-video rounded-2xl overflow-hidden shadow-2xl bg-black">
+              {videoService && (
+                 <iframe 
+                   src={videoService.videoUrl}
+                   className="absolute inset-0 w-full h-full object-cover"
+                   allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture;"
+                 />
+              )}
+              
+              <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/90 via-black/50 to-transparent p-8 pointer-events-none">
+                <span className="inline-block px-3 py-1 mb-3 rounded-full bg-[#38a169] text-white text-xs font-bold uppercase tracking-wide">
+                    Featured Service
+                </span>
+                <h3 className="text-white text-2xl font-bold">
+                  {videoService?.title || "Lifestyle Medicine"}
+                </h3>
+              </div>
             </div>
           </div>
+
         </div>
       </div>
     </section>

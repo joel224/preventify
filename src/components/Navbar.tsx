@@ -3,9 +3,18 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { Menu, X, Search, Phone, ChevronDown, User, AlertTriangle } from "lucide-react";
+// Import LucideIcon type for correct typing
+import { Menu, X, Search, Phone, ChevronDown, User, AlertTriangle, LucideIcon } from "lucide-react"; 
 import { usePathname } from "next/navigation";
 import BookingDialog from "@/components/BookingDialog";
+
+// Define the type for navigation links
+interface NavLinkType {
+  name: string;
+  path: string;
+  // icon is optional and must be a Lucide component type
+  icon?: LucideIcon; 
+}
 
 const Navbar = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -16,7 +25,8 @@ const Navbar = () => {
     setMobileMenuOpen(!mobileMenuOpen);
   };
 
-  const mainNavLinks = [
+  // Apply the NavLinkType to mainNavLinks
+  const mainNavLinks: NavLinkType[] = [
     { name: "Our Services", path: "/services" },
     { name: "Our Doctors", path: "/doctors" },
     { name: "Our Clinics", path: "/clinics" },
@@ -24,9 +34,11 @@ const Navbar = () => {
     { name: "Sugam Card", path: "/savings" },
   ];
   
-  const topNavLinks = [
-      { name: "About Us", path: "/about" },
-      { name: "Blogs", path: "/blog" },
+  // Apply the NavLinkType to topNavLinks
+  const topNavLinks: NavLinkType[] = [
+    // You could add an icon here if needed, e.g., { name: "About Us", path: "/about", icon: User },
+    { name: "About Us", path: "/about" },
+    { name: "Blogs", path: "/blog" },
   ];
 
   // Calculate navbar height dynamically
@@ -73,6 +85,7 @@ const Navbar = () => {
           <div className="flex items-center gap-4">
             {topNavLinks.map(link => (
               <Link key={link.name} href={link.path} className={`flex items-center gap-1 hover:text-primary transition-colors`}>
+                {/* This line is now fixed because 'link' has a type definition that includes 'icon' */}
                 {link.icon && <link.icon className="h-3 w-3" />}
                 {link.name}
               </Link>
@@ -117,14 +130,14 @@ const Navbar = () => {
                 {link.name}
               </Link>
             ))}
-             <Link href="/emergency" className="flex items-center gap-1 text-red-600 font-medium text-sm hover:text-red-800 transition-colors">
+              <Link href="/emergency" className="flex items-center gap-1 text-red-600 font-medium text-sm hover:text-red-800 transition-colors">
                 <AlertTriangle className="h-4 w-4" />
                 24/7 Emergency
-            </Link>
+              </Link>
           </nav>
 
           <div className="hidden lg:flex items-center space-x-4">
-             <BookingDialog>
+              <BookingDialog>
               <button className="relative px-6 py-2 bg-primary text-white font-medium rounded-full transition-all duration-300 overflow-hidden group">
                 <span className="relative z-10">Book Appointment</span>
                 <div className="absolute inset-0 bg-black/30 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left"></div>
@@ -161,10 +174,10 @@ const Navbar = () => {
                   {link.name}
                 </Link>
               ))}
-               <Link href="/emergency" className="flex items-center gap-1 text-red-600 font-medium py-2 hover:text-red-800 transition-colors">
+                <Link href="/emergency" className="flex items-center gap-1 text-red-600 font-medium py-2 hover:text-red-800 transition-colors">
                   <AlertTriangle className="h-4 w-4" />
                   24/7 Emergency
-              </Link>
+                </Link>
               <div className="flex flex-col space-y-2 pt-3">
                 <BookingDialog>
                   <button className="relative px-6 py-2 bg-primary text-white font-medium rounded-full transition-all duration-300 overflow-hidden group w-full">

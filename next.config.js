@@ -1,12 +1,12 @@
-
-import type {NextConfig} from 'next';
-
-const nextConfig: NextConfig = {
+/** @type {import('next').NextConfig} */
+const nextConfig = {
   /* config options here */
   typescript: {
-    ignoreBuildErrors: true,
+    // !! WARNING: This ignores build errors for TypeScript. Use with caution.
+    ignoreBuildErrors: true, 
   },
   eslint: {
+    // !! WARNING: This ignores linting errors during the build. Use with caution.
     ignoreDuringBuilds: true,
   },
   images: {
@@ -34,4 +34,5 @@ const nextConfig: NextConfig = {
   },
 };
 
-export default nextConfig;
+// Use module.exports for CommonJS
+module.exports = nextConfig;

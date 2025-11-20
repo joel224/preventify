@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useRef } from "react";
-import { motion, useScroll, useTransform, AnimatePresence } from "framer-motion";
+import { motion, useScroll, useTransform } from "framer-motion";
 import { Button } from "@/components/ui/button"
 import BookingDialog from "../BookingDialog"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -13,27 +13,16 @@ const clinicsData = [
 
 const PreventiveLifestyleSectionDesktop = () => {
     const [selectedClinic, setSelectedClinic] = useState('');
-    const [isSplit, setIsSplit] = useState(false);
-
     const targetRef = useRef<HTMLDivElement>(null);
     const { scrollYProgress } = useScroll({
-      target: targetRef,
-      offset: ["start end", "end start"]
+        target: targetRef,
+        offset: ["start end", "end start"]
     });
 
     const y = useTransform(scrollYProgress, [0, 1], ["25%", "-25%"]);
     
     const handleClinicChange = (clinicId: string) => {
         setSelectedClinic(clinicId);
-        if (clinicId && !isSplit) {
-            setIsSplit(true);
-        }
-    };
-
-    const handleClinicOpen = (open: boolean) => {
-        if (open && !isSplit) {
-            setIsSplit(true);
-        }
     };
 
     return (
@@ -55,55 +44,42 @@ const PreventiveLifestyleSectionDesktop = () => {
                             AI-assisted evidence-based care across Kerala focused on prevention, early intervention, and better health outcomes for you and your family.
                         </motion.p>
 
-                        <div className="max-w-2xl mx-auto p-6 rounded-lg">
-                            <div className="relative">
-                                <div className="flex flex-col sm:flex-row justify-center items-center gap-4">
-                                    <motion.div layout onHoverStart={() => handleClinicOpen(true)} className="w-full sm:w-auto">
-                                        <Select onValueChange={handleClinicChange} value={selectedClinic} onOpenChange={handleClinicOpen}>
-                                            <SelectTrigger className={`w-full h-12 text-base bg-preventify-blue hover:bg-preventify-dark-blue text-white font-bold ${isSplit ? 'sm:min-w-[200px]' : 'sm:min-w-[416px]'}`}>
-                                                <SelectValue placeholder="Select Clinic" />
-                                            </SelectTrigger>
-                                            <SelectContent>
-                                                {clinicsData.map(clinic => (
-                                                    <SelectItem key={clinic.id} value={clinic.id}>{clinic.name}</SelectItem>
-                                                ))}
-                                            </SelectContent>
-                                        </Select>
-                                    </motion.div>
-
-                                    <AnimatePresence>
-                                        {isSplit && (
-                                            <motion.div
-                                                layout
-                                                initial={{ opacity: 0, width: 0 }}
-                                                animate={{ opacity: 1, width: 'auto' }}
-                                                exit={{ opacity: 0, width: 0 }}
-                                                transition={{ duration: 0.4, ease: "easeInOut" }}
-                                                className="w-full sm:w-auto"
-                                            >
-                                                <BookingDialog>
-                                                    <Button className="w-full sm:min-w-[200px] h-12 text-base bg-secondary hover:bg-secondary/90 text-secondary-foreground font-bold">
-                                                        Book Now
-                                                    </Button>
-                                                </BookingDialog>
-                                            </motion.div>
-                                        )}
-                                    </AnimatePresence>
+                        <div className="max-w-3xl mx-auto p-4 md:p-6 rounded-xl bg-white/50 backdrop-blur-sm border border-gray-100 shadow-sm">
+                            <div className="flex flex-col sm:flex-row justify-center items-center gap-4">
+                                <div className="w-full sm:w-auto">
+                                    <Select onValueChange={handleClinicChange} value={selectedClinic}>
+                                        <SelectTrigger className="w-full h-12 text-base bg-preventify-blue hover:bg-preventify-dark-blue text-white font-medium transition-colors duration-200">
+                                            <SelectValue placeholder="Select Clinic Location" />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                            {clinicsData.map(clinic => (
+                                                <SelectItem key={clinic.id} value={clinic.id} className="cursor-pointer hover:bg-gray-50">
+                                                    {clinic.name}
+                                                </SelectItem>
+                                            ))}
+                                        </SelectContent>
+                                    </Select>
                                 </div>
-                                <AnimatePresence>
-                                    {isSplit && (
-                                        <motion.p 
-                                            initial={{ opacity: 0, y: 10 }}
-                                            animate={{ opacity: 1, y: 0 }}
-                                            exit={{ opacity: 0, y: 10 }}
-                                            transition={{ duration: 0.3, delay: 0.2 }}
-                                            className="mt-3 text-sm text-preventify-gray"
-                                        >
-                                            Get started with an AI-powered booking
-                                        </motion.p>
-                                    )}
-                                </AnimatePresence>
+
+                                <div className="w-full sm:w-auto">
+                                    <BookingDialog>
+                                        <Button className="w-full sm:min-w-[180px] h-12 text-base bg-secondary hover:bg-secondary/90 text-secondary-foreground font-medium transition-all duration-200 shadow-md hover:shadow-lg">
+                                            Book Appointment
+                                        </Button>
+                                    </BookingDialog>
+                                </div>
                             </div>
+
+                            {selectedClinic && (
+                                <motion.div
+                                    initial={{ opacity: 0, y: 5 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    transition={{ duration: 0.3, ease: "easeOut" }}
+                                    className="mt-4 text-sm text-preventify-dark-gray/80"
+                                >
+                                    <span className="font-medium text-preventify-dark-blue">Selected:</span> {clinicsData.find(c => c.id === selectedClinic)?.name} clinic
+                                </motion.div>
+                            )}
                         </div>
                     </div>
                 </div>

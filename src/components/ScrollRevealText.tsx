@@ -1,18 +1,7 @@
 'use client';
-
-// Import React namespace to access all features
-
+import { useRef } from 'react';
 import { motion, useInView } from "framer-motion";
 import { cn } from "@/lib/utils";
-
-// Explicitly get useRef from React namespace
-import React from 'react';
-// ...
-const { useRef } = React;
-// ...
-const inputRef = useRef(null);
-
-
 
 interface ScrollRevealTextProps {
   children: React.ReactNode;
@@ -27,11 +16,9 @@ const ScrollRevealText = ({
   wordDelay = 0.08,
   lineDelay = 0.1
 }: ScrollRevealTextProps) => {
-  // Use the destructured useRef
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, amount: 0.5 });
 
-  // ... rest of the component remains the same
   const text = typeof children === 'string' ? children : '';
   const lines = text.split(/<br\s*\/?>/g);
 
