@@ -26,6 +26,7 @@ const Navbar = () => {
   };
 
   // Apply the NavLinkType to mainNavLinks
+  // REMOVED "24/7 Emergency" from here - it's handled separately below
   const mainNavLinks: NavLinkType[] = [
     { name: "Our Services", path: "/services" },
     { name: "Our Doctors", path: "/doctors" },
@@ -130,6 +131,7 @@ const Navbar = () => {
                 {link.name}
               </Link>
             ))}
+              {/* This is the separate, correctly styled Emergency link */}
               <Link href="/emergency" className="flex items-center gap-1 text-red-600 font-medium text-sm hover:text-red-800 transition-colors">
                 <AlertTriangle className="h-4 w-4" />
                 24/7 Emergency
@@ -174,6 +176,7 @@ const Navbar = () => {
                   {link.name}
                 </Link>
               ))}
+                {/* This is the separate, correctly styled Emergency link for mobile */}
                 <Link href="/emergency" className="flex items-center gap-1 text-red-600 font-medium py-2 hover:text-red-800 transition-colors">
                   <AlertTriangle className="h-4 w-4" />
                   24/7 Emergency
