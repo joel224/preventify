@@ -5,6 +5,7 @@ import { motion, useScroll, useTransform } from "framer-motion";
 import { Button } from "@/components/ui/button"
 import BookingDialog from "../BookingDialog"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import Image from 'next/image';
 
 const clinicsData = [
     { id: '673d87fdaa91c2001d716c91', name: 'Padinjarangadi' },
@@ -26,7 +27,13 @@ const PreventiveLifestyleSectionMobile = () => {
     };
 
     return (
-        <section ref={targetRef} className="py-16 md:py-24 relative overflow-hidden z-10" style={{ backgroundColor: '#ffffff' }}>
+        
+        <section className="bg-white py-16 md:py-24 relative -mt-20 rounded-t-2xl shadow-xl">
+            <div className="absolute -top-12 left-4 sm:left-6 lg:left-8 z-10">
+                <div className="inline-flex items-center gap-2 bg-white rounded-full p-8 shadow border border-gray-200/80">
+                    <Image src="/logo.png" alt="Preventify Logo" width={88} height={88} />
+                </div>
+            </div>
             <motion.div style={{ y }} className="container mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="grid grid-cols-1 gap-8 md:gap-12 items-center">
                     <div className="text-center">
