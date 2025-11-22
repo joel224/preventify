@@ -48,6 +48,8 @@
     "firebase": "^11.9.1",
     "framer-motion": "^11.2.10",
     "genkit": "^1.0.0",
+    "genkitx-groq": "latest",
+    "groq-sdk": "^0.36.0",
     "lucide-react": "^0.475.0",
     "next": "14.2.5",
     "next-themes": "^0.3.0",

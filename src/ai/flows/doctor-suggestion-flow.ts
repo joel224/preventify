@@ -8,8 +8,9 @@
  */
 
 import { ai } from '@/ai/genkit';
-import { googleAI } from '@genkit-ai/google-genai';
 import { z } from 'genkit';
+// Import the correct model constant using the name TypeScript suggests
+import { llama31x8bInstant } from 'genkitx-groq'; // This is the correct import name
 
 const DoctorSchema = z.object({
     id: z.string().describe('The unique identifier for the doctor.'),
@@ -52,6 +53,17 @@ const prompt = ai.definePrompt({
         Analyze the symptoms and choose the doctor whose specialty is the best match.
         You MUST return the ID of one of the doctors from the list provided. Do not invent a doctor ID.
         Provide a very short, one-sentence reasoning for your choice.
+
+        IMPORTANT: Return your response as a JSON object with EXACTLY these two properties:
+        {
+          "doctorId": "the doctor ID from the list",
+          "reasoning": "one-sentence explanation"
+        }
+        
+        - You MUST return the ID of one of the doctors from the list provided. Do not invent a doctor ID.
+        - The reasoning must be exactly one sentence, very brief.
+        - Do NOT include any other properties or fields in your response.
+        - Do NOT wrap the JSON in code blocks or add any text before or after.
     `,
 });
 
@@ -64,7 +76,8 @@ const suggestDoctorFlow = ai.defineFlow(
   },
   async (input) => {
     const { output } = await prompt(input, {
-      model: googleAI.model('gemini-1.5-flash-001'),
+      // Use the correct imported model constant
+      model: llama31x8bInstant,
     });
     return output!;
   }
