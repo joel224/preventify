@@ -923,7 +923,7 @@ export default function BookingDialog({
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>{children}</DialogTrigger>
-      <DialogContent className="sm:max-w-xl md:max-w-2xl">
+      <DialogContent className="sm:max-w-xl md:max-w-7xl h-2/5">
         <DialogTitle className="sr-only">Book an Appointment</DialogTitle>
         <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)}>

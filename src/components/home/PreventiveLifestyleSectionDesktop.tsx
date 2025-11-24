@@ -27,6 +27,22 @@ const PreventiveLifestyleSectionDesktop = () => {
         return { firstName, lastName };
     };
 
+    const getSanitizedPhone = () => {
+        if (!phone.trim()) return '';
+        // Remove all non-digit characters
+        const digitsOnly = phone.replace(/\D/g, '');
+        // If it starts with 91 and has 12 digits, take the last 10.
+        if (digitsOnly.startsWith('91') && digitsOnly.length === 12) {
+            return digitsOnly.slice(2);
+        }
+        // If it starts with 0 and has 11 digits, take the last 10.
+        if (digitsOnly.startsWith('0') && digitsOnly.length === 11) {
+            return digitsOnly.slice(1);
+        }
+        // Otherwise, assume it's a 10-digit number.
+        return digitsOnly;
+    };
+
     return (
         <section ref={targetRef} className="py-16 md:py-24 relative overflow-hidden z-10" style={{ backgroundColor: '#ffffff' }}>
             <motion.div style={{ y }} className="container mx-auto px-4 sm:px-6 lg:px-8">
@@ -60,7 +76,7 @@ const PreventiveLifestyleSectionDesktop = () => {
                                     <BookingDialog
                                         initialFirstName={getProcessedNames().firstName}
                                         initialLastName={getProcessedNames().lastName}
-                                        initialPhone={phone}
+                                        initialPhone={getSanitizedPhone()}
                                     >
                                         <Button type="button" className="w-full h-14 text-xl bg-preventify-dark-blue hover:bg-black text-white font-medium transition-all duration-200 shadow-md hover:shadow-lg">
                                             Request Callback
