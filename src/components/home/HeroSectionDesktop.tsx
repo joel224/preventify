@@ -30,13 +30,10 @@ declare global {
    ============================================================== */
 const getDynamicConfig = (width: number, height: number) => {
     // Fixed aspect ratios for images
-    const handAspectRatio = 400 / 550; // height / width
     const jarAspectRatio = 250 / 250; // square
     
     // Base sizes adjustable here
-    const baseHandWidth = 450; // Reduced from 550 for smaller hand (adjust as needed, e.g., 400 for even smaller)
     const baseJarWidth = 300; // Increased to 350 for larger jar visibility
-    const baseHandLeft = 450; // Adjusted from 350 to move hand slightly to the right (increase this value to move further right)
 
     if (!width || !height) {
         return {
@@ -53,18 +50,7 @@ const getDynamicConfig = (width: number, height: number) => {
             jarExitEnd: 0.8,
             jarY: "-100%",
             jarOpacityEnd: 0.25,
-            handExitStart: 0,
-            handExitEnd: 0.6, // Reduced from 0.7 to 0.2 to match shorter scroll
-            handY: "40vh",
-            handBottomOffset: 12,
-            handOpacityEnd: 1,
             // Removed 'text' configuration block
-            hand: {
-                leftPct: (baseHandLeft / refWidth) * 100,
-                topPct: (110 / refHeight) * 100,
-                widthPct: (baseHandWidth / refWidth) * 100,
-                paddingBottomPct: handAspectRatio * 100,
-            },
             jar: {
                 leftPct: 10,
                 topPct: 0,
@@ -79,10 +65,6 @@ const getDynamicConfig = (width: number, height: number) => {
     }
     
     // Calculate percentages based on current screen size (positions scale with screen)
-    const handLeftPct = (baseHandLeft / refWidth) * 100;
-    const handTopPct = (450 / refHeight) * 100;
-    const handWidthPct = (baseHandWidth / refWidth) * 100;
-    
     const jarLeftPct = (-50 / refWidth) * 100;
     const jarTopPct = (0 / refHeight) * 100;
     const jarWidthPct = (baseJarWidth / refWidth) * 100;
@@ -112,21 +94,7 @@ const getDynamicConfig = (width: number, height: number) => {
         jarY: "-100%",
         jarOpacityEnd: 0.25,
 
-        // hand
-        handExitStart: 0,
-        handExitEnd: 0.5, // Reduced to match shorter scroll duration
-        handY: "40vh",
-        handOpacityEnd: 1,
-
         // Removed 'text' configuration block
-
-        /** ---- HAND POSITION & SIZE (% of vw/vh) ---- */
-        hand: {
-            leftPct: handLeftPct,
-            topPct: handTopPct,
-            widthPct: handWidthPct,
-            paddingBottomPct: handAspectRatio * 100, // Fixed aspect ratio
-        },
 
         /** ---- JAR POSITION & SIZE (% of vw/vh) ---- */
         jar: {
@@ -230,26 +198,12 @@ export default function HeroSectionDesktop() {
     [1, 0]
   );
 
-  /* -------------------- HAND ANIMATION -------------------- */
-  const handY = useTransform(
-    smooth,
-    [CONFIG.handExitStart, CONFIG.handExitEnd],
-    ["15vh", CONFIG.handY]
-  );
-  const handOpacity = useTransform(
-    smooth,
-    [CONFIG.handExitStart, CONFIG.handExitEnd],
-    [1, CONFIG.handOpacityEnd]
-  );
-
-  // Removed text-related transforms
-
   return (
     <section
       ref={targetRef}
       style={{ 
         backgroundColor: "#f8f5f0",
-        height: `${CONFIG.totalHeightVh}vh`   // ← THIS is the fix, now 100vh
+        height: `${CONFIG.totalHeightVh}vh`
       }}
       className="relative"
     >
@@ -372,41 +326,6 @@ export default function HeroSectionDesktop() {
             </div>
           </div>
         </div>
-        {/* HAND – FALLS FROM JAR THEN STAYS FIXED */}
-        <motion.div
-        style={{
-          opacity: handOpacity,
-          willChange: 'opacity',
-          position: 'absolute',
-          left: `${CONFIG.hand.leftPct}vw`,
-          bottom: `${CONFIG.handBottomOffset}px`,
-        }}
-        animate={{
-          y: [1, getFallDistance()], // ← Falls from 0 to getFallDistance()
-          transition: { 
-            duration: 1.5, 
-            ease: "easeOut" 
-          }
-        }}
-        className="absolute z-0"
-      >
-        <div
-          style={{
-            position: "relative",
-            width: `${CONFIG.hand.widthPct}vw`,
-            paddingBottom: `${CONFIG.hand.paddingBottomPct}%`,
-            zIndex: 1,
-          }}
-        >
-          <Image
-            src="/RAW_IMG/hand.avif"
-            alt="Presenting hand"
-            fill
-            sizes={`${CONFIG.hand.widthPct}vw`}
-            className="object-contain"
-          />
-        </div>
-      </motion.div>
       <FixedWatermark />
         {/* Removed the final text section */}
       </div>
