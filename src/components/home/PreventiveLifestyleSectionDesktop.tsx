@@ -5,13 +5,21 @@ import { motion, useScroll, useTransform } from "framer-motion";
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { User, Mail, Phone, MapPin } from "lucide-react";
 import { Label } from "../ui/label";
 
-
-const clinicsData = [
-    { id: '673d87fdaa91c2001d716c91', name: 'Padinjarangadi' },
-    { id: 'some-other-clinic-id', name: 'Vattamkulam' } 
+const doctorsData = [
+    { id: '173208576372747', name: 'Dr. Rakesh K R' },
+    { id: '173208610763786', name: 'Dr. Mohammed Faisal' },
+    { id: '174497110921725', name: 'Dr. Hafsa Hussain' },
+    { id: '173771631358722', name: 'Dr. Krishnendu U K' },
+    { id: '175931883083616', name: 'Dr. Girish U' },
+    { id: '175949148741914', name: 'Dr. Ijas V. I.' },
+    { id: '175949141398449', name: 'Dr. Husna V.' },
+    { id: '175931888074630', name: 'Dr. Neeharika V.' },
+    { id: '175931864615485', name: 'Dr. Sreedev N' },
+    { id: '175949158258558', name: 'Dr. Ajay Biju' },
+    { id: '175949152812334', name: 'Dr. Renjith A.' },
+    { id: '175949162376135', name: 'Dr. K.Y.Sanjay' },
 ];
 
 const PreventiveLifestyleSectionDesktop = () => {
@@ -50,33 +58,28 @@ const PreventiveLifestyleSectionDesktop = () => {
 
                         <div className="max-w-6xl mx-auto p-6 md:p-8 rounded-xl bg-white/30 backdrop-blur-md border border-gray-200/80 shadow-lg">
                            <form onSubmit={handleSubmit}>
-                                <div className="grid grid-cols-1 md:grid-cols-5 gap-4 items-end">
+                                <div className="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
                                     {/* Name Input */}
                                     <div className="space-y-2 text-left">
                                         <Label htmlFor="name" className="text-sm font-medium text-gray-700">Name</Label>
-                                        <Input id="name" type="text" placeholder="Jane Smith" required className="h-12 text-base" />
-                                    </div>
-                                    {/* Email Input */}
-                                     <div className="space-y-2 text-left">
-                                        <Label htmlFor="email" className="text-sm font-medium text-gray-700">Email</Label>
-                                        <Input id="email" type="email" placeholder="jane@framer.com" required className="h-12 text-base" />
+                                        <Input id="name" type="text" placeholder="Your Name" required className="h-12 text-base" />
                                     </div>
                                     {/* Phone Input */}
                                     <div className="space-y-2 text-left">
                                         <Label htmlFor="phone" className="text-sm font-medium text-gray-700">Phone Number</Label>
-                                        <Input id="phone" type="tel" placeholder="(111) 111-1111" required className="h-12 text-base" />
+                                        <Input id="phone" type="tel" placeholder="(+91) 987-654-3210" required className="h-12 text-base" />
                                     </div>
-                                    {/* Clinic Select */}
+                                    {/* Doctor Select */}
                                      <div className="space-y-2 text-left">
-                                         <Label htmlFor="clinic" className="text-sm font-medium text-gray-700">Clinic Location</Label>
+                                         <Label htmlFor="doctor" className="text-sm font-medium text-gray-700">Doctor</Label>
                                          <Select required>
-                                            <SelectTrigger id="clinic" className="w-full h-12 text-base">
-                                                <SelectValue placeholder="Select Clinic" />
+                                            <SelectTrigger id="doctor" className="w-full h-12 text-base">
+                                                <SelectValue placeholder="Select a Doctor" />
                                             </SelectTrigger>
                                             <SelectContent>
-                                                {clinicsData.map(clinic => (
-                                                    <SelectItem key={clinic.id} value={clinic.name} className="cursor-pointer hover:bg-gray-50">
-                                                        {clinic.name}
+                                                {doctorsData.map(doctor => (
+                                                    <SelectItem key={doctor.id} value={doctor.name} className="cursor-pointer hover:bg-gray-50 text-base">
+                                                        {doctor.name}
                                                     </SelectItem>
                                                 ))}
                                             </SelectContent>
@@ -85,7 +88,7 @@ const PreventiveLifestyleSectionDesktop = () => {
                                      {/* Submit Button */}
                                     <div>
                                         <Button type="submit" className="w-full h-12 text-base bg-preventify-dark-blue hover:bg-black text-white font-medium transition-all duration-200 shadow-md hover:shadow-lg">
-                                            Request a Callback
+                                            Request Callback
                                         </Button>
                                     </div>
                                 </div>
