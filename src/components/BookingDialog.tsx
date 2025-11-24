@@ -186,13 +186,35 @@ export default function BookingDialog({
     return doctor ? doctor.clinicId : '';
   }, [selectedDoctorId]);
   
-  // Effect to set initial values when dialog opens
+  // Effect to handle pre-filled data and skip step 1
   useEffect(() => {
-    if (open) {
-      form.setValue('firstName', initialFirstName, { shouldValidate: true });
-      form.setValue('lastName', initialLastName, { shouldValidate: true });
-      form.setValue('phone', initialPhone, { shouldValidate: true });
-    }
+    const handleInitialData = async () => {
+        if (open && initialFirstName && initialPhone) {
+            form.setValue('firstName', initialFirstName, { shouldValidate: true });
+            form.setValue('lastName', initialLastName, { shouldValidate: true });
+            form.setValue('phone', initialPhone, { shouldValidate: true });
+            
+            // This replicates the logic from handleNextStep for step 1
+            setIsLoading(true);
+            try {
+                const res = await fetch(`/api/search-patient?phone=${encodeURIComponent(initialPhone)}`);
+                if (res.ok) {
+                    const patient: FoundPatientProfile = await res.json();
+                    setFoundPatientProfile(patient);
+                    form.setValue('firstName', patient.first_name);
+                    form.setValue('lastName', patient.last_name);
+                    toast.info(`Welcome back, ${patient.first_name}! Your details have been pre-filled.`);
+                }
+            } catch (error) {
+                console.log('Patient search failed or not found, continuing as new patient.');
+                setFoundPatientProfile(null);
+            } finally {
+                setIsLoading(false);
+                setStep(2); // Skip to the next step
+            }
+        }
+    };
+    handleInitialData();
   }, [open, initialFirstName, initialLastName, initialPhone, form]);
 
   useEffect(() => {
@@ -348,6 +370,11 @@ export default function BookingDialog({
         setShowAiHelp(false);
         return;
     }
+    // Prevent going back to step 1 if it was skipped
+    if (step === 2 && (initialFirstName || initialPhone)) {
+        setOpen(false);
+        return;
+    }
     setStep(step - 1);
   };
   
@@ -481,7 +508,7 @@ export default function BookingDialog({
         return (
           <>
             <DialogHeader>
-              <DialogTitle>You're leaving the Chrome Web Store</DialogTitle>
+              <DialogTitle>Book an Appointment</DialogTitle>
               <DialogDescription>Please provide your contact details. If you are a returning patient, we'll find your details.</DialogDescription>
             </DialogHeader>
             <div className="space-y-4 py-4">
@@ -572,7 +599,7 @@ export default function BookingDialog({
         return (
           <>
             <DialogHeader>
-              
+                <DialogTitle>Book an Appointment</DialogTitle>
               <DialogDescription>
                 Booking an appointment at a Preventify clinic.
               </DialogDescription>
@@ -665,7 +692,7 @@ export default function BookingDialog({
         return (
           <>
             <DialogHeader>
-              
+                <DialogTitle>Book an Appointment</DialogTitle>
               <DialogDescription>
                 {`Booking for ${selectedDoctor?.name}`}
               </DialogDescription>
