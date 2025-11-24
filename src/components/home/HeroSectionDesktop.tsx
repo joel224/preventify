@@ -49,12 +49,12 @@ const getDynamicConfig = (width: number, height: number) => {
             subHeadlineExitEnd: 0.35,
             subHeadlineY: "-100%",
             subHeadlineOpacityEnd: 0.25,
-            jarExitStart: 0,
-            jarExitEnd: 0.35,
+            jarExitStart: 0.4,
+            jarExitEnd: 0.8,
             jarY: "-100%",
             jarOpacityEnd: 0.25,
             handExitStart: 0,
-            handExitEnd: 0.2, // Reduced from 0.7 to 0.2 to match shorter scroll
+            handExitEnd: 0.6, // Reduced from 0.7 to 0.2 to match shorter scroll
             handY: "40vh",
             handBottomOffset: 12,
             handOpacityEnd: 1,

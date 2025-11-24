@@ -5,6 +5,7 @@ import { motion, useScroll, useTransform } from "framer-motion";
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "../ui/label";
+import BookingDialog from "../BookingDialog";
 
 const PreventiveLifestyleSectionDesktop = () => {
     const targetRef = useRef<HTMLDivElement>(null);
@@ -13,12 +14,17 @@ const PreventiveLifestyleSectionDesktop = () => {
         offset: ["start end", "end start"]
     });
 
+    const [name, setName] = useState('');
+    const [phone, setPhone] = useState('');
+
     const y = useTransform(scrollYProgress, [0, 1], ["25%", "-25%"]);
     
-    const handleSubmit = (e: React.FormEvent) => {
-        e.preventDefault();
-        // Here you would handle form submission, e.g., send data to an API
-        alert("Thank you! We will call you back shortly.");
+    const getProcessedNames = () => {
+        if (!name.trim()) return { firstName: '', lastName: '' };
+        const nameParts = name.trim().split(' ');
+        const firstName = nameParts.shift() || '';
+        const lastName = nameParts.join(' ') || 'N/A';
+        return { firstName, lastName };
     };
 
     return (
@@ -26,7 +32,7 @@ const PreventiveLifestyleSectionDesktop = () => {
             <motion.div style={{ y }} className="container mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="grid grid-cols-1 gap-8 md:gap-12 items-center">
                     <div className="text-center">
-                        <h2 className="font-display text-4xl md:text-5xl font-bold mb-4 text-preventify-dark-blue">
+                         <h2 className="font-display text-4xl md:text-5xl font-bold mb-4 text-preventify-dark-blue">
                             AI assisted Modern Healthcare for a <span className="text-primary">Preventive <br className="hidden md:block" /> Lifestyle</span>
                         </h2>
                         
@@ -37,28 +43,32 @@ const PreventiveLifestyleSectionDesktop = () => {
                         </p>
 
                         <div className="max-w-6xl mx-auto p-6 md:p-8 rounded-xl bg-white/30 backdrop-blur-md border border-gray-200/80 shadow-lg">
-                           <form onSubmit={handleSubmit}>
-                                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-end">
-                                    {/* Name Input */}
-                                    <div className="space-y-2 text-left">
-                                        <Label htmlFor="name" className="text-lg font-medium text-gray-700">Name</Label>
-                                        <Input id="name" type="text" placeholder="Your Name" required className="h-14 text-lg" />
-                                    </div>
-                                    {/* Phone Input */}
-                                    <div className="space-y-2 text-left">
-                                        <Label htmlFor="phone" className="text-lg font-medium text-gray-700">Phone Number</Label>
-                                        <Input id="phone" type="tel" placeholder="(+91) 987-654-3210" required className="h-14 text-lg" />
-                                    </div>
-                                    
-                                     {/* Submit Button */}
-                                    <div>
-                                        <Button type="submit" className="w-full h-14 text-lg bg-preventify-dark-blue hover:bg-black text-white font-medium transition-all duration-200 shadow-md hover:shadow-lg">
+                            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-end">
+                                {/* Name Input */}
+                                <div className="space-y-2 text-left">
+                                    <Label htmlFor="name-desktop" className="text-xl font-medium text-gray-700">Name</Label>
+                                    <Input id="name-desktop" type="text" placeholder="Your Name" value={name} onChange={(e) => setName(e.target.value)} required className="h-14 text-xl" />
+                                </div>
+                                {/* Phone Input */}
+                                <div className="space-y-2 text-left">
+                                    <Label htmlFor="phone-desktop" className="text-xl font-medium text-gray-700">Phone Number</Label>
+                                    <Input id="phone-desktop" type="tel" placeholder="(+91) 987-654-3210" value={phone} onChange={(e) => setPhone(e.target.value)} required className="h-14 text-xl" />
+                                </div>
+                                
+                                    {/* Submit Button */}
+                                <div>
+                                    <BookingDialog
+                                        initialFirstName={getProcessedNames().firstName}
+                                        initialLastName={getProcessedNames().lastName}
+                                        initialPhone={phone}
+                                    >
+                                        <Button type="button" className="w-full h-14 text-xl bg-preventify-dark-blue hover:bg-black text-white font-medium transition-all duration-200 shadow-md hover:shadow-lg">
                                             Request Callback
                                         </Button>
-                                    </div>
+                                    </BookingDialog>
                                 </div>
-                           </form>
-                           <p className="text-xs text-gray-500 mt-4 text-center">
+                            </div>
+                           <p className="text-sm text-gray-500 mt-4 text-center">
                                 By submitting your contact details, you agree to receive automated SMS/MMS messages from Preventify. Message & data rates may apply.
                            </p>
                         </div>
