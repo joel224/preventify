@@ -82,7 +82,7 @@ const Navbar = () => {
     >
       {/* Top Bar */}
       <div className="bg-white/5 border-b border-white/20 transition-all duration-300 max-h-0 opacity-0 group-hover:max-h-12 group-hover:opacity-100 overflow-hidden">
-        <div className="container mx-auto py-1.5 px-4 sm:px-6 lg:px-8 flex justify-between items-center text-xs text-slate-600">
+        <div className="container mx-auto py-1.5 px-4 sm:px-6 lg:px-8 flex justify-between items-center text-sm text-slate-600">
           <div className="flex items-center gap-4">
             {topNavLinks.map(link => (
               <Link key={link.name} href={link.path} className={`flex items-center gap-1 hover:text-primary transition-colors`}>
@@ -116,23 +116,23 @@ const Navbar = () => {
         <div className="flex justify-between items-center">
           <div className="flex items-center">
             <Link href="/" className="flex items-center">
-               <img src="/logo.png" alt="Preventify Logo" className="h-10" />
+               <img src="/logo.png" alt="Preventify Logo" className="h-12" />
             </Link>
           </div>
 
           {/* Desktop Navigation */}
-          <nav className="hidden lg:flex space-x-6 items-center">
+          <nav className="hidden lg:flex space-x-8 items-center">
             {mainNavLinks.map((link) => (
               <Link
                 key={link.name}
                 href={link.path}
-                className={`font-medium transition-colors text-sm ${pathname === link.path ? 'text-primary' : 'text-gray-700 hover:text-primary'}`}
+                className={`font-medium transition-colors text-base ${pathname === link.path ? 'text-primary' : 'text-gray-700 hover:text-primary'}`}
               >
                 {link.name}
               </Link>
             ))}
               {/* This is the separate, correctly styled Emergency link */}
-              <Link href="/emergency" className="flex items-center gap-1 text-red-600 font-medium text-sm hover:text-red-800 transition-colors">
+              <Link href="/emergency" className="flex items-center gap-1 text-red-600 font-medium text-base hover:text-red-800 transition-colors">
                 <AlertTriangle className="h-4 w-4" />
                 24/7 Emergency
               </Link>
@@ -140,7 +140,7 @@ const Navbar = () => {
 
           <div className="hidden lg:flex items-center space-x-4">
               <BookingDialog>
-              <button className="relative px-6 py-2 bg-primary text-white font-medium rounded-full transition-all duration-300 overflow-hidden group">
+              <button className="relative px-8 py-3 bg-primary text-white font-medium rounded-full transition-all duration-300 overflow-hidden group text-base">
                 <span className="relative z-10">Book Appointment</span>
                 <div className="absolute inset-0 bg-black/30 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left"></div>
               </button>
@@ -154,9 +154,9 @@ const Navbar = () => {
               onClick={toggleMenu}
             >
               {mobileMenuOpen ? (
-                <X className="h-6 w-6" />
+                <X className="h-7 w-7" />
               ) : (
-                <Menu className="h-6 w-6" />
+                <Menu className="h-7 w-7" />
               )}
             </button>
           </div>
@@ -170,20 +170,20 @@ const Navbar = () => {
                 <Link
                   key={link.name}
                   href={link.path}
-                  className={`font-medium transition-colors py-2 ${pathname === link.path ? 'text-primary' : 'text-gray-700 hover:text-primary'}`}
+                  className={`font-medium transition-colors py-2 text-lg ${pathname === link.path ? 'text-primary' : 'text-gray-700 hover:text-primary'}`}
                   onClick={() => setMobileMenuOpen(false)}
                 >
                   {link.name}
                 </Link>
               ))}
                 {/* This is the separate, correctly styled Emergency link for mobile */}
-                <Link href="/emergency" className="flex items-center gap-1 text-red-600 font-medium py-2 hover:text-red-800 transition-colors">
-                  <AlertTriangle className="h-4 w-4" />
+                <Link href="/emergency" className="flex items-center gap-1 text-red-600 font-medium py-2 text-lg hover:text-red-800 transition-colors">
+                  <AlertTriangle className="h-5 w-5" />
                   24/7 Emergency
                 </Link>
               <div className="flex flex-col space-y-2 pt-3">
                 <BookingDialog>
-                  <button className="relative px-6 py-2 bg-primary text-white font-medium rounded-full transition-all duration-300 overflow-hidden group w-full">
+                  <button className="relative px-6 py-3 bg-primary text-white font-medium rounded-full transition-all duration-300 overflow-hidden group w-full text-lg">
                     <span className="relative z-10">Book Appointment</span>
                     <div className="absolute inset-0 bg-black/30 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left"></div>
                   </button>
@@ -198,3 +198,5 @@ const Navbar = () => {
 };
 
 export default Navbar;
+
+    
