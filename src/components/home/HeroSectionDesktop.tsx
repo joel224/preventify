@@ -410,6 +410,13 @@ export default function HeroSectionDesktop() {
       <FixedWatermark />
         {/* Removed the final text section */}
       </div>
+
+      {/* NEW: White Curve Section */}
+      <div className="absolute bottom-0 left-0 right-0 z-20 leading-[0px]">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 120" preserveAspectRatio="none" className="w-full h-auto">
+          <path d="M1440,21.2101911 C1200,70.7019108 960,100.000000 720,100.000000 C480,100.000000 240,70.7019108 0,21.2101911 L0,120 L1440,120 L1440,21.2101911 Z" style={{fill: '#ffffff', stroke: 'none'}}></path>
+        </svg>
+      </div>
     </section>
    
   );

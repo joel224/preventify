@@ -44,11 +44,11 @@ const PreventiveLifestyleSectionDesktop = () => {
     };
 
     return (
-        <section ref={targetRef} className="py-16 md:py-24 relative overflow-hidden z-10" style={{ backgroundColor: '#ffffff' }}>
+        <section ref={targetRef} className="pt-24 md:pt-32 pb-16 md:pb-24 relative overflow-hidden z-10" style={{ backgroundColor: '#ffffff' }}>
             <motion.div style={{ y }} className="container mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="grid grid-cols-1 gap-8 md:gap-12 items-center">
                     <div className="text-center">
-                         <h2 className="font-display text-4xl md:text-5xl font-bold mb-4 text-preventify-dark-blue">
+                         <h2 className="font-display text-4xl md:text-5xl font-bold mb-4 text-preventify-dark-blue -mt-12">
                             AI assisted Modern Healthcare for a <span className="text-primary">Preventive <br className="hidden md:block" /> Lifestyle</span>
                         </h2>
                         
