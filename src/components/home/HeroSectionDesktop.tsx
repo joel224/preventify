@@ -2,19 +2,11 @@
 
 import * as React from "react";
 import Image from "next/image";
-import { motion, useScroll, useTransform, useSpring, MotionValue } from "framer-motion";
-import ScrollRevealText from "../ScrollRevealText";
+import { motion, useScroll, useTransform, useSpring } from "framer-motion";
 import { useWindowSize } from "@/hooks/use-window-size";
 import FixedWatermark from "@/components/home/FixedWatermark";
 const { useRef, useState, useMemo, useEffect } = React;
 
-// ... (ScrollTypewriter component remains unchanged) ...
-
-/* ==============================================================
-   REFERENCE LAYOUT – Based on 1366x768 screen
-   ============================================================== */
-const refWidth = 1366;
-const refHeight = 768;
 declare global {
   namespace JSX {
     interface IntrinsicElements {
@@ -23,21 +15,16 @@ declare global {
   }
 }
 
-// ... (ScrollRevealWrapper component remains unchanged) ...
+const refWidth = 1366;
+const refHeight = 768;
 
-/* ==============================================================
-   DYNAMIC CONFIGURATION – Calculates layout based on screen size
-   ============================================================== */
 const getDynamicConfig = (width: number, height: number) => {
-    // Fixed aspect ratios for images
-    const jarAspectRatio = 250 / 250; // square
-    
-    // Base sizes adjustable here
-    const baseJarWidth = 300; // Increased to 350 for larger jar visibility
+    const jarAspectRatio = 250 / 250;
+    const baseJarWidth = 300;
 
     if (!width || !height) {
         return {
-            totalHeightVh: 100, // Changed from 190 to 100
+            totalHeightVh: 300,
             headlineExitStart: 0,
             headlineExitEnd: 0.25,
             headlineY: "-100%",
@@ -50,7 +37,6 @@ const getDynamicConfig = (width: number, height: number) => {
             jarExitEnd: 0.8,
             jarY: "-100%",
             jarOpacityEnd: 0.25,
-            // Removed 'text' configuration block
             jar: {
                 leftPct: 10,
                 topPct: 0,
@@ -64,7 +50,6 @@ const getDynamicConfig = (width: number, height: number) => {
         };
     }
     
-    // Calculate percentages based on current screen size (positions scale with screen)
     const jarLeftPct = (-50 / refWidth) * 100;
     const jarTopPct = (0 / refHeight) * 100;
     const jarWidthPct = (baseJarWidth / refWidth) * 100;
@@ -73,38 +58,25 @@ const getDynamicConfig = (width: number, height: number) => {
     const socialTopPct = (-110 / refHeight) * 100;
 
     return {
-        totalHeightVh: 100, // Changed from 200 to 100
-
-        /** ---- PHASE 1 (Essentia exit) ---- */
-        // headline
+        totalHeightVh: 300, 
         headlineExitStart: 0,
         headlineExitEnd: 0.25,
         headlineY: "-100%",
         headlineOpacityEnd: 0.2,
-
-        // sub-headline
         subHeadlineExitStart: 0,
         subHeadlineExitEnd: 0.35,
         subHeadlineY: "-100%",
         subHeadlineOpacityEnd: 0.25,
-
-        // product jar
         jarExitStart: 0,
         jarExitEnd: 0.35,
         jarY: "-100%",
         jarOpacityEnd: 0.25,
-
-        // Removed 'text' configuration block
-
-        /** ---- JAR POSITION & SIZE (% of vw/vh) ---- */
         jar: {
             leftPct: jarLeftPct,
             topPct: jarTopPct,
             widthPct: jarWidthPct,
-            paddingBottomPct: jarAspectRatio * 100, // Fixed aspect ratio
+            paddingBottomPct: jarAspectRatio * 100,
         },
-
-        /** ---- SOCIAL PROOF POSITION (% of vw/vh) ---- */
         socialProof: {
             leftPct: socialLeftPct,
             topPct: socialTopPct,
@@ -112,15 +84,10 @@ const getDynamicConfig = (width: number, height: number) => {
     };
 };
 
-/* ==============================================================
-   END OF DYNAMIC CONFIGURATION
-   ============================================================== */
-
 const customerImages = [
   "https://res.cloudinary.com/dyf8umlda/image/upload/v1748262006/Dr_Rakesh_xngrlx.jpg",
   "https://res.cloudinary.com/dyf8umlda/image/upload/v1748257298/Dr_Faisal_stbx3w.jpg",
   "https://res.cloudinary.com/dyf8umlda/image/upload/v1748255660/Dr_Hafsa_t3qk7r.jpg",
-
   "https://res.cloudinary.com/dyf8umlda/image/upload/v1748255860/Dr_Krishnendhu_dxtah5.jpg",
   "https://res.cloudinary.com/dyf8umlda/image/upload/v1748255860/Dr_girish_wcph4p.jpg",
 ].map((url) => url.trim());
@@ -130,16 +97,13 @@ export default function HeroSectionDesktop() {
   const [navbarHeight, setNavbarHeight] = useState(0);
   const { width, height } = useWindowSize();
 
-  // Your entire CONFIG is now recalculated whenever the window size changes
   const CONFIG = useMemo(() => getDynamicConfig(width || 1366, height || 768), [width, height]);
 
-  // Dynamic grid spans (total 12 columns) - adjusted for better jar space on smaller screens
   const leftSpan = useMemo(() => width && width < 1280 ? 4 : 5, [width]);
-  const middleSpan = useMemo(() => width && width < 1280 ? 4 : 3, [width]); // Increased middle span slightly for more jar room
+  const middleSpan = useMemo(() => width && width < 1280 ? 4 : 3, [width]);
   const rightSpan = useMemo(() => 12 - leftSpan - middleSpan, [leftSpan, middleSpan]);
   const middleStart = useMemo(() => leftSpan + 1, [leftSpan]);
 
-  // Get navbar height on mount
   useEffect(() => {
     const navbar = document.querySelector('header[data-navbar="main"]');
     if (navbar) {
@@ -159,14 +123,12 @@ export default function HeroSectionDesktop() {
     restDelta: 0.001,
   });
 
-  // Add this function inside your component (before the return statement)
   const getFallDistance = () => {
-    if (!height) return '0vh'; // Fallback if height is undefined
+    if (!height) return '0vh';
     let x = 0.3 + 0.0150;
-    return `${height * x}px`; // 50% of screen height
+    return `${height * x}px`;
   };
 
-  /* -------------------- PHASE 1 TRANSFORMS -------------------- */
   const headlineY = useTransform(
     smooth,
     [CONFIG.headlineExitStart, CONFIG.headlineExitEnd],
@@ -207,13 +169,10 @@ export default function HeroSectionDesktop() {
       }}
       className="relative"
     >
-      {/* STICKY CONTAINER */}
       <div className="h-screen sticky top-0 overflow-hidden flex items-center">
-        {/* -------------------- PHASE 1 (EXIT) -------------------- */}
         <div className="absolute inset-0 px-6 z-10 pointer-events-none">
           <div className="container mx-auto h-full">
             <div className="grid grid-cols-12 gap-x-8 h-full items-center">
-              {/* LEFT – HEADLINE + SOCIAL */}
               <motion.div
                 style={{
                   y: headlineY,
@@ -223,9 +182,6 @@ export default function HeroSectionDesktop() {
                 className="space-y-8"
               >
                 <motion.h1
-                  initial={{ y: 0, x: 0, scale: 1 }}
-                  animate={{ y: "-200%", x: "9%", scale: 1.4 }}
-                  transition={{ duration: 1.5, ease: "easeOut" }}
                   className="text-5xl lg:text-6xl font-bold text-[#25338e]  leading-tight text-left font-sans-serif"
                   style={{ fontSize: '72px', lineHeight: '1.1', fontWeight: 500 }}
                 >
@@ -236,7 +192,6 @@ export default function HeroSectionDesktop() {
                      
                   </span> Preventify
                 </motion.h1>
-                {/* SOCIAL PROOF – custom position (vh/vw responsive) */}
                 <div
                   style={{
                     position: "relative",
@@ -282,14 +237,13 @@ export default function HeroSectionDesktop() {
                   </div>
                 </div>
               </motion.div>
-              {/* MIDDLE – JAR */}
               <motion.div
                 style={{
                   y: jarY,
                   opacity: jarOpacity,
                   gridColumn: `${middleStart} / span ${middleSpan}`,
                 }}
-                className="flex justify-center items-center" // Added items-center for better vertical alignment
+                className="flex justify-center items-center"
               >
                 <div
                   style={{
@@ -310,14 +264,13 @@ export default function HeroSectionDesktop() {
                   />
                 </div>
               </motion.div>
-              {/* RIGHT – SUB-HEADLINE */}
               <motion.div
                 style={{
                   y: subHeadlineY,
                   opacity: subHeadlineOpacity,
                   gridColumn: `span ${rightSpan} / -1`,
                 }}
-                className="max-w-md text-right ml-auto" // Added ml-auto to push to right if needed
+                className="max-w-md text-right ml-auto"
               >
                 <p className="text-xl lg:text-2xl font-medium text-gray-700 leading-relaxed">
                   We strip away the unnecessary to focus on what truly works.
@@ -327,10 +280,8 @@ export default function HeroSectionDesktop() {
           </div>
         </div>
       <FixedWatermark />
-        {/* Removed the final text section */}
       </div>
 
-      {/* NEW: White Curve Section */}
       <div className="absolute bottom-0 left-0 right-0 z-20 leading-[0px]">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 120" preserveAspectRatio="none" className="w-full h-auto">
           <path d="M1440,21.2101911 C1200,70.7019108 960,100.000000 720,100.000000 C480,100.000000 240,70.7019108 0,21.2101911 L0,120 L1440,120 L1440,21.2101911 Z" style={{fill: '#ffffff', stroke: 'none'}}></path>
