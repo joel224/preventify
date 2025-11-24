@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useState, useRef } from "react";
@@ -15,7 +14,7 @@ const PreventiveLifestyleSectionDesktop = () => {
         offset: ["start end", "end start"]
     });
 
-    const y = useTransform(scrollYProgress, [0, 1], ["25%", "-25%"]);
+    const y = useTransform(scrollYProgress, [0, 1], ["15%", "-15%"]);
     
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
@@ -32,15 +31,11 @@ const PreventiveLifestyleSectionDesktop = () => {
                             AI assisted Modern Healthcare for a <span className="text-primary">Preventive <br className="hidden md:block" /> Lifestyle</span>
                         </h2>
                         
-                        <motion.p 
-                            initial={{ opacity: 0, y: 20 }}
-                            whileInView={{ opacity: 1, y: 0 }}
-                            viewport={{ once: true }}
-                            transition={{ duration: 0.6, ease: "easeOut" }}
+                        <p 
                             className="text-lg text-preventify-dark-gray mb-8 max-w-3xl mx-auto"
                         >
                             &nbsp;
-                        </motion.p>
+                        </p>
 
                         <div className="max-w-4xl mx-auto p-6 md:p-8 rounded-xl bg-white/30 backdrop-blur-md border border-gray-200/80 shadow-lg">
                            <form onSubmit={handleSubmit}>
