@@ -126,13 +126,13 @@ const Navbar = () => {
               <Link
                 key={link.name}
                 href={link.path}
-                className={`font-medium transition-colors text-base ${pathname === link.path ? 'text-primary' : 'text-gray-700 hover:text-primary'}`}
+                className={`font-medium transition-colors text-lg ${pathname === link.path ? 'text-primary' : 'text-gray-700 hover:text-primary'}`}
               >
                 {link.name}
               </Link>
             ))}
               {/* This is the separate, correctly styled Emergency link */}
-              <Link href="/emergency" className="flex items-center gap-1 text-red-600 font-medium text-base hover:text-red-800 transition-colors">
+              <Link href="/emergency" className="flex items-center gap-1 text-red-600 font-medium text-lg hover:text-red-800 transition-colors">
                 <AlertTriangle className="h-4 w-4" />
                 24/7 Emergency
               </Link>
@@ -140,7 +140,7 @@ const Navbar = () => {
 
           <div className="hidden lg:flex items-center space-x-4">
               <BookingDialog>
-              <button className="relative px-8 py-3 bg-primary text-white font-medium rounded-full transition-all duration-300 overflow-hidden group text-base">
+              <button className="relative px-8 py-3 bg-primary text-white font-medium rounded-full transition-all duration-300 overflow-hidden group text-lg">
                 <span className="relative z-10">Book Appointment</span>
                 <div className="absolute inset-0 bg-black/30 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left"></div>
               </button>
@@ -198,5 +198,3 @@ const Navbar = () => {
 };
 
 export default Navbar;
-
-    
