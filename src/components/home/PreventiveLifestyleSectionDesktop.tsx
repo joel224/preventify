@@ -39,10 +39,10 @@ const PreventiveLifestyleSectionDesktop = () => {
                             transition={{ duration: 0.6, ease: "easeOut" }}
                             className="text-lg text-preventify-dark-gray mb-8 max-w-3xl mx-auto"
                         >
-                            AI-assisted evidence-based care across Kerala focused on prevention, early intervention, and better health outcomes for you and your family.
+                            &nbsp;
                         </motion.p>
 
-                        <div className="max-w-6xl mx-auto p-6 md:p-8 rounded-xl bg-white/30 backdrop-blur-md border border-gray-200/80 shadow-lg">
+                        <div className="max-w-4xl mx-auto p-6 md:p-8 rounded-xl bg-white/30 backdrop-blur-md border border-gray-200/80 shadow-lg">
                            <form onSubmit={handleSubmit}>
                                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-end">
                                     {/* Name Input */}

@@ -332,9 +332,9 @@ export default function HeroSectionDesktop() {
               >
                 <motion.h1
                   initial={{ y: 0, x: 0, scale: 1 }}
-                  animate={{ y: "-57%", x: "0%", scale: 1 }}
+                  animate={{ y: "-200%", x: "5%", scale: 1.4 }}
                   transition={{ duration: 1.5, ease: "easeOut" }}
-                  className="text-5xl lg:text-6xl font-semibold text-[#3d3d3d]  leading-tight text-left font-sans-serif"
+                  className="text-5xl lg:text-6xl font-bold text-[#25338e]  leading-tight text-left font-sans-serif"
                   style={{ fontSize: '72px', lineHeight: '1.1', fontWeight: 500 }}
                 >
                   <span 
@@ -342,7 +342,7 @@ export default function HeroSectionDesktop() {
                 style={{ padding: '0 4px', borderRadius: '0px' }}
                     >
                      
-                  </span>Support That Never Leaves You.
+                  </span> Preventify
                 </motion.h1>
                 {/* SOCIAL PROOF – custom position (vh/vw responsive) */}
                 <div
