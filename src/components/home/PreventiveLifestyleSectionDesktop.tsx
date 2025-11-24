@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { User, Mail, Phone, MapPin } from "lucide-react";
+import { Label } from "../ui/label";
 
 
 const clinicsData = [
@@ -47,30 +48,29 @@ const PreventiveLifestyleSectionDesktop = () => {
                             AI-assisted evidence-based care across Kerala focused on prevention, early intervention, and better health outcomes for you and your family.
                         </motion.p>
 
-                        <div className="max-w-3xl mx-auto p-6 md:p-8 rounded-xl bg-white/30 backdrop-blur-md border border-gray-200/80 shadow-lg">
-                           <h3 className="text-2xl font-semibold text-preventify-dark-blue mb-6">Take the First Step to Better Health</h3>
+                        <div className="max-w-6xl mx-auto p-6 md:p-8 rounded-xl bg-white/30 backdrop-blur-md border border-gray-200/80 shadow-lg">
                            <form onSubmit={handleSubmit}>
-                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
+                                <div className="grid grid-cols-1 md:grid-cols-5 gap-4 items-end">
                                     {/* Name Input */}
-                                    <div className="relative">
-                                        <User className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
-                                        <Input type="text" placeholder="Name" required className="pl-10 h-12 text-base" />
+                                    <div className="space-y-2 text-left">
+                                        <Label htmlFor="name" className="text-sm font-medium text-gray-700">Name</Label>
+                                        <Input id="name" type="text" placeholder="Jane Smith" required className="h-12 text-base" />
                                     </div>
                                     {/* Email Input */}
-                                    <div className="relative">
-                                        <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
-                                        <Input type="email" placeholder="Email" required className="pl-10 h-12 text-base" />
+                                     <div className="space-y-2 text-left">
+                                        <Label htmlFor="email" className="text-sm font-medium text-gray-700">Email</Label>
+                                        <Input id="email" type="email" placeholder="jane@framer.com" required className="h-12 text-base" />
                                     </div>
                                     {/* Phone Input */}
-                                    <div className="relative">
-                                        <Phone className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
-                                        <Input type="tel" placeholder="Phone Number" required className="pl-10 h-12 text-base" />
+                                    <div className="space-y-2 text-left">
+                                        <Label htmlFor="phone" className="text-sm font-medium text-gray-700">Phone Number</Label>
+                                        <Input id="phone" type="tel" placeholder="(111) 111-1111" required className="h-12 text-base" />
                                     </div>
                                     {/* Clinic Select */}
-                                    <div className="relative">
-                                        <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400 z-10" />
+                                     <div className="space-y-2 text-left">
+                                         <Label htmlFor="clinic" className="text-sm font-medium text-gray-700">Clinic Location</Label>
                                          <Select required>
-                                            <SelectTrigger className="w-full h-12 text-base pl-10">
+                                            <SelectTrigger id="clinic" className="w-full h-12 text-base">
                                                 <SelectValue placeholder="Select Clinic" />
                                             </SelectTrigger>
                                             <SelectContent>
@@ -82,13 +82,16 @@ const PreventiveLifestyleSectionDesktop = () => {
                                             </SelectContent>
                                         </Select>
                                     </div>
+                                     {/* Submit Button */}
+                                    <div>
+                                        <Button type="submit" className="w-full h-12 text-base bg-preventify-dark-blue hover:bg-black text-white font-medium transition-all duration-200 shadow-md hover:shadow-lg">
+                                            Request a Callback
+                                        </Button>
+                                    </div>
                                 </div>
-                                <Button type="submit" className="w-full h-12 text-base bg-preventify-blue hover:bg-preventify-dark-blue text-white font-medium transition-all duration-200 shadow-md hover:shadow-lg">
-                                    Request a Callback
-                                </Button>
                            </form>
                            <p className="text-xs text-gray-500 mt-4 text-center">
-                                By submitting this form, you agree to be contacted by Preventify.
+                                By submitting your contact details, you agree to receive automated SMS/MMS messages from Preventify. Message & data rates may apply.
                            </p>
                         </div>
                     </div>
