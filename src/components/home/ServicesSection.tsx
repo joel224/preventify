@@ -3,43 +3,37 @@
 import { motion } from "framer-motion";
 import { ArrowRight } from "lucide-react";
 import Link from "next/link";
-import Image from "next/image";
 
 const services = [
   {
     title: "Primary Care",
     description: "Comprehensive healthcare services for individuals and families, focusing on long-term health and wellness.",
-    image: "/service/family-care.png",
+    image: "/service/family-care.webp",
     link: "/services#primary-care"
   },
   {
     title: "Diabetes Management",
     description: "AI-driven specialized programs for the prevention, monitoring, and management of diabetes.",
-    image: "/service/diabetes.png",
+    image: "/service/diabetes.webp",
     link: "/services#diabetes"
   },
-  {
-    title: "Lifestyle Medicine",
-    description: "Evidence-based therapeutic approaches to treat, prevent and often reverse chronic diseases.",
-    image: "/service/lifestyle.png",
-    link: "/services#lifestyle"
-  },
+  
   {
     title: "Pediatric Care",
     description: "Specialized, compassionate healthcare services tailored for infants, children, and adolescents.",
-    image: "/service/pediatrics.png",
+    image: "/service/pediatrics.webp",
     link: "/services#pediatrics"
   },
   {
     title: "Women's Health",
     description: "Comprehensive care addressing women's unique health needs at every stage of life.",
-    image: "/service/womens-health.png",
+    image: "/service/womens-health.webp",
     link: "/services#womens-health"
   },
   {
     title: "Preventive Screenings",
     description: "Advanced early detection tests to identify potential health issues before they become serious.",
-    image: "/service/preventive.png",
+    image: "/service/preventive.webp",
     link: "/services#preventive"
   },
 ];
@@ -65,11 +59,10 @@ const ServiceCard = ({ service }: { service: typeof services[0] }) => {
                     </h3>
                 </div>
                  <div className="absolute -right-4 -bottom-4 w-1/2 h-1/2">
-                    <Image 
+                    <img 
                         src={service.image} 
                         alt={service.title}
-                        fill
-                        className="object-contain object-right-bottom"
+                        className="w-full h-full object-contain object-right-bottom"
                     />
                 </div>
             </div>
