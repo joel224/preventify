@@ -45,7 +45,7 @@ const PreventiveLifestyleSectionDesktop = () => {
                 <div className="pt-24 md:pt-32 grid grid-cols-1 gap-8 md:gap-12 items-center">
                     <div className="text-center">
 
-                        <div className="max-w-6xl mx-auto p-6 md:p-8 rounded-xl bg-white/30 backdrop-blur-md border border-gray-200/80 shadow-lg mb-12">
+                        <div className="max-w-6xl mx-auto p-6 md:p-8 rounded-xl bg-white/30 backdrop-blur-md border border-gray-200/80 shadow-lg mb-24">
                              <p className="text-sm text-gray-500 mb-4 text-center">
                                 By submitting your contact details, you agree to receive automated SMS/MMS messages from Preventify. Message & data rates may apply.
                            </p>
