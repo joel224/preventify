@@ -8,39 +8,39 @@ const services = [
   {
     title: "Primary Care",
     description: "Comprehensive healthcare services for individuals and families, focusing on long-term health and wellness.",
-    image: "/service/family-care.webp",
+    image: "/service/Primary Care.webp",
     link: "/services#primary-care"
   },
   {
     title: "Diabetes Management",
     description: "AI-driven specialized programs for the prevention, monitoring, and management of diabetes.",
-    image: "/service/diabetes.webp",
+    image: "/service/Diabetes Management.webp",
     link: "/services#diabetes"
   },
   
   {
     title: "Pediatric Care",
     description: "Specialized, compassionate healthcare services tailored for infants, children, and adolescents.",
-    image: "/service/pediatrics.webp",
+    image: "/service/Pediatric Care.webp",
     link: "/services#pediatrics"
   },
   {
     title: "Women's Health",
     description: "Comprehensive care addressing women's unique health needs at every stage of life.",
-    image: "/service/womens-health.webp",
+    image: "/service/Women's Health.webp",
     link: "/services#womens-health"
   },
   {
     title: "Preventive Screenings",
     description: "Advanced early detection tests to identify potential health issues before they become serious.",
-    image: "/service/preventive.webp",
+    image: "/service/Preventive Screenings.webp",
     link: "/services#preventive"
   },
 ];
 
 const ServiceCard = ({ service }: { service: typeof services[0] }) => {
     return (
-        <Link href={service.link} className="group relative block h-64 md:h-80 overflow-hidden rounded-xl">
+        <Link href={service.link} className="group relative block h-64 overflow-hidden rounded-xl">
             {/* Background pattern and gradient */}
             <div
                 className="absolute inset-0 bg-preventify-light-gray bg-opacity-50"
@@ -62,7 +62,7 @@ const ServiceCard = ({ service }: { service: typeof services[0] }) => {
                     <img 
                         src={service.image} 
                         alt={service.title}
-                        className="w-full h-full object-contain object-right-bottom"
+                        className="w-full h-full object-cover object-right-bottom"
                     />
                 </div>
             </div>
@@ -103,7 +103,7 @@ const ServicesSection = () => {
           </p>
         </motion.div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6 md:gap-8">
             {services.map((service, index) => (
                 <ServiceCard key={index} service={service} />
             ))}
