@@ -20,7 +20,7 @@ const FixedWatermark = () => {
   // Stays black, then transitions to white
   const color = useTransform(
     scrollY,
-    [0, viewportHeight * 0.7, viewportHeight * 0.9], 
+    [0, viewportHeight * 0.5, viewportHeight * 0.5], 
     ['#000000', '#000000', '#FFFFFF'] 
   );
 
@@ -28,14 +28,14 @@ const FixedWatermark = () => {
   // Let's make the stroke black when the text is black, and fully white when the text is white
   const strokeColor = useTransform(
     scrollY,
-    [0, viewportHeight * 0.7, viewportHeight * 0.9], 
+    [0, viewportHeight * 0.5, viewportHeight * 0.5], 
     ['#000000', '#000000', '#FFFFFF'] // Stroke also turns white to enhance visibility
   );
 
   // 3. Adjusted Opacity
   const opacity = useTransform(
     scrollY, 
-    [0, viewportHeight * 1.5], 
+    [0, viewportHeight * 1.7], 
     [0.09, 0]
   );
 

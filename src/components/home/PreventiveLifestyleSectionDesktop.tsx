@@ -59,6 +59,9 @@ const PreventiveLifestyleSectionDesktop = () => {
                         </p>
 
                         <div className="max-w-6xl mx-auto p-6 md:p-8 rounded-xl bg-white/30 backdrop-blur-md border border-gray-200/80 shadow-lg">
+                            <p className="text-sm text-gray-500 mb-4 text-center">
+                                By submitting your contact details, you agree to receive automated SMS/MMS messages from Preventify. Message & data rates may apply.
+                           </p>
                             <div className="grid grid-cols-1 md:grid-cols-[1fr_1fr_auto] gap-4 items-end">
                                 {/* Name Input */}
                                 <div className="space-y-2 text-left">
@@ -84,9 +87,6 @@ const PreventiveLifestyleSectionDesktop = () => {
                                     </BookingDialog>
                                 </div>
                             </div>
-                           <p className="text-sm text-gray-500 mt-4 text-center">
-                                By submitting your contact details, you agree to receive automated SMS/MMS messages from Preventify. Message & data rates may apply.
-                           </p>
                         </div>
                     </div>
                 </div>
