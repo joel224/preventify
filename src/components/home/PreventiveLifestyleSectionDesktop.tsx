@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState, useRef } from "react";
@@ -48,20 +49,8 @@ const PreventiveLifestyleSectionDesktop = () => {
             <motion.div style={{ y }} className="container mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="grid grid-cols-1 gap-8 md:gap-12 items-center">
                     <div className="text-center">
-                         <h2 className="font-display text-4xl md:text-5xl font-bold mb-4 text-preventify-dark-blue -mt-12">
-                            AI assisted Modern Healthcare for a <span className="text-primary">Preventive <br className="hidden md:block" /> Lifestyle</span>
-                        </h2>
-                        
-                        <p 
-                            className="text-lg text-preventify-dark-gray mb-8 max-w-3xl mx-auto"
-                        >
-                            &nbsp;
-                        </p>
 
-                        <div className="max-w-6xl mx-auto p-6 md:p-8 rounded-xl bg-white/30 backdrop-blur-md border border-gray-200/80 shadow-lg">
-                            <p className="text-sm text-gray-500 mb-4 text-center">
-                                By submitting your contact details, you agree to receive automated SMS/MMS messages from Preventify. Message & data rates may apply.
-                           </p>
+                        <div className="max-w-6xl mx-auto p-6 md:p-8 rounded-xl bg-white/30 backdrop-blur-md border border-gray-200/80 shadow-lg mb-12">
                             <div className="grid grid-cols-1 md:grid-cols-[1fr_1fr_auto] gap-4 items-end">
                                 {/* Name Input */}
                                 <div className="space-y-2 text-left">
@@ -87,7 +76,21 @@ const PreventiveLifestyleSectionDesktop = () => {
                                     </BookingDialog>
                                 </div>
                             </div>
+                            <p className="text-sm text-gray-500 mt-4 text-center">
+                                By submitting your contact details, you agree to receive automated SMS/MMS messages from Preventify. Message & data rates may apply.
+                           </p>
                         </div>
+
+                         <h2 className="font-display text-4xl md:text-5xl font-bold mb-4 text-preventify-dark-blue">
+                            AI assisted Modern Healthcare for a <span className="text-primary">Preventive <br className="hidden md:block" /> Lifestyle</span>
+                        </h2>
+                        
+                        <p 
+                            className="text-lg text-preventify-dark-gray mb-8 max-w-3xl mx-auto"
+                        >
+                            &nbsp;
+                        </p>
+
                     </div>
                 </div>
             </motion.div>
