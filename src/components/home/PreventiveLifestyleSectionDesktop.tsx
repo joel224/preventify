@@ -45,9 +45,9 @@ const PreventiveLifestyleSectionDesktop = () => {
     };
 
     return (
-        <section ref={targetRef} className="pt-24 md:pt-32 pb-16 md:pb-24 relative overflow-hidden z-10" style={{ backgroundColor: '#ffffff' }}>
+        <section ref={targetRef} className="pb-16 md:pb-24 relative overflow-hidden z-10 bg-white rounded-t-[50%_100px] md:rounded-t-[50%_150px] -mt-20 md:-mt-28">
             <motion.div style={{ y }} className="container mx-auto px-4 sm:px-6 lg:px-8">
-                <div className="grid grid-cols-1 gap-8 md:gap-12 items-center">
+                <div className="pt-24 md:pt-32 grid grid-cols-1 gap-8 md:gap-12 items-center">
                     <div className="text-center">
 
                         <div className="max-w-6xl mx-auto p-6 md:p-8 rounded-xl bg-white/30 backdrop-blur-md border border-gray-200/80 shadow-lg mb-12">
