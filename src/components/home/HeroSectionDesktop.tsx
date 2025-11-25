@@ -182,7 +182,7 @@ export default function HeroSectionContent() {
     <section
       ref={targetRef}
       style={{ 
-        backgroundColor: "#fc6f03",
+        backgroundColor: "#f8f5f0",
         height: `${CONFIG.totalHeightVh}vh`   // Now 100vh
       }}
       className="relative"
