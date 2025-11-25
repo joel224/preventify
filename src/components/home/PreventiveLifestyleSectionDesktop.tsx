@@ -23,24 +23,20 @@ const PreventiveLifestyleSectionDesktop = () => {
         if (!name.trim()) return { firstName: '', lastName: '' };
         const nameParts = name.trim().split(' ');
         const firstName = nameParts.shift() || '';
-        const lastName = nameParts.join(' ') || 'N/A';
+        const lastName = nameParts.join(' ') || ''; // Handle names with multiple parts
         return { firstName, lastName };
     };
 
     const getSanitizedPhone = () => {
         if (!phone.trim()) return '';
-        // Remove all non-digit characters
         const digitsOnly = phone.replace(/\D/g, '');
-        // If it starts with 91 and has 12 digits, take the last 10.
         if (digitsOnly.startsWith('91') && digitsOnly.length === 12) {
             return digitsOnly.slice(2);
         }
-        // If it starts with 0 and has 11 digits, take the last 10.
         if (digitsOnly.startsWith('0') && digitsOnly.length === 11) {
             return digitsOnly.slice(1);
         }
-        // Otherwise, assume it's a 10-digit number.
-        return digitsOnly;
+        return digitsOnly.slice(-10);
     };
 
     return (
@@ -50,6 +46,9 @@ const PreventiveLifestyleSectionDesktop = () => {
                     <div className="text-center">
 
                         <div className="max-w-6xl mx-auto p-6 md:p-8 rounded-xl bg-white/30 backdrop-blur-md border border-gray-200/80 shadow-lg mb-12">
+                             <p className="text-sm text-gray-500 mb-4 text-center">
+                                By submitting your contact details, you agree to receive automated SMS/MMS messages from Preventify. Message & data rates may apply.
+                           </p>
                             <div className="grid grid-cols-1 md:grid-cols-[1fr_1fr_auto] gap-4 items-end">
                                 {/* Name Input */}
                                 <div className="space-y-2 text-left">
@@ -75,9 +74,7 @@ const PreventiveLifestyleSectionDesktop = () => {
                                     </BookingDialog>
                                 </div>
                             </div>
-                            <p className="text-sm text-gray-500 mt-4 text-center">
-                                By submitting your contact details, you agree to receive automated SMS/MMS messages from Preventify. Message & data rates may apply.
-                           </p>
+                           
                         </div>
 
                          <h2 className="font-display text-4xl md:text-5xl font-bold mb-4 text-preventify-dark-blue">
