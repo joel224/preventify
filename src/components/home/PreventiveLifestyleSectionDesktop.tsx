@@ -75,16 +75,16 @@ const PreventiveLifestyleSectionDesktop = () => {
                                 By submitting your contact details, you agree to receive automated SMS/MMS messages from Preventify. Message & data rates may apply.
                            </p>
                         </div>
-
-                         <h2 className="font-display text-4xl md:text-5xl font-bold mb-4 text-preventify-dark-blue">
-                            AI assisted Modern Healthcare for a <span className="text-primary">Preventive <br className="hidden md:block" /> Lifestyle</span>
-                        </h2>
                         
                         <p 
                             className="text-lg text-preventify-dark-gray mb-8 max-w-3xl mx-auto"
                         >
                             &nbsp;
                         </p>
+
+                         <h2 className="font-display text-4xl md:text-5xl font-bold mb-4 text-preventify-dark-blue">
+                            AI assisted Modern Healthcare for a <span className="text-primary">Preventive <br className="hidden md:block" /> Lifestyle</span>
+                        </h2>
 
                     </div>
                 </div>
