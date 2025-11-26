@@ -183,8 +183,8 @@ const Navbar = () => {
                   </NavigationMenuTrigger>
                   <NavigationMenuContent>
                     <div className="p-4 md:w-[400px]">
-                      <ul className="space-y-2 h-[330px] overflow-y-auto pr-2">
-                        {doctors.map((doctor) => (
+                      <ul className="space-y-2">
+                        {doctors.slice(0, 3).map((doctor) => (
                           <ListItem key={doctor.name} href="/doctors" title={doctor.name}>
                             <div className="flex items-center gap-4">
                                <div className="relative w-16 h-16 rounded-md overflow-hidden flex-shrink-0">
@@ -313,3 +313,5 @@ const Navbar = () => {
 };
 
 export default Navbar;
+
+    
