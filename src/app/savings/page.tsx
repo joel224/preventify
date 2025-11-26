@@ -163,7 +163,7 @@ const SavingsPage = () => {
                     </div>
                     <div className="relative aspect-[3/4] rounded-lg overflow-hidden shadow-lg">
                         <Image
-                            src="/cardX.jpg"
+                            src="/cardX1.webp"
                             alt="One Health Member Card"
                             fill
                             className="object-contain"
