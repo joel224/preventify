@@ -9,7 +9,6 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import SubscriptionButton from "@/components/SubscriptionButton";
-import FixedWatermark from "@/components/home/FixedWatermark";
 import MarqueeText from "@/components/home/MarqueeText";
 import WebsiteSharpener from '@/components/WebsiteSharpener';
 
@@ -45,7 +44,6 @@ export default function RootLayout({
           <Toaster />
           <Sonner />
         </TooltipProvider>
-        <FixedWatermark />
         <SubscriptionButton />
         <WebsiteSharpener />
       </body>

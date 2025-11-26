@@ -108,3 +108,57 @@
     @apply px-4 sm:px-6 lg:px-8;
   }
 }
+/* 1. Beona Danila Font */
+@font-face {
+  font-family: 'Beona Danila';
+  src: url('/Rebeqa Font/New folder/Beona Danila.ttf') format('truetype'); /* Use 'truetype' for .ttf */
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* 2. Gilzen Font nope */
+@font-face {
+  font-family: 'Gilzen';
+  src: url('/Rebeqa Font/New folder/Gilzen.ttf') format('truetype'); /* Use 'truetype' for .ttf */
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* 3. Medino Font req modifi*/
+@font-face {
+  font-family: 'Medino';
+  src: url('/Rebeqa Font/New folder/Medino.otf') format('opentype');
+  font-weight: 20;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* 4. Mocktaile Typeface Font */
+@font-face {
+  font-family: 'Mocktaile Typeface'; /* Unique name for this font */
+  src: url('/Rebeqa Font/New folder/Mocktaile Typeface PERSONAL USE ONLY.otf') format('opentype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* 5. OVSoge-Bold Font */
+@font-face {
+  font-family: 'OVSoge'; /* Base name */
+  src: url('/Rebeqa Font/New folder/New folder/OVSoge-Bold.otf') format('opentype');
+  font-weight: 700; /* Use font-weight: 700 or 'bold' */
+  font-style: normal;
+  font-display: swap;
+}
+
+/* 6. Rebeqa-Bold Font */
+@font-face {
+  font-family: 'Rebeqa'; /* Base name */
+  src: url('/Rebeqa Font/OpenType-TT/Rebeqa-Bold.ttf') format('truetype'); /* Use 'truetype' for .ttf */
+  font-weight: 700; /* Use font-weight: 700 or 'bold' */
+  font-style: normal;
+  font-display: swap;
+}
+@import url('/Rebeqa Font/Web-TT/Rebeqa-Black.css');
