@@ -12,7 +12,7 @@ const services = [
     link: "/services#primary-care"
   },
   {
-    title: "Diabetes Management ",
+    title: "Diabetes Management",
     description: "AI-driven specialized programs for the prevention, monitoring, and management of diabetes.",
     image: "/service/Diabetes Management.webp",
     link: "/services#diabetes"
@@ -58,7 +58,7 @@ const ServiceCard = ({ service }: { service: typeof services[0] }) => {
                         {service.title}
                     </h3>
                 </div>
-                 <div className="absolute -right-4 -bottom-4 w-1/2 h-1/2">
+                 <div className="absolute w-full h-full right-0 bottom-0 md:-right-4 md:-bottom-4 md:w-1/2 md:h-1/2">
                     <img 
                         src={service.image} 
                         alt={service.title}
