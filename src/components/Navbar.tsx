@@ -1,9 +1,10 @@
+
 'use client'
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { Menu, X, Phone, ChevronDown, User, AlertTriangle, LucideIcon } from "lucide-react"; 
+import { Menu, X, Phone, ChevronDown, User, AlertTriangle, LucideIcon, MapPin } from "lucide-react"; 
 import { usePathname } from "next/navigation";
 import BookingDialog from "@/components/BookingDialog";
 import {
@@ -42,43 +43,14 @@ const doctors = [
       specialty: "Pediatrics",
       image: "https://res.cloudinary.com/dyf8umlda/image/upload/v1748255660/Dr_Hafsa_t3qk7r.jpg",
     },
-     {
-      id: 4,
-      name: "Dr. Krishnendu U K ",
-      specialty: "General Practitioner",
-      image: "https://res.cloudinary.com/dyf8umlda/image/upload/v1748255860/Dr_Krishnendhu_dxtah5.jpg",
-    },
-    {
-      id: 5,
-      name: "Dr. Girish U ",
-      specialty: "Dermatology",
-      image: "https://res.cloudinary.com/dyf8umlda/image/upload/v1748255860/Dr_girish_wcph4p.jpg",
-    },
 ];
 
-const otherLinks: { title: string; href: string; description: string }[] = [
-  {
-    title: "Our Services",
-    href: "/services",
-    description: "View our comprehensive range of healthcare services.",
-  },
-  {
-    title: "Our Clinics",
-    href: "/clinics",
-    description: "Find a Preventify clinic near you.",
-  },
-  {
-    title: "Programs",
-    href: "/programs",
-    description: "Explore our specialized health and wellness programs.",
-  },
-  {
-    title: "Sugam Card",
-    href: "/savings",
-    description: "Learn about our exclusive savings and membership card.",
-  },
+const clinics = [
+  { name: 'Preventify Medical Center', location: 'Padinjarangadi', href: '/clinics' },
+  { name: 'Preventify Health Clinic', location: 'Vattamkulam', href: '/clinics' },
+  { name: 'Peekay\'s Preventify Clinic', location: 'Kanjirathani', href: '/clinics' },
+  { name: 'Preventify Health Hub', location: 'Koottanad', href: '/clinics' },
 ];
-
 
 const Navbar = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -204,21 +176,44 @@ const Navbar = () => {
                         ))}
                       </ul>
                       <div className="mt-4 text-center">
-                        <Link href="/doctors" className="inline-flex items-center justify-center h-10 px-6 font-medium tracking-wide text-white transition duration-200 rounded-md bg-primary hover:bg-primary/90 focus:shadow-outline focus:outline-none">
-                            View All Doctors
+                        <Link href="/doctors" className="text-sm text-primary hover:underline">
+                            View all doctors →
                         </Link>
                       </div>
                     </div>
                   </NavigationMenuContent>
                 </NavigationMenuItem>
 
-                 <NavigationMenuItem>
-                  <Link href="/clinics" legacyBehavior passHref>
-                    <NavigationMenuLink className={`font-medium transition-colors text-lg px-4 py-2 rounded-md ${pathname === "/clinics" ? 'text-primary' : 'text-gray-700 hover:text-primary'}`}>
-                      Our Clinics
-                    </NavigationMenuLink>
-                  </Link>
+                <NavigationMenuItem>
+                  <NavigationMenuTrigger className="font-medium transition-colors text-lg text-gray-700 hover:text-primary bg-transparent focus:bg-transparent data-[state=open]:bg-transparent">
+                    Our Clinics
+                  </NavigationMenuTrigger>
+                  <NavigationMenuContent>
+                    <div className="p-4 md:w-[400px]">
+                      <ul className="space-y-2">
+                        {clinics.map((clinic) => (
+                          <ListItem key={clinic.name} href={clinic.href} title={clinic.name}>
+                            <div className="flex items-center gap-3">
+                              <div className="p-2 bg-gray-100 rounded-md">
+                                <MapPin className="h-4 w-4 text-primary" />
+                              </div>
+                              <div>
+                                <p className="font-bold text-gray-800">{clinic.name}</p>
+                                <p className="text-sm text-gray-500">{clinic.location}</p>
+                              </div>
+                            </div>
+                          </ListItem>
+                        ))}
+                      </ul>
+                      <div className="mt-4 text-center">
+                        <Link href="/clinics" className="text-sm text-primary hover:underline">
+                          View all locations →
+                        </Link>
+                      </div>
+                    </div>
+                  </NavigationMenuContent>
                 </NavigationMenuItem>
+
 
                 <NavigationMenuItem>
                   <Link href="/programs" legacyBehavior passHref>
@@ -313,5 +308,3 @@ const Navbar = () => {
 };
 
 export default Navbar;
-
-    
