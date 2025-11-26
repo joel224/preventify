@@ -42,6 +42,18 @@ const doctors = [
       specialty: "Pediatrics",
       image: "https://res.cloudinary.com/dyf8umlda/image/upload/v1748255660/Dr_Hafsa_t3qk7r.jpg",
     },
+     {
+      id: 4,
+      name: "Dr. Krishnendu U K ",
+      specialty: "General Practitioner",
+      image: "https://res.cloudinary.com/dyf8umlda/image/upload/v1748255860/Dr_Krishnendhu_dxtah5.jpg",
+    },
+    {
+      id: 5,
+      name: "Dr. Girish U ",
+      specialty: "Dermatology",
+      image: "https://res.cloudinary.com/dyf8umlda/image/upload/v1748255860/Dr_girish_wcph4p.jpg",
+    },
 ];
 
 const otherLinks: { title: string; href: string; description: string }[] = [
@@ -170,20 +182,28 @@ const Navbar = () => {
                     Our Doctors
                   </NavigationMenuTrigger>
                   <NavigationMenuContent>
-                    <div className="p-6 md:w-[600px] lg:w-[700px]">
-                      <div className="grid grid-cols-3 gap-6">
+                    <div className="p-4 md:w-[400px]">
+                      <ul className="space-y-2 h-[330px] overflow-y-auto pr-2">
                         {doctors.map((doctor) => (
-                          <Link href="/doctors" key={doctor.name} className="group block">
-                            <div className="aspect-w-3 aspect-h-4 rounded-lg overflow-hidden relative">
-                              <Image src={doctor.image} alt={doctor.name} fill className="object-cover transition-transform duration-300 group-hover:scale-105" />
-                              <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+                          <ListItem key={doctor.name} href="/doctors" title={doctor.name}>
+                            <div className="flex items-center gap-4">
+                               <div className="relative w-16 h-16 rounded-md overflow-hidden flex-shrink-0">
+                                <Image
+                                    src={doctor.image}
+                                    alt={doctor.name}
+                                    fill
+                                    className="object-cover"
+                                  />
+                               </div>
+                               <div>
+                                  <p className="font-bold text-gray-800">{doctor.name}</p>
+                                  <p className="text-sm text-gray-500">{doctor.specialty}</p>
+                               </div>
                             </div>
-                            <h3 className="mt-2 font-semibold text-gray-800 group-hover:text-primary">{doctor.name}</h3>
-                            <p className="text-sm text-gray-500">{doctor.specialty}</p>
-                          </Link>
+                          </ListItem>
                         ))}
-                      </div>
-                      <div className="mt-6 text-center">
+                      </ul>
+                      <div className="mt-4 text-center">
                         <Link href="/doctors" className="inline-flex items-center justify-center h-10 px-6 font-medium tracking-wide text-white transition duration-200 rounded-md bg-primary hover:bg-primary/90 focus:shadow-outline focus:outline-none">
                             View All Doctors
                         </Link>
