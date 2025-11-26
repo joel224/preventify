@@ -179,7 +179,7 @@ const Navbar = () => {
                           </ListItem>
                         ))}
                       </ul>
-                      <div className="mt-4 text-right">
+                      <div className="mt-4 text-center">
                         <Link href="/doctors" className="inline-flex items-center text-sm bg-primary text-primary-foreground hover:bg-primary/90 px-3 py-1 rounded-md">
                             View all doctors
                         </Link>
@@ -213,7 +213,7 @@ const Navbar = () => {
                           </ListItem>
                         ))}
                       </ul>
-                      <div className="mt-4 text-right">
+                      <div className="mt-4 text-center">
                         <Link href="/clinics" className="inline-flex items-center text-sm bg-primary text-primary-foreground hover:bg-primary/90 px-3 py-1 rounded-md">
                           View all locations
                         </Link>
