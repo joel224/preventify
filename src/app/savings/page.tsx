@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useState, useEffect, useRef } from "react";
@@ -11,7 +10,7 @@ import {
   CardDescription,
   CardFooter
 } from "@/components/ui/card";
-import { Wallet, Stethoscope, Pill, ChevronDown, CheckCircle, Hospital, UserMd, ClipboardList, ShieldCheck, HeartHandshake, Sparkles } from "lucide-react";
+import { Wallet, Stethoscope, Pill, ChevronDown, CheckCircle, Hospital, UserMd, ClipboardList, ShieldCheck, HeartHandshake, Sparkles, Smile, Shield, Users, Lock, Calendar } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import { Separator } from "@/components/ui/separator";
@@ -127,76 +126,78 @@ const SavingsPage = () => {
             </div>
         </div>
 
-      <section id="savings-details" className="py-16 pt-8">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          
-        <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-bold mb-4 text-preventify-blue">One Fixed Fee. Zero Sick Bills.</h2>
-            <p className="text-preventify-gray max-w-3xl mx-auto">Choose your plan and get peace of mind for a full year. Visit any Preventify hospital to subscribe.</p>
-        </div>
-
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
-            
-            {/* INDIVIDUAL PLAN */}
-            <Card className="flex flex-col border-preventify-green border-2">
-                <CardHeader>
-                    <CardTitle className="text-2xl font-bold text-preventify-dark-blue">Stop Paying for Sick Visits.<br />Start Paying for Peace.</CardTitle>
-                </CardHeader>
-                <CardContent className="flex-1 space-y-4">
-                    <p className="text-preventify-dark-gray">The Individual Sukham Card gives you Unlimited access to our General Physicians and Paediatricians for a full year.</p>
-                    <ul className="space-y-3">
-                        <li className="flex items-start gap-3">
-                            <HeartHandshake className="h-5 w-5 text-preventify-green shrink-0 mt-1" />
-                            <div><strong className="text-preventify-dark-blue">The Relief:</strong> Never worry about a consultation bill again. Just walk in.</div>
-                        </li>
-                        <li className="flex items-start gap-3">
-                            <Wallet className="h-5 w-5 text-preventify-green shrink-0 mt-1" />
-                            <div><strong className="text-preventify-dark-blue">The Value:</strong> For less than ₹2 per day, your care is covered.</div>
-                        </li>
-                        <li className="flex items-start gap-3">
-                            <Sparkles className="h-5 w-5 text-preventify-green shrink-0 mt-1" />
-                            <div><strong className="text-preventify-dark-blue">The Simplicity:</strong> The card pays for itself in just 2 standard visits. After that, every visit is free.</div>
-                        </li>
-                    </ul>
-                </CardContent>
-                <CardFooter>
-                    <div className="w-full text-center py-3 px-4 rounded-md bg-preventify-green text-white font-bold text-lg">
-                        ₹730. Your Health, Secured for a Year.
-                    </div>
-                </CardFooter>
-            </Card>
-
-            {/* FAMILY PLAN */}
-            <Card className="flex flex-col border-preventify-blue border-2">
-                <CardHeader>
-                    <CardTitle className="text-2xl font-bold text-preventify-dark-blue">One Family. One Fee.<br />Unlimited Protection.</CardTitle>
-                </CardHeader>
-                <CardContent className="flex-1 space-y-4">
-                    <p className="text-preventify-dark-gray">Protect everyone you love with the Sukham Family Plan. Unlimited access for every family member to our General Physicians and Paediatricians for a full year.</p>
-                     <ul className="space-y-3">
-                        <li className="flex items-start gap-3">
-                            <HeartHandshake className="h-5 w-5 text-preventify-blue shrink-0 mt-1" />
-                            <div><strong className="text-preventify-dark-blue">The Relief:</strong> Never hesitate to bring your child in—whether it's the first cough or the fifth follow-up. The bill is always ₹0.</div>
-                        </li>
-                        <li className="flex items-start gap-3">
-                             <ShieldCheck className="h-5 w-5 text-preventify-blue shrink-0 mt-1" />
-                            <div><strong className="text-preventify-dark-blue">The Security:</strong> Stop paying doctor fees every time someone is sick.</div>
-                        </li>
-                        <li className="flex items-start gap-3">
-                            <Sparkles className="h-5 w-5 text-preventify-blue shrink-0 mt-1" />
-                            <div><strong className="text-preventify-dark-blue">The Simplicity:</strong> You cover the entire family for the year for the price of just 4 individual visits.</div>
-                        </li>
-                    </ul>
-                </CardContent>
-                <CardFooter>
-                    <div className="w-full text-center py-3 px-4 rounded-md bg-preventify-blue text-white font-bold text-lg">
-                        ₹1,999. Get Your Family's Peace of Mind.
-                    </div>
-                </CardFooter>
-            </Card>
-
+        <section id="savings-details" className="relative py-16 md:py-24 bg-peace-of-mind-gray overflow-hidden">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+          <div className="text-center mb-12 md:mb-16">
+              <p className="text-sm font-bold uppercase tracking-widest text-peace-of-mind-dark-gray mb-2">NEW MARKETING STRATEGY</p>
+              <h2 className="text-4xl md:text-5xl font-bold text-peace-of-mind-green-dark mb-3">The Peace of Mind Plan</h2>
+              <p className="text-lg md:text-xl font-semibold uppercase tracking-wider text-peace-of-mind-dark-gray">One Fixed Fee. Zero Sick Bills.</p>
           </div>
 
+          <div className="relative">
+            <div className="absolute inset-0 flex justify-center items-center">
+                <div className="h-full w-px bg-gray-200"></div>
+            </div>
+            <div className="relative grid grid-cols-1 md:grid-cols-2 gap-x-8">
+
+              {/* Individual Plan */}
+              <div className="relative z-10 p-8 md:p-10 text-center md:text-left">
+                  <div className="flex justify-center md:justify-start mb-6">
+                      <div className="w-20 h-20 bg-white rounded-full flex items-center justify-center shadow-md">
+                          <Shield className="h-10 w-10 text-peace-of-mind-green-dark" />
+                      </div>
+                  </div>
+                  <h3 className="text-2xl md:text-3xl font-bold text-peace-of-mind-green-dark mb-4 leading-tight">STOP PAYING FOR SICK VISITS. <br/>START PAYING FOR PEACE.</h3>
+                  <h4 className="text-xl font-semibold text-peace-of-mind-dark-gray mb-4">Individual Plan</h4>
+                  <p className="text-peace-of-mind-dark-gray mb-6">The Individual Sukham Card gives you Unlimited access to our General Physicians and Paediatricians for a full year.</p>
+                  <ul className="space-y-4 text-left inline-block">
+                      <li className="flex items-center gap-3">
+                          <Smile className="h-6 w-6 text-peace-of-mind-green-dark"/>
+                          <div><strong className="font-semibold">Relief:</strong> For less than ₹2 per day, your care is covered.</div>
+                      </li>
+                      <li className="flex items-center gap-3">
+                          <CheckCircle className="h-6 w-6 text-peace-of-mind-green-dark"/>
+                           <div><strong className="font-semibold">Simplicity:</strong> The card pays for itself in just 2 standard visits.</div>
+                      </li>
+                  </ul>
+                  <div className="mt-8 relative h-20 flex justify-center md:justify-start">
+                    <div className="plan-cta-shape individual-plan">
+                        <span className="font-bold text-lg">₹730.</span>
+                        <span className="text-sm">YOUR HEALTH, SECURED FOR A YEAR.</span>
+                    </div>
+                  </div>
+              </div>
+
+              {/* Family Plan */}
+              <div className="relative z-10 p-8 md:p-10 text-center md:text-left">
+                  <div className="flex justify-center md:justify-start mb-6">
+                      <div className="w-20 h-20 bg-white rounded-full flex items-center justify-center shadow-md">
+                          <Users className="h-10 w-10 text-peace-of-mind-purple" />
+                      </div>
+                  </div>
+                  <h3 className="text-2xl md:text-3xl font-bold text-peace-of-mind-purple mb-4 leading-tight">ONE FAMILY. ONE FEE. <br/>UNLIMITED PROTECTION.</h3>
+                  <h4 className="text-xl font-semibold text-peace-of-mind-dark-gray mb-4">Family Plan</h4>
+                  <p className="text-peace-of-mind-dark-gray mb-6">Protect everyone you love with the Sukham Family Plan. Unlimited access for every family member.</p>
+                  <ul className="space-y-4 text-left inline-block">
+                      <li className="flex items-center gap-3">
+                          <Lock className="h-6 w-6 text-peace-of-mind-purple"/>
+                          <div><strong className="font-semibold">Security:</strong> Stop paying doctor fees every time someone is sick.</div>
+                      </li>
+                      <li className="flex items-center gap-3">
+                          <Calendar className="h-6 w-6 text-peace-of-mind-purple"/>
+                          <div><strong className="font-semibold">Simplicity:</strong> You cover the entire family for the price of just 4 individual visits.</div>
+                      </li>
+                  </ul>
+                  <div className="mt-8 relative h-20 flex justify-center md:justify-start">
+                    <div className="plan-cta-shape family-plan">
+                        <span className="font-bold text-lg">₹1,999.</span>
+                        <span className="text-sm">GET YOUR FAMILY'S PEACE OF MIND.</span>
+                    </div>
+                  </div>
+              </div>
+
+            </div>
+          </div>
         </div>
       </section>
 
@@ -256,7 +257,7 @@ const SavingsPage = () => {
                   <Card>
                       <CardHeader>
                            <CardTitle className="flex items-center gap-2">
-                              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-preventify-green" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m5 8 6 6" /><path d="m4 14 6-6 2-3" /><path d="M2 5h12" /><path d="M7 2h1" /><path d="m22 22-1-10-3.5 3.5" /><path d="M14 14S9 19 5 22" /></svg>
+                              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-preventify-green" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m5 8 6 6" /><path d="m4 14 6-6 2-3" /><path d="M2 5h12" /><path d="m22 22-1-10-3.5 3.5" /><path d="M14 14S9 19 5 22" /></svg>
                               Bilingual Communication
                           </CardTitle>
                       </CardHeader>
@@ -298,5 +299,3 @@ const SavingsPage = () => {
 };
 
 export default SavingsPage;
-
-    

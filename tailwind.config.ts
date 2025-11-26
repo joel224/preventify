@@ -81,6 +81,14 @@ export default {
                 'off-white': '#F8F9FA',
                 'dark-gray': '#333333',
                 'light-gray': '#6C757D',
+                 'peace-of-mind': {
+                    gray: '#F6F6F6',
+                    'dark-gray': '#5F5F5F',
+                    green: '#3A7D7E',
+                    'green-dark': '#2E6465',
+                    purple: '#6C63FF',
+                    orange: '#F9A826',
+                }
             },
             borderRadius: {
                 lg: 'var(--radius)',
