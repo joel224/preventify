@@ -20,39 +20,51 @@ import { Label } from "@/components/ui/label";
 
 
 const MagneticButton = () => {
-    const containerRef = useRef<HTMLDivElement>(null);
+    const heroRef = useRef<HTMLDivElement>(null);
     const buttonRef = useRef<HTMLAnchorElement>(null);
 
     const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-        const container = containerRef.current;
         const button = buttonRef.current;
-        if (!container || !button) return;
+        const hero = heroRef.current;
+        if (!button || !hero) return;
 
-        const { left, top, width, height } = container.getBoundingClientRect();
-        const x = e.clientX - (left + width / 2);
-        const y = e.clientY - (top + height / 2);
-
-        const strength = 0.4;
+        const heroRect = hero.getBoundingClientRect();
         
-        button.style.transform = `translate(${x * strength}px, ${y * strength}px)`;
+        // Calculate position relative to the hero container
+        const x = e.clientX - heroRect.left;
+        const y = e.clientY - heroRect.top;
+
+        const strength = 1.0; // Increased strength for direct follow
+        
+        // Use top/left for positioning instead of transform for smoother movement within the container
+        button.style.left = `${x * strength}px`;
+        button.style.top = `${y * strength}px`;
     };
 
     const handleMouseLeave = () => {
         const button = buttonRef.current;
         if (!button) return;
-        button.style.transform = 'translate(0, 0)';
+        // Reset to a default position (e.g., center) or hide it
+        button.style.left = '50%';
+        button.style.top = '85%';
+        button.style.transform = 'translate(-50%, -50%)';
     };
 
     return (
         <div
-            ref={containerRef}
+            ref={heroRef}
             onMouseMove={handleMouseMove}
             onMouseLeave={handleMouseLeave}
-            className="mt-8 flex justify-start items-center h-24 w-24"
+            className="absolute inset-0 z-10" // Container now covers the whole hero section
         >
-            <a href="#savings-details" ref={buttonRef} className="transition-transform duration-200 ease-out">
-                <Button variant="outline" size="icon" className="rounded-full animate-bounce">
-                    <ChevronDown className="h-4 w-4" />
+            <a 
+                href="#savings-details" 
+                ref={buttonRef} 
+                className="absolute transition-all duration-75 ease-out"
+                style={{ top: '85%', left: '50%', transform: 'translate(-50%, -50%)' }} // Initial centered position
+            >
+                <Button variant="outline" size="icon" className="rounded-full animate-bounce w-14 h-14 bg-white/50 backdrop-blur-sm">
+                    <ChevronDown className="h-6 w-6" />
                     <span className="sr-only">Scroll to details</span>
                 </Button>
             </a>
@@ -73,7 +85,7 @@ const SavingsPage = () => {
                 headline: 'Stop Paying for Sick Visits. Start Paying for Peace.',
                 body: 'The Individual Sukham Card gives you Unlimited access to our General Physicians and Paediatricians for a full year.',
                 relief: { title: 'The Relief', text: 'Never worry about a consultation bill again. Just walk in.' },
-                value: { title: 'The Value', text: 'For less than ₹2 per day, your care is covered.' },
+                value: { title: 'The Value', text: 'For less than ₹20 per day, your care is covered.' },
                 simplicity: { title: 'The Simplicity', text: 'The card pays for itself in just 2 standard visits. After that, every visit is free.' },
                 cta: '₹730. Your Health, Secured for a Year.'
             },
@@ -81,7 +93,7 @@ const SavingsPage = () => {
                 headline: 'One Family. One Fee. Unlimited Protection.',
                 body: 'Protect everyone you love with the Sukham Family Plan. Unlimited access for every family member to our General Physicians and Paediatricians for a full year.',
                 relief: { title: 'The Relief', text: 'Never hesitate to bring your child in—whether it\'s the first cough or the fifth follow-up. The bill is always ₹0.' },
-                security: { title: 'The Security', text: 'Stop paying doctor fees every time someone is sick.' },
+                security: { title: 'The Security', text: 'Enjoy Predictable Costs:  Your doctor visits are pre-paid.' },
                 simplicity: { title: 'The Simplicity', text: 'You cover the entire family for the year for the price of just 4 individual visits.' },
                 cta: '₹1,999. Get Your Family\'s Peace of Mind.'
             }
@@ -95,7 +107,7 @@ const SavingsPage = () => {
                 body: 'നിങ്ങളുടെ കൺസൾട്ടേഷൻ ഫീസ് ഇനി ഞങ്ങളേറ്റു. വെറും ₹730 രൂപയ്ക്ക്, ജനറൽ ഡോക്ടർമാരെയും പീഡിയാട്രീഷ്യനെയും ഒരു വർഷത്തേക്ക് എത്ര തവണ വേണമെങ്കിലും കാണാം, ഫീസ് ഇല്ലാതെ!',
                 relief: { title: 'ആശ്വാസം', text: 'ചെറിയ അസുഖങ്ങൾക്ക് ഇനി ബില്ലെത്ര വരുമെന്ന് ആലോചിച്ച് ടെൻഷൻ അടിക്കണ്ട.' },
                 value: { title: 'വാല്യൂ', text: 'നിങ്ങൾ സാധാരണ കൊടുക്കുന്ന 2 മുതൽ 4 കൺസൾട്ടേഷൻ ഫീസ് മുടക്കിയാൽ, ഒരു വർഷം മുഴുവൻ നിങ്ങളുടെ ചികിത്സ സൗജന്യം!' },
-                simplicity: { title: 'ലളിതം', text: 'The card pays for itself in just 2 standard visits. After that, every visit is free.' },
+                
                 cta: '₹730. നിങ്ങളുടെ ആരോഗ്യം, ഈ വർഷം ഫുൾ സുരക്ഷിതം.'
             },
             family: {
@@ -103,7 +115,7 @@ const SavingsPage = () => {
                 body: 'സുഖം ഫാമിലി പ്ലാൻ എടുത്താൽ, ₹1,999 രൂപയ്ക്ക് വീട്ടിലെ എല്ലാവർക്കും ഒരു വർഷത്തേക്ക് ജനറൽ ഡോക്ടർമാരുടെയും പീഡിയാട്രീഷ്യന്റെയും പരിധിയില്ലാത്ത സേവനം ഉറപ്പാണ്!',
                 relief: { title: 'ആശ്വാസം', text: 'കുഞ്ഞിന് ചെറിയൊരു പനിയോ ജലദോഷമോ വന്നാൽ ഇനി രണ്ടാമതൊന്ന് ആലോചിക്കാതെ ഡോക്ടറെ കാണിക്കാം.' },
                 security: { title: 'സുരക്ഷ', text: 'നിങ്ങൾ സാധാരണ കൊടുക്കുന്ന 4 കൺസൾട്ടേഷൻ ഫീസിന്റെ വിലയ്ക്ക്, ഒരു വർഷം മുഴുവൻ കുടുംബം സേഫ്!' },
-                simplicity: { title: 'ലളിതം', text: 'You cover the entire family for the year for the price of just 4 individual visits.' },
+                
                 cta: '₹1,999. സുഖമായിട്ട് ജീവിക്കാം.'
             }
         }
@@ -156,19 +168,18 @@ const SavingsPage = () => {
 
   return (
     <>
-       <div className="bg-preventify-blue/10 py-12 md:py-20">
+       <div className="bg-preventify-blue/10 py-12 md:py-20 relative">
             <div className="container mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
-                    <div className="text-center md:text-left">
+                    <div className="text-center md:text-left z-20">
                         <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-preventify-blue">
                            Your 365-Day Health Passport
                         </h1>
                         <p className="mt-4 text-lg max-w-xl text-preventify-dark-gray">
                             Predictable Health. Unpredictable Savings. Explore the detailed benefits of our membership.
                         </p>
-                        <MagneticButton />
                     </div>
-                    <div className="relative aspect-[3/4] rounded-lg overflow-hidden shadow-lg">
+                    <div className="relative aspect-[3/4] rounded-lg overflow-hidden z-0">
                         <Image
                             src="/cardX1.webp"
                             alt="One Health Member Card"
@@ -178,6 +189,7 @@ const SavingsPage = () => {
                     </div>
                 </div>
             </div>
+            <MagneticButton />
         </div>
 
         <section id="savings-details" className="relative py-16 md:py-24 bg-peace-of-mind-gray overflow-hidden">
@@ -224,10 +236,7 @@ const SavingsPage = () => {
                               <Wallet className="h-5 w-5 text-peace-of-mind-green-dark mt-0.5"/>
                               <div><strong className="font-semibold text-gray-800">{individualContent.value.title}:</strong> {individualContent.value.text}</div>
                           </li>
-                          <li className="flex items-start gap-3">
-                              <CheckCircle className="h-5 w-5 text-peace-of-mind-green-dark mt-0.5"/>
-                              <div><strong className="font-semibold text-gray-800">{individualContent.simplicity.title}:</strong> {individualContent.simplicity.text}</div>
-                          </li>
+                         
                       </ul>
                   </div>
                   <div className="mt-auto bg-peace-of-mind-green text-white p-4 text-center">
@@ -254,10 +263,7 @@ const SavingsPage = () => {
                               <Lock className="h-5 w-5 text-preventify-dark-blue mt-0.5"/>
                               <div><strong className="font-semibold text-gray-800">{familyContent.security.title}:</strong> {familyContent.security.text}</div>
                           </li>
-                          <li className="flex items-start gap-3">
-                              <Calendar className="h-5 w-5 text-preventify-dark-blue mt-0.5"/>
-                               <div><strong className="font-semibold text-gray-800">{familyContent.simplicity.title}:</strong> {familyContent.simplicity.text}</div>
-                          </li>
+                          
                       </ul>
                   </div>
                   <div className="mt-auto bg-preventify-blue text-white p-4 text-center">
@@ -366,6 +372,8 @@ const SavingsPage = () => {
 };
 
 export default SavingsPage;
+
+    
 
     
 
