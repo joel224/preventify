@@ -4,7 +4,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { Menu, X, Phone, ChevronDown, User, AlertTriangle, LucideIcon, MapPin } from "lucide-react"; 
+import { Menu, X, Phone, ChevronDown, User, AlertTriangle, LucideIcon, MapPin, ArrowRight } from "lucide-react"; 
 import { usePathname } from "next/navigation";
 import BookingDialog from "@/components/BookingDialog";
 import {
@@ -152,6 +152,10 @@ const Navbar = () => {
                 <NavigationMenuItem>
                   <NavigationMenuTrigger className="font-medium transition-colors text-lg text-gray-700 hover:text-primary bg-transparent focus:bg-transparent data-[state=open]:bg-transparent">
                     Our Doctors
+                    <ChevronDown
+                      className="relative top-[1px] ml-1 h-3 w-3 transition duration-200 group-data-[state=open]:rotate-180"
+                      aria-hidden="true"
+                    />
                   </NavigationMenuTrigger>
                   <NavigationMenuContent>
                     <div className="p-4 md:w-[400px]">
@@ -175,9 +179,9 @@ const Navbar = () => {
                           </ListItem>
                         ))}
                       </ul>
-                      <div className="mt-4 text-center">
-                        <Link href="/doctors" className="text-sm text-primary hover:underline">
-                            View all doctors →
+                      <div className="mt-4 text-right">
+                        <Link href="/doctors" className="inline-flex items-center text-sm text-primary hover:underline">
+                            View all doctors <ArrowRight className="ml-1 h-4 w-4" />
                         </Link>
                       </div>
                     </div>
@@ -187,6 +191,10 @@ const Navbar = () => {
                 <NavigationMenuItem>
                   <NavigationMenuTrigger className="font-medium transition-colors text-lg text-gray-700 hover:text-primary bg-transparent focus:bg-transparent data-[state=open]:bg-transparent">
                     Our Clinics
+                     <ChevronDown
+                      className="relative top-[1px] ml-1 h-3 w-3 transition duration-200 group-data-[state=open]:rotate-180"
+                      aria-hidden="true"
+                    />
                   </NavigationMenuTrigger>
                   <NavigationMenuContent>
                     <div className="p-4 md:w-[400px]">
@@ -205,9 +213,9 @@ const Navbar = () => {
                           </ListItem>
                         ))}
                       </ul>
-                      <div className="mt-4 text-center">
-                        <Link href="/clinics" className="text-sm text-primary hover:underline">
-                          View all locations →
+                      <div className="mt-4 text-right">
+                        <Link href="/clinics" className="inline-flex items-center text-sm text-primary hover:underline">
+                          View all locations <ArrowRight className="ml-1 h-4 w-4" />
                         </Link>
                       </div>
                     </div>
