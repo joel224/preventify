@@ -508,19 +508,19 @@ export default function BookingDialog({
         return (
           <>
             <DialogHeader>
-              <DialogTitle>Book an Appointment</DialogTitle>
-              <DialogDescription>Please provide your contact details. If you are a returning patient, we'll find your details.</DialogDescription>
+              <DialogTitle className="text-2xl">Book an Appointment</DialogTitle>
+              <DialogDescription className="text-base">Please provide your contact details. If you are a returning patient, we'll find your details.</DialogDescription>
             </DialogHeader>
-            <div className="space-y-4 py-4">
+            <div className="space-y-6 py-4">
               <div className="grid grid-cols-2 gap-4">
                 <FormField
                   control={form.control}
                   name="firstName"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>First Name</FormLabel>
+                      <FormLabel className="text-base">First Name</FormLabel>
                       <FormControl>
-                        <Input placeholder="John" {...field} />
+                        <Input placeholder="John" {...field} className="h-12 text-base" />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -531,9 +531,9 @@ export default function BookingDialog({
                   name="lastName"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Last Name</FormLabel>
+                      <FormLabel className="text-base">Last Name</FormLabel>
                       <FormControl>
-                        <Input placeholder="Doe" {...field} />
+                        <Input placeholder="Doe" {...field} className="h-12 text-base" />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -545,13 +545,13 @@ export default function BookingDialog({
                   name="phone"
                   render={({ field }) => (
                       <FormItem>
-                      <FormLabel>Phone Number</FormLabel>
+                      <FormLabel className="text-base">Phone Number</FormLabel>
                        <div className="relative">
                             <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-                                <span className="text-gray-500 sm:text-sm">+91</span>
+                                <span className="text-gray-500 text-base">+91</span>
                             </div>
                             <FormControl>
-                                <Input placeholder="9876543210" {...field} className="pl-10" />
+                                <Input placeholder="9876543210" {...field} className="pl-12 h-12 text-base" />
                             </FormControl>
                         </div>
                       <FormMessage />
@@ -560,7 +560,7 @@ export default function BookingDialog({
               />
             </div>
             <DialogFooter>
-                <Button onClick={handleNextStep} disabled={isLoading} type="button">
+                <Button onClick={handleNextStep} disabled={isLoading} type="button" size="lg" className="text-base">
                     {isLoading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
                     Next
                 </Button>
@@ -572,8 +572,8 @@ export default function BookingDialog({
             return (
                 <>
                     <DialogHeader>
-                        <DialogTitle>Describe Your Symptoms</DialogTitle>
-                        <DialogDescription>
+                        <DialogTitle className="text-2xl">Describe Your Symptoms</DialogTitle>
+                        <DialogDescription className="text-base">
                             Tell us what's bothering you, and our AI will suggest the right doctor.
                         </DialogDescription>
                     </DialogHeader>
@@ -584,11 +584,12 @@ export default function BookingDialog({
                             value={symptoms}
                             onChange={(e) => setSymptoms(e.target.value)}
                             rows={4}
+                            className="text-base"
                         />
                     </div>
                     <DialogFooter>
-                        <Button variant="outline" onClick={() => setShowAiHelp(false)} type="button">Cancel</Button>
-                        <Button onClick={handleAiSuggestion} disabled={isLoading} type="button">
+                        <Button variant="outline" onClick={() => setShowAiHelp(false)} type="button" size="lg" className="text-base">Cancel</Button>
+                        <Button onClick={handleAiSuggestion} disabled={isLoading} type="button" size="lg" className="text-base">
                             {isLoading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Sparkles className="mr-2 h-4 w-4" />}
                             Get AI Suggestion
                         </Button>
@@ -599,8 +600,8 @@ export default function BookingDialog({
         return (
           <>
             <DialogHeader>
-                <DialogTitle>Book an Appointment</DialogTitle>
-              <DialogDescription>
+                <DialogTitle className="text-2xl">Select a Doctor</DialogTitle>
+              <DialogDescription className="text-base">
                 Booking an appointment at a Preventify clinic.
               </DialogDescription>
             </DialogHeader>
@@ -610,7 +611,7 @@ export default function BookingDialog({
                 name="doctorId"
                 render={({ field }) => (
                   <FormItem className="flex flex-col">
-                    <FormLabel>Doctor</FormLabel>
+                    <FormLabel className="text-base">Doctor</FormLabel>
                     <Popover open={comboboxOpen} onOpenChange={setComboboxOpen}>
                       <PopoverTrigger asChild>
                         <FormControl>
@@ -618,7 +619,7 @@ export default function BookingDialog({
                             variant="outline"
                             role="combobox"
                             className={cn(
-                              "w-full justify-between",
+                              "w-full justify-between h-12 text-base",
                               !field.value && "text-muted-foreground"
                             )}
                           >
@@ -633,7 +634,7 @@ export default function BookingDialog({
                       </PopoverTrigger>
                       <PopoverContent className="w-[--radix-popover-trigger-width] p-0">
                         <Command>
-                          <CommandInput placeholder="Search doctor..." />
+                          <CommandInput placeholder="Search doctor..." className="text-base h-12" />
                           <CommandList>
                             <CommandEmpty>No doctor found.</CommandEmpty>
                             <CommandGroup>
@@ -645,6 +646,7 @@ export default function BookingDialog({
                                     form.setValue("doctorId", doctor.id, { shouldValidate: true });
                                     setComboboxOpen(false);
                                   }}
+                                  className="text-base py-2"
                                 >
                                   <Check
                                     className={cn(
@@ -656,7 +658,7 @@ export default function BookingDialog({
                                   />
                                   <div>
                                     {doctor.name}
-                                    <span className="text-xs text-muted-foreground ml-2">({doctor.specialty})</span>
+                                    <span className="text-sm text-muted-foreground ml-2">({doctor.specialty})</span>
                                   </div>
                                 </CommandItem>
                               ))}
@@ -670,15 +672,15 @@ export default function BookingDialog({
                 )}
               />
                 <div className="text-center">
-                    <Button variant="link" onClick={() => setShowAiHelp(true)} type="button">
+                    <Button variant="link" onClick={() => setShowAiHelp(true)} type="button" className="text-base">
                         <Sparkles className="mr-2 h-4 w-4" />
                         Help me choose a doctor
                     </Button>
                 </div>
             </div>
             <DialogFooter>
-              <Button variant="outline" onClick={handlePrevStep} type="button">Back</Button>
-              <Button onClick={handleNextStep} disabled={isLoading || doctors.length === 0} type="button">
+              <Button variant="outline" onClick={handlePrevStep} type="button" size="lg" className="text-base">Back</Button>
+              <Button onClick={handleNextStep} disabled={isLoading || doctors.length === 0} type="button" size="lg" className="text-base">
                 Next
               </Button>
             </DialogFooter>
@@ -692,24 +694,28 @@ export default function BookingDialog({
         return (
           <>
             <DialogHeader>
-                <DialogTitle>Book an Appointment</DialogTitle>
-              <DialogDescription>
+                <DialogTitle className="text-2xl">Select a Time</DialogTitle>
+              <DialogDescription className="text-base">
                 {`Booking for ${selectedDoctor?.name}`}
               </DialogDescription>
             </DialogHeader>
             <div className="space-y-6 py-4">
                 <div className="flex flex-col items-center gap-6">
                     <div className="w-full max-w-sm">
-                        <FormLabel className="text-center block mb-2">Date</FormLabel>
+                        <FormLabel className="text-center block mb-2 text-base">Date</FormLabel>
                         <div className="grid grid-cols-2 gap-4">
                             <Button 
                             type="button" 
+                            size="lg"
+                            className="text-base"
                             variant={selectedDay && format(selectedDay, 'yyyy-MM-dd') === format(today, 'yyyy-MM-dd') ? 'default' : 'outline'}
                             onClick={() => form.setValue('date', today, { shouldValidate: true })}>
                                 Today
                             </Button>
                             <Button 
                             type="button" 
+                             size="lg"
+                            className="text-base"
                             variant={selectedDay && format(selectedDay, 'yyyy-MM-dd') === format(tomorrow, 'yyyy-MM-dd') ? 'default' : 'outline'}
                             onClick={() => form.setValue('date', tomorrow, { shouldValidate: true })}>
                                 Tomorrow
@@ -724,7 +730,7 @@ export default function BookingDialog({
                         name="time"
                         render={({ field }) => (
                             <FormItem>
-                            <FormLabel className="text-center block mb-2">Available Slots</FormLabel>
+                            <FormLabel className="text-center block mb-2 text-base">Available Slots</FormLabel>
                             <div className="grid grid-cols-3 gap-2 max-h-[250px] overflow-y-auto pr-2">
                                 {isLoading ? (
                                 <div className="col-span-3 flex justify-center items-center h-24">
@@ -741,7 +747,7 @@ export default function BookingDialog({
                                         key={slot.hour}
                                         variant={isSelected ? 'default' : 'outline'}
                                         onClick={() => handleHourSelect(slot.firstAvailableSlot)}
-                                        className="w-full"
+                                        className="w-full h-12 text-base"
                                         type="button"
                                     >
                                         {format(setHours(new Date(), slot.hour), 'ha')}
@@ -749,7 +755,7 @@ export default function BookingDialog({
                                     );
                                 })
                                 ) : (
-                                <p className="col-span-3 text-sm text-muted-foreground text-center py-4">
+                                <p className="col-span-3 text-base text-muted-foreground text-center py-4">
                                     {selectedDate ? 'No slots available. Please select another date.' : 'Please select a date to see available slots.'}
                                 </p>
                                 )}
@@ -762,8 +768,8 @@ export default function BookingDialog({
                 </div>
             </div>
             <DialogFooter>
-              <Button variant="outline" onClick={handlePrevStep} type="button">Back</Button>
-              <Button onClick={handleNextStep} disabled={!form.getValues('time')} type="button">
+              <Button variant="outline" onClick={handlePrevStep} type="button" size="lg" className="text-base">Back</Button>
+              <Button onClick={handleNextStep} disabled={!form.getValues('time')} type="button" size="lg" className="text-base">
                 {foundPatientProfile ? 'Confirm Booking' : 'Next'}
               </Button>
             </DialogFooter>
@@ -773,15 +779,15 @@ export default function BookingDialog({
             return (
               <>
                 <DialogHeader>
-                  <DialogTitle>Step 4: Confirm Your Details</DialogTitle>
-                  <DialogDescription>
+                  <DialogTitle className="text-2xl">Confirm Your Details</DialogTitle>
+                  <DialogDescription className="text-base">
                     Please provide your date of birth and gender to complete the booking.
                   </DialogDescription>
                 </DialogHeader>
                 <div className="space-y-6 py-4">
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <FormItem>
-                            <FormLabel>Date of Birth</FormLabel>
+                            <FormLabel className="text-base">Date of Birth</FormLabel>
                             <div className="grid grid-cols-3 gap-2">
                                 <FormField
                                     control={form.control}
@@ -790,7 +796,7 @@ export default function BookingDialog({
                                         <FormItem>
                                             <Select onValueChange={field.onChange} defaultValue={field.value}>
                                                 <FormControl>
-                                                <SelectTrigger>
+                                                <SelectTrigger className="h-12 text-base">
                                                     <SelectValue placeholder="Year" />
                                                 </SelectTrigger>
                                                 </FormControl>
@@ -809,7 +815,7 @@ export default function BookingDialog({
                                         <FormItem>
                                             <Select onValueChange={field.onChange} defaultValue={field.value}>
                                                 <FormControl>
-                                                <SelectTrigger>
+                                                <SelectTrigger className="h-12 text-base">
                                                     <SelectValue placeholder="Month" />
                                                 </SelectTrigger>
                                                 </FormControl>
@@ -828,7 +834,7 @@ export default function BookingDialog({
                                         <FormItem>
                                             <Select onValueChange={field.onChange} defaultValue={field.value}>
                                                 <FormControl>
-                                                <SelectTrigger>
+                                                <SelectTrigger className="h-12 text-base">
                                                     <SelectValue placeholder="Day" />
                                                 </SelectTrigger>
                                                 </FormControl>
@@ -847,10 +853,10 @@ export default function BookingDialog({
                             name="gender"
                             render={({ field }) => (
                                 <FormItem>
-                                    <FormLabel>Gender</FormLabel>
+                                    <FormLabel className="text-base">Gender</FormLabel>
                                     <Select onValueChange={field.onChange} defaultValue={field.value}>
                                         <FormControl>
-                                        <SelectTrigger>
+                                        <SelectTrigger className="h-12 text-base">
                                             <SelectValue placeholder="Select gender" />
                                         </SelectTrigger>
                                         </FormControl>
@@ -867,8 +873,8 @@ export default function BookingDialog({
                     </div>
                 </div>
                 <DialogFooter>
-                  <Button variant="outline" onClick={handlePrevStep} type="button">Back</Button>
-                  <Button type="submit" disabled={isLoading}>
+                  <Button variant="outline" onClick={handlePrevStep} type="button" size="lg" className="text-base">Back</Button>
+                  <Button type="submit" disabled={isLoading} size="lg" className="text-base">
                     {isLoading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
                     Confirm Booking
                   </Button>
@@ -885,23 +891,23 @@ export default function BookingDialog({
                     {bookingStatus === 'success' ? (
                         <>
                             <CheckCircle className="h-16 w-16 text-green-500 mb-4" />
-                            <h2 className="text-2xl font-semibold">Appointment Confirmed!</h2>
-                            <DialogDescription>
+                            <h2 className="text-3xl font-semibold">Appointment Confirmed!</h2>
+                            <DialogDescription className="text-base">
                                 Your appointment has been successfully booked.
                             </DialogDescription>
                         </>
                     ) : (
                         <>
                             <XCircle className="h-16 w-16 text-red-500 mb-4" />
-                            <h2 className="text-2xl font-semibold">Booking Failed</h2>
-                            <DialogDescription>
+                            <h2 className="text-3xl font-semibold">Booking Failed</h2>
+                            <DialogDescription className="text-base">
                                 {bookingResponse?.message || 'There was an error processing your booking. Please try again.'}
                             </DialogDescription>
                         </>
                     )}
                 </DialogHeader>
                 {bookingStatus === 'success' && bookingResponse && (
-                    <div className="py-4 space-y-2 text-sm text-gray-700 bg-gray-50 p-4 rounded-md">
+                    <div className="py-4 space-y-3 text-base text-gray-700 bg-gray-50 p-6 rounded-md">
                         <p><strong>Confirmation ID:</strong> {bookingResponse.appointment_id}</p>
                         <p><strong>Patient Name:</strong> {finalData.firstName} {finalData.lastName}</p>
                         <p><strong>Doctor:</strong> {finalDoctor?.name}</p>
@@ -910,7 +916,7 @@ export default function BookingDialog({
                 )}
                 <DialogFooter>
                     <DialogClose asChild>
-                        <Button type="button">Close</Button>
+                        <Button type="button" size="lg" className="text-base">Close</Button>
                     </DialogClose>
                 </DialogFooter>
                 </>
@@ -923,18 +929,17 @@ export default function BookingDialog({
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>{children}</DialogTrigger>
-      <DialogContent className="sm:max-w-xl md:max-w-2xl">
-        <DialogTitle className="sr-only">Book an Appointment</DialogTitle>
-        <div className="text-center py-6 border-b border-gray-200">
-            <p className='text-sm text-gray-500'>Prefer to book by phone?</p>
-            <a href="tel:+918129334858" className="flex items-center justify-center gap-2 text-2xl font-bold text-preventify-blue hover:text-preventify-dark-blue transition-colors">
-                <Phone className="w-6 h-6"/>
+      <DialogContent className="sm:max-w-[80vw] lg:max-w-4xl p-0">
+        <div className="text-center py-8 border-b border-gray-200">
+            <p className='text-lg text-gray-500'>Prefer to book by phone?</p>
+            <a href="tel:+918129334858" className="flex items-center justify-center gap-2 text-4xl font-bold text-preventify-blue hover:text-preventify-dark-blue transition-colors">
+                <Phone className="w-8 h-8"/>
                 +91 8129334858
             </a>
-            <p className='text-xs text-gray-400 mt-1'>For emergencies, please call this number directly.</p>
+            <p className='text-sm text-gray-400 mt-1'>For emergencies, please call this number directly.</p>
         </div>
         <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="px-6 pb-6">
+            <form onSubmit={form.handleSubmit(onSubmit)} className="px-8 pb-8 pt-4">
                 {renderStepContent()}
             </form>
         </Form>
@@ -942,5 +947,7 @@ export default function BookingDialog({
     </Dialog>
   );
 }
+
+    
 
     
