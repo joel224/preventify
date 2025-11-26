@@ -150,7 +150,7 @@ const Navbar = () => {
                 </NavigationMenuItem>
 
                 <NavigationMenuItem>
-                  <NavigationMenuTrigger className="font-medium transition-colors text-lg text-gray-700 hover:text-primary bg-transparent focus:bg-transparent data-[state=open]:bg-transparent">
+                  <NavigationMenuTrigger className="font-medium transition-colors text-lg text-gray-700 hover:text-primary bg-transparent focus:bg-transparent data-[state=open]:bg-transparent group">
                     Our Doctors
                     <ChevronDown
                       className="relative top-[1px] ml-1 h-3 w-3 transition duration-200 group-data-[state=open]:rotate-180"
@@ -180,8 +180,8 @@ const Navbar = () => {
                         ))}
                       </ul>
                       <div className="mt-4 text-right">
-                        <Link href="/doctors" className="inline-flex items-center text-sm text-primary hover:underline">
-                            View all doctors <ArrowRight className="ml-1 h-4 w-4" />
+                        <Link href="/doctors" className="inline-flex items-center text-sm bg-primary text-primary-foreground hover:bg-primary/90 px-3 py-1 rounded-md">
+                            View all doctors
                         </Link>
                       </div>
                     </div>
@@ -189,7 +189,7 @@ const Navbar = () => {
                 </NavigationMenuItem>
 
                 <NavigationMenuItem>
-                  <NavigationMenuTrigger className="font-medium transition-colors text-lg text-gray-700 hover:text-primary bg-transparent focus:bg-transparent data-[state=open]:bg-transparent">
+                  <NavigationMenuTrigger className="font-medium transition-colors text-lg text-gray-700 hover:text-primary bg-transparent focus:bg-transparent data-[state=open]:bg-transparent group">
                     Our Clinics
                      <ChevronDown
                       className="relative top-[1px] ml-1 h-3 w-3 transition duration-200 group-data-[state=open]:rotate-180"
@@ -214,8 +214,8 @@ const Navbar = () => {
                         ))}
                       </ul>
                       <div className="mt-4 text-right">
-                        <Link href="/clinics" className="inline-flex items-center text-sm text-primary hover:underline">
-                          View all locations <ArrowRight className="ml-1 h-4 w-4" />
+                        <Link href="/clinics" className="inline-flex items-center text-sm bg-primary text-primary-foreground hover:bg-primary/90 px-3 py-1 rounded-md">
+                          View all locations
                         </Link>
                       </div>
                     </div>
