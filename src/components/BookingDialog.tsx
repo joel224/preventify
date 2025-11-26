@@ -45,7 +45,7 @@ import { toast } from 'sonner';
 import { z } from 'zod';
 import { useForm, useWatch } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, useCallback } from 'react';
 import { format, parseISO, addMinutes, getHours, setHours, addDays, getYear, getMonth, getDate } from 'date-fns';
 import { Loader2, CheckCircle, XCircle, Check, ChevronsUpDown, Sparkles, Phone } from 'lucide-react';
 import { cn } from "@/lib/utils";
@@ -100,7 +100,6 @@ const doctors: Doctor[] = [
 // Zod Schemas
 const stepOneSchema = z.object({
   firstName: z.string().min(1, 'First name is required.'),
-  lastName: z.string().min(1, 'Last name is required.'),
   phone: z.string().regex(/^[0-9]{10}$/, 'Please enter a valid 10-digit phone number.'),
 });
 
@@ -160,12 +159,12 @@ export default function BookingDialog({
   const [foundPatientProfile, setFoundPatientProfile] = useState<FoundPatientProfile | null>(null);
   const [showAiHelp, setShowAiHelp] = useState(false);
   const [symptoms, setSymptoms] = useState("");
+  const [isSearchingPatient, setIsSearchingPatient] = useState(false);
 
   const form = useForm<CombinedFormData>({
     resolver: zodResolver(combinedSchema),
     defaultValues: {
       firstName: '',
-      lastName: '',
       phone: '',
       doctorId: '',
       clinicId: '',
@@ -179,6 +178,63 @@ export default function BookingDialog({
 
   const selectedDoctorId = useWatch({ control: form.control, name: 'doctorId' });
   const selectedDate = useWatch({ control: form.control, name: 'date' });
+  const selectedTime = useWatch({ control: form.control, name: 'time' });
+  const selectedFirstName = useWatch({ control: form.control, name: 'firstName' });
+  const selectedPhone = useWatch({ control: form.control, name: 'phone' });
+
+  // Auto-advance from Step 1
+  useEffect(() => {
+    const advance = async () => {
+        if (step === 1 && selectedFirstName && selectedPhone.match(/^[0-9]{10}$/) && !isSearchingPatient) {
+            setIsSearchingPatient(true);
+            try {
+                const res = await fetch(`/api/search-patient?phone=${encodeURIComponent(selectedPhone)}`);
+                if (res.ok) {
+                    const patient: FoundPatientProfile = await res.json();
+                    setFoundPatientProfile(patient);
+                    form.setValue('firstName', patient.first_name);
+                    toast.info(`Welcome back, ${patient.first_name}! Your details have been pre-filled.`);
+                } else {
+                    setFoundPatientProfile(null);
+                }
+            } catch (error) {
+                console.log('Patient search failed or not found, continuing as new patient.');
+                setFoundPatientProfile(null);
+            } finally {
+                setIsLoading(false);
+                setIsSearchingPatient(false);
+                setStep(2);
+            }
+        }
+    };
+    advance();
+  }, [selectedFirstName, selectedPhone, step, form, isSearchingPatient]);
+
+  // Auto-advance from Step 2
+  useEffect(() => {
+    if (step === 2 && selectedDoctorId) {
+        const doctor = doctors.find(d => d.id === selectedDoctorId);
+        if (doctor) {
+            form.setValue('clinicId', doctor.clinicId, { shouldValidate: true });
+            setStep(3);
+        }
+    }
+  }, [selectedDoctorId, step, form]);
+
+  // Auto-advance from Step 3
+  useEffect(() => {
+      const advance = async () => {
+        if (step === 3 && selectedDate && selectedTime) {
+            if (foundPatientProfile) {
+                await onSubmit(form.getValues());
+            } else {
+                setStep(4);
+            }
+        }
+      };
+      advance();
+  }, [selectedDate, selectedTime, step, foundPatientProfile, form]);
+
 
   const selectedClinicId = useMemo(() => {
     if (!selectedDoctorId || doctors.length === 0) return '';
@@ -191,7 +247,6 @@ export default function BookingDialog({
     const handleInitialData = async () => {
         if (open && initialFirstName && initialPhone) {
             form.setValue('firstName', initialFirstName, { shouldValidate: true });
-            form.setValue('lastName', initialLastName, { shouldValidate: true });
             form.setValue('phone', initialPhone, { shouldValidate: true });
             
             // This replicates the logic from handleNextStep for step 1
@@ -202,7 +257,6 @@ export default function BookingDialog({
                     const patient: FoundPatientProfile = await res.json();
                     setFoundPatientProfile(patient);
                     form.setValue('firstName', patient.first_name);
-                    form.setValue('lastName', patient.last_name);
                     toast.info(`Welcome back, ${patient.first_name}! Your details have been pre-filled.`);
                 }
             } catch (error) {
@@ -215,14 +269,13 @@ export default function BookingDialog({
         }
     };
     handleInitialData();
-  }, [open, initialFirstName, initialLastName, initialPhone, form]);
+  }, [open, initialFirstName, initialPhone, form]);
 
   useEffect(() => {
     if (!open) {
       // Full reset when dialog is closed
       form.reset({
         firstName: '',
-        lastName: '',
         phone: '',
         doctorId: '',
         clinicId: '',
@@ -238,6 +291,7 @@ export default function BookingDialog({
       setFoundPatientProfile(null);
       setShowAiHelp(false);
       setSymptoms("");
+      setIsSearchingPatient(false);
     }
   }, [open, form]);
   
@@ -317,51 +371,14 @@ export default function BookingDialog({
   const handleNextStep = async () => {
     let result;
     if (step === 1) {
-        result = await form.trigger(['firstName', 'lastName', 'phone']);
-        if (result) {
-            setIsLoading(true);
-            try {
-                const res = await fetch(`/api/search-patient?phone=${encodeURIComponent(form.getValues('phone'))}`);
-                if (res.ok) {
-                    const patient: FoundPatientProfile = await res.json();
-                    setFoundPatientProfile(patient);
-                    form.setValue('firstName', patient.first_name);
-                    form.setValue('lastName', patient.last_name);
-                    // Don't pre-fill DOB/gender form fields as they'll be taken from the profile directly
-                    toast.info(`Welcome back, ${patient.first_name}! Your details have been pre-filled.`);
-                } else {
-                    setFoundPatientProfile(null);
-                }
-            } catch (error) {
-                console.log('Patient search failed or not found, continuing as new patient.');
-                setFoundPatientProfile(null);
-            } finally {
-                setIsLoading(false);
-                setStep(2);
-            }
-        }
+        result = await form.trigger(['firstName', 'phone']);
+        // Auto-advance handles this now
     } else if (step === 2) {
       result = await form.trigger(['doctorId']);
-      if(result) {
-         const doctor = doctors.find(d => d.id === form.getValues('doctorId'));
-         if(doctor) {
-            form.setValue('clinicId', doctor.clinicId, { shouldValidate: true });
-            setStep(step + 1);
-         } else {
-             result = false;
-             toast.error("Could not find clinic for the selected doctor.");
-         }
-      }
+      // Auto-advance handles this now
     } else if (step === 3) {
         result = await form.trigger(['date', 'time']);
-        if (result) {
-            // If we found a patient, skip step 4 and submit
-            if (foundPatientProfile) {
-                await onSubmit(form.getValues());
-            } else {
-                setStep(step + 1);
-            }
-        }
+        // Auto-advance handles this now
     }
   };
 
@@ -395,7 +412,7 @@ export default function BookingDialog({
     if (foundPatientProfile) {
         patientPayload = {
             firstName: foundPatientProfile.first_name,
-            lastName: foundPatientProfile.last_name,
+            lastName: foundPatientProfile.last_name || "WEB N/A",
             phone: data.phone,
             dob: foundPatientProfile.dob,
             gender: formatGenderAPI(foundPatientProfile.gender),
@@ -419,7 +436,7 @@ export default function BookingDialog({
         const { dobYear, dobMonth, dobDay, gender } = newPatientValidation.data;
         patientPayload = {
             firstName: data.firstName,
-            lastName: data.lastName,
+            lastName: "WEB N/A",
             phone: data.phone,
             dob: `${dobYear}-${String(dobMonth).padStart(2, '0')}-${String(dobDay).padStart(2, '0')}`,
             gender: gender,
@@ -485,11 +502,10 @@ export default function BookingDialog({
         const { doctorId } = await response.json();
         
         if (doctorId && doctors.some(d => d.id === doctorId)) {
-            form.setValue('doctorId', doctorId, { shouldValidate: true });
+            form.setValue("doctorId", doctorId, { shouldValidate: true });
             const recommendedDoctor = doctors.find(d => d.id === doctorId);
             toast.success(`We recommend ${recommendedDoctor?.name} for you.`);
             setShowAiHelp(false);
-            // Don't auto-advance, let the user confirm the selection and click next.
         } else {
             throw new Error("AI could not suggest a valid doctor.");
         }
@@ -509,49 +525,34 @@ export default function BookingDialog({
           <>
             <DialogHeader>
               <DialogTitle className="text-2xl">Book an Appointment</DialogTitle>
-              <DialogDescription className="text-base">Please provide your contact details. If you are a returning patient, we'll find your details.</DialogDescription>
+              <DialogDescription className="text-lg">Please provide your details to begin.</DialogDescription>
             </DialogHeader>
             <div className="space-y-6 py-4">
-              <div className="grid grid-cols-2 gap-4">
-                <FormField
+               <FormField
                   control={form.control}
                   name="firstName"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel className="text-base">First Name</FormLabel>
+                      <FormLabel className="text-lg">Full Name</FormLabel>
                       <FormControl>
-                        <Input placeholder="John" {...field} className="h-12 text-base" />
+                        <Input placeholder="Your full name" {...field} className="h-14 text-lg" />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
                   )}
                 />
-                 <FormField
-                  control={form.control}
-                  name="lastName"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel className="text-base">Last Name</FormLabel>
-                      <FormControl>
-                        <Input placeholder="Doe" {...field} className="h-12 text-base" />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              </div>
               <FormField
                   control={form.control}
                   name="phone"
                   render={({ field }) => (
                       <FormItem>
-                      <FormLabel className="text-base">Phone Number</FormLabel>
+                      <FormLabel className="text-lg">Phone Number</FormLabel>
                        <div className="relative">
                             <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-                                <span className="text-gray-500 text-base">+91</span>
+                                <span className="text-gray-500 text-lg">+91</span>
                             </div>
                             <FormControl>
-                                <Input placeholder="9876543210" {...field} className="pl-12 h-12 text-base" />
+                                <Input placeholder="9876543210" {...field} className="pl-14 h-14 text-lg" />
                             </FormControl>
                         </div>
                       <FormMessage />
@@ -559,9 +560,9 @@ export default function BookingDialog({
                   )}
               />
             </div>
-            <DialogFooter>
-                <Button onClick={handleNextStep} disabled={isLoading} type="button" size="lg" className="text-base">
-                    {isLoading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
+             <DialogFooter>
+                <Button onClick={handleNextStep} disabled={isSearchingPatient} type="button" size="lg" className="text-lg h-12 w-full">
+                    {isSearchingPatient ? <Loader2 className="mr-2 h-5 w-5 animate-spin" /> : null}
                     Next
                 </Button>
             </DialogFooter>
@@ -573,7 +574,7 @@ export default function BookingDialog({
                 <>
                     <DialogHeader>
                         <DialogTitle className="text-2xl">Describe Your Symptoms</DialogTitle>
-                        <DialogDescription className="text-base">
+                        <DialogDescription className="text-lg">
                             Tell us what's bothering you, and our AI will suggest the right doctor.
                         </DialogDescription>
                     </DialogHeader>
@@ -584,13 +585,13 @@ export default function BookingDialog({
                             value={symptoms}
                             onChange={(e) => setSymptoms(e.target.value)}
                             rows={4}
-                            className="text-base"
+                            className="text-lg"
                         />
                     </div>
                     <DialogFooter>
-                        <Button variant="outline" onClick={() => setShowAiHelp(false)} type="button" size="lg" className="text-base">Cancel</Button>
-                        <Button onClick={handleAiSuggestion} disabled={isLoading} type="button" size="lg" className="text-base">
-                            {isLoading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Sparkles className="mr-2 h-4 w-4" />}
+                        <Button variant="outline" onClick={() => setShowAiHelp(false)} type="button" size="lg" className="text-lg h-12">Cancel</Button>
+                        <Button onClick={handleAiSuggestion} disabled={isLoading} type="button" size="lg" className="text-lg h-12">
+                            {isLoading ? <Loader2 className="mr-2 h-5 w-5 animate-spin" /> : <Sparkles className="mr-2 h-5 w-5" />}
                             Get AI Suggestion
                         </Button>
                     </DialogFooter>
@@ -601,7 +602,7 @@ export default function BookingDialog({
           <>
             <DialogHeader>
                 <DialogTitle className="text-2xl">Select a Doctor</DialogTitle>
-              <DialogDescription className="text-base">
+              <DialogDescription className="text-lg">
                 Booking an appointment at a Preventify clinic.
               </DialogDescription>
             </DialogHeader>
@@ -611,7 +612,7 @@ export default function BookingDialog({
                 name="doctorId"
                 render={({ field }) => (
                   <FormItem className="flex flex-col">
-                    <FormLabel className="text-base">Doctor</FormLabel>
+                    <FormLabel className="text-lg">Doctor</FormLabel>
                     <Popover open={comboboxOpen} onOpenChange={setComboboxOpen}>
                       <PopoverTrigger asChild>
                         <FormControl>
@@ -619,7 +620,7 @@ export default function BookingDialog({
                             variant="outline"
                             role="combobox"
                             className={cn(
-                              "w-full justify-between h-12 text-base",
+                              "w-full justify-between h-14 text-lg",
                               !field.value && "text-muted-foreground"
                             )}
                           >
@@ -634,7 +635,7 @@ export default function BookingDialog({
                       </PopoverTrigger>
                       <PopoverContent className="w-[--radix-popover-trigger-width] p-0">
                         <Command>
-                          <CommandInput placeholder="Search doctor..." className="text-base h-12" />
+                          <CommandInput placeholder="Search doctor..." className="text-lg h-14" />
                           <CommandList>
                             <CommandEmpty>No doctor found.</CommandEmpty>
                             <CommandGroup>
@@ -646,7 +647,7 @@ export default function BookingDialog({
                                     form.setValue("doctorId", doctor.id, { shouldValidate: true });
                                     setComboboxOpen(false);
                                   }}
-                                  className="text-base py-2"
+                                  className="text-lg py-3"
                                 >
                                   <Check
                                     className={cn(
@@ -658,7 +659,7 @@ export default function BookingDialog({
                                   />
                                   <div>
                                     {doctor.name}
-                                    <span className="text-sm text-muted-foreground ml-2">({doctor.specialty})</span>
+                                    <span className="text-base text-muted-foreground ml-2">({doctor.specialty})</span>
                                   </div>
                                 </CommandItem>
                               ))}
@@ -672,15 +673,15 @@ export default function BookingDialog({
                 )}
               />
                 <div className="text-center">
-                    <Button variant="link" onClick={() => setShowAiHelp(true)} type="button" className="text-base">
-                        <Sparkles className="mr-2 h-4 w-4" />
+                    <Button variant="link" onClick={() => setShowAiHelp(true)} type="button" className="text-lg">
+                        <Sparkles className="mr-2 h-5 w-5" />
                         Help me choose a doctor
                     </Button>
                 </div>
             </div>
             <DialogFooter>
-              <Button variant="outline" onClick={handlePrevStep} type="button" size="lg" className="text-base">Back</Button>
-              <Button onClick={handleNextStep} disabled={isLoading || doctors.length === 0} type="button" size="lg" className="text-base">
+              <Button variant="outline" onClick={handlePrevStep} type="button" size="lg" className="text-lg h-12">Back</Button>
+              <Button onClick={handleNextStep} disabled={!form.getValues('doctorId')} type="button" size="lg" className="text-lg h-12">
                 Next
               </Button>
             </DialogFooter>
@@ -695,19 +696,19 @@ export default function BookingDialog({
           <>
             <DialogHeader>
                 <DialogTitle className="text-2xl">Select a Time</DialogTitle>
-              <DialogDescription className="text-base">
+              <DialogDescription className="text-lg">
                 {`Booking for ${selectedDoctor?.name}`}
               </DialogDescription>
             </DialogHeader>
             <div className="space-y-6 py-4">
                 <div className="flex flex-col items-center gap-6">
                     <div className="w-full max-w-sm">
-                        <FormLabel className="text-center block mb-2 text-base">Date</FormLabel>
+                        <FormLabel className="text-center block mb-2 text-lg">Date</FormLabel>
                         <div className="grid grid-cols-2 gap-4">
                             <Button 
                             type="button" 
                             size="lg"
-                            className="text-base"
+                            className="text-lg h-12"
                             variant={selectedDay && format(selectedDay, 'yyyy-MM-dd') === format(today, 'yyyy-MM-dd') ? 'default' : 'outline'}
                             onClick={() => form.setValue('date', today, { shouldValidate: true })}>
                                 Today
@@ -715,7 +716,7 @@ export default function BookingDialog({
                             <Button 
                             type="button" 
                              size="lg"
-                            className="text-base"
+                            className="text-lg h-12"
                             variant={selectedDay && format(selectedDay, 'yyyy-MM-dd') === format(tomorrow, 'yyyy-MM-dd') ? 'default' : 'outline'}
                             onClick={() => form.setValue('date', tomorrow, { shouldValidate: true })}>
                                 Tomorrow
@@ -730,7 +731,7 @@ export default function BookingDialog({
                         name="time"
                         render={({ field }) => (
                             <FormItem>
-                            <FormLabel className="text-center block mb-2 text-base">Available Slots</FormLabel>
+                            <FormLabel className="text-center block mb-2 text-lg">Available Slots</FormLabel>
                             <div className="grid grid-cols-3 gap-2 max-h-[250px] overflow-y-auto pr-2">
                                 {isLoading ? (
                                 <div className="col-span-3 flex justify-center items-center h-24">
@@ -747,7 +748,7 @@ export default function BookingDialog({
                                         key={slot.hour}
                                         variant={isSelected ? 'default' : 'outline'}
                                         onClick={() => handleHourSelect(slot.firstAvailableSlot)}
-                                        className="w-full h-12 text-base"
+                                        className="w-full h-14 text-lg"
                                         type="button"
                                     >
                                         {format(setHours(new Date(), slot.hour), 'ha')}
@@ -755,7 +756,7 @@ export default function BookingDialog({
                                     );
                                 })
                                 ) : (
-                                <p className="col-span-3 text-base text-muted-foreground text-center py-4">
+                                <p className="col-span-3 text-lg text-muted-foreground text-center py-4">
                                     {selectedDate ? 'No slots available. Please select another date.' : 'Please select a date to see available slots.'}
                                 </p>
                                 )}
@@ -768,8 +769,8 @@ export default function BookingDialog({
                 </div>
             </div>
             <DialogFooter>
-              <Button variant="outline" onClick={handlePrevStep} type="button" size="lg" className="text-base">Back</Button>
-              <Button onClick={handleNextStep} disabled={!form.getValues('time')} type="button" size="lg" className="text-base">
+              <Button variant="outline" onClick={handlePrevStep} type="button" size="lg" className="text-lg h-12">Back</Button>
+              <Button onClick={handleNextStep} disabled={!form.getValues('time')} type="button" size="lg" className="text-lg h-12">
                 {foundPatientProfile ? 'Confirm Booking' : 'Next'}
               </Button>
             </DialogFooter>
@@ -780,14 +781,14 @@ export default function BookingDialog({
               <>
                 <DialogHeader>
                   <DialogTitle className="text-2xl">Confirm Your Details</DialogTitle>
-                  <DialogDescription className="text-base">
+                  <DialogDescription className="text-lg">
                     Please provide your date of birth and gender to complete the booking.
                   </DialogDescription>
                 </DialogHeader>
                 <div className="space-y-6 py-4">
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <FormItem>
-                            <FormLabel className="text-base">Date of Birth</FormLabel>
+                            <FormLabel className="text-lg">Date of Birth</FormLabel>
                             <div className="grid grid-cols-3 gap-2">
                                 <FormField
                                     control={form.control}
@@ -796,7 +797,7 @@ export default function BookingDialog({
                                         <FormItem>
                                             <Select onValueChange={field.onChange} defaultValue={field.value}>
                                                 <FormControl>
-                                                <SelectTrigger className="h-12 text-base">
+                                                <SelectTrigger className="h-14 text-lg">
                                                     <SelectValue placeholder="Year" />
                                                 </SelectTrigger>
                                                 </FormControl>
@@ -815,7 +816,7 @@ export default function BookingDialog({
                                         <FormItem>
                                             <Select onValueChange={field.onChange} defaultValue={field.value}>
                                                 <FormControl>
-                                                <SelectTrigger className="h-12 text-base">
+                                                <SelectTrigger className="h-14 text-lg">
                                                     <SelectValue placeholder="Month" />
                                                 </SelectTrigger>
                                                 </FormControl>
@@ -834,7 +835,7 @@ export default function BookingDialog({
                                         <FormItem>
                                             <Select onValueChange={field.onChange} defaultValue={field.value}>
                                                 <FormControl>
-                                                <SelectTrigger className="h-12 text-base">
+                                                <SelectTrigger className="h-14 text-lg">
                                                     <SelectValue placeholder="Day" />
                                                 </SelectTrigger>
                                                 </FormControl>
@@ -853,10 +854,10 @@ export default function BookingDialog({
                             name="gender"
                             render={({ field }) => (
                                 <FormItem>
-                                    <FormLabel className="text-base">Gender</FormLabel>
+                                    <FormLabel className="text-lg">Gender</FormLabel>
                                     <Select onValueChange={field.onChange} defaultValue={field.value}>
                                         <FormControl>
-                                        <SelectTrigger className="h-12 text-base">
+                                        <SelectTrigger className="h-14 text-lg">
                                             <SelectValue placeholder="Select gender" />
                                         </SelectTrigger>
                                         </FormControl>
@@ -873,9 +874,9 @@ export default function BookingDialog({
                     </div>
                 </div>
                 <DialogFooter>
-                  <Button variant="outline" onClick={handlePrevStep} type="button" size="lg" className="text-base">Back</Button>
-                  <Button type="submit" disabled={isLoading} size="lg" className="text-base">
-                    {isLoading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
+                  <Button variant="outline" onClick={handlePrevStep} type="button" size="lg" className="text-lg h-12">Back</Button>
+                  <Button type="submit" disabled={isLoading} size="lg" className="text-lg h-12">
+                    {isLoading ? <Loader2 className="mr-2 h-5 w-5 animate-spin" /> : null}
                     Confirm Booking
                   </Button>
                 </DialogFooter>
@@ -892,7 +893,7 @@ export default function BookingDialog({
                         <>
                             <CheckCircle className="h-16 w-16 text-green-500 mb-4" />
                             <h2 className="text-3xl font-semibold">Appointment Confirmed!</h2>
-                            <DialogDescription className="text-base">
+                            <DialogDescription className="text-lg">
                                 Your appointment has been successfully booked.
                             </DialogDescription>
                         </>
@@ -900,23 +901,23 @@ export default function BookingDialog({
                         <>
                             <XCircle className="h-16 w-16 text-red-500 mb-4" />
                             <h2 className="text-3xl font-semibold">Booking Failed</h2>
-                            <DialogDescription className="text-base">
+                            <DialogDescription className="text-lg">
                                 {bookingResponse?.message || 'There was an error processing your booking. Please try again.'}
                             </DialogDescription>
                         </>
                     )}
                 </DialogHeader>
                 {bookingStatus === 'success' && bookingResponse && (
-                    <div className="py-4 space-y-3 text-base text-gray-700 bg-gray-50 p-6 rounded-md">
+                    <div className="py-4 space-y-3 text-lg text-gray-700 bg-gray-50 p-6 rounded-md">
                         <p><strong>Confirmation ID:</strong> {bookingResponse.appointment_id}</p>
-                        <p><strong>Patient Name:</strong> {finalData.firstName} {finalData.lastName}</p>
+                        <p><strong>Patient Name:</strong> {finalData.firstName}</p>
                         <p><strong>Doctor:</strong> {finalDoctor?.name}</p>
                         <p><strong>Date & Time:</strong> {format(parseISO(finalData.time), 'dd MMMM yyyy, hh:mm a')}</p>
                     </div>
                 )}
                 <DialogFooter>
                     <DialogClose asChild>
-                        <Button type="button" size="lg" className="text-base">Close</Button>
+                        <Button type="button" size="lg" className="text-lg h-12">Close</Button>
                     </DialogClose>
                 </DialogFooter>
                 </>
@@ -931,7 +932,7 @@ export default function BookingDialog({
       <DialogTrigger asChild>{children}</DialogTrigger>
       <DialogContent className="sm:max-w-[80vw] lg:max-w-4xl p-0">
         <div className="text-center py-8 border-b border-gray-200">
-            <p className='text-lg text-gray-500'>Prefer to book by phone?</p>
+            <p className='text-xl text-gray-500'>Prefer to book by phone?</p>
             <a href="tel:+918129334858" className="flex items-center justify-center gap-2 text-4xl font-bold text-preventify-blue hover:text-preventify-dark-blue transition-colors">
                 <Phone className="w-8 h-8"/>
                 +91 8129334858
@@ -947,7 +948,3 @@ export default function BookingDialog({
     </Dialog>
   );
 }
-
-    
-
-    
