@@ -3,46 +3,85 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-// Import LucideIcon type for correct typing
-import { Menu, X, Search, Phone, ChevronDown, User, AlertTriangle, LucideIcon } from "lucide-react"; 
+import { Menu, X, Phone, ChevronDown, User, AlertTriangle, LucideIcon } from "lucide-react"; 
 import { usePathname } from "next/navigation";
 import BookingDialog from "@/components/BookingDialog";
+import {
+  NavigationMenu,
+  NavigationMenuContent,
+  NavigationMenuItem,
+  NavigationMenuList,
+  NavigationMenuTrigger,
+  NavigationMenuLink,
+} from "@/components/ui/navigation-menu";
+import ListItem from "@/components/ListItem";
+import Image from "next/image";
 
-// Define the type for navigation links
 interface NavLinkType {
   name: string;
   path: string;
-  // icon is optional and must be a Lucide component type
   icon?: LucideIcon; 
 }
+
+const doctors = [
+    {
+      id: 1,
+      name: "Dr. Rakesh K R",
+      specialty: "Chief Medical Officer",
+      image: "https://res.cloudinary.com/dyf8umlda/image/upload/v1748262006/Dr_Rakesh_xngrlx.jpg",
+    },
+    {
+      id: 2,
+      name: "Dr. Mohammed Faisal",
+      specialty: "General Practitioner",
+      image: "https://res.cloudinary.com/dyf8umlda/image/upload/v1748257298/Dr_Faisal_stbx3w.jpg",
+    },
+    {
+      id: 3,
+      name: "Dr. Hafsa Hussain",
+      specialty: "Pediatrics",
+      image: "https://res.cloudinary.com/dyf8umlda/image/upload/v1748255660/Dr_Hafsa_t3qk7r.jpg",
+    },
+];
+
+const otherLinks: { title: string; href: string; description: string }[] = [
+  {
+    title: "Our Services",
+    href: "/services",
+    description: "View our comprehensive range of healthcare services.",
+  },
+  {
+    title: "Our Clinics",
+    href: "/clinics",
+    description: "Find a Preventify clinic near you.",
+  },
+  {
+    title: "Programs",
+    href: "/programs",
+    description: "Explore our specialized health and wellness programs.",
+  },
+  {
+    title: "Sugam Card",
+    href: "/savings",
+    description: "Learn about our exclusive savings and membership card.",
+  },
+];
+
 
 const Navbar = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const pathname = usePathname();
-  const [navbarHeight, setNavbarHeight] = useState(80); // Default height
+  const [navbarHeight, setNavbarHeight] = useState(80);
 
   const toggleMenu = () => {
     setMobileMenuOpen(!mobileMenuOpen);
   };
 
-  // Apply the NavLinkType to mainNavLinks
-  // REMOVED "24/7 Emergency" from here - it's handled separately below
-  const mainNavLinks: NavLinkType[] = [
-    { name: "Our Services", path: "/services" },
-    { name: "Our Doctors", path: "/doctors" },
-    { name: "Our Clinics", path: "/clinics" },
-    { name: "Programs", path: "/programs" },
-    { name: "Sugam Card", path: "/savings" },
-  ];
-  
-  // Apply the NavLinkType to topNavLinks
   const topNavLinks: NavLinkType[] = [
-    // You could add an icon here if needed, e.g., { name: "About Us", path: "/about", icon: User },
     { name: "About Us", path: "/about" },
     { name: "Blogs", path: "/blog" },
   ];
 
-  // Calculate navbar height dynamically
   useEffect(() => {
     const updateNavbarHeight = () => {
       const navbar = document.querySelector('header[data-navbar="main"]');
@@ -52,11 +91,9 @@ const Navbar = () => {
       }
     };
 
-    // Update on mount and resize
     updateNavbarHeight();
     window.addEventListener('resize', updateNavbarHeight);
     
-    // Update when mobile menu opens/closes
     const observer = new MutationObserver(updateNavbarHeight);
     const navbar = document.querySelector('header[data-navbar="main"]');
     if (navbar) {
@@ -80,13 +117,11 @@ const Navbar = () => {
       data-navbar="main"
       style={{ '--navbar-height': `${navbarHeight}px` } as React.CSSProperties}
     >
-      {/* Top Bar */}
       <div className="bg-white/5 border-b border-white/20 transition-all duration-300 overflow-hidden">
         <div className="container mx-auto py-1.5 px-4 sm:px-6 lg:px-8 flex justify-between items-center text-sm text-slate-600">
           <div className="flex items-center gap-4">
             {topNavLinks.map(link => (
               <Link key={link.name} href={link.path} className={`flex items-center gap-1 hover:text-primary transition-colors`}>
-                {/* This line is now fixed because 'link' has a type definition that includes 'icon' */}
                 {link.icon && <link.icon className="h-3 w-3" />}
                 {link.name}
               </Link>
@@ -111,7 +146,6 @@ const Navbar = () => {
         </div>
       </div>
       
-      {/* Main Navigation */}
       <div className="container mx-auto py-3 px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center">
           <div className="flex items-center">
@@ -120,22 +154,79 @@ const Navbar = () => {
             </Link>
           </div>
 
-          {/* Desktop Navigation */}
-          <nav className="hidden lg:flex space-x-8 items-center">
-            {mainNavLinks.map((link) => (
-              <Link
-                key={link.name}
-                href={link.path}
-                className={`font-medium transition-colors text-lg ${pathname === link.path ? 'text-primary' : 'text-gray-700 hover:text-primary'}`}
-              >
-                {link.name}
-              </Link>
-            ))}
-              {/* This is the separate, correctly styled Emergency link */}
-              <Link href="/emergency" className="flex items-center gap-1 text-red-600 font-medium text-lg hover:text-red-800 transition-colors">
-                <AlertTriangle className="h-4 w-4" />
-                24/7 Emergency
-              </Link>
+          <nav className="hidden lg:flex space-x-2 items-center">
+            <NavigationMenu>
+              <NavigationMenuList>
+                <NavigationMenuItem>
+                  <Link href="/services" legacyBehavior passHref>
+                    <NavigationMenuLink className={`font-medium transition-colors text-lg px-4 py-2 rounded-md ${pathname === "/services" ? 'text-primary' : 'text-gray-700 hover:text-primary'}`}>
+                      Our Services
+                    </NavigationMenuLink>
+                  </Link>
+                </NavigationMenuItem>
+
+                <NavigationMenuItem>
+                  <NavigationMenuTrigger className="font-medium transition-colors text-lg text-gray-700 hover:text-primary bg-transparent focus:bg-transparent data-[state=open]:bg-transparent">
+                    Our Doctors
+                  </NavigationMenuTrigger>
+                  <NavigationMenuContent>
+                    <div className="p-6 md:w-[600px] lg:w-[700px]">
+                      <div className="grid grid-cols-3 gap-6">
+                        {doctors.map((doctor) => (
+                          <Link href="/doctors" key={doctor.name} className="group block">
+                            <div className="aspect-w-3 aspect-h-4 rounded-lg overflow-hidden relative">
+                              <Image src={doctor.image} alt={doctor.name} fill className="object-cover transition-transform duration-300 group-hover:scale-105" />
+                              <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+                            </div>
+                            <h3 className="mt-2 font-semibold text-gray-800 group-hover:text-primary">{doctor.name}</h3>
+                            <p className="text-sm text-gray-500">{doctor.specialty}</p>
+                          </Link>
+                        ))}
+                      </div>
+                      <div className="mt-6 text-center">
+                        <Link href="/doctors" className="inline-flex items-center justify-center h-10 px-6 font-medium tracking-wide text-white transition duration-200 rounded-md bg-primary hover:bg-primary/90 focus:shadow-outline focus:outline-none">
+                            View All Doctors
+                        </Link>
+                      </div>
+                    </div>
+                  </NavigationMenuContent>
+                </NavigationMenuItem>
+
+                 <NavigationMenuItem>
+                  <Link href="/clinics" legacyBehavior passHref>
+                    <NavigationMenuLink className={`font-medium transition-colors text-lg px-4 py-2 rounded-md ${pathname === "/clinics" ? 'text-primary' : 'text-gray-700 hover:text-primary'}`}>
+                      Our Clinics
+                    </NavigationMenuLink>
+                  </Link>
+                </NavigationMenuItem>
+
+                <NavigationMenuItem>
+                  <Link href="/programs" legacyBehavior passHref>
+                    <NavigationMenuLink className={`font-medium transition-colors text-lg px-4 py-2 rounded-md ${pathname === "/programs" ? 'text-primary' : 'text-gray-700 hover:text-primary'}`}>
+                      Programs
+                    </NavigationMenuLink>
+                  </Link>
+                </NavigationMenuItem>
+
+                <NavigationMenuItem>
+                  <Link href="/savings" legacyBehavior passHref>
+                    <NavigationMenuLink className={`font-medium transition-colors text-lg px-4 py-2 rounded-md ${pathname === "/savings" ? 'text-primary' : 'text-gray-700 hover:text-primary'}`}>
+                      Sugam Card
+                    </NavigationMenuLink>
+                  </Link>
+                </NavigationMenuItem>
+                
+                <NavigationMenuItem>
+                  <Link href="/emergency" legacyBehavior passHref>
+                    <NavigationMenuLink className="flex items-center gap-1 text-red-600 font-medium text-lg hover:text-red-800 transition-colors px-4 py-2 rounded-md">
+                      <AlertTriangle className="h-4 w-4" />
+                      24/7 Emergency
+                    </NavigationMenuLink>
+                  </Link>
+                </NavigationMenuItem>
+
+              </NavigationMenuList>
+            </NavigationMenu>
           </nav>
 
           <div className="hidden lg:flex items-center space-x-4">
@@ -147,7 +238,6 @@ const Navbar = () => {
             </BookingDialog>
           </div>
 
-          {/* Mobile menu button */}
           <div className="lg:hidden">
             <button
               className="text-gray-700 hover:text-primary"
@@ -162,11 +252,17 @@ const Navbar = () => {
           </div>
         </div>
 
-        {/* Mobile Navigation */}
         {mobileMenuOpen && (
           <div className="lg:hidden mt-4 pb-4 animate-fade-in">
             <div className="flex flex-col space-y-3">
-              {[...mainNavLinks, ...topNavLinks].map((link) => (
+              {[
+                  { name: "Our Services", path: "/services" },
+                  { name: "Our Doctors", path: "/doctors" },
+                  { name: "Our Clinics", path: "/clinics" },
+                  { name: "Programs", path: "/programs" },
+                  { name: "Sugam Card", path: "/savings" },
+                  ...topNavLinks
+              ].map((link) => (
                 <Link
                   key={link.name}
                   href={link.path}
@@ -176,7 +272,6 @@ const Navbar = () => {
                   {link.name}
                 </Link>
               ))}
-                {/* This is the separate, correctly styled Emergency link for mobile */}
                 <Link href="/emergency" className="flex items-center gap-1 text-red-600 font-medium py-2 text-lg hover:text-red-800 transition-colors">
                   <AlertTriangle className="h-5 w-5" />
                   24/7 Emergency
