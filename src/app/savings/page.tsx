@@ -62,13 +62,13 @@ const MagneticButton = () => {
 
 
 const SavingsPage = () => {
-    const [language, setLanguage] = useState('en');
+    const [language, setLanguage] = useState('ml');
 
     const content = {
         en: {
-            strategy: 'New Marketing Strategy',
-            planTitle: 'The Peace of Mind Plan',
-            catchphrase: 'One Fixed Fee. Zero Sick Bills.',
+            strategy: 'The Annual Care Shield',
+            planTitle: 'Sugam Card',
+            catchphrase: 'One  Annual  Fee. Your  Visits  Are  Covered.',
             individual: {
                 headline: 'Stop Paying for Sick Visits. Start Paying for Peace.',
                 body: 'The Individual Sukham Card gives you Unlimited access to our General Physicians and Paediatricians for a full year.',
@@ -95,7 +95,7 @@ const SavingsPage = () => {
                 body: 'നിങ്ങളുടെ കൺസൾട്ടേഷൻ ഫീസ് ഇനി ഞങ്ങളേറ്റു. വെറും ₹730 രൂപയ്ക്ക്, ജനറൽ ഡോക്ടർമാരെയും പീഡിയാട്രീഷ്യനെയും ഒരു വർഷത്തേക്ക് എത്ര തവണ വേണമെങ്കിലും കാണാം, ഫീസ് ഇല്ലാതെ!',
                 relief: { title: 'ആശ്വാസം', text: 'ചെറിയ അസുഖങ്ങൾക്ക് ഇനി ബില്ലെത്ര വരുമെന്ന് ആലോചിച്ച് ടെൻഷൻ അടിക്കണ്ട.' },
                 value: { title: 'വാല്യൂ', text: 'നിങ്ങൾ സാധാരണ കൊടുക്കുന്ന 2 മുതൽ 4 കൺസൾട്ടേഷൻ ഫീസ് മുടക്കിയാൽ, ഒരു വർഷം മുഴുവൻ നിങ്ങളുടെ ചികിത്സ സൗജന്യം!' },
-                simplicity: { title: 'ലളിതം', text: 'The card pays for itself in just 2 standard visits. After that, every visit is free.' }, // No direct translation provided for this one. Using English as fallback.
+                simplicity: { title: 'ലളിതം', text: 'The card pays for itself in just 2 standard visits. After that, every visit is free.' },
                 cta: '₹730. നിങ്ങളുടെ ആരോഗ്യം, ഈ വർഷം ഫുൾ സുരക്ഷിതം.'
             },
             family: {
@@ -103,7 +103,7 @@ const SavingsPage = () => {
                 body: 'സുഖം ഫാമിലി പ്ലാൻ എടുത്താൽ, ₹1,999 രൂപയ്ക്ക് വീട്ടിലെ എല്ലാവർക്കും ഒരു വർഷത്തേക്ക് ജനറൽ ഡോക്ടർമാരുടെയും പീഡിയാട്രീഷ്യന്റെയും പരിധിയില്ലാത്ത സേവനം ഉറപ്പാണ്!',
                 relief: { title: 'ആശ്വാസം', text: 'കുഞ്ഞിന് ചെറിയൊരു പനിയോ ജലദോഷമോ വന്നാൽ ഇനി രണ്ടാമതൊന്ന് ആലോചിക്കാതെ ഡോക്ടറെ കാണിക്കാം.' },
                 security: { title: 'സുരക്ഷ', text: 'നിങ്ങൾ സാധാരണ കൊടുക്കുന്ന 4 കൺസൾട്ടേഷൻ ഫീസിന്റെ വിലയ്ക്ക്, ഒരു വർഷം മുഴുവൻ കുടുംബം സേഫ്!' },
-                simplicity: { title: 'ലളിതം', text: 'You cover the entire family for the year for the price of just 4 individual visits.' }, // No direct translation provided for this one. Using English as fallback.
+                simplicity: { title: 'ലളിതം', text: 'You cover the entire family for the year for the price of just 4 individual visits.' },
                 cta: '₹1,999. സുഖമായിട്ട് ജീവിക്കാം.'
             }
         }
@@ -183,20 +183,25 @@ const SavingsPage = () => {
         <section id="savings-details" className="relative py-16 md:py-24 bg-peace-of-mind-gray overflow-hidden">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <div className="text-center mb-12 md:mb-16">
-              <p className="text-sm font-bold uppercase tracking-widest text-peace-of-mind-dark-gray mb-2">{currentContent.strategy}</p>
+              <p className="text-sm uppercase tracking-widest text-peace-of-mind-gray mb-2">{currentContent.strategy}</p>
               <h2 className="text-4xl md:text-5xl font-bold text-peace-of-mind-green-dark mb-3">{currentContent.planTitle}</h2>
               <p className="text-lg md:text-xl font-semibold uppercase tracking-wider text-peace-of-mind-dark-gray">{currentContent.catchphrase}</p>
           </div>
 
-          <div className="flex items-center justify-center space-x-3 mb-12">
-            <Label htmlFor="language-switch" className={language === 'en' ? 'font-bold text-gray-800' : 'text-gray-500'}>English</Label>
-            <Switch
-              id="language-switch"
-              checked={language === 'ml'}
-              onCheckedChange={(checked) => setLanguage(checked ? 'ml' : 'en')}
-              aria-label="Toggle language"
-            />
-            <Label htmlFor="language-switch" className={language === 'ml' ? 'font-bold text-gray-800' : 'text-gray-500'}>മലയാളം</Label>
+          <div className="flex justify-start space-x-2 mb-12">
+            <Button
+                onClick={() => setLanguage('ml')}
+                variant={language === 'ml' ? 'default' : 'outline'}
+                className="font-bold"
+            >
+                മലയാളം
+            </Button>
+            <Button
+                onClick={() => setLanguage('en')}
+                variant={language === 'en' ? 'default' : 'outline'}
+            >
+                English
+            </Button>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -361,5 +366,7 @@ const SavingsPage = () => {
 };
 
 export default SavingsPage;
+
+    
 
     
