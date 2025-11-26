@@ -12,7 +12,7 @@ const services = [
     link: "/services#primary-care"
   },
   {
-    title: "Diabetes Management",
+    title: "Diabetes Management ",
     description: "AI-driven specialized programs for the prevention, monitoring, and management of diabetes.",
     image: "/service/Diabetes Management.webp",
     link: "/services#diabetes"
@@ -53,7 +53,7 @@ const ServiceCard = ({ service }: { service: typeof services[0] }) => {
 
             {/* Content: Default State */}
             <div className="relative z-10 flex flex-col justify-end items-start h-full p-6 transition-opacity duration-500 ease-in-out group-hover:opacity-0">
-                <div className="w-2/3">
+                <div className="w-2/3 relative z-10">
                     <h3 className="text-2xl font-bold text-preventify-blue mb-4">
                         {service.title}
                     </h3>
