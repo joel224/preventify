@@ -47,7 +47,7 @@ import { useForm, useWatch } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useState, useEffect, useMemo } from 'react';
 import { format, parseISO, addMinutes, getHours, setHours, addDays, getYear, getMonth, getDate } from 'date-fns';
-import { Loader2, CheckCircle, XCircle, Check, ChevronsUpDown, Sparkles } from 'lucide-react';
+import { Loader2, CheckCircle, XCircle, Check, ChevronsUpDown, Sparkles, Phone } from 'lucide-react';
 import { cn } from "@/lib/utils";
 import { DialogTrigger } from '@radix-ui/react-dialog';
 import { Textarea } from './ui/textarea';
@@ -923,10 +923,18 @@ export default function BookingDialog({
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>{children}</DialogTrigger>
-      <DialogContent className="sm:max-w-xl md:max-w-7xl h-2/5">
+      <DialogContent className="sm:max-w-xl md:max-w-2xl">
         <DialogTitle className="sr-only">Book an Appointment</DialogTitle>
+        <div className="text-center py-6 border-b border-gray-200">
+            <p className='text-sm text-gray-500'>Prefer to book by phone?</p>
+            <a href="tel:+918129334858" className="flex items-center justify-center gap-2 text-2xl font-bold text-preventify-blue hover:text-preventify-dark-blue transition-colors">
+                <Phone className="w-6 h-6"/>
+                +91 8129334858
+            </a>
+            <p className='text-xs text-gray-400 mt-1'>For emergencies, please call this number directly.</p>
+        </div>
         <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)}>
+            <form onSubmit={form.handleSubmit(onSubmit)} className="px-6 pb-6">
                 {renderStepContent()}
             </form>
         </Form>
@@ -934,3 +942,5 @@ export default function BookingDialog({
     </Dialog>
   );
 }
+
+    
