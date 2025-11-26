@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState, useEffect, useRef } from "react";
@@ -14,6 +15,8 @@ import { Wallet, Stethoscope, Pill, ChevronDown, CheckCircle, Hospital, UserMd, 
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import { Separator } from "@/components/ui/separator";
+import { Switch } from "@/components/ui/switch";
+import { Label } from "@/components/ui/label";
 
 
 const MagneticButton = () => {
@@ -59,6 +62,57 @@ const MagneticButton = () => {
 
 
 const SavingsPage = () => {
+    const [language, setLanguage] = useState('en');
+
+    const content = {
+        en: {
+            strategy: 'New Marketing Strategy',
+            planTitle: 'The Peace of Mind Plan',
+            catchphrase: 'One Fixed Fee. Zero Sick Bills.',
+            individual: {
+                headline: 'Stop Paying for Sick Visits. Start Paying for Peace.',
+                body: 'The Individual Sukham Card gives you Unlimited access to our General Physicians and Paediatricians for a full year.',
+                relief: { title: 'The Relief', text: 'Never worry about a consultation bill again. Just walk in.' },
+                value: { title: 'The Value', text: 'For less than ₹2 per day, your care is covered.' },
+                simplicity: { title: 'The Simplicity', text: 'The card pays for itself in just 2 standard visits. After that, every visit is free.' },
+                cta: '₹730. Your Health, Secured for a Year.'
+            },
+            family: {
+                headline: 'One Family. One Fee. Unlimited Protection.',
+                body: 'Protect everyone you love with the Sukham Family Plan. Unlimited access for every family member to our General Physicians and Paediatricians for a full year.',
+                relief: { title: 'The Relief', text: 'Never hesitate to bring your child in—whether it\'s the first cough or the fifth follow-up. The bill is always ₹0.' },
+                security: { title: 'The Security', text: 'Stop paying doctor fees every time someone is sick.' },
+                simplicity: { title: 'The Simplicity', text: 'You cover the entire family for the year for the price of just 4 individual visits.' },
+                cta: '₹1,999. Get Your Family\'s Peace of Mind.'
+            }
+        },
+        ml: {
+            strategy: 'പുതിയ മാർക്കറ്റിംഗ് സ്ട്രാറ്റജി',
+            planTitle: 'The Peace of Mind Plan',
+            catchphrase: 'ഒറ്റ തവണ ഫീസ്. പിന്നെ ഫ്രീ!',
+            individual: {
+                headline: 'പേടിക്കാതെ ഡോക്ടറെ കാണാം!',
+                body: 'നിങ്ങളുടെ കൺസൾട്ടേഷൻ ഫീസ് ഇനി ഞങ്ങളേറ്റു. വെറും ₹730 രൂപയ്ക്ക്, ജനറൽ ഡോക്ടർമാരെയും പീഡിയാട്രീഷ്യനെയും ഒരു വർഷത്തേക്ക് എത്ര തവണ വേണമെങ്കിലും കാണാം, ഫീസ് ഇല്ലാതെ!',
+                relief: { title: 'ആശ്വാസം', text: 'ചെറിയ അസുഖങ്ങൾക്ക് ഇനി ബില്ലെത്ര വരുമെന്ന് ആലോചിച്ച് ടെൻഷൻ അടിക്കണ്ട.' },
+                value: { title: 'വാല്യൂ', text: 'നിങ്ങൾ സാധാരണ കൊടുക്കുന്ന 2 മുതൽ 4 കൺസൾട്ടേഷൻ ഫീസ് മുടക്കിയാൽ, ഒരു വർഷം മുഴുവൻ നിങ്ങളുടെ ചികിത്സ സൗജന്യം!' },
+                simplicity: { title: 'ലളിതം', text: 'The card pays for itself in just 2 standard visits. After that, every visit is free.' }, // No direct translation provided for this one. Using English as fallback.
+                cta: '₹730. നിങ്ങളുടെ ആരോഗ്യം, ഈ വർഷം ഫുൾ സുരക്ഷിതം.'
+            },
+            family: {
+                headline: 'ഒന്നാണ് കുടുംബം. ഒരൊറ്റ ഫീസ്. പരിധിയില്ലാത്ത സംരക്ഷണം.',
+                body: 'സുഖം ഫാമിലി പ്ലാൻ എടുത്താൽ, ₹1,999 രൂപയ്ക്ക് വീട്ടിലെ എല്ലാവർക്കും ഒരു വർഷത്തേക്ക് ജനറൽ ഡോക്ടർമാരുടെയും പീഡിയാട്രീഷ്യന്റെയും പരിധിയില്ലാത്ത സേവനം ഉറപ്പാണ്!',
+                relief: { title: 'ആശ്വാസം', text: 'കുഞ്ഞിന് ചെറിയൊരു പനിയോ ജലദോഷമോ വന്നാൽ ഇനി രണ്ടാമതൊന്ന് ആലോചിക്കാതെ ഡോക്ടറെ കാണിക്കാം.' },
+                security: { title: 'സുരക്ഷ', text: 'നിങ്ങൾ സാധാരണ കൊടുക്കുന്ന 4 കൺസൾട്ടേഷൻ ഫീസിന്റെ വിലയ്ക്ക്, ഒരു വർഷം മുഴുവൻ കുടുംബം സേഫ്!' },
+                simplicity: { title: 'ലളിതം', text: 'You cover the entire family for the year for the price of just 4 individual visits.' }, // No direct translation provided for this one. Using English as fallback.
+                cta: '₹1,999. സുഖമായിട്ട് ജീവിക്കാം.'
+            }
+        }
+    };
+    
+    const currentContent = content[language as keyof typeof content];
+    const individualContent = currentContent.individual;
+    const familyContent = currentContent.family;
+
     const doctors = [
         { department: 'General (ജനറൽ വിഭാഗം)', name: 'ഡോ.രാകേഷ് കെ.ആർ (Dr. Rakesh K.R.)', details: 'MBBS, MD, Chief Care Coordinator' },
         { department: 'General (ജനറൽ വിഭാഗം)', name: 'ഡോ.മഷൂദ ബാനു പി പി (Dr. Mashooda Banu P P)', details: 'MBBS, DFAM (NBE), Family Physician' },
@@ -129,9 +183,20 @@ const SavingsPage = () => {
         <section id="savings-details" className="relative py-16 md:py-24 bg-peace-of-mind-gray overflow-hidden">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <div className="text-center mb-12 md:mb-16">
-              <p className="text-sm font-bold uppercase tracking-widest text-peace-of-mind-dark-gray mb-2">NEW MARKETING STRATEGY</p>
-              <h2 className="text-4xl md:text-5xl font-bold text-peace-of-mind-green-dark mb-3">The Peace of Mind Plan</h2>
-              <p className="text-lg md:text-xl font-semibold uppercase tracking-wider text-peace-of-mind-dark-gray">One Fixed Fee. Zero Sick Bills.</p>
+              <p className="text-sm font-bold uppercase tracking-widest text-peace-of-mind-dark-gray mb-2">{currentContent.strategy}</p>
+              <h2 className="text-4xl md:text-5xl font-bold text-peace-of-mind-green-dark mb-3">{currentContent.planTitle}</h2>
+              <p className="text-lg md:text-xl font-semibold uppercase tracking-wider text-peace-of-mind-dark-gray">{currentContent.catchphrase}</p>
+          </div>
+
+          <div className="flex items-center justify-center space-x-3 mb-12">
+            <Label htmlFor="language-switch" className={language === 'en' ? 'font-bold text-gray-800' : 'text-gray-500'}>English</Label>
+            <Switch
+              id="language-switch"
+              checked={language === 'ml'}
+              onCheckedChange={(checked) => setLanguage(checked ? 'ml' : 'en')}
+              aria-label="Toggle language"
+            />
+            <Label htmlFor="language-switch" className={language === 'ml' ? 'font-bold text-gray-800' : 'text-gray-500'}>മലയാളം</Label>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -143,23 +208,25 @@ const SavingsPage = () => {
                               <Shield className="h-8 w-8 text-peace-of-mind-green-dark" />
                           </div>
                       </div>
-                      <h3 className="text-2xl font-bold text-peace-of-mind-green-dark mb-2">Stop Paying for Sick Visits. Start Paying for Peace.</h3>
-                      <h4 className="text-lg font-semibold text-peace-of-mind-dark-gray mb-4">Individual Plan</h4>
-                      <p className="text-peace-of-mind-dark-gray mb-6">The Individual Sukham Card gives you Unlimited access to our General Physicians and Paediatricians for a full year.</p>
+                      <h3 className="text-2xl font-bold text-peace-of-mind-green-dark mb-2">{individualContent.headline}</h3>
+                      <p className="text-peace-of-mind-dark-gray mb-6">{individualContent.body}</p>
                       <ul className="space-y-3">
                           <li className="flex items-start gap-3">
                               <Smile className="h-5 w-5 text-peace-of-mind-green-dark mt-0.5"/>
-                              <div><strong className="font-semibold text-gray-800">The Relief:</strong> For less than ₹2 per day, your care is covered.</div>
+                              <div><strong className="font-semibold text-gray-800">{individualContent.relief.title}:</strong> {individualContent.relief.text}</div>
+                          </li>
+                          <li className="flex items-start gap-3">
+                              <Wallet className="h-5 w-5 text-peace-of-mind-green-dark mt-0.5"/>
+                              <div><strong className="font-semibold text-gray-800">{individualContent.value.title}:</strong> {individualContent.value.text}</div>
                           </li>
                           <li className="flex items-start gap-3">
                               <CheckCircle className="h-5 w-5 text-peace-of-mind-green-dark mt-0.5"/>
-                              <div><strong className="font-semibold text-gray-800">The Simplicity:</strong> The card pays for itself in just 2 standard visits.</div>
+                              <div><strong className="font-semibold text-gray-800">{individualContent.simplicity.title}:</strong> {individualContent.simplicity.text}</div>
                           </li>
                       </ul>
                   </div>
                   <div className="mt-auto bg-peace-of-mind-green text-white p-4 text-center">
-                      <span className="font-bold text-lg">₹730</span>
-                      <span className="text-sm"> - Your Health, Secured for a Year</span>
+                      <span className="font-bold text-lg">{individualContent.cta}</span>
                   </div>
               </div>
 
@@ -171,23 +238,25 @@ const SavingsPage = () => {
                               <Users className="h-8 w-8 text-preventify-dark-blue" />
                           </div>
                       </div>
-                      <h3 className="text-2xl font-bold text-preventify-dark-blue mb-2">One Family. One Fee. Unlimited Protection.</h3>
-                      <h4 className="text-lg font-semibold text-peace-of-mind-dark-gray mb-4">Family Plan</h4>
-                      <p className="text-peace-of-mind-dark-gray mb-6">Protect everyone you love with the Sukham Family Plan. Unlimited access for every family member.</p>
+                      <h3 className="text-2xl font-bold text-preventify-dark-blue mb-2">{familyContent.headline}</h3>
+                      <p className="text-peace-of-mind-dark-gray mb-6">{familyContent.body}</p>
                       <ul className="space-y-3">
+                            <li className="flex items-start gap-3">
+                              <HeartHandshake className="h-5 w-5 text-preventify-dark-blue mt-0.5"/>
+                              <div><strong className="font-semibold text-gray-800">{familyContent.relief.title}:</strong> {familyContent.relief.text}</div>
+                          </li>
                           <li className="flex items-start gap-3">
                               <Lock className="h-5 w-5 text-preventify-dark-blue mt-0.5"/>
-                              <div><strong className="font-semibold text-gray-800">The Security:</strong> Stop paying doctor fees every time someone is sick.</div>
+                              <div><strong className="font-semibold text-gray-800">{familyContent.security.title}:</strong> {familyContent.security.text}</div>
                           </li>
                           <li className="flex items-start gap-3">
                               <Calendar className="h-5 w-5 text-preventify-dark-blue mt-0.5"/>
-                               <div><strong className="font-semibold text-gray-800">The Simplicity:</strong> You cover the entire family for the price of just 4 individual visits.</div>
+                               <div><strong className="font-semibold text-gray-800">{familyContent.simplicity.title}:</strong> {familyContent.simplicity.text}</div>
                           </li>
                       </ul>
                   </div>
                   <div className="mt-auto bg-preventify-blue text-white p-4 text-center">
-                      <span className="font-bold text-lg">₹1,999</span>
-                      <span className="text-sm"> - Get Your Family's Peace of Mind</span>
+                      <span className="font-bold text-lg">{familyContent.cta}</span>
                   </div>
               </div>
           </div>
@@ -292,3 +361,5 @@ const SavingsPage = () => {
 };
 
 export default SavingsPage;
+
+    
