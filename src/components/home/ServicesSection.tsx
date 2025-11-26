@@ -53,16 +53,16 @@ const ServiceCard = ({ service }: { service: typeof services[0] }) => {
 
             {/* Content: Default State */}
             <div className="relative z-10 flex flex-col justify-end items-start h-full p-6 transition-opacity duration-500 ease-in-out group-hover:opacity-0">
-                <div className="w-2/3 relative z-10">
+                <div className="relative z-10 w-2/3">
                     <h3 className="text-2xl font-bold text-preventify-blue mb-4">
                         {service.title}
                     </h3>
                 </div>
-                 <div className="absolute w-full h-full right-0 bottom-0 md:-right-4 md:-bottom-4 md:w-1/2 md:h-1/2">
+                 <div className="absolute w-full h-full right-0 bottom-0">
                     <img 
                         src={service.image} 
                         alt={service.title}
-                        className="w-full h-full object-cover object-right-bottom"
+                        className="w-full h-full object-contain object-right-bottom grayscale group-hover:grayscale-0 transition-all duration-300"
                     />
                 </div>
             </div>
