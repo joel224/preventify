@@ -28,11 +28,12 @@ export const blogPosts: BlogPost[] = [
       </ul>
       <p>At Preventify Hospitals, we offer comprehensive diabetes prevention programs designed to help you make sustainable lifestyle changes.</p>
     `,
-    coverImage: "https://img.freepik.com/free-photo/valentines-day-romantinc-girl-dress-hugging-big-red-heart-cutout-close-eyes-smile-with-dreamy_1258-64273.jpg?t=st=1764264066~exp=1764267666~hmac=d91292f3007ed23700f1db8af53dac280d2f734a6e12f9b9174b7bd07891df71&w=1060q=80&w=1470&auto=format&fit=crop",
+    coverImage: "https://img.freepik.com/free-photo/woman-giving-kiss-hearts_23-2147596650.jpg?t=st=1764264904~exp=1764268504~hmac=233cc3082e06ddbb91fa97f3f15a3e1d2dd97c5e935ceff064b73091686b8878&w=740q=80&w=1470&auto=format&fit=crop",
     date: "June 10, 2024",
     author: "Dr. Anjali Menon",
     categories: ["diabetes", "wellness", "prevention"]
   },
+  //https://img.freepik.com/free-photo/world-kindness-day-with-women-hugging_23-2150027998.jpg?t=st=1764265077~exp=1764268677~hmac=69894fe57d23e320b17f15feafb2deffbff9da7299424f53de6852445986e004&w=740
   {
     id: 2,
     title: "The Power of South Indian Cuisine in Heart Health",
