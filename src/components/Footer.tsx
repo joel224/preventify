@@ -1,6 +1,6 @@
 
 import Link from "next/link";
-import { Phone, Mail, MapPin, Youtube } from "lucide-react";
+import { Phone, Mail, MapPin } from "lucide-react";
 
 const Footer = () => {
   const currentYear = new Date().getFullYear();
@@ -14,27 +14,48 @@ const Footer = () => {
             <p className="text-gray-300 mb-4">
               Evidence-based modern healthcare across Kerala, focused on prevention and better health outcomes.
             </p>
-            <div className="flex space-x-4">
-              <a href="#" className="text-white hover:text-preventify-purple transition-colors">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-5 w-5">
-                  <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path>
-                </svg>
-              </a>
-              <a href="#" className="text-white hover:text-preventify-purple transition-colors">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-5 w-5">
-                  <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
-                  <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
-                  <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
-                </svg>
-              </a>
-              <a href="#" className="text-white hover:text-preventify-purple transition-colors">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-5 w-5">
-                  <path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"></path>
-                </svg>
-              </a>
-              <a href="#" className="text-white hover:text-preventify-purple transition-colors">
-                <Youtube className="h-5 w-5" />
-              </a>
+            <div className="flex flex-col space-y-3">
+                <a href="https://www.instagram.com/preventify.me/" target="_blank" rel="noopener noreferrer" className="inline-flex items-center text-gray-300 hover:text-white transition-colors group">
+                    <svg className="h-6 w-6 mr-3" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <defs>
+                            <radialGradient id="insta-gradient" cx="0.3" cy="1.2" r="1.2">
+                                <stop offset="0%" stopColor="#F9CE34" />
+                                <stop offset="25%" stopColor="#EE2A7B" />
+                                <stop offset="50%" stopColor="#6228D7" />
+                            </radialGradient>
+                        </defs>
+                        <path d="M16.5 2H7.5C4.46243 2 2 4.46243 2 7.5V16.5C2 19.5376 4.46243 22 7.5 22H16.5C19.5376 22 22 19.5376 22 16.5V7.5C22 4.46243 19.5376 2 16.5 2Z" stroke="url(#insta-gradient)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                        <path d="M12 15.6C13.9882 15.6 15.6 13.9882 15.6 12C15.6 10.0118 13.9882 8.4 12 8.4C10.0118 8.4 8.4 10.0118 8.4 12C8.4 13.9882 10.0118 15.6 12 15.6Z" stroke="url(#insta-gradient)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                        <path d="M16.8 7.20001H16.81" stroke="url(#insta-gradient)" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
+                    </svg>
+                    <span className="group-hover:underline">Instagram</span>
+                </a>
+                <a href="#" className="inline-flex items-center text-gray-300 hover:text-white transition-colors group">
+                    <svg className="h-6 w-6 mr-3" viewBox="0 0 24 24" fill="#1877F2" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M18 2H15C13.6739 2 12.4021 2.52678 11.4645 3.46447C10.5268 4.40215 10 5.67392 10 7V10H7V14H10V22H14V14H17L18 10H14V7C14 6.73478 14.1054 6.48043 14.2929 6.29289C14.4804 6.10536 14.7348 6 15 6H18V2Z" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                    </svg>
+                    <span className="group-hover:underline">Facebook</span>
+                </a>
+                 <a href="#" className="inline-flex items-center text-gray-300 hover:text-white transition-colors group">
+                    <svg className="h-6 w-6 mr-3" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <g clipPath="url(#clip0_105_2)">
+                            <path d="M20.25 4.5H3.75C3.33579 4.5 3 4.83579 3 5.25V18.75C3 19.1642 3.33579 19.5 3.75 19.5H20.25C20.6642 19.5 21 19.1642 21 18.75V5.25C21 4.83579 20.6642 4.5 20.25 4.5Z" stroke="#FF0000" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
+                            <path d="M10.125 14.25L15 12L10.125 9.75V14.25Z" stroke="#FF0000" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
+                        </g>
+                        <defs>
+                            <clipPath id="clip0_105_2">
+                            <rect width="24" height="24" fill="white"/>
+                            </clipPath>
+                        </defs>
+                    </svg>
+                     <span className="group-hover:underline">YouTube</span>
+                </a>
+                 <a href="#" className="inline-flex items-center text-gray-300 hover:text-white transition-colors group">
+                    <svg className="h-6 w-6 mr-3" viewBox="0 0 24 24" fill="#0A66C2" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M16 8C16 6.4087 15.3679 4.88258 14.2426 3.75736C13.1174 2.63214 11.5913 2 10 2C8.4087 2 6.88258 2.63214 5.75736 3.75736C4.63214 4.88258 4 6.4087 4 8V16C4 17.5913 4.63214 19.1174 5.75736 20.2426C6.88258 21.3679 8.4087 22 10 22C11.5913 22 13.1174 21.3679 14.2426 20.2426C15.3679 19.1174 16 17.5913 16 16V8ZM8 11H12M10 9V13" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                    </svg>
+                    <span className="group-hover:underline">LinkedIn</span>
+                </a>
             </div>
           </div>
 
