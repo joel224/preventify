@@ -11,6 +11,7 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
+  DialogDescription,
 } from "@/components/ui/dialog";
 import Image from "next/image";
 import Link from "next/link";
@@ -20,10 +21,10 @@ const SubscriptionButton = () => {
   const [isOpen, setIsOpen] = useState(false);
 
   const benefits = [
-    { name: "Unlimited doctor service", detail: "On Daily basis" },
-    { name: "General physician consultations", detail: "No per visit charge" },
-    { name: "Paediatrician consultations", detail: "No per visit charge" },
-    { name: "Other OPD consultations", detail: "view details", isLink: true },
+    { name: "Unlimited Doctor Visits", detail: "Consult with our General Physicians and Paediatricians as often as you need." },
+    { name: "Annual Coverage", detail: "A single fee covers all your primary consultations for a full year." },
+    { name: "Family Plan Available", detail: "Extend the same great benefits to your entire family for complete peace of mind." },
+    { name: "Access to Specialists", detail: "Get seamless referrals to specialists within the Preventify network." },
   ];
 
   useEffect(() => {
@@ -60,53 +61,47 @@ const SubscriptionButton = () => {
           </Button>
         </div>
       </DialogTrigger>
-      <DialogContent className="w-[95vw] sm:max-w-md bg-off-white p-0 rounded-lg">
-         <DialogHeader className="sr-only">
-          <DialogTitle>One Health Member Plan</DialogTitle>
-        </DialogHeader>
+      <DialogContent className="sm:max-w-3xl w-[95vw] p-0 rounded-lg">
+        <div className="grid grid-cols-1 md:grid-cols-2">
+            <div className="p-8 md:p-10 flex flex-col justify-center">
+                 <DialogHeader>
+                    <DialogTitle className="text-3xl font-bold text-preventify-blue mb-2">
+                        The Sugam Card
+                    </DialogTitle>
+                    <DialogDescription className="text-base text-preventify-dark-gray">
+                        One annual fee for unlimited peace of mind. Stop paying for sick visits and start investing in your health.
+                    </DialogDescription>
+                </DialogHeader>
 
-        <div>
-            <div className="relative w-full aspect-[4/3] md:aspect-video">
-              <Image
-                src="/card.jpg"
-                alt="One Health Member Plan Card"
-                fill
-                className="rounded-t-lg object-contain"
-              />
-            </div>
-
-          <div className="p-6">
-             <div className="space-y-3 text-dark-gray mb-6">
-                {benefits.map((benefit) => (
-                    <div key={benefit.name} className="flex items-center justify-between gap-4">
-                        <div className="flex items-center gap-2">
-                           <CheckCircle2 className="h-4 w-4 text-soft-teal shrink-0" />
-                           <p className="text-sm">{benefit.name}</p>
+                <div className="my-8 space-y-4">
+                    {benefits.map((benefit, index) => (
+                        <div key={index} className="flex items-start gap-3">
+                            <CheckCircle2 className="h-5 w-5 text-preventify-green mt-1 shrink-0" />
+                            <div>
+                                <p className="font-semibold text-preventify-dark-blue">{benefit.name}</p>
+                                <p className="text-sm text-preventify-gray">{benefit.detail}</p>
+                            </div>
                         </div>
-                        {benefit.isLink ? (
-                           <Link href="/savings" onClick={() => setIsOpen(false)} className="text-sm font-semibold text-soft-teal underline whitespace-nowrap hover:text-soft-teal/80">
-                             {benefit.detail}
-                           </Link>
-                         ) : (
-                           <p className="text-xs md:text-sm font-semibold text-right whitespace-nowrap">{benefit.detail}</p>
-                         )}
-                    </div>
-                ))}
-            </div>
-          </div>
-        </div>
+                    ))}
+                </div>
 
-        <div className="p-6 pt-0 border-t border-gray-200">
-            <DialogFooter className="sm:justify-center mt-4">
-               <Link href="/savings" onClick={() => setIsOpen(false)} className="w-full">
-                <Button className="w-full bg-soft-teal hover:bg-soft-teal/90 text-white text-base py-3 px-6 rounded-lg">
-                  Subscribe Now
-                </Button>
-              </Link>
-            </DialogFooter>
-             <p className="text-xs text-center text-light-gray mt-4">Join 50,000+ members who never miss a dose or a check-up.</p>
+                <DialogFooter className="mt-auto">
+                    <Link href="/savings" onClick={() => setIsOpen(false)} className="w-full">
+                        <Button className="w-full bg-preventify-blue hover:bg-preventify-dark-blue text-white text-base py-3 px-6 rounded-lg h-12">
+                            Learn More & Subscribe
+                        </Button>
+                    </Link>
+                </DialogFooter>
+            </div>
+            <div className="relative aspect-square md:aspect-auto hidden md:block">
+                <Image
+                    src="/card.jpg"
+                    alt="One Health Member Plan Card"
+                    fill
+                    className="rounded-r-lg object-cover"
+                />
+            </div>
         </div>
-        
       </DialogContent>
     </Dialog>
   );
