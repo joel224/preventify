@@ -44,7 +44,7 @@ const LocationsSection = () => {
                 <img
                   src={location.image}
                   alt={location.name}
-                  className="w-full h-full object-cover transition-all duration-500 group-hover:scale-110 grayscale group-hover:grayscale-0"
+                  className="w-full h-full object-cover transition-all duration-500 group-hover:scale-110 saturate-50 group-hover:saturate-100"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent flex items-end">
                   <div className="p-6">
