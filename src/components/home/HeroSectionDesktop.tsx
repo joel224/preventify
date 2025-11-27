@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import Image from "next/image";
-import FixedWatermark from "@/components/home/FixedWatermark";
+import TextShine from "../ui/TextShine";
 
 const { useRef, useState, useEffect } = React;
 
@@ -107,15 +107,15 @@ Rebeqa-Bold.ttf,font-family: 'Rebeqa'; font-weight: bold;
                     transformOrigin: "center center",
                   }}
                 >
-                  <h2 
-                    className="font-semibold select-none pointer-events-none whitespace-nowrap"
-                    style={{
-                      fontSize: LAYOUT_CONTROLS.clinicText.fontSize,
-                      opacity: LAYOUT_CONTROLS.clinicText.opacity,
-                    }}
-                  >
-                    {LAYOUT_CONTROLS.clinicText.text}
-                  </h2>
+                  <TextShine
+                      className="font-semibold select-none pointer-events-none whitespace-nowrap text-preventify-dark-gray"
+                      style={{
+                        fontSize: LAYOUT_CONTROLS.clinicText.fontSize,
+                        opacity: LAYOUT_CONTROLS.clinicText.opacity,
+                      }}
+                    >
+                      {LAYOUT_CONTROLS.clinicText.text}
+                    </TextShine>
                 </div>
               </div>
 
@@ -150,7 +150,6 @@ Rebeqa-Bold.ttf,font-family: 'Rebeqa'; font-weight: bold;
           </div>
         </div>
 
-        <FixedWatermark />
       </div>
     </section>
   );

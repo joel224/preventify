@@ -41,13 +41,13 @@ const PreventiveLifestyleSectionDesktop = () => {
     };
 
     return (
-        <section ref={targetRef} className="pb-16 md:pb-24 relative z-10 bg-white rounded-t-[50%_100px] md:rounded-t-[50%_150px] -mt-20 md:-mt-28">
+        <section ref={targetRef} className="pb-16 md:pb-24 relative z-10 bg-white rounded-t-[50%_100px] md:rounded-t-[50%_150px] -mt-20 md:-mt-25">
             <motion.div style={{ y }} className="container mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="pt-24 md:pt-32 grid grid-cols-1 gap-8 md:gap-12 items-center">
                     <div className="text-center">
 
                         <div className="max-w-6xl mx-auto rounded-xl shadow-lg -mt-72 flex">
-                            <div className="bg-[#004c9e] text-white p-6 rounded-l-xl flex-grow">
+                            <div className="bg-[#004c9e] text-white p-5 rounded-l-xl flex-grow">
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
                                     {/* Name Input */}
                                     <div className="space-y-1">
@@ -68,7 +68,7 @@ const PreventiveLifestyleSectionDesktop = () => {
                                         <Input 
                                             id="phone-desktop" 
                                             type="tel" 
-                                            placeholder="(+91) 987-654-3210" 
+                                            placeholder="Your Number" 
                                             value={phone} 
                                             onChange={(e) => setPhone(e.target.value)} 
                                             required 
