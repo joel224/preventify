@@ -3,17 +3,17 @@ import { Info, Users, Calendar } from "lucide-react";
 
 const features = [
   {
-    icon: <Info className="h-10 w-10 text-preventify-green" />,
+    icon: <Info className="h-8 w-8 text-preventify-blue" />,
     title: "Evidence-Based Care",
     description: "Treatment protocols based on the latest medical research and guidelines.",
   },
   {
-    icon: <Users className="h-10 w-10 text-preventify-green" />,
+    icon: <Users className="h-8 w-8 text-preventify-blue" />,
     title: "Expert Physicians",
     description: "Experienced doctors specialized in various fields of medicine.",
   },
   {
-    icon: <Calendar className="h-10 w-10 text-preventify-green" />,
+    icon: <Calendar className="h-8 w-8 text-preventify-blue" />,
     title: "Annual Memberships",
     description: "Lower costs for you and your family.",
   },
@@ -36,26 +36,18 @@ const FeaturesSection = () => {
           </p>
         </div>
         
-        {/* Mobile View: Vertical List */}
-        <div className="md:hidden space-y-8">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {features.map((feature, index) => (
-            <div key={index} className="flex items-start gap-4 p-4 bg-white rounded-lg shadow-sm">
-              <div className="flex-shrink-0">{feature.icon}</div>
-              <div>
-                <h3 className="text-lg font-semibold mb-1 text-preventify-blue">{feature.title}</h3>
-                <p className="text-preventify-dark-gray">{feature.description}</p>
+            <div key={index} className="bg-white p-6 rounded-lg shadow-sm transition-all duration-300 hover:shadow-xl hover:-translate-y-2">
+              <div className="grid grid-cols-[auto_1fr] gap-4 items-start">
+                <div className="bg-preventify-blue/10 p-3 rounded-full">
+                  {feature.icon}
+                </div>
+                <div>
+                  <h3 className="text-xl font-semibold mb-1 text-preventify-dark-blue">{feature.title}</h3>
+                  <p className="text-preventify-dark-gray">{feature.description}</p>
+                </div>
               </div>
-            </div>
-          ))}
-        </div>
-
-        {/* Desktop View: Grid */}
-        <div className="hidden md:grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {features.map((feature, index) => (
-            <div key={index} className="bg-white p-6 rounded-lg shadow-sm">
-              <div className="mb-4">{feature.icon}</div>
-              <h3 className="text-xl font-semibold mb-2 text-preventify-blue">{feature.title}</h3>
-              <p className="text-preventify-dark-gray">{feature.description}</p>
             </div>
           ))}
         </div>
