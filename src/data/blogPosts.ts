@@ -28,7 +28,7 @@ export const blogPosts: BlogPost[] = [
       </ul>
       <p>At Preventify Hospitals, we offer comprehensive diabetes prevention programs designed to help you make sustainable lifestyle changes.</p>
     `,
-    coverImage: "https://images.unsplash.com/photo-1505751172876-fa1923c5c528?q=80&w=1470&auto=format&fit=crop",
+    coverImage: "https://images.unsplash.com/photo-1490645935967-10de6ba1a033?q=80&w=1470&auto=format&fit=crop",
     date: "June 10, 2024",
     author: "Dr. Anjali Menon",
     categories: ["diabetes", "wellness", "prevention"]
@@ -60,7 +60,7 @@ export const blogPosts: BlogPost[] = [
       </ul>
       <p>At Preventify, our nutritionists can help you incorporate these heart-healthy traditional foods into your modern lifestyle to support cardiovascular wellness.</p>
     `,
-    coverImage: "https://images.unsplash.com/photo-1589647363585-f4a7d3877b10?q=80&w=1587&auto=format&fit=crop",
+    coverImage: "https://images.unsplash.com/photo-1540420773420-3366772f4999?q=80&w=1587&auto=format&fit=crop",
     date: "June 5, 2024",
     author: "Dr. Lakshmi Nair",
     categories: ["nutrition", "lifestyle", "wellness"]
@@ -100,7 +100,7 @@ export const blogPosts: BlogPost[] = [
       <p>Transform your meetings into walking sessions when possible. A 30-minute walking meeting can help you achieve nearly one-third of your daily recommended physical activity.</p>
       <p>Remember, consistency is more important than intensity. Even these short exercise routines, performed regularly, can lead to significant health improvements over time.</p>
     `,
-    coverImage: "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?q=80&w=1470&auto=format&fit=crop",
+    coverImage: "https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?q=80&w=1520&auto=format&fit=crop",
     date: "May 28, 2024",
     author: "Dr. Rahul Thomas",
     categories: ["fitness", "lifestyle", "wellness"]
