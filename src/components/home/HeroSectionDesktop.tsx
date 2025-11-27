@@ -62,7 +62,7 @@ const LAYOUT_CONTROLS = {
     width: "200%",
     maxWidth: "500px",
     x: -69,
-    y: 160,
+    y: 161,
     scale: 3.3,
     rotate: 0,
     delay: 0,

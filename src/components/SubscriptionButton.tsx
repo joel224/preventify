@@ -10,8 +10,8 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
   DialogDescription,
+  DialogTrigger,
 } from "@/components/ui/dialog";
 import Image from "next/image";
 import Link from "next/link";
@@ -50,14 +50,11 @@ const SubscriptionButton = () => {
           style={{ backfaceVisibility: 'hidden' }}
         >
           <Button
-            size="icon"
-            className="w-20 h-20 rounded-full bg-gray-400/20 backdrop-blur-lg border border-gray-300/30 text-preventify-dark-gray hover:bg-gray-400/30 animate-vibrate"
+            className="w-24 h-24 rounded-full bg-primary text-primary-foreground hover:bg-primary/90 shadow-xl border-2 border-white/50 flex-col gap-1 animate-vibrate"
             aria-label="Annual Subscription"
           >
-            <div className="flex flex-col items-center">
-              <Star className="h-8 w-8" />
-              <span className="text-xs mt-1">Annual</span>
-            </div>
+              <Star className="h-7 w-7" />
+              <span className="text-xs font-medium -mt-1">Annual<br/>Subscription</span>
           </Button>
         </div>
       </DialogTrigger>
