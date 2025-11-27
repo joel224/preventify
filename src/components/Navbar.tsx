@@ -111,9 +111,9 @@ const Navbar = () => {
               </Link>
             ))}
           </div>
-          <div className="flex items-center gap-4">
-            <a href="tel:+918129334858" className="flex items-center gap-1 hover:text-primary transition-colors">
-              <Phone className="h-3 w-3" />
+          <div className="flex items-center gap-5">
+            <a href="tel:+918129334858" className="flex items-center gap-1 hover:text-primary transition-all text-base hover:text-xl">
+              <Phone className="h-4 w-3 " />
               +91 8129334858
             </a>
             <button className="flex items-center gap-1 hover:text-primary transition-colors">
