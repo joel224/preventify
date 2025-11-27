@@ -61,7 +61,7 @@ const LAYOUT_CONTROLS = {
     src: "/women.webp",
     width: "200%",
     maxWidth: "500px",
-    x: -70,
+    x: -69,
     y: 160,
     scale: 3.3,
     rotate: 0,
@@ -116,7 +116,7 @@ export default function HeroSectionContent() {
         setCurrentImageIndex(prev => (prev + 1) % images.length);
         setShowImage(true);
       }, 50);
-    }, 13000);
+    }, 10000);
 
     return () => clearInterval(interval);
   }, [images.length]);
