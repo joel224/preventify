@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState, useRef } from "react";
@@ -45,8 +46,8 @@ const PreventiveLifestyleSectionDesktop = () => {
                 <div className="pt-24 md:pt-32 grid grid-cols-1 gap-8 md:gap-12 items-center">
                     <div className="text-center">
 
-                        <div className="max-w-4xl mx-auto rounded-lg shadow-lg -mt-64 flex">
-                            <div className="bg-[#004c9e] text-white p-6 md:p-8 rounded-l-lg flex-grow">
+                        <div className="max-w-6xl mx-auto rounded-xl shadow-lg -mt-64 flex">
+                            <div className="bg-[#004c9e] text-white p-6 md:p-8 rounded-l-xl flex-grow">
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-end">
                                     {/* Name Input */}
                                     <div className="space-y-1">
@@ -58,7 +59,7 @@ const PreventiveLifestyleSectionDesktop = () => {
                                             value={name} 
                                             onChange={(e) => setName(e.target.value)} 
                                             required 
-                                            className="h-10 text-lg bg-transparent border-0 border-b-2 border-white/50 rounded-none focus:ring-0 focus:border-white p-0"
+                                            className="h-10 text-lg bg-transparent border-0 border-b-2 border-white/50 rounded-none focus:ring-0 focus:border-white p-0 text-white placeholder:text-white/70 focus-visible:ring-0 focus-visible:ring-offset-0"
                                         />
                                     </div>
                                     {/* Phone Input */}
@@ -71,7 +72,7 @@ const PreventiveLifestyleSectionDesktop = () => {
                                             value={phone} 
                                             onChange={(e) => setPhone(e.target.value)} 
                                             required 
-                                            className="h-10 text-lg bg-transparent border-0 border-b-2 border-white/50 rounded-none focus:ring-0 focus:border-white p-0"
+                                            className="h-10 text-lg bg-transparent border-0 border-b-2 border-white/50 rounded-none focus:ring-0 focus:border-white p-0 text-white placeholder:text-white/70 focus-visible:ring-0 focus-visible:ring-offset-0"
                                         />
                                     </div>
                                 </div>
@@ -85,9 +86,9 @@ const PreventiveLifestyleSectionDesktop = () => {
                             >
                                 <Button 
                                     type="button" 
-                                    className="h-auto text-lg bg-[#3370b1] hover:bg-[#4a80c2] text-white font-semibold transition-all duration-200 rounded-l-none rounded-r-lg px-8"
+                                    className="h-auto text-lg bg-[#3370b1] hover:bg-[#4a80c2] text-white font-semibold transition-all duration-200 rounded-l-none rounded-r-xl px-8"
                                 >
-                                    Request Callback
+                                    Book Now
                                 </Button>
                             </BookingDialog>
                         </div>
