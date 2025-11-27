@@ -45,39 +45,58 @@ const PreventiveLifestyleSectionDesktop = () => {
                 <div className="pt-24 md:pt-32 grid grid-cols-1 gap-8 md:gap-12 items-center">
                     <div className="text-center">
 
-                        <div className="max-w-6xl mx-auto p-6 md:p-8 rounded-xl bg-[#004c9e] backdrop-blur-md border border-gray-200/80 shadow-lg mb-24 md:-mt-64 -mt-40">
-                            <div className="grid grid-cols-1 md:grid-cols-[1fr_1fr_auto] gap-4 items-end">
-                                {/* Name Input */}
-                                <div className="space-y-2 text-left">
-                                    <Label htmlFor="name-desktop" className="text-xl font-medium text-white">Name</Label>
-                                    <Input id="name-desktop" type="text" placeholder="Your Name" value={name} onChange={(e) => setName(e.target.value)} required className="h-14 text-xl" />
-                                </div>
-                                {/* Phone Input */}
-                                <div className="space-y-2 text-left">
-                                    <Label htmlFor="phone-desktop" className="text-xl font-medium text-white">Phone Number</Label>
-                                    <Input id="phone-desktop" type="tel" placeholder="(+91) 987-654-3210" value={phone} onChange={(e) => setPhone(e.target.value)} required className="h-14 text-xl" />
-                                </div>
-                                
-                                    {/* Submit Button */}
-                                <div>
-                                    <BookingDialog
-                                        initialFirstName={getProcessedNames().firstName}
-                                        initialLastName={getProcessedNames().lastName}
-                                        initialPhone={getSanitizedPhone()}
-                                    >
-                                        <Button type="button" className="w-full h-14 text-xl bg-[#3370b1] hover:bg-black text-white font-medium transition-all duration-200 shadow-md hover:shadow-lg">
-                                            Request Callback
-                                        </Button>
-                                    </BookingDialog>
+                        <div className="max-w-4xl mx-auto rounded-lg shadow-lg -mt-64 flex">
+                            <div className="bg-[#004c9e] text-white p-6 md:p-8 rounded-l-lg flex-grow">
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-end">
+                                    {/* Name Input */}
+                                    <div className="space-y-1">
+                                        <Label htmlFor="name-desktop" className="text-sm font-medium text-white/90">Name</Label>
+                                        <Input 
+                                            id="name-desktop" 
+                                            type="text" 
+                                            placeholder="Your Name" 
+                                            value={name} 
+                                            onChange={(e) => setName(e.target.value)} 
+                                            required 
+                                            className="h-10 text-lg bg-transparent border-0 border-b-2 border-white/50 rounded-none focus:ring-0 focus:border-white p-0"
+                                        />
+                                    </div>
+                                    {/* Phone Input */}
+                                    <div className="space-y-1">
+                                        <Label htmlFor="phone-desktop" className="text-sm font-medium text-white/90">Phone Number</Label>
+                                        <Input 
+                                            id="phone-desktop" 
+                                            type="tel" 
+                                            placeholder="(+91) 987-654-3210" 
+                                            value={phone} 
+                                            onChange={(e) => setPhone(e.target.value)} 
+                                            required 
+                                            className="h-10 text-lg bg-transparent border-0 border-b-2 border-white/50 rounded-none focus:ring-0 focus:border-white p-0"
+                                        />
+                                    </div>
                                 </div>
                             </div>
-                           <p className="text-sm text-gray-500 mt-4 text-center">
-                                By submitting your contact details, you agree to receive automated SMS/MMS messages from Preventify. Message & data rates may apply.
-                           </p>
+                            
+                            {/* Submit Button */}
+                            <BookingDialog
+                                initialFirstName={getProcessedNames().firstName}
+                                initialLastName={getProcessedNames().lastName}
+                                initialPhone={getSanitizedPhone()}
+                            >
+                                <Button 
+                                    type="button" 
+                                    className="h-auto text-lg bg-[#3370b1] hover:bg-[#4a80c2] text-white font-semibold transition-all duration-200 rounded-l-none rounded-r-lg px-8"
+                                >
+                                    Request Callback
+                                </Button>
+                            </BookingDialog>
                         </div>
+                        <p className="text-xs text-gray-500 mt-4 text-center max-w-4xl mx-auto">
+                            By submitting your contact details, you agree to receive automated SMS/MMS messages from Preventify. Message & data rates may apply.
+                        </p>
                         
                         <p 
-                            className="text-lg text-preventify-dark-gray mb-8 max-w-3xl mx-auto"
+                            className="text-lg text-preventify-dark-gray mb-8 max-w-3xl mx-auto mt-12"
                         >
                             &nbsp;
                         </p>
