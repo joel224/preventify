@@ -40,7 +40,7 @@ const services = [
 
 const ServiceCard = ({ service }: { service: typeof services[0] }) => {
     return (
-        <Link href={service.link} className="group relative block h-64 overflow-hidden rounded-xl">
+        <Link href={service.link} className="group relative block h-80 overflow-hidden rounded-xl">
             {/* Background pattern and gradient */}
             <div
                 className="absolute inset-0 bg-preventify-light-gray bg-opacity-50"
@@ -99,7 +99,7 @@ const ServicesSection = () => {
             Our Healthcare Services
           </h2>
           <p className="text-lg md:text-xl text-preventify-dark-gray max-w-3xl mx-auto">
-            Preventify offers a comprehensive range of healthcare services designed to keep you healthy and address your medical needs.
+            
           </p>
         </motion.div>
 
