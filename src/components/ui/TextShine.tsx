@@ -1,25 +1,39 @@
 'use client';
 import { motion, useInView } from 'framer-motion';
 import { cn } from '@/lib/utils';
-import { useRef } from 'react';
+import { useRef, useEffect, useState } from 'react';
 
 interface TextShineProps {
   children: React.ReactNode;
   className?: string;
   style?: React.CSSProperties;
+  duration?: number;
+  delay?: number;
 }
 
-const TextShine = ({ children, className, style }: TextShineProps) => {
+const TextShine = ({ 
+  children, 
+  className = '', 
+  style = {}, 
+  duration = 1.6, 
+  delay = 0.2 
+}: TextShineProps) => {
   const ref = useRef(null);
-  // Trigger animation every time it comes into view
-  const isInView = useInView(ref, { once: false, amount: 0.5 }); 
+  const isInView = useInView(ref, { once: false, amount: 0.3 });
+  const [hasPlayed, setHasPlayed] = useState(false);
+
+  useEffect(() => {
+    if (isInView && !hasPlayed) {
+      setHasPlayed(true);
+    }
+  }, [isInView]);
 
   const animation = {
     initial: {
-      backgroundPosition: '200% 50%',
+      backgroundPosition: '-100% 50%',
     },
     animate: {
-      backgroundPosition: '-200% 50%',
+      backgroundPosition: '200% 50%',
     },
   };
 
@@ -27,21 +41,32 @@ const TextShine = ({ children, className, style }: TextShineProps) => {
     <motion.h2
       ref={ref}
       className={cn(
-        'bg-clip-text text-transparent',
-        'bg-gradient-to-r from-preventify-dark-gray via-white to-preventify-dark-gray',
+        'relative inline-block font-bold',
         className
       )}
       style={{
         ...style,
-        backgroundSize: '200% auto',
+        color: '#25338e',
+        backgroundImage: 'linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.8) 50%, rgba(255,255,255,0) 100%)',
+        backgroundSize: '300% 100%',
+        backgroundRepeat: 'no-repeat',
+        WebkitBackgroundClip: 'text',
+        backgroundClip: 'text',
+        // ✅ FIXED: Removed MozTextFillColor, using only standard properties
       }}
       variants={animation}
       initial="initial"
-      animate={isInView ? 'animate' : 'initial'}
+      animate={isInView && hasPlayed ? 'animate' : 'initial'}
       transition={{
-        duration: 1.6, // Slower, more elegant shine
-        ease: 'linear',
-        delay: 0.2, // Simple delay on trigger
+        duration,
+        ease: 'easeOut',
+        delay,
+        repeat: 0,
+      }}
+      onAnimationComplete={() => {
+        if (isInView) {
+          setHasPlayed(false);
+        }
       }}
     >
       {children}
