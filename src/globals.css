@@ -93,6 +93,25 @@
   h1, h2, h3, h4, h5, h6 {
     @apply font-display;
   }
+
+  /* Custom Scrollbar Styles */
+  ::-webkit-scrollbar {
+    width: 8px; /* width of the entire scrollbar */
+    height: 8px; /* height of the horizontal scrollbar */
+  }
+
+  ::-webkit-scrollbar-track {
+    background: transparent; /* make the track invisible */
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: hsl(var(--border)); /* use the border color for the thumb */
+    border-radius: 10px; /* round the thumb */
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: hsl(var(--muted-foreground)); /* slightly darker on hover */
+  }
 }
 
 @layer components {
