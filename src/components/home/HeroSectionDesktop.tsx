@@ -116,7 +116,7 @@ export default function HeroSectionContent() {
         setCurrentImageIndex(prev => (prev + 1) % images.length);
         setShowImage(true);
       }, 50);
-    }, 90000);
+    }, 9000);
 
     return () => clearInterval(interval);
   }, [images.length]);
