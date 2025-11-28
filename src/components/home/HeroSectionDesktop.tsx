@@ -63,7 +63,7 @@ const LAYOUT_CONTROLS = {
     maxWidth: "500px",
     x: -69,
     y: 161,
-    scale: 3.3,
+    scale: 3.1,
     rotate: 0,
     delay: 0,
   },
@@ -116,7 +116,7 @@ export default function HeroSectionContent() {
         setCurrentImageIndex(prev => (prev + 1) % images.length);
         setShowImage(true);
       }, 50);
-    }, 10000);
+    }, 90000);
 
     return () => clearInterval(interval);
   }, [images.length]);
