@@ -57,7 +57,7 @@ interface Doctor {
   id: string;
   name: string;
   specialty: string;
-  clinicId: string; // Keep for booking logic
+  clinicId: string;
 }
 
 interface Slot {
@@ -73,8 +73,8 @@ interface HourlySlot {
 interface FoundPatientProfile {
     first_name: string;
     last_name: string;
-    dob: string; // "YYYY-MM-DD"
-    gender: "M" | "F" | "O" | "male" | "female" | "other"; // Allow for API inconsistencies
+    dob: string; 
+    gender: "M" | "F" | "O" | "male" | "female" | "other";
 }
 
 // Hardcoded doctor list
@@ -91,9 +91,6 @@ const doctors: Doctor[] = [
     { id: '175949158258558', name: 'Dr. Ajay Biju', specialty: 'Resident Medical Officer', clinicId: '673d87fdaa91c2001d716c91'},
     { id: '175949152812334', name: 'Dr. Renjith A.', specialty: 'Orthopedics', clinicId: '673d87fdaa91c2001d716c91'},
     { id: '175949162376135', name: 'Dr. K.Y.Sanjay', specialty: 'Orthopedics', clinicId: '673d87fdaa91c2001d716c91'},
-    //NOTE: These doctors had no ID, so they are not included in the booking form.
-    // { id: '', name: 'Dr. Md. Abdurahiman', specialty: 'Minor Surgeries', clinicId: '673d87fdaa91c2001d716c91'},
-    // { id: '', name: 'Dr. Ashwin T.R.', specialty: 'Resident Medical Officer', clinicId: '673d87fdaa91c2001d716c91'},
 ];
 
 
@@ -170,45 +167,12 @@ export default function BookingDialog({
       dobDay: '',
       gender: undefined,
     },
+    mode: 'onTouched'
   });
 
   const selectedDoctorId = useWatch({ control: form.control, name: 'doctorId' });
   const selectedDate = useWatch({ control: form.control, name: 'date' });
   const selectedTime = useWatch({ control: form.control, name: 'time' });
-  const selectedFirstName = useWatch({ control: form.control, name: 'firstName' });
-  const selectedPhone = useWatch({ control: form.control, name: 'phone' });
-
-  // Auto-advance from Step 1
-  useEffect(() => {
-    const advance = async () => {
-        if (step === 1 && selectedFirstName && selectedPhone.match(/^[0-9]{10}$/) && !isSearchingPatient) {
-            setIsSearchingPatient(true);
-            try {
-                const res = await fetch(`/api/search-patient?phone=${encodeURIComponent(selectedPhone)}`);
-                if (res.ok) {
-                    const patient: FoundPatientProfile = await res.json();
-                    if(patient && patient.first_name) {
-                        setFoundPatientProfile(patient);
-                        form.setValue('firstName', patient.first_name);
-                        toast.info(`Welcome back, ${patient.first_name}! Your details have been pre-filled.`);
-                    } else {
-                        setFoundPatientProfile(null);
-                    }
-                } else {
-                    setFoundPatientProfile(null);
-                }
-            } catch (error) {
-                console.log('Patient search failed or not found, continuing as new patient.');
-                setFoundPatientProfile(null);
-            } finally {
-                setIsLoading(false);
-                setIsSearchingPatient(false);
-                setStep(2);
-            }
-        }
-    };
-    advance();
-  }, [selectedFirstName, selectedPhone, step, form, isSearchingPatient]);
 
   // Auto-advance from Step 2
   useEffect(() => {
@@ -243,35 +207,12 @@ export default function BookingDialog({
     return doctor ? doctor.clinicId : '';
   }, [selectedDoctorId]);
   
-  // Effect to handle pre-filled data and skip step 1
   useEffect(() => {
-    const handleInitialData = async () => {
-        if (open && initialFirstName && initialPhone) {
-            form.setValue('firstName', initialFirstName, { shouldValidate: true });
-            form.setValue('phone', initialPhone, { shouldValidate: true });
-            
-            // This replicates the logic from handleNextStep for step 1
-            setIsLoading(true);
-            try {
-                const res = await fetch(`/api/search-patient?phone=${encodeURIComponent(initialPhone)}`);
-                if (res.ok) {
-                    const patient: FoundPatientProfile = await res.json();
-                     if(patient && patient.first_name) {
-                        setFoundPatientProfile(patient);
-                        form.setValue('firstName', patient.first_name);
-                        toast.info(`Welcome back, ${patient.first_name}! Your details have been pre-filled.`);
-                    }
-                }
-            } catch (error) {
-                console.log('Patient search failed or not found, continuing as new patient.');
-                setFoundPatientProfile(null);
-            } finally {
-                setIsLoading(false);
-                setStep(2); // Skip to the next step
-            }
-        }
-    };
-    handleInitialData();
+    if (open && initialFirstName && initialPhone) {
+        form.setValue('firstName', initialFirstName, { shouldValidate: true });
+        form.setValue('phone', initialPhone, { shouldValidate: true });
+        handleNextStep(); 
+    }
   }, [open, initialFirstName, initialPhone, form]);
 
   useEffect(() => {
@@ -313,7 +254,7 @@ export default function BookingDialog({
 
   const { data: availableSlots = [], error: slotsError, isLoading: slotsLoading } = useSWR<Slot[]>(swrKey, fetcher, {
     shouldRetryOnError: false,
-    revalidateOnFocus: false, // Prevent background refetch wiping state
+    revalidateOnFocus: false,
     revalidateOnReconnect: false,
     onError: () => {
       toast.error('Could not load available time slots.');
@@ -365,13 +306,38 @@ export default function BookingDialog({
 
 
   const handleNextStep = async () => {
-    let result;
     if (step === 1) {
-        result = await form.trigger(['firstName', 'phone']);
+        const result = await form.trigger(['firstName', 'phone']);
+        if (result) {
+            setIsSearchingPatient(true);
+            try {
+                const phoneValue = form.getValues('phone');
+                const res = await fetch(`/api/search-patient?phone=${encodeURIComponent(phoneValue)}`);
+                if (res.ok) {
+                    const patient: FoundPatientProfile = await res.json();
+                    if(patient && patient.first_name) {
+                        setFoundPatientProfile(patient);
+                        form.setValue('firstName', patient.first_name);
+                        toast.info(`Welcome back, ${patient.first_name}! Your details have been pre-filled.`);
+                    } else {
+                        setFoundPatientProfile(null);
+                    }
+                } else {
+                    setFoundPatientProfile(null);
+                }
+            } catch (error) {
+                console.log('Patient search failed or not found, continuing as new patient.');
+                setFoundPatientProfile(null);
+            } finally {
+                setIsLoading(false);
+                setIsSearchingPatient(false);
+                setStep(2);
+            }
+        }
     } else if (step === 2) {
-      result = await form.trigger(['doctorId']);
+      await form.trigger(['doctorId']);
     } else if (step === 3) {
-        result = await form.trigger(['date', 'time']);
+      await form.trigger(['date', 'time']);
     }
   };
 
@@ -416,8 +382,10 @@ export default function BookingDialog({
     setBookingStatus('idle');
 
     let patientPayload;
+    
+    const isExistingPatient = foundPatientProfile && foundPatientProfile.first_name;
 
-    if (foundPatientProfile && foundPatientProfile.first_name) {
+    if (isExistingPatient) {
         patientPayload = {
             firstName: foundPatientProfile.first_name,
             lastName: foundPatientProfile.last_name || "web",
@@ -949,3 +917,4 @@ export default function BookingDialog({
     </Dialog>
   );
 }
+

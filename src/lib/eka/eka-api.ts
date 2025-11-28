@@ -1,5 +1,4 @@
 
-
 'use server';
 
 import axios from 'axios';
@@ -287,8 +286,9 @@ async function findPatientId(mobile: string): Promise<string | null> {
 
 
 export async function bookAppointment(data: any): Promise<any> {
+    console.log('--- RECEIVED PATIENT DATA FROM FRONTEND ---', JSON.stringify(data.patient, null, 2));
+
     const sanitizedMobile = sanitizeMobileNumber(data.patient.phone);
-    
     const existingPatient = await searchPatientByMobile(data.patient.phone);
 
     let partnerPatientId;
@@ -322,12 +322,9 @@ export async function bookAppointment(data: any): Promise<any> {
             partner_patient_id: partnerPatientId,
         };
     } else {
+        const safeFirstName = data.patient.firstName?.trim() || `Patient_${sanitizedMobile.slice(-4)}`;
         partnerPatientId = `preventify_patient_${sanitizedMobile}_${Date.now()}`;
         
-        console.log('--- RECEIVED PATIENT DATA FROM FRONTEND ---', JSON.stringify(data.patient, null, 2));
-
-        const safeFirstName = data.patient.firstName?.trim() || `Patient_${sanitizedMobile.slice(-4)}`;
-
         patientDetailsPayload = {
             designation: getDesignation(data.patient.gender),
             first_name: safeFirstName,
@@ -338,7 +335,6 @@ export async function bookAppointment(data: any): Promise<any> {
             partner_patient_id: partnerPatientId,
         };
     }
-
 
     const partnerAppointmentId = `preventify_appt_${Date.now()}`;
     const startTimeInSeconds = Math.floor(new Date(data.appointment.startTime).getTime() / 1000);
