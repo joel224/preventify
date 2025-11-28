@@ -100,7 +100,7 @@ const SavingsPage = () => {
         },
         ml: {
             strategy: 'പുതിയ മാർക്കറ്റിംഗ് സ്ട്രാറ്റജി',
-            planTitle: 'The Peace of Mind Plan',
+            planTitle: 'സുഗം കാർഡ്',
             catchphrase: 'ഒറ്റ തവണ ഫീസ്. പിന്നെ ഫ്രീ!',
             individual: {
                 headline: 'മടിക്കാതെ ഡോക്ടറെ കാണാം!',
@@ -374,5 +374,8 @@ export default SavingsPage;
     
 
     
+
+    
+
 
     
