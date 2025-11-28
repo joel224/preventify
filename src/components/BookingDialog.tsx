@@ -19,14 +19,6 @@ import {
   CommandList,
 } from '@/components/ui/command';
 import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from '@/components/ui/form';
-import {
   Select,
   SelectContent,
   SelectItem,
@@ -42,59 +34,42 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { toast } from 'sonner';
 import { z } from 'zod';
-import { useForm, useWatch, Controller } from 'react-hook-form';
+import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useState, useEffect, useMemo, useCallback } from 'react';
-import { format, parseISO, addMinutes, getHours, setHours, addDays, getYear, getMonth, getDate } from 'date-fns';
+import { useState, useEffect, useMemo, useReducer } from 'react';
+import { format, parseISO, addMinutes, getHours, setHours, addDays, getYear } from 'date-fns';
 import { Loader2, CheckCircle, XCircle, Check, ChevronsUpDown, Sparkles, Phone } from 'lucide-react';
 import { cn } from "@/lib/utils";
 import { DialogTrigger } from '@radix-ui/react-dialog';
 import { Textarea } from './ui/textarea';
 import useSWR from 'swr';
 
-// Types
-interface Doctor {
-  id: string;
-  name: string;
-  specialty: string;
-  clinicId: string;
-}
+// =================================================================
+// TYPES AND SCHEMAS
+// =================================================================
 
-interface Slot {
-  startTime: string;
-  endTime: string;
-}
+// Types for our new state management
+type State = {
+  step: number;
+  formData: Partial<FormData>;
+  bookingStatus: 'idle' | 'success' | 'error';
+  bookingResponse: any;
+  isLoading: boolean;
+  foundPatientProfile: FoundPatientProfile | null;
+};
 
-interface HourlySlot {
-  hour: number; // 0-23
-  firstAvailableSlot: string;
-}
-
-interface FoundPatientProfile {
-    first_name: string;
-    last_name: string;
-    dob: string; 
-    gender: "M" | "F" | "O" | "male" | "female" | "other";
-}
-
-// Hardcoded doctor list
-const doctors: Doctor[] = [
-    { id: '173208576372747', name: 'Dr. Rakesh K R', specialty: 'General Physician', clinicId: '673d87fdaa91c2001d716c91'},
-    { id: '173208610763786', name: 'Dr. Mohammed Faisal', specialty: 'General Practitioner', clinicId: '673d87fdaa91c2001d716c91'},
-    { id: '174497110921725', name: 'Dr. Hafsa Hussain', specialty: 'Pediatrics', clinicId: '673d87fdaa91c2001d716c91'},
-    { id: '173771631358722', name: 'Dr. Krishnendu U K', specialty: 'General Practitioner', clinicId: '673d87fdaa91c2001d716c91'},
-    { id: '175931883083616', name: 'Dr. Girish U', specialty: 'Dermatology', clinicId: '673d87fdaa91c2001d716c91'},
-    { id: '175949148741914', name: 'Dr. Ijas V. I.', specialty: 'Pulmonology', clinicId: '673d87fdaa91c2001d716c91'},
-    { id: '175949141398449', name: 'Dr. Husna V.', specialty: 'Gynecology', clinicId: '673d87fdaa91c2001d716c91'},
-    { id: '175931888074630', name: 'Dr. Neeharika V.', specialty: 'ENT', clinicId: '673d87fdaa91c2001d716c91'},
-    { id: '175931864615485', name: 'Dr. Sreedev N', specialty: 'Pulmonology', clinicId: '673d87fdaa91c2001d716c91'},
-    { id: '175949158258558', name: 'Dr. Ajay Biju', specialty: 'Resident Medical Officer', clinicId: '673d87fdaa91c2001d716c91'},
-    { id: '175949152812334', name: 'Dr. Renjith A.', specialty: 'Orthopedics', clinicId: '673d87fdaa91c2001d716c91'},
-    { id: '175949162376135', name: 'Dr. K.Y.Sanjay', specialty: 'Orthopedics', clinicId: '673d87fdaa91c2001d716c91'},
-];
+type Action =
+  | { type: 'NEXT_STEP' }
+  | { type: 'PREV_STEP' }
+  | { type: 'SET_STEP'; payload: number }
+  | { type: 'SET_FORM_DATA'; payload: Partial<FormData> }
+  | { type: 'SET_LOADING'; payload: boolean }
+  | { type: 'SET_BOOKING_STATUS'; payload: 'idle' | 'success' | 'error'; response?: any }
+  | { type: 'SET_PATIENT_PROFILE'; payload: FoundPatientProfile | null }
+  | { type: 'RESET' };
 
 
-// Zod Schemas
+// Schemas for each individual step
 const stepOneSchema = z.object({
   firstName: z.string().min(1, 'First name is required.'),
   phone: z.string().regex(/^[0-9]{10}$/, 'Please enter a valid 10-digit phone number.'),
@@ -102,7 +77,6 @@ const stepOneSchema = z.object({
 
 const stepTwoSchema = z.object({
   doctorId: z.string({ required_error: "Please select a doctor."}).min(1, 'Please select a doctor.'),
-  clinicId: z.string().min(1, 'Internal: Clinic ID is missing.'),
 });
 
 const stepThreeSchema = z.object({
@@ -117,504 +91,263 @@ const stepFourSchema = z.object({
     gender: z.enum(["M", "F", "O"], { required_error: "Gender is required."}),
 });
 
-const combinedSchema = stepOneSchema
-    .merge(stepTwoSchema)
-    .merge(stepThreeSchema)
-    .merge(stepFourSchema.partial());
+type FormData = z.infer<typeof stepOneSchema> & 
+                z.infer<typeof stepTwoSchema> & 
+                z.infer<typeof stepThreeSchema> & 
+                z.infer<typeof stepFourSchema>;
 
-type CombinedFormData = z.infer<typeof combinedSchema>;
+// Hardcoded data
+const doctors: { id: string; name: string; specialty: string; clinicId: string; }[] = [
+    { id: '173208576372747', name: 'Dr. Rakesh K R', specialty: 'General Physician', clinicId: '673d87fdaa91c2001d716c91'},
+    { id: '173208610763786', name: 'Dr. Mohammed Faisal', specialty: 'General Practitioner', clinicId: '673d87fdaa91c2001d716c91'},
+    { id: '174497110921725', name: 'Dr. Hafsa Hussain', specialty: 'Pediatrics', clinicId: '673d87fdaa91c2001d716c91'},
+    { id: '173771631358722', name: 'Dr. Krishnendu U K', specialty: 'General Practitioner', clinicId: '673d87fdaa91c2001d716c91'},
+    { id: '175931883083616', name: 'Dr. Girish U', specialty: 'Dermatology', clinicId: '673d87fdaa91c2001d716c91'},
+    { id: '175949148741914', name: 'Dr. Ijas V. I.', specialty: 'Pulmonology', clinicId: '673d87fdaa91c2001d716c91'},
+    { id: '175949141398449', name: 'Dr. Husna V.', specialty: 'Gynecology', clinicId: '673d87fdaa91c2001d716c91'},
+    { id: '175931888074630', name: 'Dr. Neeharika V.', specialty: 'ENT', clinicId: '673d87fdaa91c2001d716c91'},
+    { id: '175931864615485', name: 'Dr. Sreedev N', specialty: 'Pulmonology', clinicId: '673d87fdaa91c2001d716c91'},
+    { id: '175949158258558', name: 'Dr. Ajay Biju', specialty: 'Resident Medical Officer', clinicId: '673d87fdaa91c2001d716c91'},
+    { id: '175949152812334', name: 'Dr. Renjith A.', specialty: 'Orthopedics', clinicId: '673d87fdaa91c2001d716c91'},
+    { id: '175949162376135', name: 'Dr. K.Y.Sanjay', specialty: 'Orthopedics', clinicId: '673d87fdaa91c2001d716c91'},
+];
 
 const years = Array.from({ length: 100 }, (_, i) => getYear(new Date()) - i);
 const months = Array.from({ length: 12 }, (_, i) => i + 1);
 const days = Array.from({ length: 31 }, (_, i) => i + 1);
 
-interface BookingDialogProps {
-    children: React.ReactNode;
-    initialFirstName?: string;
-    initialLastName?: string;
-    initialPhone?: string;
-}
-
-const fetcher = (url: string) => fetch(url).then(res => res.json());
-
-export default function BookingDialog({ 
-    children, 
-    initialFirstName = '', 
-    initialLastName = '',
-    initialPhone = '' 
-}: BookingDialogProps) {
-  const [open, setOpen] = useState(false);
-  const [step, setStep] = useState(1);
-  const [isLoading, setIsLoading] = useState(false);
-  const [bookingStatus, setBookingStatus] = useState<'idle' | 'success' | 'error'>('idle');
-  const [bookingResponse, setBookingResponse] = useState<any>(null);
-  const [comboboxOpen, setComboboxOpen] = useState(false);
-  const [foundPatientProfile, setFoundPatientProfile] = useState<FoundPatientProfile | null>(null);
-  const [showAiHelp, setShowAiHelp] = useState(false);
-  const [symptoms, setSymptoms] = useState("");
-  const [isSearchingPatient, setIsSearchingPatient] = useState(false);
-
-  const form = useForm<CombinedFormData>({
-    resolver: zodResolver(combinedSchema),
-    defaultValues: {
-      firstName: '',
-      phone: '',
-      doctorId: '',
-      clinicId: '',
-      time: '',
-      dobYear: '',
-      dobMonth: '',
-      dobDay: '',
-      gender: undefined,
-    },
-    mode: 'onTouched'
-  });
-
-  const selectedDoctorId = useWatch({ control: form.control, name: 'doctorId' });
-  const selectedDate = useWatch({ control: form.control, name: 'date' });
-  const selectedTime = useWatch({ control: form.control, name: 'time' });
-
-  useEffect(() => {
-    if (step === 2 && selectedDoctorId) {
-        const doctor = doctors.find(d => d.id === selectedDoctorId);
-        if (doctor) {
-            form.setValue('clinicId', doctor.clinicId, { shouldValidate: true });
-            setStep(3);
-        }
-    }
-  }, [selectedDoctorId, step, form]);
-
-  useEffect(() => {
-      const advance = async () => {
-        if (step === 3 && selectedDate && selectedTime) {
-            const isExistingPatient = foundPatientProfile && foundPatientProfile.first_name;
-            if (isExistingPatient) {
-                form.handleSubmit(onSubmit, handleFormErrors)();
-            } else {
-                setStep(4);
-            }
-        }
-      };
-      advance();
-  }, [selectedDate, selectedTime, step, foundPatientProfile, form]);
-
-
-  const selectedClinicId = useMemo(() => {
-    if (!selectedDoctorId || doctors.length === 0) return '';
-    const doctor = doctors.find(d => d.id === selectedDoctorId);
-    return doctor ? doctor.clinicId : '';
-  }, [selectedDoctorId]);
-  
-  useEffect(() => {
-    if (open) {
-        const cleanPhone = initialPhone.replace(/\D/g, '').slice(-10);
-        form.setValue('firstName', initialFirstName, { shouldValidate: true });
-        form.setValue('phone', cleanPhone, { shouldValidate: true });
-    }
-  }, [open, initialFirstName, initialPhone, form]);
-
-  useEffect(() => {
-    if (!open) {
-      form.reset({
-        firstName: '',
-        phone: '',
-        doctorId: '',
-        clinicId: '',
-        time: '',
-        dobYear: '',
-        dobMonth: '',
-        dobDay: '',
-        gender: undefined,
-      });
-      setStep(1);
-      setBookingStatus('idle');
-      setFoundPatientProfile(null);
-      setShowAiHelp(false);
-      setSymptoms("");
-      setIsSearchingPatient(false);
-    }
-  }, [open, form]);
-  
-  useEffect(() => {
-    if (selectedClinicId) {
-      form.setValue('clinicId', selectedClinicId, { shouldValidate: true });
-    }
-  }, [selectedClinicId, form]);
-
-  const formattedDate = selectedDate ? format(selectedDate, 'yyyy-MM-dd') : null;
-  
-  useEffect(() => {
-    form.setValue('time', '');
-  }, [formattedDate, form]);
-
-  const swrKey = selectedDoctorId && selectedClinicId && formattedDate ? `/api/available-slots?doctorId=${selectedDoctorId}&clinicId=${selectedClinicId}&date=${formattedDate}` : null;
-
-  const { data: availableSlots = [], error: slotsError, isLoading: slotsLoading } = useSWR<Slot[]>(swrKey, fetcher, {
-    shouldRetryOnError: false,
-    revalidateOnFocus: false,
-    revalidateOnReconnect: false,
-    onError: () => {
-      toast.error('Could not load available time slots.');
-    }
-  });
-  
-  const selectedDoctor = useMemo(() => doctors.find(d => d.id === selectedDoctorId), [selectedDoctorId]);
-  
-  const hourlySlots = useMemo((): HourlySlot[] => {
-    if (!availableSlots.length) return [];
-    
-    const slotsByHour: { [hour: number]: string } = {};
-
-    for (const slot of availableSlots) {
-      const slotDate = parseISO(slot.startTime);
-      const hour = getHours(slotDate);
-
-      if (!slotsByHour[hour]) {
-        slotsByHour[hour] = slot.startTime;
-      }
-    }
-    
-    return Object.entries(slotsByHour).map(([hour, firstAvailableSlot]) => ({
-      hour: parseInt(hour, 10),
-      firstAvailableSlot,
-    })).sort((a, b) => a.hour - b.hour);
-  }, [availableSlots]);
-
-  const handleHourSelect = (firstAvailableSlot: string) => {
-    const slotTime = parseISO(firstAvailableSlot);
-    const originalMinutes = slotTime.getMinutes();
-
-    let finalTime = slotTime;
-    
-    if (originalMinutes < 40) { 
-        const bufferedTime = addMinutes(slotTime, 20);
-        
-        const isBufferedTimeAvailable = availableSlots.some(slot => 
-            parseISO(slot.startTime).getTime() === bufferedTime.getTime()
-        );
-      
-        if (isBufferedTimeAvailable) {
-            finalTime = bufferedTime;
-        }
-    }
-    
-    form.setValue('time', finalTime.toISOString(), { shouldValidate: true });
-  };
-
-
-  const handleNextStep = async () => {
-    if (step === 1) {
-        const result = await form.trigger(['firstName', 'phone']);
-        if (result) {
-            setIsSearchingPatient(true);
-            try {
-                const phoneValue = form.getValues('phone');
-                const res = await fetch(`/api/search-patient?phone=${encodeURIComponent(phoneValue)}`);
-                if (res.ok) {
-                    const patient: FoundPatientProfile = await res.json();
-                    if(patient && patient.first_name) {
-                        setFoundPatientProfile(patient);
-                        form.setValue('firstName', patient.first_name);
-                        toast.info(`Welcome back, ${patient.first_name}! Your details have been pre-filled.`);
-                    } else {
-                        setFoundPatientProfile(null);
-                    }
-                } else {
-                    setFoundPatientProfile(null);
-                }
-            } catch (error) {
-                console.log('Patient search failed or not found, continuing as new patient.');
-                setFoundPatientProfile(null);
-            } finally {
-                setIsLoading(false);
-                setIsSearchingPatient(false);
-                setStep(2);
-            }
-        }
-    } else if (step === 2) {
-        const result = await form.trigger(['doctorId', 'clinicId']);
-        if (result) setStep(3);
-    } else if (step === 3) {
-        const result = await form.trigger(['date', 'time']);
-        if (result) {
-            const isExistingPatient = foundPatientProfile && foundPatientProfile.first_name;
-            if (isExistingPatient) {
-                form.handleSubmit(onSubmit, handleFormErrors)();
-            } else {
-                setStep(4);
-            }
-        }
-    }
-  };
-
-  const handlePrevStep = () => {
-    if (showAiHelp) {
-        setShowAiHelp(false);
-        return;
-    }
-    if (step === 2 && (initialFirstName || initialPhone)) {
-        setOpen(false);
-        return;
-    }
-    setStep(step - 1);
-  };
-  
-  const formatGenderAPI = (gender: FoundPatientProfile['gender']): 'M' | 'F' | 'O' => {
-      if (!gender) return 'O';
-      const lowerGender = gender.toLowerCase();
-      if (lowerGender.startsWith('m')) return 'M';
-      if (lowerGender.startsWith('f')) return 'F';
-      return 'O';
-  };
-  
-  const handleFormErrors = (errors: any) => {
-      console.error("Global Form Validation Failed:", errors);
-      if (errors.date || errors.time || errors.doctorId || errors.clinicId) {
-        toast.error("Appointment details expired. Please go back and reselect doctor/date/time.");
-        setStep(2);
-      } else if (errors.dobYear || errors.dobMonth || errors.dobDay || errors.gender) {
-        toast.error("Please fill in all DOB and gender fields.");
-      } else if (errors.firstName || errors.phone) {
-        toast.error("Patient details invalid. Please start over.");
-        setStep(1);
-      } else {
-        toast.error("Please check all fields and try again.");
-      }
-    };
-
-
-  const onSubmit = async (data: CombinedFormData) => {
-    setIsLoading(true);
-    setBookingStatus('idle');
-
-    let patientPayload;
-    
-    const isExistingPatient = foundPatientProfile && foundPatientProfile.first_name;
-
-    if (isExistingPatient) {
-        patientPayload = {
-            firstName: foundPatientProfile.first_name,
-            lastName: foundPatientProfile.last_name || "web",
-            phone: data.phone,
-            dob: foundPatientProfile.dob,
-            gender: formatGenderAPI(foundPatientProfile.gender),
-        };
-    } else {
-        const validationResult = stepFourSchema.safeParse(data);
-        if(!validationResult.success) {
-            toast.error("Please fill in all required patient details.");
-            setIsLoading(false);
-            form.trigger(['dobYear', 'dobMonth', 'dobDay', 'gender']);
-            return;
-        }
-        
-        const { dobYear, dobMonth, dobDay, gender } = validationResult.data;
-        patientPayload = {
-            firstName: data.firstName,
-            lastName: "web",
-            phone: data.phone,
-            dob: `${dobYear}-${String(dobMonth).padStart(2, '0')}-${String(dobDay).padStart(2, '0')}`,
-            gender: gender,
-        };
-    }
-    
-    const payload = {
-        patient: patientPayload,
-        appointment: {
-            doctorId: data.doctorId,
-            clinicId: data.clinicId,
-            startTime: data.time,
-        }
-    };
-
-    try {
-        const response = await fetch('/api/create-appointment', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(payload),
-        });
-
-        const result = await response.json();
-        if (!response.ok) {
-            throw new Error(result.message || 'Booking failed');
-        }
-        
-        setBookingResponse(result);
-        setBookingStatus('success');
-        setStep(5);
-    } catch (error: any) {
-        setBookingResponse({ message: error.message });
-        setBookingStatus('error');
-        setStep(5);
-    } finally {
-        setIsLoading(false);
-    }
-  };
-
-  const handleAiSuggestion = async () => {
-    if (!symptoms.trim()) {
-        toast.error("Please describe your symptoms.");
-        return;
-    }
-    setIsLoading(true);
-    try {
-        const response = await fetch('/api/suggest-doctor', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                symptoms: symptoms,
-                doctors: doctors,
-            }),
-        });
-
-        if (!response.ok) {
-            const errorData = await response.json();
-            throw new Error(errorData.message || "Failed to get AI suggestion.");
-        }
-
-        const { doctorId } = await response.json();
-        
-        if (doctorId && doctors.some(d => d.id === doctorId)) {
-            form.setValue("doctorId", doctorId, { shouldValidate: true });
-            const recommendedDoctor = doctors.find(d => d.id === doctorId);
-            toast.success(`We recommend ${recommendedDoctor?.name} for you.`);
-            setShowAiHelp(false);
-        } else {
-            throw new Error("AI could not suggest a valid doctor.");
-        }
-
-    } catch (error: any) {
-        toast.error(error.message);
-    } finally {
-        setIsLoading(false);
-    }
+// Reducer function for state management
+const initialState: State = {
+  step: 1,
+  formData: {},
+  bookingStatus: 'idle',
+  bookingResponse: null,
+  isLoading: false,
+  foundPatientProfile: null,
 };
 
+function bookingReducer(state: State, action: Action): State {
+  switch (action.type) {
+    case 'NEXT_STEP':
+      return { ...state, step: state.step + 1 };
+    case 'PREV_STEP':
+      return { ...state, step: state.step - 1 };
+    case 'SET_STEP':
+      return { ...state, step: action.payload };
+    case 'SET_FORM_DATA':
+      return { ...state, formData: { ...state.formData, ...action.payload } };
+    case 'SET_LOADING':
+      return { ...state, isLoading: action.payload };
+    case 'SET_BOOKING_STATUS':
+      return { ...state, bookingStatus: action.payload, bookingResponse: action.response || null, isLoading: false };
+    case 'SET_PATIENT_PROFILE':
+      return { ...state, foundPatientProfile: action.payload };
+    case 'RESET':
+      return initialState;
+    default:
+      return state;
+  }
+}
 
-  const renderStepContent = () => {
-    switch (step) {
-      case 1:
-        return (
-          <>
-            <DialogHeader>
-              <DialogTitle className="text-2xl">Book an Appointment</DialogTitle>
-              <DialogDescription className="text-lg">Please provide your details to begin.</DialogDescription>
-            </DialogHeader>
-            <div className="space-y-6 py-4">
-               <FormField
-                  control={form.control}
-                  name="firstName"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel className="text-lg">Full Name</FormLabel>
-                      <FormControl>
-                        <Input placeholder="Your full name" {...field} className="h-14 text-lg" />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              <FormField
-                  control={form.control}
-                  name="phone"
-                  render={({ field }) => (
-                      <FormItem>
-                      <FormLabel className="text-lg">Phone Number</FormLabel>
-                       <div className="relative">
-                            <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-                                <span className="text-gray-500 text-lg">+91</span>
-                            </div>
-                            <FormControl>
-                                <Input 
-                                    placeholder="9876543210" 
-                                    {...field} 
-                                    onChange={(e) => {
-                                        const value = e.target.value.replace(/\D/g, '').slice(0, 10);
-                                        field.onChange(value);
-                                    }}
-                                    className="pl-14 h-14 text-lg" 
-                                />
-                            </FormControl>
-                        </div>
-                      <FormMessage />
-                      </FormItem>
-                  )}
+// Fetcher for SWR
+const fetcher = (url: string) => fetch(url).then(res => res.json());
+
+interface FoundPatientProfile {
+    first_name: string;
+    last_name: string;
+    dob: string; 
+    gender: "M" | "F" | "O" | "male" | "female" | "other";
+}
+
+// =================================================================
+// STEP COMPONENTS
+// =================================================================
+
+const Step1NamePhone = ({ dispatch, initialData }: { dispatch: React.Dispatch<Action>, initialData: Partial<FormData> }) => {
+  const { register, handleSubmit, formState: { errors }, setValue } = useForm<z.infer<typeof stepOneSchema>>({
+    resolver: zodResolver(stepOneSchema),
+    defaultValues: {
+      firstName: initialData.firstName || '',
+      phone: initialData.phone || '',
+    }
+  });
+  const [isSearching, setIsSearching] = useState(false);
+
+  useEffect(() => {
+    if (initialData.firstName) setValue('firstName', initialData.firstName);
+    if (initialData.phone) setValue('phone', initialData.phone.replace(/\D/g, '').slice(-10));
+  }, [initialData, setValue]);
+
+  const onStepSubmit = async (data: z.infer<typeof stepOneSchema>) => {
+    setIsSearching(true);
+    try {
+        const res = await fetch(`/api/search-patient?phone=${encodeURIComponent(data.phone)}`);
+        if (res.ok) {
+            const patient: FoundPatientProfile = await res.json();
+            if(patient && patient.first_name) {
+                dispatch({ type: 'SET_PATIENT_PROFILE', payload: patient });
+                dispatch({ type: 'SET_FORM_DATA', payload: { firstName: patient.first_name, phone: data.phone } });
+                toast.info(`Welcome back, ${patient.first_name}! Your details are pre-filled.`);
+            } else {
+                dispatch({ type: 'SET_PATIENT_PROFILE', payload: null });
+                dispatch({ type: 'SET_FORM_DATA', payload: data });
+            }
+        } else {
+             dispatch({ type: 'SET_PATIENT_PROFILE', payload: null });
+             dispatch({ type: 'SET_FORM_DATA', payload: data });
+        }
+    } catch (error) {
+        console.log('Patient search failed or not found, continuing as new patient.');
+        dispatch({ type: 'SET_PATIENT_PROFILE', payload: null });
+        dispatch({ type: 'SET_FORM_DATA', payload: data });
+    } finally {
+        setIsSearching(false);
+        dispatch({ type: 'NEXT_STEP' });
+    }
+  };
+
+  return (
+    <>
+      <DialogHeader>
+        <DialogTitle className="text-2xl">Book an Appointment</DialogTitle>
+        <DialogDescription className="text-lg">Please provide your details to begin.</DialogDescription>
+      </DialogHeader>
+      <form onSubmit={handleSubmit(onStepSubmit)}>
+        <div className="space-y-6 py-4">
+          <div>
+            <label htmlFor="firstName" className="text-lg">Full Name</label>
+            <Input id="firstName" placeholder="Your full name" {...register("firstName")} className="h-14 text-lg mt-1" />
+            {errors.firstName && <p className="text-sm font-medium text-destructive mt-1">{errors.firstName.message}</p>}
+          </div>
+          <div>
+            <label htmlFor="phone" className="text-lg">Phone Number</label>
+            <div className="relative mt-1">
+              <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                <span className="text-gray-500 text-lg">+91</span>
+              </div>
+              <Input 
+                id="phone"
+                placeholder="9876543210" 
+                {...register("phone")}
+                onChange={(e) => {
+                  const value = e.target.value.replace(/\D/g, '').slice(0, 10);
+                  setValue('phone', value, { shouldValidate: true });
+                }}
+                className="pl-14 h-14 text-lg" 
               />
             </div>
-             <DialogFooter>
-                <Button onClick={handleNextStep} disabled={isSearchingPatient} type="button" size="lg" className="text-lg h-12 w-full">
-                    {isSearchingPatient ? <Loader2 className="mr-2 h-5 w-5 animate-spin" /> : null}
-                    Next
-                </Button>
-            </DialogFooter>
-          </>
-        );
-      case 2:
-        if (showAiHelp) {
-            return (
-                <>
-                    <DialogHeader>
-                        <DialogTitle className="text-2xl">Describe Your Symptoms</DialogTitle>
-                        <DialogDescription className="text-lg">
-                            Tell us what's bothering you, and our AI will suggest the right doctor.
-                        </DialogDescription>
-                    </DialogHeader>
-                    <div className="py-4 space-y-4">
-                        <Textarea
-                            placeholder="e.g., 'I have a sore throat and a fever for two days. ' 
-                            'iniki randu days aayi sore throat, fever ind '"
-                            value={symptoms}
-                            onChange={(e) => setSymptoms(e.target.value)}
-                            rows={4}
-                            className="text-lg"
-                        />
-                    </div>
-                    <DialogFooter>
-                        <Button variant="outline" onClick={() => setShowAiHelp(false)} type="button" size="lg" className="text-lg h-12">Cancel</Button>
-                        <Button onClick={handleAiSuggestion} disabled={isLoading} type="button" size="lg" className="text-lg h-12">
-                            {isLoading ? <Loader2 className="mr-2 h-5 w-5 animate-spin" /> : <Sparkles className="mr-2 h-5 w-5" />}
-                            Get AI Suggestion
-                        </Button>
-                    </DialogFooter>
-                </>
-            );
+            {errors.phone && <p className="text-sm font-medium text-destructive mt-1">{errors.phone.message}</p>}
+          </div>
+        </div>
+        <DialogFooter>
+          <Button type="submit" disabled={isSearching} size="lg" className="text-lg h-12 w-full">
+            {isSearching ? <Loader2 className="mr-2 h-5 w-5 animate-spin" /> : null}
+            Next
+          </Button>
+        </DialogFooter>
+      </form>
+    </>
+  );
+};
+
+const Step2Doctor = ({ dispatch, formData }: { dispatch: React.Dispatch<Action>, formData: Partial<FormData> }) => {
+    const { handleSubmit, setValue, watch, formState: { errors } } = useForm<z.infer<typeof stepTwoSchema>>({
+        resolver: zodResolver(stepTwoSchema),
+        defaultValues: { doctorId: formData.doctorId || '' }
+    });
+    const [comboboxOpen, setComboboxOpen] = useState(false);
+    const [showAiHelp, setShowAiHelp] = useState(false);
+    const [symptoms, setSymptoms] = useState("");
+    const [isAiLoading, setIsAiLoading] = useState(false);
+
+    const selectedDoctorId = watch('doctorId');
+
+    const onStepSubmit = (data: z.infer<typeof stepTwoSchema>) => {
+        const doctor = doctors.find(d => d.id === data.doctorId);
+        if (doctor) {
+            dispatch({ type: 'SET_FORM_DATA', payload: { ...data, clinicId: doctor.clinicId } });
+            dispatch({ type: 'NEXT_STEP' });
+        } else {
+            toast.error("An error occurred. Please select a doctor again.");
         }
+    };
+    
+    const handleAiSuggestion = async () => {
+        if (!symptoms.trim()) {
+            toast.error("Please describe your symptoms.");
+            return;
+        }
+        setIsAiLoading(true);
+        try {
+            const response = await fetch('/api/suggest-doctor', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ symptoms, doctors }),
+            });
+            if (!response.ok) throw new Error("Failed to get AI suggestion.");
+            const { doctorId } = await response.json();
+            if (doctorId && doctors.some(d => d.id === doctorId)) {
+                setValue("doctorId", doctorId, { shouldValidate: true });
+                const recommendedDoctor = doctors.find(d => d.id === doctorId);
+                toast.success(`We recommend ${recommendedDoctor?.name} for you.`);
+                setShowAiHelp(false);
+            } else {
+                throw new Error("AI could not suggest a valid doctor.");
+            }
+        } catch (error: any) {
+            toast.error(error.message);
+        } finally {
+            setIsAiLoading(false);
+        }
+    };
+
+    if (showAiHelp) {
         return (
-          <>
+             <>
+                <DialogHeader>
+                    <DialogTitle className="text-2xl">Describe Your Symptoms</DialogTitle>
+                    <DialogDescription className="text-lg">
+                        Tell us what's bothering you, and our AI will suggest the right doctor.
+                    </DialogDescription>
+                </DialogHeader>
+                <div className="py-4 space-y-4">
+                    <Textarea
+                        placeholder="e.g., 'I have a sore throat and a fever for two days.'"
+                        value={symptoms}
+                        onChange={(e) => setSymptoms(e.target.value)}
+                        rows={4}
+                        className="text-lg"
+                    />
+                </div>
+                <DialogFooter>
+                    <Button variant="outline" onClick={() => setShowAiHelp(false)} type="button" size="lg" className="text-lg h-12">Cancel</Button>
+                    <Button onClick={handleAiSuggestion} disabled={isAiLoading} type="button" size="lg" className="text-lg h-12">
+                        {isAiLoading ? <Loader2 className="mr-2 h-5 w-5 animate-spin" /> : <Sparkles className="mr-2 h-5 w-5" />}
+                        Get AI Suggestion
+                    </Button>
+                </DialogFooter>
+            </>
+        );
+    }
+    
+    return (
+        <>
             <DialogHeader>
                 <DialogTitle className="text-2xl">Select a Doctor</DialogTitle>
-              <DialogDescription className="text-lg">
-                Booking an appointment at a Preventify clinic.
-              </DialogDescription>
+                <DialogDescription className="text-lg">Booking an appointment at a Preventify clinic.</DialogDescription>
             </DialogHeader>
-            <div className="py-4 space-y-4">
-              <FormField
-                control={form.control}
-                name="doctorId"
-                render={({ field }) => (
-                  <FormItem className="flex flex-col">
-                    <FormLabel className="text-lg">Doctor</FormLabel>
-                    <Popover open={comboboxOpen} onOpenChange={setComboboxOpen}>
+            <form onSubmit={handleSubmit(onStepSubmit)}>
+                <div className="py-4 space-y-4">
+                     <Popover open={comboboxOpen} onOpenChange={setComboboxOpen}>
                       <PopoverTrigger asChild>
-                        <FormControl>
                           <Button
                             variant="outline"
                             role="combobox"
-                            className={cn(
-                              "w-full justify-between h-14 text-lg",
-                              !field.value && "text-muted-foreground"
-                            )}
+                            className={cn("w-full justify-between h-14 text-lg", !selectedDoctorId && "text-muted-foreground")}
                           >
-                            {field.value
-                              ? doctors.find(
-                                  (doctor) => doctor.id === field.value
-                                )?.name
-                              : " Our Doctors "}
+                            {selectedDoctorId ? doctors.find(d => d.id === selectedDoctorId)?.name : "Our Doctors"}
                             <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                           </Button>
-                        </FormControl>
                       </PopoverTrigger>
                       <PopoverContent className="w-[--radix-popover-trigger-width] p-0">
                         <Command>
@@ -627,19 +360,12 @@ export default function BookingDialog({
                                   value={doctor.name}
                                   key={doctor.id}
                                   onSelect={() => {
-                                    form.setValue("doctorId", doctor.id, { shouldValidate: true });
+                                    setValue("doctorId", doctor.id, { shouldValidate: true });
                                     setComboboxOpen(false);
                                   }}
                                   className="text-lg py-3"
                                 >
-                                  <Check
-                                    className={cn(
-                                      "mr-2 h-4 w-4",
-                                      doctor.id === field.value
-                                        ? "opacity-100"
-                                        : "opacity-0"
-                                    )}
-                                  />
+                                  <Check className={cn("mr-2 h-4 w-4", doctor.id === selectedDoctorId ? "opacity-100" : "opacity-0")} />
                                   <div>
                                     {doctor.name}
                                     <span className="text-base text-muted-foreground ml-2">({doctor.specialty})</span>
@@ -651,260 +377,334 @@ export default function BookingDialog({
                         </Command>
                       </PopoverContent>
                     </Popover>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-                <div className="text-center">
-                    <Button variant="link" onClick={() => setShowAiHelp(true)} type="button" className="text-lg">
-                        <Sparkles className="mr-2 h-5 w-5" />
-                        Help me choose a doctor
-                    </Button>
-                </div>
-            </div>
-            <DialogFooter>
-              <Button variant="outline" onClick={handlePrevStep} type="button" size="lg" className="text-lg h-12">Back</Button>
-              <Button onClick={handleNextStep} disabled={!form.getValues('doctorId')} type="button" size="lg" className="text-lg h-12">
-                Next
-              </Button>
-            </DialogFooter>
-          </>
-        );
-      case 3:
-        const today = new Date();
-        const tomorrow = addDays(today, 1);
-        const selectedDay = form.getValues('date');
-        
-        return (
-          <>
-            <DialogHeader>
-                <DialogTitle className="text-2xl">Select a Time</DialogTitle>
-              <DialogDescription className="text-lg">
-                {`Booking for ${selectedDoctor?.name}`}
-              </DialogDescription>
-            </DialogHeader>
-            <div className="space-y-6 py-4">
-                <div className="flex flex-col items-center gap-6">
-                    <div className="w-full max-w-sm">
-                        <FormLabel className="text-center block mb-2 text-lg">Date</FormLabel>
-                        <div className="grid grid-cols-2 gap-4">
-                            <Button 
-                            type="button" 
-                            size="lg"
-                            className="text-lg h-12"
-                            variant={selectedDay && format(selectedDay, 'yyyy-MM-dd') === format(today, 'yyyy-MM-dd') ? 'default' : 'outline'}
-                            onClick={() => form.setValue('date', today, { shouldValidate: true })}>
-                                Today
-                            </Button>
-                            <Button 
-                            type="button" 
-                             size="lg"
-                            className="text-lg h-12"
-                            variant={selectedDay && format(selectedDay, 'yyyy-MM-dd') === format(tomorrow, 'yyyy-MM-dd') ? 'default' : 'outline'}
-                            onClick={() => form.setValue('date', tomorrow, { shouldValidate: true })}>
-                                Tomorrow
-                            </Button>
-                        </div>
-                        <FormField control={form.control} name="date" render={() => <FormMessage className="text-center pt-2" />} />
-                    </div>
-                    
-                    <div className="w-full max-w-sm">
-                        <FormField
-                        control={form.control}
-                        name="time"
-                        render={({ field }) => (
-                            <FormItem>
-                            <FormLabel className="text-center block mb-2 text-lg">Available Slots</FormLabel>
-                            <div className="grid grid-cols-3 gap-2 max-h-[250px] overflow-y-auto pr-2">
-                                {slotsLoading ? (
-                                <div className="col-span-3 flex justify-center items-center h-24">
-                                    <Loader2 className="h-8 w-8 animate-spin text-primary" />
-                                </div>
-                                ) : hourlySlots.length > 0 ? (
-                                hourlySlots.map((slot) => {
-                                    const selectedSlotDate = form.getValues('time') ? parseISO(form.getValues('time')) : null;
-                                    const slotHour = getHours(parseISO(slot.firstAvailableSlot));
-                                    const isSelected = selectedSlotDate && getHours(selectedSlotDate) === slotHour;
-
-                                    return (
-                                    <Button
-                                        key={slot.hour}
-                                        variant={isSelected ? 'default' : 'outline'}
-                                        onClick={() => handleHourSelect(slot.firstAvailableSlot)}
-                                        className="w-full h-14 text-lg"
-                                        type="button"
-                                    >
-                                        {format(setHours(new Date(), slot.hour), 'ha')}
-                                    </Button>
-                                    );
-                                })
-                                ) : (
-                                <p className="col-span-3 text-lg text-muted-foreground text-center py-4">
-                                    {selectedDate ? 'No slots available. Please select another date.' : 'Please select a date to see available slots.'}
-                                </p>
-                                )}
-                            </div>
-                            <FormMessage className="text-center pt-2" />
-                            </FormItem>
-                        )}
-                        />
-                    </div>
-                </div>
-            </div>
-            <DialogFooter>
-              <Button variant="outline" onClick={handlePrevStep} type="button" size="lg" className="text-lg h-12">Back</Button>
-              <Button onClick={handleNextStep} disabled={!form.getValues('time')} type="button" size="lg" className="text-lg h-12">
-                {foundPatientProfile && foundPatientProfile.first_name ? 'Confirm Booking' : 'Next'}
-              </Button>
-            </DialogFooter>
-          </>
-        );
-        case 4:
-            return (
-              <>
-                <DialogHeader>
-                  <DialogTitle className="text-2xl">Confirm Your Details</DialogTitle>
-                  <DialogDescription className="text-lg">
-                    Please provide your date of birth and gender to complete the booking.
-                  </DialogDescription>
-                </DialogHeader>
-                <div className="space-y-6 py-4">
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                        <div className="col-span-2">
-                             <FormLabel className="text-lg">Date of Birth</FormLabel>
-                             <div className="grid grid-cols-3 gap-2 mt-2">
-                                <FormField
-                                    control={form.control}
-                                    name="dobYear"
-                                    render={({ field }) => (
-                                        <FormItem>
-                                            <Select onValueChange={field.onChange} value={field.value || ''}>
-                                                <FormControl>
-                                                <SelectTrigger className="h-14 text-lg">
-                                                    <SelectValue placeholder="Year" />
-                                                </SelectTrigger>
-                                                </FormControl>
-                                                <SelectContent>
-                                                    {years.map(year => <SelectItem key={year} value={String(year)}>{year}</SelectItem>)}
-                                                </SelectContent>
-                                            </Select>
-                                            <FormMessage />
-                                        </FormItem>
-                                    )}
-                                />
-                                <FormField
-                                    control={form.control}
-                                    name="dobMonth"
-                                    render={({ field }) => (
-                                        <FormItem>
-                                            <Select onValueChange={field.onChange} value={field.value || ''}>
-                                                <FormControl>
-                                                <SelectTrigger className="h-14 text-lg">
-                                                    <SelectValue placeholder="Month" />
-                                                </SelectTrigger>
-                                                </FormControl>
-                                                <SelectContent>
-                                                    {months.map(month => <SelectItem key={month} value={String(month)}>{month}</SelectItem>)}
-                                                </SelectContent>
-                                            </Select>
-                                             <FormMessage />
-                                        </FormItem>
-                                    )}
-                                />
-                                <FormField
-                                    control={form.control}
-                                    name="dobDay"
-                                    render={({ field }) => (
-                                        <FormItem>
-                                            <Select onValueChange={field.onChange} value={field.value || ''}>
-                                                <FormControl>
-                                                <SelectTrigger className="h-14 text-lg">
-                                                    <SelectValue placeholder="Day" />
-                                                </SelectTrigger>
-                                                </FormControl>
-                                                <SelectContent>
-                                                    {days.map(day => <SelectItem key={day} value={String(day)}>{day}</SelectItem>)}
-                                                </SelectContent>
-                                            </Select>
-                                             <FormMessage />
-                                        </FormItem>
-                                    )}
-                                />
-                            </div>
-                        </div>
-                        <FormField
-                            control={form.control}
-                            name="gender"
-                            render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel className="text-lg">Gender</FormLabel>
-                                    <Select onValueChange={field.onChange} value={field.value || ''}>
-                                        <FormControl>
-                                        <SelectTrigger className="h-14 text-lg">
-                                            <SelectValue placeholder="Select gender" />
-                                        </SelectTrigger>
-                                        </FormControl>
-                                        <SelectContent>
-                                            <SelectItem value="M">Male</SelectItem>
-                                            <SelectItem value="F">Female</SelectItem>
-                                            <SelectItem value="O">Other</SelectItem>
-                                        </SelectContent>
-                                    </Select>
-                                    <FormMessage />
-                                </FormItem>
-                            )}
-                        />
+                    {errors.doctorId && <p className="text-sm font-medium text-destructive mt-1">{errors.doctorId.message}</p>}
+                    <div className="text-center">
+                        <Button variant="link" onClick={() => setShowAiHelp(true)} type="button" className="text-lg">
+                            <Sparkles className="mr-2 h-5 w-5" />
+                            Help me choose a doctor
+                        </Button>
                     </div>
                 </div>
                 <DialogFooter>
-                  <Button variant="outline" onClick={handlePrevStep} type="button" size="lg" className="text-lg h-12">Back</Button>
-                  <Button type="submit" disabled={isLoading} size="lg" className="text-lg h-12">
-                    {isLoading ? <Loader2 className="mr-2 h-5 w-5 animate-spin" /> : null}
-                    Confirm Booking
-                  </Button>
+                    <Button variant="outline" onClick={() => dispatch({ type: 'PREV_STEP' })} type="button" size="lg" className="text-lg h-12">Back</Button>
+                    <Button type="submit" disabled={!selectedDoctorId} size="lg" className="text-lg h-12">Next</Button>
                 </DialogFooter>
-              </>
-            );
-        case 5:
-            const finalData = form.getValues();
-            const finalDoctor = doctors.find(d => d.id === finalData.doctorId)
-            return (
-                <>
+            </form>
+        </>
+    );
+};
+
+const Step3DateTime = ({ dispatch, formData }: { dispatch: React.Dispatch<Action>, formData: Partial<FormData> }) => {
+    const { handleSubmit, setValue, watch, formState: { errors } } = useForm<z.infer<typeof stepThreeSchema>>({
+        resolver: zodResolver(stepThreeSchema),
+        defaultValues: { date: formData.date, time: formData.time }
+    });
+
+    const selectedDate = watch('date');
+    const selectedTime = watch('time');
+
+    const formattedDate = selectedDate ? format(selectedDate, 'yyyy-MM-dd') : null;
+    const swrKey = formData.doctorId && formData.clinicId && formattedDate ? `/api/available-slots?doctorId=${formData.doctorId}&clinicId=${formData.clinicId}&date=${formattedDate}` : null;
+    const { data: availableSlots = [], error: slotsError, isLoading: slotsLoading } = useSWR<any[]>(swrKey, fetcher, {
+        shouldRetryOnError: false, revalidateOnFocus: false, revalidateOnReconnect: false,
+        onError: () => toast.error('Could not load available time slots.')
+    });
+    
+    useEffect(() => {
+        setValue('time', '');
+    }, [formattedDate, setValue]);
+
+    const hourlySlots = useMemo(() => {
+        if (!availableSlots.length) return [];
+        const slotsByHour: { [hour: number]: string } = {};
+        for (const slot of availableSlots) {
+            const hour = getHours(parseISO(slot.startTime));
+            if (!slotsByHour[hour]) slotsByHour[hour] = slot.startTime;
+        }
+        return Object.entries(slotsByHour).map(([hour, firstAvailableSlot]) => ({
+            hour: parseInt(hour, 10), firstAvailableSlot,
+        })).sort((a, b) => a.hour - b.hour);
+    }, [availableSlots]);
+
+    const handleHourSelect = (firstAvailableSlot: string) => {
+        const slotTime = parseISO(firstAvailableSlot);
+        const finalTime = slotTime.getMinutes() < 40 && availableSlots.some(s => parseISO(s.startTime).getTime() === addMinutes(slotTime, 20).getTime())
+            ? addMinutes(slotTime, 20)
+            : slotTime;
+        setValue('time', finalTime.toISOString(), { shouldValidate: true });
+    };
+
+    const onStepSubmit = (data: z.infer<typeof stepThreeSchema>) => {
+        dispatch({ type: 'SET_FORM_DATA', payload: data });
+        dispatch({ type: 'NEXT_STEP' });
+    };
+
+    return (
+        <>
+            <DialogHeader>
+                <DialogTitle className="text-2xl">Select a Time</DialogTitle>
+                <DialogDescription className="text-lg">
+                    {`Booking for ${doctors.find(d => d.id === formData.doctorId)?.name}`}
+                </DialogDescription>
+            </DialogHeader>
+            <form onSubmit={handleSubmit(onStepSubmit)}>
+                <div className="space-y-6 py-4">
+                    <div className="flex flex-col items-center gap-6">
+                        <div className="w-full max-w-sm">
+                            <label className="text-center block mb-2 text-lg">Date</label>
+                            <div className="grid grid-cols-2 gap-4">
+                                <Button type="button" size="lg" className="text-lg h-12" variant={selectedDate && format(selectedDate, 'yyyy-MM-dd') === format(new Date(), 'yyyy-MM-dd') ? 'default' : 'outline'} onClick={() => setValue('date', new Date(), { shouldValidate: true })}>Today</Button>
+                                <Button type="button" size="lg" className="text-lg h-12" variant={selectedDate && format(selectedDate, 'yyyy-MM-dd') === format(addDays(new Date(), 1), 'yyyy-MM-dd') ? 'default' : 'outline'} onClick={() => setValue('date', addDays(new Date(), 1), { shouldValidate: true })}>Tomorrow</Button>
+                            </div>
+                            {errors.date && <p className="text-sm font-medium text-destructive text-center pt-2">{errors.date.message}</p>}
+                        </div>
+                        <div className="w-full max-w-sm">
+                            <label className="text-center block mb-2 text-lg">Available Slots</label>
+                            <div className="grid grid-cols-3 gap-2 max-h-[250px] overflow-y-auto pr-2">
+                                {slotsLoading ? <div className="col-span-3 flex justify-center items-center h-24"><Loader2 className="h-8 w-8 animate-spin text-primary" /></div>
+                                : hourlySlots.length > 0 ? hourlySlots.map((slot) => (
+                                    <Button key={slot.hour} variant={selectedTime && getHours(parseISO(selectedTime)) === slot.hour ? 'default' : 'outline'} onClick={() => handleHourSelect(slot.firstAvailableSlot)} className="w-full h-14 text-lg" type="button">
+                                        {format(setHours(new Date(), slot.hour), 'ha')}
+                                    </Button>
+                                ))
+                                : <p className="col-span-3 text-lg text-muted-foreground text-center py-4">{selectedDate ? 'No slots available.' : 'Please select a date.'}</p>}
+                            </div>
+                             {errors.time && <p className="text-sm font-medium text-destructive text-center pt-2">{errors.time.message}</p>}
+                        </div>
+                    </div>
+                </div>
+                <DialogFooter>
+                    <Button variant="outline" onClick={() => dispatch({ type: 'PREV_STEP' })} type="button" size="lg" className="text-lg h-12">Back</Button>
+                    <Button type="submit" disabled={!selectedTime} size="lg" className="text-lg h-12">Next</Button>
+                </DialogFooter>
+            </form>
+        </>
+    );
+};
+
+const Step4ConfirmDetails = ({ dispatch, formData }: { dispatch: React.Dispatch<Action>, formData: Partial<FormData> }) => {
+    const { register, handleSubmit, control, formState: { errors }, watch, setValue } = useForm<z.infer<typeof stepFourSchema>>({
+        resolver: zodResolver(stepFourSchema),
+        defaultValues: {
+            dobYear: formData.dobYear || '',
+            dobMonth: formData.dobMonth || '',
+            dobDay: formData.dobDay || '',
+            gender: formData.gender || undefined,
+        }
+    });
+
+    const onStepSubmit = (data: z.infer<typeof stepFourSchema>) => {
+        dispatch({ type: 'SET_FORM_DATA', payload: data });
+        dispatch({ type: 'SET_STEP', payload: 5 }); // Go to final submission step
+    };
+
+    return (
+        <>
+            <DialogHeader>
+                <DialogTitle className="text-2xl">Confirm Your Details</DialogTitle>
+                <DialogDescription className="text-lg">Please provide your date of birth and gender to complete the booking.</DialogDescription>
+            </DialogHeader>
+            <form onSubmit={handleSubmit(onStepSubmit)}>
+                <div className="space-y-6 py-4">
+                     <div className="space-y-2">
+                         <label className="text-lg">Date of Birth</label>
+                         <div className="grid grid-cols-3 gap-2">
+                             <Select onValueChange={(v) => setValue('dobYear', v, {shouldValidate: true})} value={watch('dobYear')}>
+                                <SelectTrigger className="h-14 text-lg"><SelectValue placeholder="Year" /></SelectTrigger>
+                                <SelectContent>{years.map(y => <SelectItem key={y} value={String(y)}>{y}</SelectItem>)}</SelectContent>
+                             </Select>
+                             <Select onValueChange={(v) => setValue('dobMonth', v, {shouldValidate: true})} value={watch('dobMonth')}>
+                                <SelectTrigger className="h-14 text-lg"><SelectValue placeholder="Month" /></SelectTrigger>
+                                <SelectContent>{months.map(m => <SelectItem key={m} value={String(m)}>{m}</SelectItem>)}</SelectContent>
+                             </Select>
+                             <Select onValueChange={(v) => setValue('dobDay', v, {shouldValidate: true})} value={watch('dobDay')}>
+                                <SelectTrigger className="h-14 text-lg"><SelectValue placeholder="Day" /></SelectTrigger>
+                                <SelectContent>{days.map(d => <SelectItem key={d} value={String(d)}>{d}</SelectItem>)}</SelectContent>
+                             </Select>
+                         </div>
+                         {errors.dobYear && <p className="text-sm font-medium text-destructive mt-1">{errors.dobYear.message}</p>}
+                         {errors.dobMonth && <p className="text-sm font-medium text-destructive mt-1">{errors.dobMonth.message}</p>}
+                         {errors.dobDay && <p className="text-sm font-medium text-destructive mt-1">{errors.dobDay.message}</p>}
+                     </div>
+                     <div className="space-y-2">
+                         <label className="text-lg">Gender</label>
+                         <Select onValueChange={(v) => setValue('gender', v, {shouldValidate: true})} value={watch('gender')}>
+                            <SelectTrigger className="h-14 text-lg"><SelectValue placeholder="Select gender" /></SelectTrigger>
+                            <SelectContent>
+                                <SelectItem value="M">Male</SelectItem>
+                                <SelectItem value="F">Female</SelectItem>
+                                <SelectItem value="O">Other</SelectItem>
+                            </SelectContent>
+                         </Select>
+                         {errors.gender && <p className="text-sm font-medium text-destructive mt-1">{errors.gender.message}</p>}
+                     </div>
+                </div>
+                <DialogFooter>
+                    <Button variant="outline" onClick={() => dispatch({ type: 'PREV_STEP' })} type="button" size="lg" className="text-lg h-12">Back</Button>
+                    <Button type="submit" size="lg" className="text-lg h-12">Confirm Booking</Button>
+                </DialogFooter>
+            </form>
+        </>
+    );
+};
+
+
+// =================================================================
+// MAIN DIALOG COMPONENT
+// =================================================================
+
+interface BookingDialogProps {
+    children: React.ReactNode;
+    initialFirstName?: string;
+    initialPhone?: string;
+}
+
+export default function BookingDialog({ children, initialFirstName, initialPhone }: BookingDialogProps) {
+  const [open, setOpen] = useState(false);
+  const [state, dispatch] = useReducer(bookingReducer, initialState);
+
+  useEffect(() => {
+    if (open) {
+      dispatch({ type: 'SET_FORM_DATA', payload: { firstName: initialFirstName, phone: initialPhone } });
+    } else {
+      // Reset everything when dialog is closed
+      dispatch({ type: 'RESET' });
+    }
+  }, [open, initialFirstName, initialPhone]);
+  
+  useEffect(() => {
+    // This effect runs when the user proceeds from step 4
+    if (state.step === 5 && !state.isLoading && state.bookingStatus === 'idle') {
+      handleSubmitBooking();
+    }
+  }, [state.step, state.isLoading, state.bookingStatus]);
+  
+  const formatGenderAPI = (gender?: string): 'M' | 'F' | 'O' => {
+      if (!gender) return 'O';
+      const lowerGender = gender.toLowerCase();
+      if (lowerGender.startsWith('m')) return 'M';
+      if (lowerGender.startsWith('f')) return 'F';
+      return 'O';
+  };
+
+  const handleSubmitBooking = async () => {
+    dispatch({ type: 'SET_LOADING', payload: true });
+    
+    let patientPayload;
+    if (state.foundPatientProfile) {
+        patientPayload = {
+            firstName: state.foundPatientProfile.first_name,
+            lastName: state.foundPatientProfile.last_name || "web",
+            phone: state.formData.phone,
+            dob: state.foundPatientProfile.dob,
+            gender: formatGenderAPI(state.foundPatientProfile.gender),
+        };
+    } else {
+        // Validate final step data before assembling payload
+        const finalStepData = {
+            dobYear: state.formData.dobYear,
+            dobMonth: state.formData.dobMonth,
+            dobDay: state.formData.dobDay,
+            gender: state.formData.gender,
+        };
+        const validationResult = stepFourSchema.safeParse(finalStepData);
+        if(!validationResult.success) {
+            toast.error("Please fill in all required patient details.");
+            dispatch({ type: 'SET_LOADING', payload: false });
+            dispatch({ type: 'SET_STEP', payload: 4 }); // Send user back to fix errors
+            return;
+        }
+
+        patientPayload = {
+            firstName: state.formData.firstName,
+            lastName: "web",
+            phone: state.formData.phone,
+            dob: `${validationResult.data.dobYear}-${String(validationResult.data.dobMonth).padStart(2, '0')}-${String(validationResult.data.dobDay).padStart(2, '0')}`,
+            gender: validationResult.data.gender,
+        };
+    }
+    
+    const payload = {
+        patient: patientPayload,
+        appointment: {
+            doctorId: state.formData.doctorId,
+            clinicId: state.formData.clinicId,
+            startTime: state.formData.time,
+        }
+    };
+
+    try {
+        const response = await fetch('/api/create-appointment', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload),
+        });
+        const result = await response.json();
+        if (!response.ok) throw new Error(result.message || 'Booking failed');
+        dispatch({ type: 'SET_BOOKING_STATUS', payload: 'success', response: result });
+    } catch (error: any) {
+        dispatch({ type: 'SET_BOOKING_STATUS', payload: 'error', response: { message: error.message } });
+    }
+  };
+
+  const renderContent = () => {
+    switch (state.step) {
+      case 1:
+        return <Step1NamePhone dispatch={dispatch} initialData={{firstName: initialFirstName, phone: initialPhone}} />;
+      case 2:
+        return <Step2Doctor dispatch={dispatch} formData={state.formData} />;
+      case 3:
+         // If a patient profile was found, skip step 4
+         if (state.foundPatientProfile) {
+            const onStepSubmit = (data: z.infer<typeof stepThreeSchema>) => {
+                dispatch({ type: 'SET_FORM_DATA', payload: data });
+                dispatch({ type: 'SET_STEP', payload: 5 }); // Skip to final submission
+            };
+            return <Step3DateTime dispatch={dispatch} formData={state.formData} />;
+         }
+         return <Step3DateTime dispatch={dispatch} formData={state.formData} />;
+      case 4:
+         if (state.foundPatientProfile) {
+             // This should ideally not be reached if logic is correct, but as a fallback, submit.
+             handleSubmitBooking();
+             return <div className="flex justify-center items-center p-8"><Loader2 className="h-8 w-8 animate-spin" /></div>;
+         }
+        return <Step4ConfirmDetails dispatch={dispatch} formData={state.formData} />;
+      case 5:
+        if (state.isLoading) {
+            return <div className="flex justify-center items-center p-20"><Loader2 className="h-12 w-12 animate-spin text-primary" /></div>;
+        }
+        return (
+            <div className="p-8">
                 <DialogHeader className="items-center text-center">
-                    <DialogTitle className="sr-only">Booking Confirmation</DialogTitle>
-                    {bookingStatus === 'success' ? (
+                    {state.bookingStatus === 'success' ? (
                         <>
                             <CheckCircle className="h-16 w-16 text-green-500 mb-4" />
                             <h2 className="text-3xl font-semibold">Appointment Confirmed!</h2>
-                            <DialogDescription className="text-lg">
-                                Your appointment has been successfully booked.
-                            </DialogDescription>
                         </>
                     ) : (
                         <>
                             <XCircle className="h-16 w-16 text-red-500 mb-4" />
                             <h2 className="text-3xl font-semibold">Booking Failed</h2>
-                            <DialogDescription className="text-lg">
-                                {bookingResponse?.message || 'There was an error processing your booking. Please try again.'}
-                            </DialogDescription>
                         </>
                     )}
                 </DialogHeader>
-                {bookingStatus === 'success' && bookingResponse && (
-                    <div className="py-4 space-y-3 text-lg text-gray-700 bg-gray-50 p-6 rounded-md">
-                        <p><strong>Confirmation ID:</strong> {bookingResponse.appointment_id}</p>
-                        <p><strong>Patient Name:</strong> {finalData.firstName}</p>
-                        <p><strong>Doctor:</strong> {finalDoctor?.name}</p>
-                        <p><strong>Date & Time:</strong> {format(parseISO(finalData.time), 'dd MMMM yyyy, hh:mm a')}</p>
+                {state.bookingStatus === 'success' && state.bookingResponse && (
+                    <div className="py-4 space-y-3 text-lg text-gray-700 bg-gray-50 p-6 rounded-md mt-4">
+                        <p><strong>Confirmation ID:</strong> {state.bookingResponse.appointment_id}</p>
+                        <p><strong>Patient Name:</strong> {state.formData.firstName}</p>
+                        <p><strong>Doctor:</strong> {doctors.find(d => d.id === state.formData.doctorId)?.name}</p>
+                        <p><strong>Date & Time:</strong> {format(parseISO(state.formData.time!), 'dd MMMM yyyy, hh:mm a')}</p>
                     </div>
                 )}
-                <DialogFooter>
-                    <DialogClose asChild>
-                        <Button type="button" size="lg" className="text-lg h-12">Close</Button>
-                    </DialogClose>
+                 {state.bookingStatus === 'error' && (
+                    <p className="text-center text-red-600 mt-4">{state.bookingResponse?.message}</p>
+                 )}
+                <DialogFooter className="mt-6">
+                    <DialogClose asChild><Button type="button" size="lg" className="text-lg h-12 w-full">Close</Button></DialogClose>
                 </DialogFooter>
-                </>
-            );
+            </div>
+        );
       default:
         return null;
     }
@@ -915,19 +715,19 @@ export default function BookingDialog({
       <DialogTrigger asChild>{children}</DialogTrigger>
       <DialogContent className="sm:max-w-[80vw] lg:max-w-4xl p-0">
         <div className="text-center py-8 border-b border-gray-200">
-            <p className='text-xl text-gray-500'>Prefer to book by phone?</p>
-            <a href="tel:+918129334858" className="flex items-center justify-center gap-2 text-4xl font-bold text-preventify-blue hover:text-preventify-dark-blue transition-colors">
-                <Phone className="w-8 h-8"/>
-                +91 8129334858
-            </a>
-            <p className='text-sm text-gray-400 mt-1'>For emergencies, please call this number directly.</p>
+          <p className='text-xl text-gray-500'>Prefer to book by phone?</p>
+          <a href="tel:+918129334858" className="flex items-center justify-center gap-2 text-4xl font-bold text-preventify-blue hover:text-preventify-dark-blue transition-colors">
+            <Phone className="w-8 h-8"/>
+            +91 8129334858
+          </a>
+          <p className='text-sm text-gray-400 mt-1'>For emergencies, please call this number directly.</p>
         </div>
-        <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit, handleFormErrors)} className="px-8 pb-8 pt-4">
-                {renderStepContent()}
-            </form>
-        </Form>
+        <div className="px-8 pb-8 pt-4">
+            {renderContent()}
+        </div>
       </DialogContent>
     </Dialog>
   );
 }
+
+    

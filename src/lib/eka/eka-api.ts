@@ -1,5 +1,4 @@
 
-
 'use server';
 
 import axios from 'axios';
@@ -280,14 +279,9 @@ export async function searchPatientByMobile(mobile: string): Promise<any | null>
     }
 }
 
-async function findPatientId(mobile: string): Promise<string | null> {
-    const patientProfile = await searchPatientByMobile(mobile);
-    return patientProfile ? patientProfile.patient_id : null;
-}
-
 
 export async function bookAppointment(data: any): Promise<any> {
-    console.log('--- RECEIVED PATIENT DATA FROM FRONTEND ---', JSON.stringify(data.patient, null, 2));
+    console.log('--- RECEIVED BOOKING DATA FROM FRONTEND ---', JSON.stringify(data, null, 2));
 
     const sanitizedMobile = sanitizeMobileNumber(data.patient.phone);
     const existingPatient = await searchPatientByMobile(data.patient.phone);
@@ -323,7 +317,11 @@ export async function bookAppointment(data: any): Promise<any> {
             partner_patient_id: partnerPatientId,
         };
     } else {
-        const safeFirstName = data.patient.firstName?.trim() || `Patient_${sanitizedMobile.slice(-4)}`;
+        const safeFirstName = data.patient.firstName?.trim();
+        if (!safeFirstName) {
+             throw new Error("First name is missing or empty.");
+        }
+        
         partnerPatientId = `preventify_patient_${sanitizedMobile}_${Date.now()}`;
         
         patientDetailsPayload = {
@@ -339,7 +337,7 @@ export async function bookAppointment(data: any): Promise<any> {
 
     const partnerAppointmentId = `preventify_appt_${Date.now()}`;
     const startTimeInSeconds = Math.floor(new Date(data.appointment.startTime).getTime() / 1000);
-    const endTimeInSeconds = startTimeInSeconds + 600; // 10 minute duration
+    const endTimeInSeconds = startTimeInSeconds + 600;
 
     const appointmentPayload = {
         partner_appointment_id: partnerAppointmentId,
@@ -379,3 +377,5 @@ export async function bookAppointment(data: any): Promise<any> {
         }
     }
 }
+
+    
