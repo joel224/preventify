@@ -2,7 +2,6 @@
 
 import * as React from "react";
 import Image from "next/image";
-import TextShine from "../ui/TextShine";
 
 const { useRef, useState, useEffect } = React;
 
@@ -46,6 +45,7 @@ const LAYOUT_CONTROLS = {
     scale: 1,
     fontSize: "2.2rem",
     opacity: 1,
+    color: '#25338e', // Added color for shimmer effect
   },
   clinicText2: { // For second slide
     text: " ",
@@ -54,6 +54,7 @@ const LAYOUT_CONTROLS = {
     scale: 1.1, // Different scale
     fontSize: "2.5rem", // Different size
     opacity: 0.9, // Different opacity
+    color: '#25338e', // Added color for shimmer effect
   },
 
   // 3. IMAGE CONTROLS (Independent for each image)
@@ -78,6 +79,33 @@ const LAYOUT_CONTROLS = {
     delay: 2,
   }
 };
+
+// Define the shimmer animation styles
+const shimmerAnimation = `
+@keyframes shimmer {
+  from {
+    background-position: 200% center;
+  }
+  to {
+    background-position: -200% center;
+  }
+}
+
+.shimmer-text {
+  background: linear-gradient(
+    to right,
+    hsl(var(--primary-foreground)) 20%,
+    hsl(var(--primary)) 40%,
+    hsl(var(--primary)) 60%,
+    hsl(var(--primary-foreground)) 80%
+  );
+  background-size: 200% auto;
+  color: transparent;
+  background-clip: text;
+  -webkit-background-clip: text;
+  animation: shimmer 3s linear infinite;
+}
+`;
 
 export default function HeroSectionContent() {
   const targetRef = useRef<HTMLDivElement>(null);
@@ -126,105 +154,109 @@ export default function HeroSectionContent() {
   const currentClinicText = clinicTexts[currentImageIndex];
 
   return (
-    <section
-      ref={targetRef}
-      style={{ backgroundColor: "#f8ffff", height: "100vh" }}
-      className="relative"
-    >
-      <div className="h-screen sticky top-0 overflow-hidden flex items-center">
-        
-        {/* MAIN CONTENT LAYER */}
-        <div className="absolute inset-0 px-6 z-10 pointer-events-none flex items-center">
-          <div className="container mx-auto">
-            
-            {/* GRID LAYOUT */}
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+    <>
+      {/* Add the shimmer animation style */}
+      <style>{shimmerAnimation}</style>
+      <section
+        ref={targetRef}
+        style={{ backgroundColor: "#f8ffff", height: "100vh" }}
+        className="relative"
+      >
+        <div className="h-screen sticky top-0 overflow-hidden flex items-center">
+          
+          {/* MAIN CONTENT LAYER */}
+          <div className="absolute inset-0 px-6 z-10 pointer-events-none flex items-center">
+            <div className="container mx-auto">
+              
+              {/* GRID LAYOUT */}
+              <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
 
-              {/* -------------------------------------------------------
-                 LEFT: HEADLINE (Changes with slide)
-                 ------------------------------------------------------- */}
-              <div className="lg:col-span-5 z-20">
-                <div
-                  className="relative"
-                  style={{
-                    transform: `translate(${currentHeadline.x}px, ${currentHeadline.y}px) scale(${currentHeadline.scale})`,
-                    maxWidth: currentHeadline.maxWidth,
-                    transformOrigin: "left center",
-                  }}
-                >
-                  <h1 
-                    className="leading-[0.9] text-left font-serif"
-                    style={{ 
-                      fontFamily: currentHeadline.fontFamily,
-                      padding: '0 4px', 
-                      lineHeight: '1.1',
-                      fontSize: currentHeadline.fontSize,
-                      whiteSpace: 'nowrap',
-                      color: currentHeadline.color,
-                    }}
-                  >
-                    {currentHeadline.text}
-                  </h1>
-                </div>
-              </div>
-
-              {/* -------------------------------------------------------
-                 MIDDLE: "CLINIC" TEXT (Changes with slide)
-                 ------------------------------------------------------- */}
-              <div className="hidden lg:flex lg:col-span-3 justify-center items-center z-10">
-                <div
-                  style={{
-                    transform: `translate(${currentClinicText.x}px, ${currentClinicText.y}px) scale(${currentClinicText.scale})`,
-                    transformOrigin: "center center",
-                  }}
-                >
-                  <TextShine
-                    className="font-semibold select-none pointer-events-none whitespace-nowrap text-preventify-dark-gray"
+                {/* -------------------------------------------------------
+                   LEFT: HEADLINE (Changes with slide)
+                   ------------------------------------------------------- */}
+                <div className="lg:col-span-5 z-20">
+                  <div
+                    className="relative"
                     style={{
-                      fontSize: currentClinicText.fontSize,
-                      opacity: currentClinicText.opacity,
+                      transform: `translate(${currentHeadline.x}px, ${currentHeadline.y}px) scale(${currentHeadline.scale})`,
+                      maxWidth: currentHeadline.maxWidth,
+                      transformOrigin: "left center",
                     }}
                   >
-                    {currentClinicText.text}
-                  </TextShine>
-                </div>
-              </div>
-
-              {/* -------------------------------------------------------
-                 RIGHT: IMAGE SLIDESHOW (Independent Images)
-                 ------------------------------------------------------- */}
-              <div className="lg:col-span-4 flex justify-end items-center">
-                <div 
-                  className="relative"
-                  style={{
-                    width: currentImage.width,
-                    maxWidth: currentImage.maxWidth,
-                    transform: `translate(${currentImage.x}px, ${currentImage.y}px) scale(${currentImage.scale}) rotate(${currentImage.rotate}deg)`,
-                    transformOrigin: "center center",
-                  }}
-                >
-                  <div 
-                    className="w-full h-auto aspect-[3/4] flex items-center justify-center"
-                    style={{ maxHeight: '500px' }}
-                  >
-                    <Image
-                      src={currentImage.src}
-                      alt={`Slide ${currentImageIndex + 1}`}
-                      fill
-                      className={`object-contain drop-shadow-[0_0_1px_rgba(0,0,0,0.05)] transition-opacity duration-500 ${
-                        showImage ? 'opacity-100' : 'opacity-0'
-                      }`}
-                      priority
-                    />
+                    <h1 
+                      className="leading-[0.9] text-left font-serif"
+                      style={{ 
+                        fontFamily: currentHeadline.fontFamily,
+                        padding: '0 4px', 
+                        lineHeight: '1.1',
+                        fontSize: currentHeadline.fontSize,
+                        whiteSpace: 'nowrap',
+                        color: currentHeadline.color,
+                      }}
+                    >
+                      {currentHeadline.text}
+                    </h1>
                   </div>
                 </div>
-              </div>
 
+                {/* -------------------------------------------------------
+                   MIDDLE: "CLINIC" TEXT (Changes with slide)
+                   ------------------------------------------------------- */}
+                <div className="hidden lg:flex lg:col-span-3 justify-center items-center z-10">
+                  <div
+                    style={{
+                      transform: `translate(${currentClinicText.x}px, ${currentClinicText.y}px) scale(${currentClinicText.scale})`,
+                      transformOrigin: "center center",
+                    }}
+                  >
+                    <div
+                      className="font-semibold select-none pointer-events-none whitespace-nowrap text-preventify-dark-gray shimmer-text"
+                      style={{
+                        fontSize: currentClinicText.fontSize,
+                        opacity: currentClinicText.opacity,
+                      }}
+                    >
+                      {currentClinicText.text}
+                    </div>
+                  </div>
+                </div>
+
+                {/* -------------------------------------------------------
+                   RIGHT: IMAGE SLIDESHOW (Independent Images)
+                   ------------------------------------------------------- */}
+                <div className="lg:col-span-4 flex justify-end items-center">
+                  <div 
+                    className="relative"
+                    style={{
+                      width: currentImage.width,
+                      maxWidth: currentImage.maxWidth,
+                      transform: `translate(${currentImage.x}px, ${currentImage.y}px) scale(${currentImage.scale}) rotate(${currentImage.rotate}deg)`,
+                      transformOrigin: "center center",
+                    }}
+                  >
+                    <div 
+                      className="w-full h-auto aspect-[3/4] flex items-center justify-center"
+                      style={{ maxHeight: '500px' }}
+                    >
+                      <Image
+                        src={currentImage.src}
+                        alt={`Slide ${currentImageIndex + 1}`}
+                        fill
+                        className={`object-contain drop-shadow-[0_0_1px_rgba(0,0,0,0.05)] transition-opacity duration-500 ${
+                          showImage ? 'opacity-100' : 'opacity-0'
+                        }`}
+                        priority
+                      />
+                    </div>
+                  </div>
+                </div>
+
+              </div>
             </div>
           </div>
-        </div>
 
-      </div>
-    </section>
+        </div>
+      </section>
+    </>
   );
 }

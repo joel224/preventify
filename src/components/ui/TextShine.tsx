@@ -61,7 +61,7 @@ const TextShine = ({
         duration,
         ease: 'easeOut',
         delay,
-        repeat: 0,
+        repeat: 26,
       }}
       onAnimationComplete={() => {
         if (isInView) {
