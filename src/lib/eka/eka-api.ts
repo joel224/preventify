@@ -247,7 +247,6 @@ function sanitizeMobileNumber(mobile: string): string {
         return plainNumber;
     }
 
-    // Fallback for other cases, might not be perfect
     return `91${plainNumber.slice(-10)}`;
 }
 
@@ -272,6 +271,10 @@ export async function searchPatientByMobile(mobile: string): Promise<any | null>
         return null;
 
     } catch (error: any) {
+        if (error.response && error.response.status === 404) {
+            console.log(`Patient with mobile ${searchMobile} not found.`);
+            return null;
+        }
         console.error(`ERROR searching for patient by mobile:`, error.message);
         return null;
     }
@@ -286,18 +289,18 @@ async function findPatientId(mobile: string): Promise<string | null> {
 export async function bookAppointment(data: any): Promise<any> {
     const sanitizedMobile = sanitizeMobileNumber(data.patient.phone);
     
-    const existingPatientId = await findPatientId(data.patient.phone);
+    const existingPatient = await searchPatientByMobile(data.patient.phone);
 
     let partnerPatientId;
-    if (existingPatientId) {
-        partnerPatientId = existingPatientId;
-    } else {
-        partnerPatientId = `preventify_patient_${sanitizedMobile}_${Date.now()}`;
-    }
+    let patientDetailsPayload;
 
-    const partnerAppointmentId = `preventify_appt_${Date.now()}`;
-    const startTimeInSeconds = Math.floor(new Date(data.appointment.startTime).getTime() / 1000);
-    const endTimeInSeconds = startTimeInSeconds + 600; // 10 minute duration
+    const getDesignation = (gender: string) => {
+        if (!gender) return 'Mx.';
+        const lowerGender = gender.toLowerCase();
+        if (lowerGender.startsWith('f')) return 'Ms.';
+        if (lowerGender.startsWith('m')) return 'Mr.';
+        return 'Mx.';
+    };
 
     const formatGender = (gender: string): 'M' | 'F' | 'O' => {
         if (!gender) return 'O';
@@ -306,15 +309,40 @@ export async function bookAppointment(data: any): Promise<any> {
         if (lowerGender.startsWith('f')) return 'F';
         return 'O';
     };
-    
-    const formattedGender = formatGender(data.patient.gender);
 
-    const getDesignation = (gender: string) => {
-        const lowerGender = gender.toLowerCase();
-        if (lowerGender.startsWith('f')) return 'Ms.';
-        if (lowerGender.startsWith('m')) return 'Mr.';
-        return 'Mx.';
-    };
+    if (existingPatient && existingPatient.patient_id) {
+        partnerPatientId = existingPatient.patient_id;
+        patientDetailsPayload = {
+            designation: getDesignation(existingPatient.gender),
+            first_name: existingPatient.first_name,
+            last_name: existingPatient.last_name || "WEB N/A",
+            mobile: sanitizedMobile,
+            gender: formatGender(existingPatient.gender),
+            dob: existingPatient.dob,
+            partner_patient_id: partnerPatientId,
+        };
+    } else {
+        partnerPatientId = `preventify_patient_${sanitizedMobile}_${Date.now()}`;
+        
+        console.log('--- RECEIVED PATIENT DATA FROM FRONTEND ---', JSON.stringify(data.patient, null, 2));
+
+        const safeFirstName = data.patient.firstName?.trim() || `Patient_${sanitizedMobile.slice(-4)}`;
+
+        patientDetailsPayload = {
+            designation: getDesignation(data.patient.gender),
+            first_name: safeFirstName,
+            last_name: "WEB N/A",
+            mobile: sanitizedMobile,
+            gender: formatGender(data.patient.gender),
+            dob: data.patient.dob,
+            partner_patient_id: partnerPatientId,
+        };
+    }
+
+
+    const partnerAppointmentId = `preventify_appt_${Date.now()}`;
+    const startTimeInSeconds = Math.floor(new Date(data.appointment.startTime).getTime() / 1000);
+    const endTimeInSeconds = startTimeInSeconds + 600; // 10 minute duration
 
     const appointmentPayload = {
         partner_appointment_id: partnerAppointmentId,
@@ -326,15 +354,10 @@ export async function bookAppointment(data: any): Promise<any> {
             end_time: endTimeInSeconds,
             mode: "INCLINIC",
         },
-        patient_details: {
-            designation: getDesignation(data.patient.gender),
-            first_name: data.patient.firstName,
-            last_name: data.patient.lastName,
-            mobile: sanitizedMobile,
-            gender: formattedGender,
-            dob: data.patient.dob,
-        },
+        patient_details: patientDetailsPayload,
     };
+
+    console.log('--- EKA CARE API REQUEST BODY ---', JSON.stringify(appointmentPayload, null, 2));
 
     const attemptBooking = async () => {
         return makeApiRequest(async (client) => {
@@ -347,18 +370,15 @@ export async function bookAppointment(data: any): Promise<any> {
         const bookingResponse = await attemptBooking();
         return bookingResponse;
     } catch(error: any) {
-        // This catch block handles cases where makeApiRequest itself fails or
-        // if the initial token was so old that even the retry logic inside it failed.
-        // A final attempt after a fresh login is a robust way to handle this.
         console.error("First booking attempt failed, retrying with a fresh login...", error.message);
-        await _loginAndGetTokens(); // Force a fresh login to get a new token
+        await _loginAndGetTokens(); 
 
         try {
-            const bookingResponse = await attemptBooking(); // Retry the booking
+            const bookingResponse = await attemptBooking();
             return bookingResponse;
         } catch (finalError: any) {
             console.error("Final booking attempt failed:", finalError.message);
-            throw finalError; // If it fails again, we let the error propagate.
+            throw finalError;
         }
     }
 }

@@ -43,7 +43,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { toast } from 'sonner';
 import { z } from 'zod';
-import { useForm, useWatch } from 'react-hook-form';
+import { useForm, useWatch, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useState, useEffect, useMemo, useCallback } from 'react';
 import { format, parseISO, addMinutes, getHours, setHours, addDays, getYear, getMonth, getDate } from 'date-fns';
@@ -51,6 +51,7 @@ import { Loader2, CheckCircle, XCircle, Check, ChevronsUpDown, Sparkles, Phone }
 import { cn } from "@/lib/utils";
 import { DialogTrigger } from '@radix-ui/react-dialog';
 import { Textarea } from './ui/textarea';
+import useSWR from 'swr';
 
 // Types
 interface Doctor {
@@ -114,26 +115,22 @@ const stepThreeSchema = z.object({
 });
 
 const stepFourSchema = z.object({
-  dobYear: z.string().optional(),
-  dobMonth: z.string().optional(),
-  dobDay: z.string().optional(),
-  gender: z.enum(["M", "F", "O"]).optional(),
+    dobYear: z.string().min(1, "Year is required."),
+    dobMonth: z.string().min(1, "Month is required."),
+    dobDay: z.string().min(1, "Day is required."),
+    gender: z.enum(["M", "F", "O"], { required_error: "Gender is required."}),
 });
 
-const combinedSchema = stepOneSchema.merge(stepTwoSchema).merge(stepThreeSchema).merge(stepFourSchema);
+const combinedSchema = stepOneSchema
+    .merge(stepTwoSchema)
+    .merge(stepThreeSchema)
+    .merge(stepFourSchema.partial());
 
 type CombinedFormData = z.infer<typeof combinedSchema>;
 
 const years = Array.from({ length: 100 }, (_, i) => getYear(new Date()) - i);
 const months = Array.from({ length: 12 }, (_, i) => i + 1);
 const days = Array.from({ length: 31 }, (_, i) => i + 1);
-
-const newPatientSchema = z.object({
-    dobYear: z.string().min(1, "Year is required."),
-    dobMonth: z.string().min(1, "Month is required."),
-    dobDay: z.string().min(1, "Day is required."),
-    gender: z.enum(["M", "F", "O"], { required_error: "Gender is required."}),
-});
 
 interface BookingDialogProps {
     children: React.ReactNode;
@@ -142,6 +139,7 @@ interface BookingDialogProps {
     initialPhone?: string;
 }
 
+const fetcher = (url: string) => fetch(url).then(res => res.json());
 
 export default function BookingDialog({ 
     children, 
@@ -152,7 +150,6 @@ export default function BookingDialog({
   const [open, setOpen] = useState(false);
   const [step, setStep] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
-  const [availableSlots, setAvailableSlots] = useState<Slot[]>([]);
   const [bookingStatus, setBookingStatus] = useState<'idle' | 'success' | 'error'>('idle');
   const [bookingResponse, setBookingResponse] = useState<any>(null);
   const [comboboxOpen, setComboboxOpen] = useState(false);
@@ -191,9 +188,13 @@ export default function BookingDialog({
                 const res = await fetch(`/api/search-patient?phone=${encodeURIComponent(selectedPhone)}`);
                 if (res.ok) {
                     const patient: FoundPatientProfile = await res.json();
-                    setFoundPatientProfile(patient);
-                    form.setValue('firstName', patient.first_name);
-                    toast.info(`Welcome back, ${patient.first_name}! Your details have been pre-filled.`);
+                    if(patient && patient.first_name) {
+                        setFoundPatientProfile(patient);
+                        form.setValue('firstName', patient.first_name);
+                        toast.info(`Welcome back, ${patient.first_name}! Your details have been pre-filled.`);
+                    } else {
+                        setFoundPatientProfile(null);
+                    }
                 } else {
                     setFoundPatientProfile(null);
                 }
@@ -226,7 +227,8 @@ export default function BookingDialog({
       const advance = async () => {
         if (step === 3 && selectedDate && selectedTime) {
             if (foundPatientProfile) {
-                await onSubmit(form.getValues());
+                // Manually trigger form submission
+                form.handleSubmit(onSubmit, handleFormErrors)();
             } else {
                 setStep(4);
             }
@@ -255,9 +257,11 @@ export default function BookingDialog({
                 const res = await fetch(`/api/search-patient?phone=${encodeURIComponent(initialPhone)}`);
                 if (res.ok) {
                     const patient: FoundPatientProfile = await res.json();
-                    setFoundPatientProfile(patient);
-                    form.setValue('firstName', patient.first_name);
-                    toast.info(`Welcome back, ${patient.first_name}! Your details have been pre-filled.`);
+                     if(patient && patient.first_name) {
+                        setFoundPatientProfile(patient);
+                        form.setValue('firstName', patient.first_name);
+                        toast.info(`Welcome back, ${patient.first_name}! Your details have been pre-filled.`);
+                    }
                 }
             } catch (error) {
                 console.log('Patient search failed or not found, continuing as new patient.');
@@ -287,7 +291,6 @@ export default function BookingDialog({
       });
       setStep(1);
       setBookingStatus('idle');
-      setAvailableSlots([]);
       setFoundPatientProfile(null);
       setShowAiHelp(false);
       setSymptoms("");
@@ -301,28 +304,23 @@ export default function BookingDialog({
     }
   }, [selectedClinicId, form]);
 
-  useEffect(() => {
-    if (selectedDoctorId && selectedClinicId && selectedDate) {
-      const fetchSlots = async () => {
-        setIsLoading(true);
-        setAvailableSlots([]);
-        form.setValue('time', '');
-        try {
-          const formattedDate = format(selectedDate, 'yyyy-MM-dd');
-          const res = await fetch(`/api/available-slots?doctorId=${selectedDoctorId}&clinicId=${selectedClinicId}&date=${formattedDate}`);
-          if (!res.ok) throw new Error('Failed to fetch slots');
-          const slots = await res.json();
-          setAvailableSlots(slots);
-        } catch (error) {
-          console.error(error);
-          toast.error('Could not load available time slots.');
-        } finally {
-          setIsLoading(false);
-        }
-      };
-      fetchSlots();
+  const formattedDate = selectedDate ? format(selectedDate, 'yyyy-MM-dd') : null;
+  const swrKey = selectedDoctorId && selectedClinicId && formattedDate ? `/api/available-slots?doctorId=${selectedDoctorId}&clinicId=${selectedClinicId}&date=${formattedDate}` : null;
+
+  const { data: availableSlots = [], error: slotsError, isLoading: slotsLoading } = useSWR<Slot[]>(swrKey, fetcher, {
+    shouldRetryOnError: false,
+    revalidateOnFocus: false, // Prevent background refetch wiping state
+    revalidateOnReconnect: false,
+    onError: () => {
+      toast.error('Could not load available time slots.');
     }
-  }, [selectedDoctorId, selectedClinicId, selectedDate, form]);
+  });
+
+  // Effect to reset time only when the date actually changes
+  useEffect(() => {
+    form.setValue('time', '');
+  }, [formattedDate, form]);
+
   
   const selectedDoctor = useMemo(() => doctors.find(d => d.id === selectedDoctorId), [selectedDoctorId]);
   
@@ -372,13 +370,10 @@ export default function BookingDialog({
     let result;
     if (step === 1) {
         result = await form.trigger(['firstName', 'phone']);
-        // Auto-advance handles this now
     } else if (step === 2) {
       result = await form.trigger(['doctorId']);
-      // Auto-advance handles this now
     } else if (step === 3) {
         result = await form.trigger(['date', 'time']);
-        // Auto-advance handles this now
     }
   };
 
@@ -387,7 +382,6 @@ export default function BookingDialog({
         setShowAiHelp(false);
         return;
     }
-    // Prevent going back to step 1 if it was skipped
     if (step === 2 && (initialFirstName || initialPhone)) {
         setOpen(false);
         return;
@@ -404,12 +398,13 @@ export default function BookingDialog({
   };
 
   const onSubmit = async (data: CombinedFormData) => {
+    console.log('onSubmit fired! Full data:', data); 
     setIsLoading(true);
     setBookingStatus('idle');
 
     let patientPayload;
 
-    if (foundPatientProfile) {
+    if (foundPatientProfile && foundPatientProfile.first_name) {
         patientPayload = {
             firstName: foundPatientProfile.first_name,
             lastName: foundPatientProfile.last_name || "WEB N/A",
@@ -418,22 +413,15 @@ export default function BookingDialog({
             gender: formatGenderAPI(foundPatientProfile.gender),
         };
     } else {
-        const dataToValidate = {
-          dobYear: data.dobYear,
-          dobMonth: data.dobMonth,
-          dobDay: data.dobDay,
-          gender: data.gender
-        }
-        const newPatientValidation = newPatientSchema.safeParse(dataToValidate);
-        if (!newPatientValidation.success) {
-            
-            toast.error("Please fill in all required details for the new patient.");
+        const validationResult = stepFourSchema.safeParse(data);
+        if(!validationResult.success) {
+            toast.error("Please fill in all required patient details.");
             setIsLoading(false);
-            await form.trigger(['dobYear', 'dobMonth', 'dobDay', 'gender']);
+            form.trigger(['dobYear', 'dobMonth', 'dobDay', 'gender']);
             return;
         }
-
-        const { dobYear, dobMonth, dobDay, gender } = newPatientValidation.data;
+        
+        const { dobYear, dobMonth, dobDay, gender } = validationResult.data;
         patientPayload = {
             firstName: data.firstName,
             lastName: "WEB N/A",
@@ -442,6 +430,8 @@ export default function BookingDialog({
             gender: gender,
         };
     }
+    
+    console.log('--- FRONTEND SENDING PATIENT PAYLOAD ---', JSON.stringify(patientPayload, null, 2));
 
     const payload = {
         patient: patientPayload,
@@ -451,6 +441,9 @@ export default function BookingDialog({
             startTime: data.time,
         }
     };
+    
+    console.log('--- FRONTEND FULL PAYLOAD TO API ---', JSON.stringify(payload, null, 2));
+
 
     try {
         const response = await fetch('/api/create-appointment', {
@@ -477,6 +470,22 @@ export default function BookingDialog({
         setIsLoading(false);
     }
   };
+
+  const handleFormErrors = (errors: any) => {
+      console.error("Global Form Validation Failed:", errors);
+      if (errors.date || errors.time || errors.doctorId || errors.clinicId) {
+        toast.error("Appointment details expired. Please go back and reselect doctor/date/time.");
+        setStep(2);
+      } else if (errors.dobYear || errors.dobMonth || errors.dobDay || errors.gender) {
+        toast.error("Please fill in all DOB and gender fields.");
+      } else if (errors.firstName || errors.phone) {
+        toast.error("Patient details invalid. Please start over.");
+        setStep(1);
+      } else {
+        toast.error("Please check all fields and try again.");
+      }
+    };
+
 
   const handleAiSuggestion = async () => {
     if (!symptoms.trim()) {
@@ -733,7 +742,7 @@ export default function BookingDialog({
                             <FormItem>
                             <FormLabel className="text-center block mb-2 text-lg">Available Slots</FormLabel>
                             <div className="grid grid-cols-3 gap-2 max-h-[250px] overflow-y-auto pr-2">
-                                {isLoading ? (
+                                {slotsLoading ? (
                                 <div className="col-span-3 flex justify-center items-center h-24">
                                     <Loader2 className="h-8 w-8 animate-spin text-primary" />
                                 </div>
@@ -787,15 +796,15 @@ export default function BookingDialog({
                 </DialogHeader>
                 <div className="space-y-6 py-4">
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                        <FormItem>
-                            <FormLabel className="text-lg">Date of Birth</FormLabel>
-                            <div className="grid grid-cols-3 gap-2">
+                        <div className="col-span-2">
+                             <FormLabel className="text-lg">Date of Birth</FormLabel>
+                             <div className="grid grid-cols-3 gap-2 mt-2">
                                 <FormField
                                     control={form.control}
                                     name="dobYear"
                                     render={({ field }) => (
                                         <FormItem>
-                                            <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                            <Select onValueChange={field.onChange} value={field.value || ''}>
                                                 <FormControl>
                                                 <SelectTrigger className="h-14 text-lg">
                                                     <SelectValue placeholder="Year" />
@@ -814,7 +823,7 @@ export default function BookingDialog({
                                     name="dobMonth"
                                     render={({ field }) => (
                                         <FormItem>
-                                            <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                            <Select onValueChange={field.onChange} value={field.value || ''}>
                                                 <FormControl>
                                                 <SelectTrigger className="h-14 text-lg">
                                                     <SelectValue placeholder="Month" />
@@ -833,7 +842,7 @@ export default function BookingDialog({
                                     name="dobDay"
                                     render={({ field }) => (
                                         <FormItem>
-                                            <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                            <Select onValueChange={field.onChange} value={field.value || ''}>
                                                 <FormControl>
                                                 <SelectTrigger className="h-14 text-lg">
                                                     <SelectValue placeholder="Day" />
@@ -848,14 +857,14 @@ export default function BookingDialog({
                                     )}
                                 />
                             </div>
-                        </FormItem>
+                        </div>
                         <FormField
                             control={form.control}
                             name="gender"
                             render={({ field }) => (
                                 <FormItem>
                                     <FormLabel className="text-lg">Gender</FormLabel>
-                                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                    <Select onValueChange={field.onChange} value={field.value || ''}>
                                         <FormControl>
                                         <SelectTrigger className="h-14 text-lg">
                                             <SelectValue placeholder="Select gender" />
@@ -940,7 +949,7 @@ export default function BookingDialog({
             <p className='text-sm text-gray-400 mt-1'>For emergencies, please call this number directly.</p>
         </div>
         <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="px-8 pb-8 pt-4">
+            <form onSubmit={form.handleSubmit(onSubmit, handleFormErrors)} className="px-8 pb-8 pt-4">
                 {renderStepContent()}
             </form>
         </Form>
@@ -948,3 +957,5 @@ export default function BookingDialog({
     </Dialog>
   );
 }
+
+    
