@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useState, useRef } from "react";
@@ -59,6 +58,7 @@ const PreventiveLifestyleSectionDesktop = () => {
                                             value={name} 
                                             onChange={(e) => setName(e.target.value)} 
                                             required 
+                                            autoComplete="name"
                                             className="h-10 text-lg bg-transparent border-0 border-b-2 border-white/50 rounded-none focus:ring-0 focus:border-white p-0 text-white placeholder:text-white/70 focus-visible:ring-0 focus-visible:ring-offset-0"
                                         />
                                     </div>
@@ -71,7 +71,8 @@ const PreventiveLifestyleSectionDesktop = () => {
                                             placeholder="Your Number" 
                                             value={phone} 
                                             onChange={(e) => setPhone(e.target.value)} 
-                                            required 
+                                            required
+                                            autoComplete="tel"
                                             className="h-10 text-lg bg-transparent border-0 border-b-2 border-white/50 rounded-none focus:ring-0 focus:border-white p-0 text-white placeholder:text-white/70 focus-visible:ring-0 focus-visible:ring-offset-0"
                                         />
                                     </div>
