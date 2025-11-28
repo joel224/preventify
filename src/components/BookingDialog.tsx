@@ -1,5 +1,4 @@
 
-
 'use client';
 
 import {
@@ -226,8 +225,8 @@ export default function BookingDialog({
   useEffect(() => {
       const advance = async () => {
         if (step === 3 && selectedDate && selectedTime) {
-            if (foundPatientProfile) {
-                // Manually trigger form submission
+            if (foundPatientProfile && foundPatientProfile.first_name) {
+                // Manually trigger form submission for existing patients
                 form.handleSubmit(onSubmit, handleFormErrors)();
             } else {
                 setStep(4);
@@ -305,6 +304,11 @@ export default function BookingDialog({
   }, [selectedClinicId, form]);
 
   const formattedDate = selectedDate ? format(selectedDate, 'yyyy-MM-dd') : null;
+  
+  useEffect(() => {
+    form.setValue('time', '');
+  }, [formattedDate, form]);
+
   const swrKey = selectedDoctorId && selectedClinicId && formattedDate ? `/api/available-slots?doctorId=${selectedDoctorId}&clinicId=${selectedClinicId}&date=${formattedDate}` : null;
 
   const { data: availableSlots = [], error: slotsError, isLoading: slotsLoading } = useSWR<Slot[]>(swrKey, fetcher, {
@@ -315,12 +319,6 @@ export default function BookingDialog({
       toast.error('Could not load available time slots.');
     }
   });
-
-  // Effect to reset time only when the date actually changes
-  useEffect(() => {
-    form.setValue('time', '');
-  }, [formattedDate, form]);
-
   
   const selectedDoctor = useMemo(() => doctors.find(d => d.id === selectedDoctorId), [selectedDoctorId]);
   
@@ -396,9 +394,24 @@ export default function BookingDialog({
       if (lowerGender.startsWith('f')) return 'F';
       return 'O';
   };
+  
+  const handleFormErrors = (errors: any) => {
+      console.error("Global Form Validation Failed:", errors);
+      if (errors.date || errors.time || errors.doctorId || errors.clinicId) {
+        toast.error("Appointment details expired. Please go back and reselect doctor/date/time.");
+        setStep(2);
+      } else if (errors.dobYear || errors.dobMonth || errors.dobDay || errors.gender) {
+        toast.error("Please fill in all DOB and gender fields.");
+      } else if (errors.firstName || errors.phone) {
+        toast.error("Patient details invalid. Please start over.");
+        setStep(1);
+      } else {
+        toast.error("Please check all fields and try again.");
+      }
+    };
+
 
   const onSubmit = async (data: CombinedFormData) => {
-    console.log('onSubmit fired! Full data:', data); 
     setIsLoading(true);
     setBookingStatus('idle');
 
@@ -407,7 +420,7 @@ export default function BookingDialog({
     if (foundPatientProfile && foundPatientProfile.first_name) {
         patientPayload = {
             firstName: foundPatientProfile.first_name,
-            lastName: foundPatientProfile.last_name || "WEB N/A",
+            lastName: foundPatientProfile.last_name || "web",
             phone: data.phone,
             dob: foundPatientProfile.dob,
             gender: formatGenderAPI(foundPatientProfile.gender),
@@ -424,15 +437,13 @@ export default function BookingDialog({
         const { dobYear, dobMonth, dobDay, gender } = validationResult.data;
         patientPayload = {
             firstName: data.firstName,
-            lastName: "WEB N/A",
+            lastName: "web",
             phone: data.phone,
             dob: `${dobYear}-${String(dobMonth).padStart(2, '0')}-${String(dobDay).padStart(2, '0')}`,
             gender: gender,
         };
     }
     
-    console.log('--- FRONTEND SENDING PATIENT PAYLOAD ---', JSON.stringify(patientPayload, null, 2));
-
     const payload = {
         patient: patientPayload,
         appointment: {
@@ -441,9 +452,6 @@ export default function BookingDialog({
             startTime: data.time,
         }
     };
-    
-    console.log('--- FRONTEND FULL PAYLOAD TO API ---', JSON.stringify(payload, null, 2));
-
 
     try {
         const response = await fetch('/api/create-appointment', {
@@ -470,22 +478,6 @@ export default function BookingDialog({
         setIsLoading(false);
     }
   };
-
-  const handleFormErrors = (errors: any) => {
-      console.error("Global Form Validation Failed:", errors);
-      if (errors.date || errors.time || errors.doctorId || errors.clinicId) {
-        toast.error("Appointment details expired. Please go back and reselect doctor/date/time.");
-        setStep(2);
-      } else if (errors.dobYear || errors.dobMonth || errors.dobDay || errors.gender) {
-        toast.error("Please fill in all DOB and gender fields.");
-      } else if (errors.firstName || errors.phone) {
-        toast.error("Patient details invalid. Please start over.");
-        setStep(1);
-      } else {
-        toast.error("Please check all fields and try again.");
-      }
-    };
-
 
   const handleAiSuggestion = async () => {
     if (!symptoms.trim()) {
@@ -957,5 +949,3 @@ export default function BookingDialog({
     </Dialog>
   );
 }
-
-    

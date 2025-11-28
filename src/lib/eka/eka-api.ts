@@ -315,7 +315,7 @@ export async function bookAppointment(data: any): Promise<any> {
         patientDetailsPayload = {
             designation: getDesignation(existingPatient.gender),
             first_name: existingPatient.first_name,
-            last_name: existingPatient.last_name || "WEB N/A",
+            last_name: existingPatient.last_name || "web",
             mobile: sanitizedMobile,
             gender: formatGender(existingPatient.gender),
             dob: existingPatient.dob,
@@ -331,7 +331,7 @@ export async function bookAppointment(data: any): Promise<any> {
         patientDetailsPayload = {
             designation: getDesignation(data.patient.gender),
             first_name: safeFirstName,
-            last_name: "WEB N/A",
+            last_name: "web",
             mobile: sanitizedMobile,
             gender: formatGender(data.patient.gender),
             dob: data.patient.dob,
@@ -382,5 +382,3 @@ export async function bookAppointment(data: any): Promise<any> {
         }
     }
 }
-
-    
