@@ -102,7 +102,7 @@ const Navbar = () => {
       style={{ '--navbar-height': `${navbarHeight}px` } as React.CSSProperties}
     >
       <div className="bg-white/5 border-b border-white/20 transition-all duration-300 overflow-hidden">
-        <div className="container mx-auto py-1.5 px-4 sm:px-6 lg:px-8 flex justify-between items-center text-sm text-slate-600">
+        <div className="container mx-auto py-1.5 px-4 sm:px-6 lg:px-8 flex justify-between items-center text-sm text-gray-700">
           <div className="flex items-center gap-4">
             {topNavLinks.map(link => (
               <Link key={link.name} href={link.path} className={`flex items-center gap-1 hover:text-primary transition-colors`}>
