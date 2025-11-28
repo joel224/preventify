@@ -1,4 +1,3 @@
-
 'use client';
 
 import {
@@ -49,7 +48,7 @@ import { format, parseISO, addMinutes, getHours, setHours, addDays, getYear, get
 import { Loader2, CheckCircle, XCircle, Check, ChevronsUpDown, Sparkles, Phone } from 'lucide-react';
 import { cn } from "@/lib/utils";
 import { DialogTrigger } from '@radix-ui/react-dialog';
-import { Textarea } from './ui/textarea';
+import { Textarea } from '@/components/ui/textarea';
 import useSWR from 'swr';
 
 // Types
@@ -174,6 +173,7 @@ export default function BookingDialog({
   const selectedDate = useWatch({ control: form.control, name: 'date' });
   const selectedTime = useWatch({ control: form.control, name: 'time' });
 
+  // Auto-advance from Step 2
   useEffect(() => {
     if (step === 2 && selectedDoctorId) {
         const doctor = doctors.find(d => d.id === selectedDoctorId);
@@ -184,11 +184,12 @@ export default function BookingDialog({
     }
   }, [selectedDoctorId, step, form]);
 
+  // Auto-advance from Step 3
   useEffect(() => {
       const advance = async () => {
         if (step === 3 && selectedDate && selectedTime) {
-            const isExistingPatient = foundPatientProfile && foundPatientProfile.first_name;
-            if (isExistingPatient) {
+            if (foundPatientProfile && foundPatientProfile.first_name) {
+                // Manually trigger form submission for existing patients
                 form.handleSubmit(onSubmit, handleFormErrors)();
             } else {
                 setStep(4);
@@ -205,16 +206,19 @@ export default function BookingDialog({
     return doctor ? doctor.clinicId : '';
   }, [selectedDoctorId]);
   
+  // FIX: Sanitize Initial Phone and Remove Auto-Advance
   useEffect(() => {
-    if (open) {
+    if (open && initialFirstName && initialPhone) {
         const cleanPhone = initialPhone.replace(/\D/g, '').slice(-10);
         form.setValue('firstName', initialFirstName, { shouldValidate: true });
         form.setValue('phone', cleanPhone, { shouldValidate: true });
+        // NOTE: Auto-advance (handleNextStep) removed to ensure validity and allow user review.
     }
   }, [open, initialFirstName, initialPhone, form]);
 
   useEffect(() => {
     if (!open) {
+      // Full reset when dialog is closed
       form.reset({
         firstName: '',
         phone: '',
@@ -332,18 +336,9 @@ export default function BookingDialog({
             }
         }
     } else if (step === 2) {
-        const result = await form.trigger(['doctorId', 'clinicId']);
-        if (result) setStep(3);
+      await form.trigger(['doctorId']);
     } else if (step === 3) {
-        const result = await form.trigger(['date', 'time']);
-        if (result) {
-            const isExistingPatient = foundPatientProfile && foundPatientProfile.first_name;
-            if (isExistingPatient) {
-                form.handleSubmit(onSubmit, handleFormErrors)();
-            } else {
-                setStep(4);
-            }
-        }
+      await form.trigger(['date', 'time']);
     }
   };
 
@@ -531,6 +526,7 @@ export default function BookingDialog({
                                     placeholder="9876543210" 
                                     {...field} 
                                     onChange={(e) => {
+                                        // Restrict to numbers only and max 10 digits
                                         const value = e.target.value.replace(/\D/g, '').slice(0, 10);
                                         field.onChange(value);
                                     }}
@@ -754,7 +750,7 @@ export default function BookingDialog({
             <DialogFooter>
               <Button variant="outline" onClick={handlePrevStep} type="button" size="lg" className="text-lg h-12">Back</Button>
               <Button onClick={handleNextStep} disabled={!form.getValues('time')} type="button" size="lg" className="text-lg h-12">
-                {foundPatientProfile && foundPatientProfile.first_name ? 'Confirm Booking' : 'Next'}
+                {foundPatientProfile ? 'Confirm Booking' : 'Next'}
               </Button>
             </DialogFooter>
           </>
