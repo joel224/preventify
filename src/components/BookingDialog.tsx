@@ -87,7 +87,7 @@ const stepThreeSchema = z.object({
 const stepFourSchema = z.object({
     dobYear: z.string().min(1, "Year is required."),
     dobMonth: z.string().min(1, "Month is required."),
-    dobDay: z.string().min(1, "Day is required."),
+    dobDay: z.string().optional(), // Day is no longer required from the form
     gender: z.enum(["M", "F", "O"], { required_error: "Gender is required."}),
 });
 
@@ -114,7 +114,6 @@ const doctors: { id: string; name: string; specialty: string; clinicId: string; 
 
 const years = Array.from({ length: 100 }, (_, i) => getYear(new Date()) - i);
 const months = Array.from({ length: 12 }, (_, i) => i + 1);
-const days = Array.from({ length: 31 }, (_, i) => i + 1);
 
 // Reducer function for state management
 const initialState: State = {
@@ -500,13 +499,12 @@ const Step4ConfirmDetails = ({ dispatch, formData }: { dispatch: React.Dispatch<
         defaultValues: {
             dobYear: formData.dobYear || '',
             dobMonth: formData.dobMonth || '',
-            dobDay: formData.dobDay || '',
             gender: formData.gender || undefined,
         }
     });
 
     const onStepSubmit = (data: z.infer<typeof stepFourSchema>) => {
-        dispatch({ type: 'SET_FORM_DATA', payload: data });
+        dispatch({ type: 'SET_FORM_DATA', payload: { ...data, dobDay: '1' } });
         dispatch({ type: 'SET_STEP', payload: 5 }); // Go to final submission step
     };
 
@@ -520,7 +518,7 @@ const Step4ConfirmDetails = ({ dispatch, formData }: { dispatch: React.Dispatch<
                 <div className="space-y-6 py-4">
                      <div className="space-y-2">
                          <label className="text-lg">Date of Birth</label>
-                         <div className="grid grid-cols-3 gap-2">
+                         <div className="grid grid-cols-2 gap-2">
                              <Select onValueChange={(v) => setValue('dobYear', v, {shouldValidate: true})} value={watch('dobYear')}>
                                 <SelectTrigger className="h-14 text-lg"><SelectValue placeholder="Year" /></SelectTrigger>
                                 <SelectContent>{years.map(y => <SelectItem key={y} value={String(y)}>{y}</SelectItem>)}</SelectContent>
@@ -529,18 +527,13 @@ const Step4ConfirmDetails = ({ dispatch, formData }: { dispatch: React.Dispatch<
                                 <SelectTrigger className="h-14 text-lg"><SelectValue placeholder="Month" /></SelectTrigger>
                                 <SelectContent>{months.map(m => <SelectItem key={m} value={String(m)}>{m}</SelectItem>)}</SelectContent>
                              </Select>
-                             <Select onValueChange={(v) => setValue('dobDay', v, {shouldValidate: true})} value={watch('dobDay')}>
-                                <SelectTrigger className="h-14 text-lg"><SelectValue placeholder="Day" /></SelectTrigger>
-                                <SelectContent>{days.map(d => <SelectItem key={d} value={String(d)}>{d}</SelectItem>)}</SelectContent>
-                             </Select>
                          </div>
                          {errors.dobYear && <p className="text-sm font-medium text-muted-foreground mt-1">{errors.dobYear.message}</p>}
                          {errors.dobMonth && <p className="text-sm font-medium text-muted-foreground mt-1">{errors.dobMonth.message}</p>}
-                         {errors.dobDay && <p className="text-sm font-medium text-muted-foreground mt-1">{errors.dobDay.message}</p>}
                      </div>
                      <div className="space-y-2">
                          <label className="text-lg">Gender</label>
-                         <Select onValueChange={(v) => setValue('gender', v, {shouldValidate: true})} value={watch('gender')}>
+                         <Select onValueChange={(v) => setValue('gender', v as "M" | "F" | "O", {shouldValidate: true})} value={watch('gender')}>
                             <SelectTrigger className="h-14 text-lg"><SelectValue placeholder="Select gender" /></SelectTrigger>
                             <SelectContent>
                                 <SelectItem value="M">Male</SelectItem>
