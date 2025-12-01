@@ -84,17 +84,10 @@ const stepThreeSchema = z.object({
   time: z.string().min(1, 'Please select a time slot.'),
 });
 
-const stepFourSchema = z.object({
-    dobYear: z.string().min(1, "Year is required."),
-    dobMonth: z.string().min(1, "Month is required."),
-    dobDay: z.string().optional(), // Day is no longer required from the form
-    gender: z.enum(["M", "F", "O"], { required_error: "Gender is required."}),
-});
-
+// Step 4 schema is removed as it's being hardcoded.
 type FormData = z.infer<typeof stepOneSchema> & 
                 z.infer<typeof stepTwoSchema> & 
-                z.infer<typeof stepThreeSchema> & 
-                z.infer<typeof stepFourSchema>;
+                z.infer<typeof stepThreeSchema>;
 
 // Hardcoded data
 const doctors: { id: string; name: string; specialty: string; clinicId: string; }[] = [
@@ -111,9 +104,6 @@ const doctors: { id: string; name: string; specialty: string; clinicId: string; 
     { id: '175949152812334', name: 'Dr. Renjith A.', specialty: 'Orthopedics', clinicId: '673d87fdaa91c2001d716c91'},
     { id: '175949162376135', name: 'Dr. K.Y.Sanjay', specialty: 'Orthopedics', clinicId: '673d87fdaa91c2001d716c91'},
 ];
-
-const years = Array.from({ length: 100 }, (_, i) => getYear(new Date()) - i);
-const months = Array.from({ length: 12 }, (_, i) => i + 1);
 
 // Reducer function for state management
 const initialState: State = {
@@ -447,7 +437,8 @@ const Step3DateTime = ({ dispatch, formData }: { dispatch: React.Dispatch<Action
 
     const onStepSubmit = (data: z.infer<typeof stepThreeSchema>) => {
         dispatch({ type: 'SET_FORM_DATA', payload: data });
-        dispatch({ type: 'NEXT_STEP' });
+        // Instead of NEXT_STEP, we now go directly to submission (step 5)
+        dispatch({ type: 'SET_STEP', payload: 5 });
     };
 
     return (
@@ -486,67 +477,7 @@ const Step3DateTime = ({ dispatch, formData }: { dispatch: React.Dispatch<Action
                 </div>
                 <DialogFooter>
                     <Button variant="outline" onClick={() => dispatch({ type: 'PREV_STEP' })} type="button" size="lg" className="text-lg h-12">Back</Button>
-                    <Button type="submit" disabled={!selectedTime} size="lg" className="text-lg h-12">Next</Button>
-                </DialogFooter>
-            </form>
-        </>
-    );
-};
-
-const Step4ConfirmDetails = ({ dispatch, formData }: { dispatch: React.Dispatch<Action>, formData: Partial<FormData> }) => {
-    const { register, handleSubmit, control, formState: { errors }, watch, setValue } = useForm<z.infer<typeof stepFourSchema>>({
-        resolver: zodResolver(stepFourSchema),
-        defaultValues: {
-            dobYear: formData.dobYear || '',
-            dobMonth: formData.dobMonth || '',
-            gender: formData.gender || undefined,
-        }
-    });
-
-    const onStepSubmit = (data: z.infer<typeof stepFourSchema>) => {
-        dispatch({ type: 'SET_FORM_DATA', payload: { ...data, dobDay: '1' } });
-        dispatch({ type: 'SET_STEP', payload: 5 }); // Go to final submission step
-    };
-
-    return (
-        <>
-            <DialogHeader>
-                <DialogTitle className="text-2xl">Confirm Your Details</DialogTitle>
-                <DialogDescription className="text-lg">Please provide your date of birth and gender to complete the booking.</DialogDescription>
-            </DialogHeader>
-            <form onSubmit={handleSubmit(onStepSubmit)}>
-                <div className="space-y-6 py-4">
-                     <div className="space-y-2">
-                         <label className="text-lg">Date of Birth</label>
-                         <div className="grid grid-cols-2 gap-2">
-                             <Select onValueChange={(v) => setValue('dobYear', v, {shouldValidate: true})} value={watch('dobYear')}>
-                                <SelectTrigger className="h-14 text-lg"><SelectValue placeholder="Year" /></SelectTrigger>
-                                <SelectContent>{years.map(y => <SelectItem key={y} value={String(y)}>{y}</SelectItem>)}</SelectContent>
-                             </Select>
-                             <Select onValueChange={(v) => setValue('dobMonth', v, {shouldValidate: true})} value={watch('dobMonth')}>
-                                <SelectTrigger className="h-14 text-lg"><SelectValue placeholder="Month" /></SelectTrigger>
-                                <SelectContent>{months.map(m => <SelectItem key={m} value={String(m)}>{m}</SelectItem>)}</SelectContent>
-                             </Select>
-                         </div>
-                         {errors.dobYear && <p className="text-sm font-medium text-muted-foreground mt-1">{errors.dobYear.message}</p>}
-                         {errors.dobMonth && <p className="text-sm font-medium text-muted-foreground mt-1">{errors.dobMonth.message}</p>}
-                     </div>
-                     <div className="space-y-2">
-                         <label className="text-lg">Gender</label>
-                         <Select onValueChange={(v) => setValue('gender', v as "M" | "F" | "O", {shouldValidate: true})} value={watch('gender')}>
-                            <SelectTrigger className="h-14 text-lg"><SelectValue placeholder="Select gender" /></SelectTrigger>
-                            <SelectContent>
-                                <SelectItem value="M">Male</SelectItem>
-                                <SelectItem value="F">Female</SelectItem>
-                                <SelectItem value="O">Other</SelectItem>
-                            </SelectContent>
-                         </Select>
-                         {errors.gender && <p className="text-sm font-medium text-muted-foreground mt-1">{errors.gender.message}</p>}
-                     </div>
-                </div>
-                <DialogFooter>
-                    <Button variant="outline" onClick={() => dispatch({ type: 'PREV_STEP' })} type="button" size="lg" className="text-lg h-12">Back</Button>
-                    <Button type="submit" size="lg" className="text-lg h-12">Confirm Booking</Button>
+                    <Button type="submit" disabled={!selectedTime} size="lg" className="text-lg h-12">Confirm Booking</Button>
                 </DialogFooter>
             </form>
         </>
@@ -578,7 +509,7 @@ export default function BookingDialog({ children, initialFirstName, initialPhone
   }, [open, initialFirstName, initialPhone]);
   
   useEffect(() => {
-    // This effect runs when the user proceeds from step 4
+    // This effect runs when the user proceeds from step 3 to the new "submission" step 5
     if (state.step === 5 && !state.isLoading && state.bookingStatus === 'idle') {
       handleSubmitBooking();
     }
@@ -605,27 +536,14 @@ export default function BookingDialog({ children, initialFirstName, initialPhone
             gender: formatGenderAPI(state.foundPatientProfile.gender),
         };
     } else {
-        // Validate final step data before assembling payload
-        const finalStepData = {
-            dobYear: state.formData.dobYear,
-            dobMonth: state.formData.dobMonth,
-            dobDay: state.formData.dobDay,
-            gender: state.formData.gender,
-        };
-        const validationResult = stepFourSchema.safeParse(finalStepData);
-        if(!validationResult.success) {
-            toast.error("Please fill in all required patient details.");
-            dispatch({ type: 'SET_LOADING', payload: false });
-            dispatch({ type: 'SET_STEP', payload: 4 }); // Send user back to fix errors
-            return;
-        }
-
+        // Hardcode DOB and Gender for new patients
+        const currentDate = new Date();
         patientPayload = {
             firstName: state.formData.firstName,
             lastName: "web",
             phone: state.formData.phone,
-            dob: `${validationResult.data.dobYear}-${String(validationResult.data.dobMonth).padStart(2, '0')}-${String(validationResult.data.dobDay).padStart(2, '0')}`,
-            gender: validationResult.data.gender,
+            dob: format(currentDate, 'yyyy-MM-dd'),
+            gender: "O", // Hardcoded to 'Other'
         };
     }
     
@@ -659,23 +577,8 @@ export default function BookingDialog({ children, initialFirstName, initialPhone
       case 2:
         return <Step2Doctor dispatch={dispatch} formData={state.formData} />;
       case 3:
-         // If a patient profile was found, skip step 4
-         if (state.foundPatientProfile) {
-            const onStepSubmit = (data: z.infer<typeof stepThreeSchema>) => {
-                dispatch({ type: 'SET_FORM_DATA', payload: data });
-                dispatch({ type: 'SET_STEP', payload: 5 }); // Skip to final submission
-            };
-            return <Step3DateTime dispatch={dispatch} formData={state.formData} />;
-         }
          return <Step3DateTime dispatch={dispatch} formData={state.formData} />;
-      case 4:
-         if (state.foundPatientProfile) {
-             // This should ideally not be reached if logic is correct, but as a fallback, submit.
-             handleSubmitBooking();
-             return <div className="flex justify-center items-center p-8"><Loader2 className="h-8 w-8 animate-spin" /></div>;
-         }
-        return <Step4ConfirmDetails dispatch={dispatch} formData={state.formData} />;
-      case 5:
+      case 5: // Step 4 is skipped, we go directly to the confirmation/loading view.
         if (state.isLoading) {
             return <div className="flex justify-center items-center p-20"><Loader2 className="h-12 w-12 animate-spin text-primary" /></div>;
         }
@@ -706,7 +609,9 @@ export default function BookingDialog({ children, initialFirstName, initialPhone
                     <p className="text-center text-red-600 mt-4">{state.bookingResponse?.message}</p>
                  )}
                 <DialogFooter className="mt-6">
-                    <DialogClose asChild><Button type="button" size="lg" className="text-lg h-12 w-full">Close</Button></DialogClose>
+                    <DialogClose asChild>
+                        <Button type="button" size="lg" className="text-lg h-12 w-full">Thank You</Button>
+                    </DialogClose>
                 </DialogFooter>
             </div>
         );

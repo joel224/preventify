@@ -1,6 +1,3 @@
 {
-  "/page": "app/page.js",
-  "/api/search-patient/route": "app/api/search-patient/route.js",
-  "/api/available-slots/route": "app/api/available-slots/route.js",
-  "/api/create-appointment/route": "app/api/create-appointment/route.js"
+  "/page": "app/page.js"
 }
