@@ -164,14 +164,18 @@ interface FoundPatientProfile {
 // =================================================================
 
 const Step1NamePhone = ({ dispatch, initialData }: { dispatch: React.Dispatch<Action>, initialData: Partial<FormData> }) => {
-  const { register, handleSubmit, formState: { errors }, setValue } = useForm<z.infer<typeof stepOneSchema>>({
+  const { register, handleSubmit, formState: { errors }, setValue, watch } = useForm<z.infer<typeof stepOneSchema>>({
     resolver: zodResolver(stepOneSchema),
     defaultValues: {
       firstName: initialData.firstName || '',
       phone: initialData.phone || '',
-    }
+    },
+    mode: 'onChange' // Validate on change to update button state
   });
   const [isSearching, setIsSearching] = useState(false);
+
+  const phoneValue = watch('phone');
+  const isPhoneComplete = phoneValue && phoneValue.length === 10;
 
   useEffect(() => {
     if (initialData.firstName) setValue('firstName', initialData.firstName);
@@ -217,7 +221,7 @@ const Step1NamePhone = ({ dispatch, initialData }: { dispatch: React.Dispatch<Ac
           <div>
             <label htmlFor="firstName" className="text-lg">Full Name</label>
             <Input id="firstName" placeholder="Your full name" {...register("firstName")} className="h-14 text-lg mt-1" />
-            {errors.firstName && <p className="text-sm font-medium text-destructive mt-1">{errors.firstName.message}</p>}
+            {errors.firstName && <p className="text-sm font-medium text-muted-foreground mt-1">{errors.firstName.message}</p>}
           </div>
           <div>
             <label htmlFor="phone" className="text-lg">Phone Number</label>
@@ -236,11 +240,19 @@ const Step1NamePhone = ({ dispatch, initialData }: { dispatch: React.Dispatch<Ac
                 className="pl-14 h-14 text-lg" 
               />
             </div>
-            {errors.phone && <p className="text-sm font-medium text-destructive mt-1">{errors.phone.message}</p>}
+            {errors.phone && <p className="text-sm font-medium text-muted-foreground mt-1">{errors.phone.message}</p>}
           </div>
         </div>
         <DialogFooter>
-          <Button type="submit" disabled={isSearching} size="lg" className="text-lg h-12 w-full">
+          <Button 
+            type="submit" 
+            disabled={!isPhoneComplete || isSearching} 
+            size="lg" 
+            className={cn(
+              "text-lg h-12 w-full transition-colors",
+              isPhoneComplete ? "bg-primary hover:bg-primary/90" : "bg-gray-300 cursor-not-allowed"
+            )}
+          >
             {isSearching ? <Loader2 className="mr-2 h-5 w-5 animate-spin" /> : null}
             Next
           </Button>
@@ -377,7 +389,7 @@ const Step2Doctor = ({ dispatch, formData }: { dispatch: React.Dispatch<Action>,
                         </Command>
                       </PopoverContent>
                     </Popover>
-                    {errors.doctorId && <p className="text-sm font-medium text-destructive mt-1">{errors.doctorId.message}</p>}
+                    {errors.doctorId && <p className="text-sm font-medium text-muted-foreground mt-1">{errors.doctorId.message}</p>}
                     <div className="text-center">
                         <Button variant="link" onClick={() => setShowAiHelp(true)} type="button" className="text-lg">
                             <Sparkles className="mr-2 h-5 w-5" />
@@ -456,7 +468,7 @@ const Step3DateTime = ({ dispatch, formData }: { dispatch: React.Dispatch<Action
                                 <Button type="button" size="lg" className="text-lg h-12" variant={selectedDate && format(selectedDate, 'yyyy-MM-dd') === format(new Date(), 'yyyy-MM-dd') ? 'default' : 'outline'} onClick={() => setValue('date', new Date(), { shouldValidate: true })}>Today</Button>
                                 <Button type="button" size="lg" className="text-lg h-12" variant={selectedDate && format(selectedDate, 'yyyy-MM-dd') === format(addDays(new Date(), 1), 'yyyy-MM-dd') ? 'default' : 'outline'} onClick={() => setValue('date', addDays(new Date(), 1), { shouldValidate: true })}>Tomorrow</Button>
                             </div>
-                            {errors.date && <p className="text-sm font-medium text-destructive text-center pt-2">{errors.date.message}</p>}
+                            {errors.date && <p className="text-sm font-medium text-muted-foreground text-center pt-2">{errors.date.message}</p>}
                         </div>
                         <div className="w-full max-w-sm">
                             <label className="text-center block mb-2 text-lg">Available Slots</label>
@@ -469,7 +481,7 @@ const Step3DateTime = ({ dispatch, formData }: { dispatch: React.Dispatch<Action
                                 ))
                                 : <p className="col-span-3 text-lg text-muted-foreground text-center py-4">{selectedDate ? 'No slots available.' : 'Please select a date.'}</p>}
                             </div>
-                             {errors.time && <p className="text-sm font-medium text-destructive text-center pt-2">{errors.time.message}</p>}
+                             {errors.time && <p className="text-sm font-medium text-muted-foreground text-center pt-2">{errors.time.message}</p>}
                         </div>
                     </div>
                 </div>
@@ -522,9 +534,9 @@ const Step4ConfirmDetails = ({ dispatch, formData }: { dispatch: React.Dispatch<
                                 <SelectContent>{days.map(d => <SelectItem key={d} value={String(d)}>{d}</SelectItem>)}</SelectContent>
                              </Select>
                          </div>
-                         {errors.dobYear && <p className="text-sm font-medium text-destructive mt-1">{errors.dobYear.message}</p>}
-                         {errors.dobMonth && <p className="text-sm font-medium text-destructive mt-1">{errors.dobMonth.message}</p>}
-                         {errors.dobDay && <p className="text-sm font-medium text-destructive mt-1">{errors.dobDay.message}</p>}
+                         {errors.dobYear && <p className="text-sm font-medium text-muted-foreground mt-1">{errors.dobYear.message}</p>}
+                         {errors.dobMonth && <p className="text-sm font-medium text-muted-foreground mt-1">{errors.dobMonth.message}</p>}
+                         {errors.dobDay && <p className="text-sm font-medium text-muted-foreground mt-1">{errors.dobDay.message}</p>}
                      </div>
                      <div className="space-y-2">
                          <label className="text-lg">Gender</label>
@@ -536,7 +548,7 @@ const Step4ConfirmDetails = ({ dispatch, formData }: { dispatch: React.Dispatch<
                                 <SelectItem value="O">Other</SelectItem>
                             </SelectContent>
                          </Select>
-                         {errors.gender && <p className="text-sm font-medium text-destructive mt-1">{errors.gender.message}</p>}
+                         {errors.gender && <p className="text-sm font-medium text-muted-foreground mt-1">{errors.gender.message}</p>}
                      </div>
                 </div>
                 <DialogFooter>
@@ -729,5 +741,3 @@ export default function BookingDialog({ children, initialFirstName, initialPhone
     </Dialog>
   );
 }
-
-    
