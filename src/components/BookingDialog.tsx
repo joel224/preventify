@@ -159,7 +159,7 @@ const Step1NamePhone = ({ dispatch, initialData }: { dispatch: React.Dispatch<Ac
       firstName: initialData.firstName || '',
       phone: initialData.phone || '',
     },
-    mode: 'onChange' // Validate on change to update button state
+    mode: 'onChange'
   });
   const [isSearching, setIsSearching] = useState(false);
 
@@ -623,17 +623,19 @@ export default function BookingDialog({ children, initialFirstName, initialPhone
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>{children}</DialogTrigger>
-      <DialogContent className="sm:max-w-[80vw] lg:max-w-4xl p-0">
-        <div className="text-center py-8 border-b border-gray-200">
-          <p className='text-xl text-gray-500'>Prefer to book by phone?</p>
-          <a href="tel:+918129334858" className="flex items-center justify-center gap-2 text-4xl font-bold text-preventify-blue hover:text-preventify-dark-blue transition-colors">
-            <Phone className="w-8 h-8"/>
-            +91 8129334858
-          </a>
-          <p className='text-sm text-gray-400 mt-1'>For emergencies, please call this number directly.</p>
-        </div>
-        <div className="px-8 pb-8 pt-4">
-            {renderContent()}
+      <DialogContent className="w-screen h-screen max-w-full rounded-none border-0 p-0 flex items-center justify-center">
+        <div className="w-full max-w-xl">
+          <div className="text-center py-8 border-b border-gray-200">
+            <p className='text-xl text-gray-500'>Prefer to book by phone?</p>
+            <a href="tel:+918129334858" className="flex items-center justify-center gap-2 text-4xl font-bold text-preventify-blue hover:text-preventify-dark-blue transition-colors">
+              <Phone className="w-8 h-8"/>
+              +91 8129334858
+            </a>
+            <p className='text-sm text-gray-400 mt-1'>For emergencies, please call this number directly.</p>
+          </div>
+          <div className="px-8 pb-8 pt-4">
+              {renderContent()}
+          </div>
         </div>
       </DialogContent>
     </Dialog>
