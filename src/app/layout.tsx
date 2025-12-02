@@ -11,6 +11,7 @@ import Footer from "@/components/Footer";
 import SubscriptionButton from "@/components/SubscriptionButton";
 import MarqueeText from "@/components/home/MarqueeText";
 import WebsiteSharpener from '@/components/WebsiteSharpener';
+import Script from "next/script";
 
 const inter = Inter({ 
   subsets: ["latin"],
@@ -46,6 +47,10 @@ export default function RootLayout({
         </TooltipProvider>
         <SubscriptionButton />
         <WebsiteSharpener />
+        <Script 
+          src="https://unpkg.com/@lottiefiles/dotlottie-wc@0.8.5/dist/dotlottie-wc.js" 
+          type="module"
+        />
       </body>
     </html>
   );

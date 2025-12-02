@@ -1,4 +1,3 @@
-
 'use client';
 
 import {
@@ -44,6 +43,20 @@ import { DialogTrigger } from '@radix-ui/react-dialog';
 import { Textarea } from './ui/textarea';
 import useSWR from 'swr';
 
+// This is required to make TypeScript happy about using the web component
+declare global {
+  namespace JSX {
+    interface IntrinsicElements {
+      'dotlottie-wc': React.DetailedHTMLProps<React.HTMLAttributes<HTMLElement> & {
+        src: string;
+        autoplay?: boolean;
+        loop?: boolean;
+        style?: React.CSSProperties;
+      }, HTMLElement>;
+    }
+  }
+}
+
 // =================================================================
 // TYPES AND SCHEMAS
 // =================================================================
@@ -84,7 +97,6 @@ const stepThreeSchema = z.object({
   time: z.string().min(1, 'Please select a time slot.'),
 });
 
-// Step 4 schema is removed as it's being hardcoded.
 type FormData = z.infer<typeof stepOneSchema> & 
                 z.infer<typeof stepTwoSchema> & 
                 z.infer<typeof stepThreeSchema>;
@@ -580,7 +592,16 @@ export default function BookingDialog({ children, initialFirstName, initialPhone
          return <Step3DateTime dispatch={dispatch} formData={state.formData} />;
       case 5: // Step 4 is skipped, we go directly to the confirmation/loading view.
         if (state.isLoading) {
-            return <div className="flex justify-center items-center p-20"><Loader2 className="h-12 w-12 animate-spin text-primary" /></div>;
+            return (
+              <div className="flex flex-col justify-center items-center p-20">
+                <dotlottie-wc 
+                  src="https://lottie.host/0083ce0e-679f-4d56-ba14-06430aaf6d50/Gj92cCYgEe.lottie" 
+                  style={{ width: '300px', height: '300px' }}
+                  autoplay 
+                  loop>
+                </dotlottie-wc>
+              </div>
+            );
         }
         return (
             <div className="p-8">
