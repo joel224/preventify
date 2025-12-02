@@ -217,19 +217,9 @@ const Step1NamePhone = ({ dispatch, initialData }: { dispatch: React.Dispatch<Ac
         <DialogTitle className="text-2xl">Book an Appointment</DialogTitle>
         <DialogDescription className="text-lg">Please provide your details to begin.</DialogDescription>
       </DialogHeader>
-       <div className="relative mx-auto w-40 h-40">
-        <video
-          src="https://cdnl.iconscout.com/lottie/premium/thumb/doctor-doing-elderly-care-consultation-animation-gif-download-11965588.mp4"
-          autoPlay
-          loop
-          muted
-          playsInline
-          className="w-full h-full object-cover"
-        ></video>
-        <div className="absolute inset-0 bg-transparent"></div>
-      </div>
-      <form onSubmit={handleSubmit(onStepSubmit)}>
-        <div className="space-y-6 py-4">
+      
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+        <form onSubmit={handleSubmit(onStepSubmit)} className="space-y-6 py-4">
           <div>
             <label htmlFor="firstName" className="text-lg">Full Name</label>
             <Input id="firstName" placeholder="Your full name" {...register("firstName")} className="h-14 text-lg mt-1" />
@@ -254,22 +244,34 @@ const Step1NamePhone = ({ dispatch, initialData }: { dispatch: React.Dispatch<Ac
             </div>
             {errors.phone && <p className="text-sm font-medium text-muted-foreground mt-1">{errors.phone.message}</p>}
           </div>
+          <DialogFooter>
+            <Button 
+              type="submit" 
+              disabled={!isPhoneComplete || isSearching} 
+              size="lg" 
+              className={cn(
+                "text-lg h-12 w-full transition-colors",
+                isPhoneComplete ? "bg-primary hover:bg-primary/90" : "bg-gray-300 cursor-not-allowed"
+              )}
+            >
+              {isSearching ? <Loader2 className="mr-2 h-5 w-5 animate-spin" /> : null}
+              Next
+            </Button>
+          </DialogFooter>
+        </form>
+
+        <div className="relative w-full h-64 md:h-full hidden md:block">
+            <video
+            src="https://cdnl.iconscout.com/lottie/premium/thumb/doctor-doing-elderly-care-consultation-animation-gif-download-11965588.mp4"
+            autoPlay
+            loop
+            muted
+            playsInline
+            className="w-full h-full object-contain"
+            ></video>
+            <div className="absolute inset-0 bg-transparent"></div>
         </div>
-        <DialogFooter>
-          <Button 
-            type="submit" 
-            disabled={!isPhoneComplete || isSearching} 
-            size="lg" 
-            className={cn(
-              "text-lg h-12 w-full transition-colors",
-              isPhoneComplete ? "bg-primary hover:bg-primary/90" : "bg-gray-300 cursor-not-allowed"
-            )}
-          >
-            {isSearching ? <Loader2 className="mr-2 h-5 w-5 animate-spin" /> : null}
-            Next
-          </Button>
-        </DialogFooter>
-      </form>
+      </div>
     </>
   );
 };
@@ -656,7 +658,7 @@ export default function BookingDialog({ children, initialFirstName, initialPhone
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>{children}</DialogTrigger>
       <DialogContent className="w-screen h-screen max-w-full rounded-none border-0 p-0 flex items-center justify-center">
-        <div className="w-full max-w-xl">
+        <div className="w-full max-w-2xl">
           <div className="text-center py-8 border-b border-gray-200">
             <p className='text-xl text-gray-500'>Prefer to book by phone?</p>
             <a href="tel:+918129334858" className="flex items-center justify-center gap-2 text-4xl font-bold text-preventify-blue hover:text-preventify-dark-blue transition-colors">
