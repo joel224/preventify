@@ -236,7 +236,11 @@ const Step1NamePhone = ({ dispatch, initialData }: { dispatch: React.Dispatch<Ac
                 placeholder="9876543210" 
                 {...register("phone")}
                 onChange={(e) => {
-                  const value = e.target.value.replace(/\D/g, '').slice(0, 10);
+                  let value = e.target.value.replace(/\D/g, '');
+                  if (value.length === 11 && value.startsWith('0')) {
+                    value = value.substring(1);
+                  }
+                  value = value.slice(0, 10);
                   setValue('phone', value, { shouldValidate: true });
                 }}
                 className="pl-14 h-14 text-lg" 
@@ -475,29 +479,42 @@ const Step3DateTime = ({ dispatch, formData }: { dispatch: React.Dispatch<Action
                 </DialogDescription>
             </DialogHeader>
             <form onSubmit={handleSubmit(onStepSubmit)}>
-                <div className="space-y-6 py-4">
-                    <div className="flex flex-col items-center gap-6">
-                        <div className="w-full max-w-sm">
-                            <label className="text-center block mb-2 text-lg">Date</label>
-                            <div className="grid grid-cols-2 gap-4">
-                                <Button type="button" size="lg" className="text-lg h-12" variant={selectedDate && format(selectedDate, 'yyyy-MM-dd') === format(new Date(), 'yyyy-MM-dd') ? 'default' : 'outline'} onClick={() => setValue('date', new Date(), { shouldValidate: true })}>Today</Button>
-                                <Button type="button" size="lg" className="text-lg h-12" variant={selectedDate && format(selectedDate, 'yyyy-MM-dd') === format(addDays(new Date(), 1), 'yyyy-MM-dd') ? 'default' : 'outline'} onClick={() => setValue('date', addDays(new Date(), 1), { shouldValidate: true })}>Tomorrow</Button>
+                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center py-4">
+                    <div className="space-y-6">
+                        <div className="flex flex-col items-center gap-6">
+                            <div className="w-full max-w-sm">
+                                <label className="text-center block mb-2 text-lg">Date</label>
+                                <div className="grid grid-cols-2 gap-4">
+                                    <Button type="button" size="lg" className="text-lg h-12" variant={selectedDate && format(selectedDate, 'yyyy-MM-dd') === format(new Date(), 'yyyy-MM-dd') ? 'default' : 'outline'} onClick={() => setValue('date', new Date(), { shouldValidate: true })}>Today</Button>
+                                    <Button type="button" size="lg" className="text-lg h-12" variant={selectedDate && format(selectedDate, 'yyyy-MM-dd') === format(addDays(new Date(), 1), 'yyyy-MM-dd') ? 'default' : 'outline'} onClick={() => setValue('date', addDays(new Date(), 1), { shouldValidate: true })}>Tomorrow</Button>
+                                </div>
+                                {errors.date && <p className="text-sm font-medium text-muted-foreground text-center pt-2">{errors.date.message}</p>}
                             </div>
-                            {errors.date && <p className="text-sm font-medium text-muted-foreground text-center pt-2">{errors.date.message}</p>}
-                        </div>
-                        <div className="w-full max-w-sm">
-                            <label className="text-center block mb-2 text-lg">Available Slots</label>
-                            <div className="grid grid-cols-3 gap-2 max-h-[250px] overflow-y-auto pr-2">
-                                {slotsLoading ? <div className="col-span-3 flex justify-center items-center h-24"><Loader2 className="h-8 w-8 animate-spin text-primary" /></div>
-                                : hourlySlots.length > 0 ? hourlySlots.map((slot) => (
-                                    <Button key={slot.hour} variant={selectedTime && getHours(parseISO(selectedTime)) === slot.hour ? 'default' : 'outline'} onClick={() => handleHourSelect(slot.firstAvailableSlot)} className="w-full h-14 text-lg" type="button">
-                                        {format(setHours(new Date(), slot.hour), 'ha')}
-                                    </Button>
-                                ))
-                                : <p className="col-span-3 text-lg text-muted-foreground text-center py-4">{selectedDate ? 'No slots available.' : 'Please select a date.'}</p>}
+                            <div className="w-full max-w-sm">
+                                <label className="text-center block mb-2 text-lg">Available Slots</label>
+                                <div className="grid grid-cols-3 gap-2 max-h-[250px] overflow-y-auto pr-2">
+                                    {slotsLoading ? <div className="col-span-3 flex justify-center items-center h-24"><Loader2 className="h-8 w-8 animate-spin text-primary" /></div>
+                                    : hourlySlots.length > 0 ? hourlySlots.map((slot) => (
+                                        <Button key={slot.hour} variant={selectedTime && getHours(parseISO(selectedTime)) === slot.hour ? 'default' : 'outline'} onClick={() => handleHourSelect(slot.firstAvailableSlot)} className="w-full h-14 text-lg" type="button">
+                                            {format(setHours(new Date(), slot.hour), 'ha')}
+                                        </Button>
+                                    ))
+                                    : <p className="col-span-3 text-lg text-muted-foreground text-center py-4">{selectedDate ? 'No slots available.' : 'Please select a date.'}</p>}
+                                </div>
+                                {errors.time && <p className="text-sm font-medium text-muted-foreground text-center pt-2">{errors.time.message}</p>}
                             </div>
-                             {errors.time && <p className="text-sm font-medium text-muted-foreground text-center pt-2">{errors.time.message}</p>}
                         </div>
+                    </div>
+                     <div className="relative w-full h-64 md:h-full hidden md:block">
+                        <video
+                            src="https://cdnl.iconscout.com/lottie/premium/thumb/parents-love-for-newborn-animation-gif-download-12710988.mp4"
+                            autoPlay
+                            loop
+                            muted
+                            playsInline
+                            className="w-full h-full object-contain"
+                        ></video>
+                        <div className="absolute inset-0 bg-transparent"></div>
                     </div>
                 </div>
                 <DialogFooter>
@@ -658,14 +675,14 @@ export default function BookingDialog({ children, initialFirstName, initialPhone
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>{children}</DialogTrigger>
       <DialogContent className="w-screen h-screen max-w-full rounded-none border-0 p-0 flex items-center justify-center">
-        <div className="w-full max-w-2xl">
+        <div className="w-full max-w-4xl">
           <div className="text-center py-8 border-b border-gray-200">
             <p className='text-xl text-gray-500'>Prefer to book by phone?</p>
             <a href="tel:+918129334858" className="flex items-center justify-center gap-2 text-4xl font-bold text-preventify-blue hover:text-preventify-dark-blue transition-colors">
               <Phone className="w-8 h-8"/>
               +91 8129334858
             </a>
-            <p className='text-sm text-gray-400 mt-1'>For emergencies, please call this number directly.</p>
+            <p className='text-sm text-gray-400 mt-1'>please click this number to call directly.</p>
           </div>
           <div className="px-8 pb-8 pt-4">
               {renderContent()}
