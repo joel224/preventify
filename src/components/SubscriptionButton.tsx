@@ -1,7 +1,7 @@
 
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Star, CheckCircle2 } from "lucide-react";
 import {
@@ -11,7 +11,6 @@ import {
   DialogHeader,
   DialogTitle,
   DialogDescription,
-  DialogTrigger,
 } from "@/components/ui/dialog";
 import Image from "next/image";
 import Link from "next/link";
@@ -19,6 +18,7 @@ import Link from "next/link";
 const SubscriptionButton = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
+  const timerRef = useRef<NodeJS.Timeout | null>(null);
 
   const benefits = [
     { name: "Unlimited Doctor Visits", detail: "Consult with our General Physicians and Paediatricians as often as you need." },
@@ -26,6 +26,19 @@ const SubscriptionButton = () => {
     { name: "Family Plan Available", detail: "Extend the same great benefits to your entire family for complete peace of mind." },
     { name: "Access to Specialists", detail: "Get seamless referrals to specialists within the Preventify network." },
   ];
+
+  // Auto-open after 60 seconds
+  useEffect(() => {
+    timerRef.current = setTimeout(() => {
+      setIsOpen(true);
+    }, 60000); // 60 seconds
+
+    return () => {
+      if (timerRef.current) {
+        clearTimeout(timerRef.current);
+      }
+    };
+  }, []);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -40,24 +53,36 @@ const SubscriptionButton = () => {
     };
   }, []);
 
+  const handleMouseEnter = () => {
+    setIsOpen(true);
+    // Clear the auto-open timer if user interacts with it first
+    if (timerRef.current) {
+      clearTimeout(timerRef.current);
+    }
+  };
+
+  const handleMouseLeave = () => {
+    setIsOpen(false);
+  };
+
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
-      <DialogTrigger asChild>
-        <div
-          className={`fixed bottom-4 right-4 z-50 origin-bottom-right transition-transform duration-300 ease-in-out ${
-            isScrolled ? "scale-75" : "scale-100"
-          }`}
-          style={{ backfaceVisibility: 'hidden' }}
+      <div
+        className={`fixed bottom-4 right-4 z-50 origin-bottom-right transition-transform duration-300 ease-in-out ${
+          isScrolled ? "scale-75" : "scale-100"
+        }`}
+        style={{ backfaceVisibility: 'hidden' }}
+        onMouseEnter={handleMouseEnter}
+        onMouseLeave={handleMouseLeave}
+      >
+        <Button
+          className="w-24 h-24 rounded-full bg-primary text-primary-foreground hover:bg-primary/90 shadow-xl border-2 border-white/50 flex-col gap-1 animate-vibrate"
+          aria-label="Annual Subscription"
         >
-          <Button
-            className="w-24 h-24 rounded-full bg-primary text-primary-foreground hover:bg-primary/90 shadow-xl border-2 border-white/50 flex-col gap-1 animate-vibrate"
-            aria-label="Annual Subscription"
-          >
-              <Star className="h-7 w-7" />
-              <span className="text-xs font-medium -mt-1">Annual<br/>Subscription</span>
-          </Button>
-        </div>
-      </DialogTrigger>
+            <Star className="h-7 w-7" />
+            <span className="text-xs font-medium -mt-1">Annual<br/>Subscription</span>
+        </Button>
+      </div>
       <DialogContent className="sm:max-w-3xl w-[95vw] p-0 rounded-lg">
         <div className="grid grid-cols-1 md:grid-cols-2">
             <div className="p-8 md:p-10 flex flex-col justify-center">
