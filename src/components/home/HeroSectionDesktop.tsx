@@ -3,6 +3,8 @@
 import * as React from "react";
 import Image from "next/image";
 import TextShine from "../ui/TextShine";
+import { Button } from "@/components/ui/button";
+import Link from "next/link";
 
 const { useRef, useState, useEffect } = React;
 
@@ -143,7 +145,7 @@ export default function HeroSectionContent() {
               {/* -------------------------------------------------------
                  LEFT: HEADLINE (Changes with slide)
                  ------------------------------------------------------- */}
-              <div className="lg:col-span-5 z-20">
+              <div className="lg:col-span-5 z-20 relative">
                 <div
                   className="relative"
                   style={{
@@ -166,6 +168,20 @@ export default function HeroSectionContent() {
                     {currentHeadline.text}
                   </h1>
                 </div>
+
+                {/* Conditionally rendered button for the second slide */}
+                {currentImageIndex === 1 && (
+                  <div className="absolute top-1/2 left-0 pointer-events-auto" style={{ transform: `translate(60px, -60px)` }}>
+                      <Link href="/savings">
+                        <Button
+                            size="lg"
+                            className="bg-preventify-blue hover:bg-preventify-dark-blue text-white font-semibold text-lg py-6 px-8 rounded-full shadow-lg"
+                        >
+                            Sugam Card
+                        </Button>
+                      </Link>
+                  </div>
+                )}
               </div>
 
               {/* -------------------------------------------------------
