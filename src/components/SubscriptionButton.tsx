@@ -61,10 +61,6 @@ const SubscriptionButton = () => {
     }
   };
 
-  const handleMouseLeave = () => {
-    setIsOpen(false);
-  };
-
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <div
@@ -73,7 +69,6 @@ const SubscriptionButton = () => {
         }`}
         style={{ backfaceVisibility: 'hidden' }}
         onMouseEnter={handleMouseEnter}
-        onMouseLeave={handleMouseLeave}
       >
         <Button
           className="w-24 h-24 rounded-full bg-primary text-primary-foreground hover:bg-primary/90 shadow-xl border-2 border-white/50 flex-col gap-1 animate-vibrate"
