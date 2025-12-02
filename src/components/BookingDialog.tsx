@@ -217,6 +217,17 @@ const Step1NamePhone = ({ dispatch, initialData }: { dispatch: React.Dispatch<Ac
         <DialogTitle className="text-2xl">Book an Appointment</DialogTitle>
         <DialogDescription className="text-lg">Please provide your details to begin.</DialogDescription>
       </DialogHeader>
+       <div className="relative mx-auto w-40 h-40">
+        <video
+          src="https://cdnl.iconscout.com/lottie/premium/thumb/doctor-doing-elderly-care-consultation-animation-gif-download-11965588.mp4"
+          autoPlay
+          loop
+          muted
+          playsInline
+          className="w-full h-full object-cover"
+        ></video>
+        <div className="absolute inset-0 bg-transparent"></div>
+      </div>
       <form onSubmit={handleSubmit(onStepSubmit)}>
         <div className="space-y-6 py-4">
           <div>
