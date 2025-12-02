@@ -19,7 +19,7 @@ const HeroSectionMobile = () => {
     <section className="relative w-full overflow-hidden hero-gradient">
       <Carousel
         className="w-full"
-        plugins={[Autoplay({ delay: 2000, stopOnInteraction: true })]}
+        plugins={[Autoplay({ delay: 5000, stopOnInteraction: true })]}
         opts={{
           loop: true,
         }}
