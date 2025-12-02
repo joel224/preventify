@@ -112,7 +112,7 @@ const SubscriptionButton = () => {
             </div>
             <div className="relative aspect-square md:aspect-auto hidden md:block">
                 <Image
-                    src="/card.jpg"
+                    src="/card.webp"
                     alt="One Health Member Plan Card"
                     fill
                     className="rounded-r-lg object-cover"
