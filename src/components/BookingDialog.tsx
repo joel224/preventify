@@ -466,7 +466,6 @@ const Step3DateTime = ({ dispatch, formData }: { dispatch: React.Dispatch<Action
 
     const onStepSubmit = (data: z.infer<typeof stepThreeSchema>) => {
         dispatch({ type: 'SET_FORM_DATA', payload: data });
-        // Instead of NEXT_STEP, we now go directly to submission (step 5)
         dispatch({ type: 'SET_STEP', payload: 5 });
     };
 
@@ -479,7 +478,7 @@ const Step3DateTime = ({ dispatch, formData }: { dispatch: React.Dispatch<Action
                 </DialogDescription>
             </DialogHeader>
             <form onSubmit={handleSubmit(onStepSubmit)}>
-                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center py-4">
+                 <div className="grid grid-cols-1 items-center py-4">
                     <div className="space-y-6">
                         <div className="flex flex-col items-center gap-6">
                             <div className="w-full max-w-sm">
@@ -504,17 +503,6 @@ const Step3DateTime = ({ dispatch, formData }: { dispatch: React.Dispatch<Action
                                 {errors.time && <p className="text-sm font-medium text-muted-foreground text-center pt-2">{errors.time.message}</p>}
                             </div>
                         </div>
-                    </div>
-                     <div className="relative w-full h-64 md:h-full hidden md:block">
-                        <video
-                            src="https://cdnl.iconscout.com/lottie/premium/thumb/parents-love-for-newborn-animation-gif-download-12710988.mp4"
-                            autoPlay
-                            loop
-                            muted
-                            playsInline
-                            className="w-full h-full object-contain"
-                        ></video>
-                        <div className="absolute inset-0 bg-transparent"></div>
                     </div>
                 </div>
                 <DialogFooter>
