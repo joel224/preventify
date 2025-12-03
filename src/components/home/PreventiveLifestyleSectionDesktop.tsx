@@ -45,7 +45,7 @@ const PreventiveLifestyleSectionDesktop = () => {
                 <div className="pt-24 md:pt-32 grid grid-cols-1 gap-8 md:gap-12 items-center">
                     <div className="text-center">
 
-                        <div className="max-w-6xl mx-auto rounded-xl shadow-lg -mt-72 flex">
+                        <div className="max-w-5xl mx-auto rounded-xl shadow-lg -mt-72 flex">
                             <div className="bg-[#004c9e] text-white p-5 rounded-l-xl flex-grow">
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
                                     {/* Name Input */}
