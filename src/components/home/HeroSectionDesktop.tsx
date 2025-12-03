@@ -198,7 +198,7 @@ export default function HeroSectionContent() {
                   {currentImageIndex === 0 ? (
                      <Link href="/savings" className="flex items-center group">
                         <span 
-                           className="font-semibold whitespace-nowrap text-[#bd8053] transition-colors group-hover:text-[#25338e]"
+                           className="font-semibold whitespace-nowrap text-[#bd8053] transition-colors group-hover:text-[#111b5c]"
                            style={{
                               fontSize: currentClinicText.fontSize,
                               opacity: currentClinicText.opacity,
