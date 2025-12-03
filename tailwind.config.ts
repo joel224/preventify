@@ -156,7 +156,7 @@ export default {
                     '96%': { color: 'hsl(var(--primary))' },
                 },
                 'subtle-move-right': {
-                    '0%, 100%': { transform: 'translateX(0)' },
+                    '5%, 100%': { transform: 'translateX(0)' },
                     '50%': { transform: 'translateX(4px)' },
                 },
             },

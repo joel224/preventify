@@ -176,7 +176,7 @@ export default function HeroSectionContent() {
                       <Link href="/savings">
                         <Button
                             size="lg"
-                            className="bg-preventify-blue hover:bg-preventify-dark-blue text-white font-semibold text-lg py-6 px-8 rounded-full shadow-lg"
+                            className="bg-preventify-blue hover:bg-[#c8804c] text-white font-semibold text-lg py-6 px-8 rounded-full shadow-lg"
                         >
                             Sugam Card
                         </Button>
@@ -198,7 +198,7 @@ export default function HeroSectionContent() {
                   {currentImageIndex === 0 ? (
                      <Link href="/savings" className="flex items-center group">
                         <span 
-                           className="font-semibold whitespace-nowrap text-preventify-dark-blue transition-colors group-hover:text-preventify-blue"
+                           className="font-semibold whitespace-nowrap text-[#bd8053] transition-colors group-hover:text-preventify-blue"
                            style={{
                               fontSize: currentClinicText.fontSize,
                               opacity: currentClinicText.opacity,
@@ -206,7 +206,7 @@ export default function HeroSectionContent() {
                         >
                             {currentClinicText.text}
                         </span>
-                        <ChevronRight className="w-8 h-8 text-preventify-green animate-subtle-move-right" />
+                        <ChevronRight className="w-8 h-8 text-preventify-dark-blue animate-subtle-move-right pr-2" />
                      </Link>
                    ) : (
                       <span
