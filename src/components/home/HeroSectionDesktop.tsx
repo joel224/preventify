@@ -5,6 +5,7 @@ import Image from "next/image";
 import TextShine from "../ui/TextShine";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
+import { ChevronRight } from "lucide-react";
 
 const { useRef, useState, useEffect } = React;
 
@@ -187,22 +188,37 @@ export default function HeroSectionContent() {
               {/* -------------------------------------------------------
                  MIDDLE: "CLINIC" TEXT (Changes with slide)
                  ------------------------------------------------------- */}
-              <div className="hidden lg:flex lg:col-span-3 justify-center items-center z-10">
+              <div className="hidden lg:flex lg:col-span-3 justify-center items-center z-10 pointer-events-auto">
                 <div
                   style={{
                     transform: `translate(${currentClinicText.x}px, ${currentClinicText.y}px) scale(${currentClinicText.scale})`,
                     transformOrigin: "center center",
                   }}
                 >
-                  <TextShine
-                    className="font-semibold select-none pointer-events-none whitespace-nowrap text-preventify-dark-gray"
-                    style={{
-                      fontSize: currentClinicText.fontSize,
-                      opacity: currentClinicText.opacity,
-                    }}
-                  >
-                    {currentClinicText.text}
-                  </TextShine>
+                  {currentImageIndex === 0 ? (
+                     <Link href="/savings" className="flex items-center group">
+                        <span 
+                           className="font-semibold whitespace-nowrap text-preventify-dark-blue transition-colors group-hover:text-preventify-blue"
+                           style={{
+                              fontSize: currentClinicText.fontSize,
+                              opacity: currentClinicText.opacity,
+                           }}
+                        >
+                            {currentClinicText.text}
+                        </span>
+                        <ChevronRight className="w-8 h-8 text-preventify-green animate-subtle-move-right" />
+                     </Link>
+                   ) : (
+                      <span
+                        className="font-semibold select-none pointer-events-none whitespace-nowrap text-preventify-dark-gray"
+                        style={{
+                            fontSize: currentClinicText.fontSize,
+                            opacity: currentClinicText.opacity,
+                        }}
+                      >
+                         {currentClinicText.text}
+                      </span>
+                  )}
                 </div>
               </div>
 

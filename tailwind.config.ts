@@ -154,7 +154,11 @@ export default {
                 'emergency-blink': {
                     '0%, 95%, 100%': { color: 'white' },
                     '96%': { color: 'hsl(var(--primary))' },
-                }
+                },
+                'subtle-move-right': {
+                    '0%, 100%': { transform: 'translateX(0)' },
+                    '50%': { transform: 'translateX(4px)' },
+                },
             },
             animation: {
                 'accordion-down': 'accordion-down 0.2s ease-out',
@@ -164,6 +168,7 @@ export default {
                 'shimmer-reveal': 'shimmer-reveal 1s ease-out forwards',
                 'vibrate': 'vibrate 4s ease-in-out infinite',
                 'emergency-blink': 'emergency-blink 2s ease-out infinite',
+                'subtle-move-right': 'subtle-move-right 2s ease-in-out infinite',
             },
             fontFamily: {
                 sans: ['var(--font-inter)', 'sans-serif'],
