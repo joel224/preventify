@@ -104,14 +104,15 @@ const Navbar = () => {
       <div className="bg-white/5 border-b border-white/20 transition-all duration-300 overflow-hidden">
         <div className="container mx-auto py-1.5 px-4 sm:px-6 lg:px-8 flex justify-between items-center text-sm text-gray-700">
           <div className="flex items-center gap-4">
+            {/* Links moved from here */}
+          </div>
+          <div className="flex items-center gap-5">
             {topNavLinks.map(link => (
               <Link key={link.name} href={link.path} className={`flex items-center gap-1 hover:text-primary transition-colors`}>
                 {link.icon && <link.icon className="h-3 w-3" />}
                 {link.name}
               </Link>
             ))}
-          </div>
-          <div className="flex items-center gap-5">
             <a href="tel:+918129334858" className="group flex items-center gap-1 hover:text-primary transition-all text-xl text-black transform-origin-left group-hover:scale-110 hover:text-2xl">
               <Phone className="h-4 w-3 " />
               +91 8129334858
@@ -316,5 +317,3 @@ const Navbar = () => {
 };
 
 export default Navbar;
-
-    
