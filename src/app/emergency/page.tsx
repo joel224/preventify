@@ -1,11 +1,10 @@
-
 'use client';
 import PageHeader from "@/components/PageHeader";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Phone, AlertTriangle, ArrowRight } from "lucide-react";
-import DoctorCard from "@/components/DoctorCard";
+import { Phone, AlertTriangle, User, Stethoscope, Hospital } from "lucide-react";
 import Link from 'next/link';
+import BookingDialog from "@/components/BookingDialog";
 
 import {
   Carousel,
@@ -15,6 +14,42 @@ import {
   CarouselPrevious,
 } from "@/components/ui/carousel";
 import Autoplay from "embla-carousel-autoplay";
+
+const EmergencyDoctorCard = ({ doctor }: { doctor: any }) => {
+  const telLink = `tel:+918129334858`;
+  return (
+    <div className="border bg-white rounded-lg p-4 h-full flex flex-col">
+      <div className="flex items-start gap-4">
+        <div className="w-16 h-16 rounded-full bg-gray-100 flex items-center justify-center shrink-0">
+          <User className="w-8 h-8 text-gray-400" />
+        </div>
+        <div className="flex-grow">
+          <h4 className="font-bold text-lg">{doctor.name}</h4>
+          <p className="text-gray-600 text-sm">{doctor.specialty}</p>
+        </div>
+        <div className="flex flex-col gap-2">
+            <BookingDialog>
+                <Button size="sm" className="bg-blue-500 hover:bg-blue-600 text-white">Book Appointment</Button>
+            </BookingDialog>
+            <a href={telLink}>
+                <Button size="sm" variant="outline" className="w-full">
+                    <Phone className="h-4 w-4" />
+                    <span className="sr-only">Call</span>
+                </Button>
+            </a>
+        </div>
+      </div>
+      <div className="border-t mt-4 pt-4">
+          <p className="text-sm text-gray-500">{doctor.qualification}</p>
+          <div className="flex items-center gap-2 text-sm text-gray-500 mt-1">
+            <Hospital className="w-4 h-4" />
+            <span>{doctor.location}</span>
+          </div>
+      </div>
+    </div>
+  );
+};
+
 
 const EmergencyPage = () => {
   const emergencyNumber = "+918129334858";
@@ -109,11 +144,11 @@ const EmergencyPage = () => {
 
       <section className="py-16 bg-preventify-light-gray">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold mb-4 text-preventify-blue">Our Emergency Medicine Doctors</h2>
-            <p className="text-preventify-dark-gray max-w-3xl mx-auto">
-              Our dedicated team is ready to provide immediate medical care when you need it most.
-            </p>
+          <div className="flex justify-between items-center mb-8">
+            <h2 className="text-2xl md:text-3xl font-bold text-preventify-blue">Our Emergency Medicine Doctors</h2>
+            <Link href="/doctors" className="text-sm font-medium text-blue-600 hover:underline">
+              View All
+            </Link>
           </div>
 
           <Carousel
@@ -126,41 +161,18 @@ const EmergencyPage = () => {
                 delay: 5000,
               }),
             ]}
-            className="w-full max-w-6xl mx-auto"
+            className="w-full"
           >
-            <CarouselContent>
+            <CarouselContent className="-ml-4">
               {emergencyDoctors.map((doctor) => (
-                <CarouselItem key={doctor.id} className="md:basis-1/2 lg:basis-1/3 xl:basis-1/4">
-                  <div className="p-1">
-                    <DoctorCard
-                      name={doctor.name}
-                      specialty={doctor.specialty}
-                      qualification={doctor.qualification}
-                      image={doctor.image}
-                      location={doctor.location}
-                    />
-                  </div>
+                <CarouselItem key={doctor.id} className="pl-4 md:basis-1/2 lg:basis-1/2">
+                  <EmergencyDoctorCard doctor={doctor} />
                 </CarouselItem>
               ))}
             </CarouselContent>
             <CarouselPrevious className="hidden sm:flex" />
             <CarouselNext className="hidden sm:flex" />
           </Carousel>
-          
-          <div className="flex flex-col sm:flex-row gap-4 justify-center mt-12">
-            <a href={telLink}>
-              <Button size="lg" className="w-full sm:w-auto bg-red-600 hover:bg-red-700 text-white">
-                <Phone className="mr-2 h-5 w-5" />
-                Call for Assistance
-              </Button>
-            </a>
-            <Link href="/doctors">
-              <Button size="lg" variant="outline" className="w-full sm:w-auto">
-                View All Doctors
-                <ArrowRight className="ml-2 h-5 w-5" />
-              </Button>
-            </Link>
-          </div>
         </div>
       </section>
     </>
