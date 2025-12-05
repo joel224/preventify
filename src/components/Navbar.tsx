@@ -139,7 +139,7 @@ const Navbar = () => {
             </Link>
           </div>
 
-          <nav className="hidden lg:flex items-center">
+          <nav className="hidden lg:flex mr-auto">
             <NavigationMenu>
               <NavigationMenuList>
                 <NavigationMenuItem>
