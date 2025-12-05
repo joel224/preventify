@@ -59,6 +59,7 @@ const PreventiveLifestyleSectionDesktop = () => {
                                             onChange={(e) => setName(e.target.value)} 
                                             required 
                                             autoComplete="name"
+                                            name="name"
                                             className="h-10 text-lg bg-transparent border-0 border-b-2 border-white/50 rounded-none focus:ring-0 focus:border-white p-0 text-white placeholder:text-white/70 focus-visible:ring-0 focus-visible:ring-offset-0"
                                         />
                                     </div>
@@ -73,6 +74,7 @@ const PreventiveLifestyleSectionDesktop = () => {
                                             onChange={(e) => setPhone(e.target.value)} 
                                             required
                                             autoComplete="tel"
+                                            name="tel"
                                             className="h-10 text-lg bg-transparent border-0 border-b-2 border-white/50 rounded-none focus:ring-0 focus:border-white p-0 text-white placeholder:text-white/70 focus-visible:ring-0 focus-visible:ring-offset-0"
                                         />
                                     </div>
@@ -82,7 +84,6 @@ const PreventiveLifestyleSectionDesktop = () => {
                             {/* Submit Button */}
                             <BookingDialog
                                 initialFirstName={getProcessedNames().firstName}
-                                initialLastName={getProcessedNames().lastName}
                                 initialPhone={getSanitizedPhone()}
                             >
                                 <Button 
