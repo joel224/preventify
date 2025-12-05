@@ -242,7 +242,7 @@ const Navbar = () => {
                 
                 <NavigationMenuItem>
                   <Link href="/emergency" legacyBehavior passHref>
-                    <NavigationMenuLink className="flex items-center gap-1 text-red-600 font-medium text-lg hover:text-red-800 transition-all px-4 py-2 rounded-md transform-origin-left group-hover:scale-110 hover:text-2xl">
+                    <NavigationMenuLink className="flex items-center gap-1 text-red-600 font-medium text-lg hover:text-red-800 transition-all px-4 py-2 rounded-md transform-origin-left group-hover:scale-110">
                       <AlertTriangle className="h-4 w-4" />
                       24/7 Emergency
                     </NavigationMenuLink>
