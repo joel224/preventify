@@ -133,125 +133,125 @@ const Navbar = () => {
       
       <div className="container mx-auto py-3 px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center">
-          <div className="flex items-center">
+          <div className="flex items-center gap-4">
             <Link href="/" className="flex items-center ">
                <img src="/logo.png" alt="Preventify Logo" className="h-12" />
             </Link>
+             <nav className="hidden lg:flex">
+              <NavigationMenu>
+                <NavigationMenuList>
+                  <NavigationMenuItem>
+                    <Link href="/services" legacyBehavior passHref>
+                      <NavigationMenuLink className={`font-medium transition-colors text-base px-4 py-2 rounded-md ${pathname === "/services" ? 'text-primary' : 'text-gray-700 hover:text-primary'}`}>
+                        Our Services
+                      </NavigationMenuLink>
+                    </Link>
+                  </NavigationMenuItem>
+
+                  <NavigationMenuItem>
+                    <NavigationMenuTrigger className="font-medium transition-colors text-base text-gray-700 hover:text-primary bg-transparent focus:bg-transparent data-[state=open]:bg-transparent group">
+                      Our Doctors
+                      <ChevronDown
+                        className="relative top-[1px] ml-1 h-3 w-3 transition duration-200 group-data-[state=open]:rotate-180"
+                        aria-hidden="true"
+                      />
+                    </NavigationMenuTrigger>
+                    <NavigationMenuContent>
+                      <div className="p-4 md:w-[400px]">
+                        <ul className="space-y-2">
+                          {doctors.slice(0, 3).map((doctor) => (
+                            <ListItem key={doctor.name} href="/doctors" title={doctor.name}>
+                              <div className="flex items-center gap-4">
+                                 <div className="relative w-16 h-16 rounded-md overflow-hidden flex-shrink-0">
+                                  <Image
+                                      src={doctor.image}
+                                      alt={doctor.name}
+                                      fill
+                                      className="object-cover"
+                                    />
+                                 </div>
+                                 <div>
+                                    <p className="font-bold text-gray-800">{doctor.name}</p>
+                                    <p className="text-sm text-gray-500">{doctor.specialty}</p>
+                                 </div>
+                              </div>
+                            </ListItem>
+                          ))}
+                        </ul>
+                        <div className="mt-4 text-center">
+                          <Link href="/doctors" className="inline-flex items-center text-sm bg-primary text-primary-foreground hover:bg-primary/90 px-3 py-1 rounded-md">
+                              View all doctors
+                          </Link>
+                        </div>
+                      </div>
+                    </NavigationMenuContent>
+                  </NavigationMenuItem>
+
+                  <NavigationMenuItem>
+                    <NavigationMenuTrigger className="font-medium transition-colors text-base text-gray-700 hover:text-primary bg-transparent focus:bg-transparent data-[state=open]:bg-transparent group">
+                      Our Clinics
+                       <ChevronDown
+                        className="relative top-[1px] ml-1 h-3 w-3 transition duration-200 group-data-[state=open]:rotate-180"
+                        aria-hidden="true"
+                      />
+                    </NavigationMenuTrigger>
+                    <NavigationMenuContent>
+                      <div className="p-4 md:w-[400px]">
+                        <ul className="space-y-2">
+                          {clinics.map((clinic) => (
+                            <ListItem key={clinic.name} href={clinic.href} title={clinic.name}>
+                              <div className="flex items-center gap-3">
+                                <div className="p-2 bg-gray-100 rounded-md">
+                                  <MapPin className="h-4 w-4 text-primary" />
+                                </div>
+                                <div>
+                                  <p className="font-bold text-gray-800">{clinic.name}</p>
+                                  <p className="text-sm text-gray-500">{clinic.location}</p>
+                                </div>
+                              </div>
+                            </ListItem>
+                          ))}
+                        </ul>
+                        <div className="mt-4 text-center">
+                          <Link href="/clinics" className="inline-flex items-center text-sm bg-primary text-primary-foreground hover:bg-primary/90 px-3 py-1 rounded-md">
+                            View all locations
+                          </Link>
+                        </div>
+                      </div>
+                    </NavigationMenuContent>
+                  </NavigationMenuItem>
+
+
+                  <NavigationMenuItem>
+                    <Link href="/programs" legacyBehavior passHref>
+                      <NavigationMenuLink className={`font-medium transition-colors text-base px-4 py-2 rounded-md ${pathname === "/programs" ? 'text-primary' : 'text-gray-700 hover:text-primary'}`}>
+                        Centers of Excellence
+                      </NavigationMenuLink>
+                    </Link>
+                  </NavigationMenuItem>
+
+                  <NavigationMenuItem>
+                    <Link href="/savings" legacyBehavior passHref>
+                      <NavigationMenuLink className={`font-medium transition-colors text-base px-4 py-2 rounded-md ${pathname === "/savings" ? 'text-primary' : 'text-gray-700 hover:text-primary'}`}>
+                        Sugam Card
+                      </NavigationMenuLink>
+                    </Link>
+                  </NavigationMenuItem>
+                  
+                  <NavigationMenuItem>
+                    <Link href="/emergency" legacyBehavior passHref>
+                      <NavigationMenuLink className="flex items-center gap-1 text-red-600 font-medium text-base hover:text-red-800 transition-all px-4 py-2 rounded-md transform-origin-left group-hover:scale-110">
+                        <AlertTriangle className="h-4 w-4" />
+                        24/7 Emergency
+                      </NavigationMenuLink>
+                    </Link>
+                  </NavigationMenuItem>
+
+                </NavigationMenuList>
+              </NavigationMenu>
+            </nav>
           </div>
-
-          <nav className="hidden lg:flex mr-auto">
-            <NavigationMenu>
-              <NavigationMenuList>
-                <NavigationMenuItem>
-                  <Link href="/services" legacyBehavior passHref>
-                    <NavigationMenuLink className={`font-medium transition-colors text-base px-4 py-2 rounded-md ${pathname === "/services" ? 'text-primary' : 'text-gray-700 hover:text-primary'}`}>
-                      Our Services
-                    </NavigationMenuLink>
-                  </Link>
-                </NavigationMenuItem>
-
-                <NavigationMenuItem>
-                  <NavigationMenuTrigger className="font-medium transition-colors text-base text-gray-700 hover:text-primary bg-transparent focus:bg-transparent data-[state=open]:bg-transparent group">
-                    Our Doctors
-                    <ChevronDown
-                      className="relative top-[1px] ml-1 h-3 w-3 transition duration-200 group-data-[state=open]:rotate-180"
-                      aria-hidden="true"
-                    />
-                  </NavigationMenuTrigger>
-                  <NavigationMenuContent>
-                    <div className="p-4 md:w-[400px]">
-                      <ul className="space-y-2">
-                        {doctors.slice(0, 3).map((doctor) => (
-                          <ListItem key={doctor.name} href="/doctors" title={doctor.name}>
-                            <div className="flex items-center gap-4">
-                               <div className="relative w-16 h-16 rounded-md overflow-hidden flex-shrink-0">
-                                <Image
-                                    src={doctor.image}
-                                    alt={doctor.name}
-                                    fill
-                                    className="object-cover"
-                                  />
-                               </div>
-                               <div>
-                                  <p className="font-bold text-gray-800">{doctor.name}</p>
-                                  <p className="text-sm text-gray-500">{doctor.specialty}</p>
-                               </div>
-                            </div>
-                          </ListItem>
-                        ))}
-                      </ul>
-                      <div className="mt-4 text-center">
-                        <Link href="/doctors" className="inline-flex items-center text-sm bg-primary text-primary-foreground hover:bg-primary/90 px-3 py-1 rounded-md">
-                            View all doctors
-                        </Link>
-                      </div>
-                    </div>
-                  </NavigationMenuContent>
-                </NavigationMenuItem>
-
-                <NavigationMenuItem>
-                  <NavigationMenuTrigger className="font-medium transition-colors text-base text-gray-700 hover:text-primary bg-transparent focus:bg-transparent data-[state=open]:bg-transparent group">
-                    Our Clinics
-                     <ChevronDown
-                      className="relative top-[1px] ml-1 h-3 w-3 transition duration-200 group-data-[state=open]:rotate-180"
-                      aria-hidden="true"
-                    />
-                  </NavigationMenuTrigger>
-                  <NavigationMenuContent>
-                    <div className="p-4 md:w-[400px]">
-                      <ul className="space-y-2">
-                        {clinics.map((clinic) => (
-                          <ListItem key={clinic.name} href={clinic.href} title={clinic.name}>
-                            <div className="flex items-center gap-3">
-                              <div className="p-2 bg-gray-100 rounded-md">
-                                <MapPin className="h-4 w-4 text-primary" />
-                              </div>
-                              <div>
-                                <p className="font-bold text-gray-800">{clinic.name}</p>
-                                <p className="text-sm text-gray-500">{clinic.location}</p>
-                              </div>
-                            </div>
-                          </ListItem>
-                        ))}
-                      </ul>
-                      <div className="mt-4 text-center">
-                        <Link href="/clinics" className="inline-flex items-center text-sm bg-primary text-primary-foreground hover:bg-primary/90 px-3 py-1 rounded-md">
-                          View all locations
-                        </Link>
-                      </div>
-                    </div>
-                  </NavigationMenuContent>
-                </NavigationMenuItem>
-
-
-                <NavigationMenuItem>
-                  <Link href="/programs" legacyBehavior passHref>
-                    <NavigationMenuLink className={`font-medium transition-colors text-base px-4 py-2 rounded-md ${pathname === "/programs" ? 'text-primary' : 'text-gray-700 hover:text-primary'}`}>
-                      Centers of Excellence
-                    </NavigationMenuLink>
-                  </Link>
-                </NavigationMenuItem>
-
-                <NavigationMenuItem>
-                  <Link href="/savings" legacyBehavior passHref>
-                    <NavigationMenuLink className={`font-medium transition-colors text-base px-4 py-2 rounded-md ${pathname === "/savings" ? 'text-primary' : 'text-gray-700 hover:text-primary'}`}>
-                      Sugam Card
-                    </NavigationMenuLink>
-                  </Link>
-                </NavigationMenuItem>
-                
-                <NavigationMenuItem>
-                  <Link href="/emergency" legacyBehavior passHref>
-                    <NavigationMenuLink className="flex items-center gap-1 text-red-600 font-medium text-base hover:text-red-800 transition-all px-4 py-2 rounded-md transform-origin-left group-hover:scale-110">
-                      <AlertTriangle className="h-4 w-4" />
-                      24/7 Emergency
-                    </NavigationMenuLink>
-                  </Link>
-                </NavigationMenuItem>
-
-              </NavigationMenuList>
-            </NavigationMenu>
-          </nav>
+          
 
           <div className="hidden lg:flex items-center space-x-4">
               <BookingDialog>
