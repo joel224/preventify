@@ -1,7 +1,5 @@
 {
   "/page": "app/page.js",
   "/emergency/page": "app/emergency/page.js",
-  "/savings/page": "app/savings/page.js",
-  "/api/search-patient/route": "app/api/search-patient/route.js",
-  "/api/available-slots/route": "app/api/available-slots/route.js"
+  "/savings/page": "app/savings/page.js"
 }

@@ -116,7 +116,7 @@ const ServicesSection = () => {
     <section className="bg-white py-16">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-16">
              <ActionCard
                 icon={<Phone className="h-8 w-8 text-red-500" />}
                 title="Emergency"
@@ -147,20 +147,9 @@ const ServicesSection = () => {
                     </VideoBookingDialog>
                 }
             />
-            <ActionCard
-                icon={<LogIn className="h-8 w-8 text-primary" />}
-                title="Patient Login"
-                description="Access records & payments."
-                color="orange"
-                 button={
-                    <BookingDialog>
-                        <Button variant="outline" className="w-full">Login</Button>
-                    </BookingDialog>
-                }
-            />
         </div>
 
-        <div className="w-full border-t border-gray-200 mb-20"></div>
+        <div className="w-full border-t border-gray-200 my-20"></div>
 
 
         <motion.div 
