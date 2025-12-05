@@ -227,7 +227,7 @@ const Navbar = () => {
                 <NavigationMenuItem>
                   <Link href="/programs" legacyBehavior passHref>
                     <NavigationMenuLink className={`font-medium transition-colors text-lg px-4 py-2 rounded-md ${pathname === "/programs" ? 'text-primary' : 'text-gray-700 hover:text-primary'}`}>
-                      Programs
+                      Centers of Excellence
                     </NavigationMenuLink>
                   </Link>
                 </NavigationMenuItem>
@@ -242,7 +242,7 @@ const Navbar = () => {
                 
                 <NavigationMenuItem>
                   <Link href="/emergency" legacyBehavior passHref>
-                    <NavigationMenuLink className="flex items-center gap-1 text-red-600 font-medium text-lg hover:text-red-800 transition-colors px-4 py-2 rounded-md">
+                    <NavigationMenuLink className="flex items-center gap-1 text-red-600 font-medium text-lg hover:text-red-800 transition-all px-4 py-2 rounded-md transform-origin-left group-hover:scale-110 hover:text-2xl">
                       <AlertTriangle className="h-4 w-4" />
                       24/7 Emergency
                     </NavigationMenuLink>
@@ -283,7 +283,7 @@ const Navbar = () => {
                   { name: "Our Services", path: "/services" },
                   { name: "Our Doctors", path: "/doctors" },
                   { name: "Our Clinics", path: "/clinics" },
-                  { name: "Programs", path: "/programs" },
+                  { name: "Centers of Excellence", path: "/programs" },
                   { name: "Sugam Card", path: "/savings" },
                   ...topNavLinks
               ].map((link) => (
