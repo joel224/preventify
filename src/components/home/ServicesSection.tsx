@@ -44,9 +44,9 @@ const services = [
 
 const ActionCard = ({ icon, title, description, button, color, link }: { icon: React.ReactNode, title: string, description: string, button: React.ReactNode, color: 'red' | 'orange' | 'outline', link?: string }) => {
     const content = (
-        <Card className="text-center p-6 aspect-square flex flex-col items-center justify-center shadow-md hover:shadow-xl transition-shadow font-['HELN.TTF']">
+        <Card className="text-center p-6 flex flex-col items-center justify-center shadow-md hover:shadow-xl transition-shadow font-['HELN.TTF']">
             <div className={`mb-3 ${color === 'red' ? 'text-red-500' : 'text-orange-500'}`}>{icon}</div>
-            <h3 className="text-xl font-bold mb-1">{title}</h3>
+            <h3 className="text-xl font-semibold mb-1">{title}</h3>
             <p className="text-gray-500 mb-4 text-sm">{description}</p>
             {button}
         </Card>
