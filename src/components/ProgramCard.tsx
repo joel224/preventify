@@ -1,6 +1,7 @@
 
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { Check } from "lucide-react";
 
 interface ProgramCardProps {
   title: string;
@@ -27,15 +28,7 @@ const ProgramCard = ({
         <ul className="mb-6 space-y-2">
           {features.map((feature, index) => (
             <li key={index} className="flex items-start">
-              <svg 
-                xmlns="http://www.w3.org/2000/svg" 
-                className="h-5 w-5 text-preventify-purple mr-2 mt-0.5 shrink-0" 
-                fill="none" 
-                viewBox="0 0 24 24" 
-                stroke="currentColor"
-              >
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-              </svg>
+              <Check className="h-5 w-5 text-preventify-purple mr-2 mt-0.5 shrink-0" />
               <span className="text-gray-700">{feature}</span>
             </li>
           ))}
