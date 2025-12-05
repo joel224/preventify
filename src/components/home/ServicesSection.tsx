@@ -44,19 +44,19 @@ const services = [
 
 const ActionCard = ({ icon, title, description, button, color, link }: { icon: React.ReactNode, title: string, description: string, button: React.ReactNode, color: 'red' | 'orange' | 'outline', link?: string }) => {
     const content = (
-        <Card className="text-center p-6 flex flex-col items-center justify-center shadow-md hover:shadow-xl transition-shadow font-['HELN.TTF']">
+        <Card className="rounded-lg border bg-card text-card-foreground flex flex-col items-center text-center shadow-lg transition-all duration-200 ease-in-out hover:shadow-2xl hover:-translate-y-2 hover:scale-[1.03] p-6">
             <div className={`mb-3 ${color === 'red' ? 'text-red-500' : 'text-orange-500'}`}>{icon}</div>
             <h3 className="text-xl font-semibold mb-1">{title}</h3>
             <p className="text-gray-500 mb-4 text-sm">{description}</p>
-            {button}
+            <div className="mt-auto w-full">{button}</div>
         </Card>
     );
 
     if (link) {
-        return <a href={link}>{content}</a>;
+        return <a href={link} className="h-full"><div className="h-full">{content}</div></a>;
     }
     
-    return content;
+    return <div className="h-full">{content}</div>;
 };
 
 
