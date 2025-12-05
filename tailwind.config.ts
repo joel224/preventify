@@ -172,6 +172,7 @@ export default {
             },
             fontFamily: {
                 sans: ['var(--font-inter)', 'sans-serif'],
+                
                 display: ['var(--font-poppins)', 'sans-serif'],
                 // === New font added here ===
                 'stack-sans': ['"Stack Sans Headline"', 'sans-serif'],

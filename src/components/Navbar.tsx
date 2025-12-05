@@ -97,7 +97,7 @@ const Navbar = () => {
 
   return (
     <header 
-      className="bg-white/5 backdrop-blur-xl shadow-sm sticky top-0 z-50 group border-b border-white/20"
+      className="bg-white shadow-sm sticky top-0 z-50 group border-b border-white/20 font-['HELN.TTF']"
       data-navbar="main"
       style={{ '--navbar-height': `${navbarHeight}px` } as React.CSSProperties}
     >
@@ -134,7 +134,7 @@ const Navbar = () => {
       <div className="container mx-auto py-3 px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center">
           <div className="flex items-center">
-            <Link href="/" className="flex items-center">
+            <Link href="/" className="flex items-center ">
                <img src="/logo.png" alt="Preventify Logo" className="h-12" />
             </Link>
           </div>

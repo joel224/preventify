@@ -180,4 +180,11 @@
   font-style: normal;
   font-display: swap;
 }
-@import url('/Rebeqa Font/Web-TT/Rebeqa-Black.css');
+@font-face {
+  font-family: 'HELN.TTF'; /* Base name */
+  src: url('/text/HelveticaNeueETPro65Med.TTF') format('truetype'); /* Use 'truetype' for .ttf */
+  font-weight: 700; /* Use font-weight: 700 or 'bold' */
+  font-style: normal;
+  font-display: swap;
+}
+
