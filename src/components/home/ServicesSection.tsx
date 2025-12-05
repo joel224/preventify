@@ -1,9 +1,10 @@
+
 'use client';
 
 import { motion } from "framer-motion";
 import { ArrowRight, Phone, Calendar, Video, LogIn } from "lucide-react";
 import Link from "next/link";
-import { Card, CardContent } from "@/components/ui/card";
+import { Card, CardHeader, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import BookingDialog from "@/components/BookingDialog";
 
@@ -45,10 +46,14 @@ const services = [
 const ActionCard = ({ icon, title, description, button, color, link }: { icon: React.ReactNode, title: string, description: string, button: React.ReactNode, color: 'red' | 'orange' | 'outline', link?: string }) => {
     const content = (
         <Card className="rounded-lg border bg-card text-card-foreground flex flex-col items-center text-center shadow-lg transition-all duration-200 ease-in-out hover:shadow-2xl hover:-translate-y-2 hover:scale-[1.03] p-6">
-            <div className={`mb-3 ${color === 'red' ? 'text-red-500' : 'text-orange-500'}`}>{icon}</div>
-            <h3 className="text-xl font-semibold mb-1">{title}</h3>
-            <p className="text-gray-500 mb-4 text-sm">{description}</p>
-            <div className="mt-auto w-full">{button}</div>
+            <CardHeader className="items-center">
+                {icon}
+                <h3 className="text-2xl font-semibold leading-none tracking-tight mt-4">{title}</h3>
+            </CardHeader>
+            <CardContent className="flex flex-col flex-grow items-center">
+                <p className="text-sm text-muted-foreground mb-4 flex-grow">{description}</p>
+                <div className="w-full mt-auto">{button}</div>
+            </CardContent>
         </Card>
     );
 
@@ -110,9 +115,9 @@ const ServicesSection = () => {
     <section className="bg-white py-16">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
              <ActionCard
-                icon={<Phone className="h-7 w-7" />}
+                icon={<Phone className="h-8 w-8 text-red-500" />}
                 title="Emergency"
                 description="Urgent issue? Tap to call."
                 color="red"
@@ -121,16 +126,16 @@ const ServicesSection = () => {
             />
              <BookingDialog>
                  <ActionCard
-                    icon={<Calendar className="h-7 w-7" />}
+                    icon={<Calendar className="h-8 w-8 text-primary" />}
                     title="Book Appointment"
                     description="Schedule your visit easily."
                     color="orange"
-                    button={<Button className="bg-orange-500 hover:bg-orange-600 text-white w-full">Book Now</Button>}
+                    button={<Button className="bg-primary hover:bg-primary/90 text-white w-full">Book Now</Button>}
                 />
             </BookingDialog>
              <BookingDialog>
                 <ActionCard
-                    icon={<Video className="h-7 w-7" />}
+                    icon={<Video className="h-8 w-8 text-primary" />}
                     title="Virtual Consultation"
                     description="Meet our doctors online."
                     color="orange"
@@ -139,7 +144,7 @@ const ServicesSection = () => {
             </BookingDialog>
             <BookingDialog>
                 <ActionCard
-                    icon={<LogIn className="h-7 w-7" />}
+                    icon={<LogIn className="h-8 w-8 text-primary" />}
                     title="Patient Login"
                     description="Access records & payments."
                     color="orange"
@@ -147,6 +152,8 @@ const ServicesSection = () => {
                 />
             </BookingDialog>
         </div>
+
+        <div className="w-full border-t border-gray-200 mb-16"></div>
 
 
         <motion.div 
