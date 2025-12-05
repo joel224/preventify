@@ -133,10 +133,13 @@ const Navbar = () => {
       
       <div className="container mx-auto py-3 px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center">
-          <div className="flex items-center gap-4">
+          <div className="flex items-center">
             <Link href="/" className="flex items-center ">
                <img src="/logo.png" alt="Preventify Logo" className="h-12" />
             </Link>
+          </div>
+
+          <div className="hidden lg:flex items-center gap-4">
              <nav className="hidden lg:flex">
               <NavigationMenu>
                 <NavigationMenuList>
@@ -250,16 +253,14 @@ const Navbar = () => {
                 </NavigationMenuList>
               </NavigationMenu>
             </nav>
-          </div>
-          
-
-          <div className="hidden lg:flex items-center space-x-4">
-              <BookingDialog>
-              <button className="relative px-8 py-3 bg-primary text-white font-medium rounded-full transition-all duration-300 overflow-hidden group text-base">
-                <span className="relative z-10">Book Appointment</span>
-                <div className="absolute inset-0 bg-black/30 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left"></div>
-              </button>
-            </BookingDialog>
+            <div className="hidden lg:flex items-center">
+                <BookingDialog>
+                <button className="relative px-8 py-3 bg-primary text-white font-medium rounded-full transition-all duration-300 overflow-hidden group text-base">
+                  <span className="relative z-10">Book Appointment</span>
+                  <div className="absolute inset-0 bg-black/30 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left"></div>
+                </button>
+              </BookingDialog>
+            </div>
           </div>
 
           <div className="lg:hidden">
