@@ -144,14 +144,14 @@ const Navbar = () => {
               <NavigationMenuList>
                 <NavigationMenuItem>
                   <Link href="/services" legacyBehavior passHref>
-                    <NavigationMenuLink className={`font-medium transition-colors text-lg px-4 py-2 rounded-md ${pathname === "/services" ? 'text-primary' : 'text-gray-700 hover:text-primary'}`}>
+                    <NavigationMenuLink className={`font-medium transition-colors text-base px-4 py-2 rounded-md ${pathname === "/services" ? 'text-primary' : 'text-gray-700 hover:text-primary'}`}>
                       Our Services
                     </NavigationMenuLink>
                   </Link>
                 </NavigationMenuItem>
 
                 <NavigationMenuItem>
-                  <NavigationMenuTrigger className="font-medium transition-colors text-lg text-gray-700 hover:text-primary bg-transparent focus:bg-transparent data-[state=open]:bg-transparent group">
+                  <NavigationMenuTrigger className="font-medium transition-colors text-base text-gray-700 hover:text-primary bg-transparent focus:bg-transparent data-[state=open]:bg-transparent group">
                     Our Doctors
                     <ChevronDown
                       className="relative top-[1px] ml-1 h-3 w-3 transition duration-200 group-data-[state=open]:rotate-180"
@@ -190,7 +190,7 @@ const Navbar = () => {
                 </NavigationMenuItem>
 
                 <NavigationMenuItem>
-                  <NavigationMenuTrigger className="font-medium transition-colors text-lg text-gray-700 hover:text-primary bg-transparent focus:bg-transparent data-[state=open]:bg-transparent group">
+                  <NavigationMenuTrigger className="font-medium transition-colors text-base text-gray-700 hover:text-primary bg-transparent focus:bg-transparent data-[state=open]:bg-transparent group">
                     Our Clinics
                      <ChevronDown
                       className="relative top-[1px] ml-1 h-3 w-3 transition duration-200 group-data-[state=open]:rotate-180"
@@ -226,7 +226,7 @@ const Navbar = () => {
 
                 <NavigationMenuItem>
                   <Link href="/programs" legacyBehavior passHref>
-                    <NavigationMenuLink className={`font-medium transition-colors text-lg px-4 py-2 rounded-md ${pathname === "/programs" ? 'text-primary' : 'text-gray-700 hover:text-primary'}`}>
+                    <NavigationMenuLink className={`font-medium transition-colors text-base px-4 py-2 rounded-md ${pathname === "/programs" ? 'text-primary' : 'text-gray-700 hover:text-primary'}`}>
                       Centers of Excellence
                     </NavigationMenuLink>
                   </Link>
@@ -234,7 +234,7 @@ const Navbar = () => {
 
                 <NavigationMenuItem>
                   <Link href="/savings" legacyBehavior passHref>
-                    <NavigationMenuLink className={`font-medium transition-colors text-lg px-4 py-2 rounded-md ${pathname === "/savings" ? 'text-primary' : 'text-gray-700 hover:text-primary'}`}>
+                    <NavigationMenuLink className={`font-medium transition-colors text-base px-4 py-2 rounded-md ${pathname === "/savings" ? 'text-primary' : 'text-gray-700 hover:text-primary'}`}>
                       Sugam Card
                     </NavigationMenuLink>
                   </Link>
@@ -242,7 +242,7 @@ const Navbar = () => {
                 
                 <NavigationMenuItem>
                   <Link href="/emergency" legacyBehavior passHref>
-                    <NavigationMenuLink className="flex items-center gap-1 text-red-600 font-medium text-lg hover:text-red-800 transition-all px-4 py-2 rounded-md transform-origin-left group-hover:scale-110">
+                    <NavigationMenuLink className="flex items-center gap-1 text-red-600 font-medium text-base hover:text-red-800 transition-all px-4 py-2 rounded-md transform-origin-left group-hover:scale-110">
                       <AlertTriangle className="h-4 w-4" />
                       24/7 Emergency
                     </NavigationMenuLink>
@@ -255,7 +255,7 @@ const Navbar = () => {
 
           <div className="hidden lg:flex items-center space-x-4">
               <BookingDialog>
-              <button className="relative px-8 py-3 bg-primary text-white font-medium rounded-full transition-all duration-300 overflow-hidden group text-lg">
+              <button className="relative px-8 py-3 bg-primary text-white font-medium rounded-full transition-all duration-300 overflow-hidden group text-base">
                 <span className="relative z-10">Book Appointment</span>
                 <div className="absolute inset-0 bg-black/30 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left"></div>
               </button>
@@ -290,19 +290,19 @@ const Navbar = () => {
                 <Link
                   key={link.name}
                   href={link.path}
-                  className={`font-medium transition-colors py-2 text-lg ${pathname === link.path ? 'text-primary' : 'text-gray-700 hover:text-primary'}`}
+                  className={`font-medium transition-colors py-2 text-base ${pathname === link.path ? 'text-primary' : 'text-gray-700 hover:text-primary'}`}
                   onClick={() => setMobileMenuOpen(false)}
                 >
                   {link.name}
                 </Link>
               ))}
-                <Link href="/emergency" className="flex items-center gap-1 text-red-600 font-medium py-2 text-lg hover:text-red-800 transition-colors">
+                <Link href="/emergency" className="flex items-center gap-1 text-red-600 font-medium py-2 text-base hover:text-red-800 transition-colors">
                   <AlertTriangle className="h-5 w-5" />
                   24/7 Emergency
                 </Link>
               <div className="flex flex-col space-y-2 pt-3">
                 <BookingDialog>
-                  <button className="relative px-6 py-3 bg-primary text-white font-medium rounded-full transition-all duration-300 overflow-hidden group w-full text-lg">
+                  <button className="relative px-6 py-3 bg-primary text-white font-medium rounded-full transition-all duration-300 overflow-hidden group w-full text-base">
                     <span className="relative z-10">Book Appointment</span>
                     <div className="absolute inset-0 bg-black/30 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left"></div>
                   </button>
