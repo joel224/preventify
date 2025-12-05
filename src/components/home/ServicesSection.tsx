@@ -7,6 +7,7 @@ import Link from "next/link";
 import { Card, CardHeader, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import BookingDialog from "@/components/BookingDialog";
+import VideoBookingDialog from "@/components/VideoBookingDialog";
 
 
 const services = [
@@ -124,33 +125,39 @@ const ServicesSection = () => {
                 link="tel:+918129334858"
                 button={<Button className="bg-red-500 hover:bg-red-600 text-white w-full">Call Now</Button>}
             />
-             <BookingDialog>
-                 <ActionCard
-                    icon={<Calendar className="h-8 w-8 text-primary" />}
-                    title="Book Appointment"
-                    description="Schedule your visit easily."
-                    color="orange"
-                    button={<Button className="bg-primary hover:bg-primary/90 text-white w-full">Book Now</Button>}
-                />
-            </BookingDialog>
-             <BookingDialog>
-                <ActionCard
-                    icon={<Video className="h-8 w-8 text-primary" />}
-                    title="Virtual Consultation"
-                    description="Meet our doctors online."
-                    color="orange"
-                    button={<Button variant="outline" className="w-full">Start Video Call</Button>}
-                />
-            </BookingDialog>
-            <BookingDialog>
-                <ActionCard
-                    icon={<LogIn className="h-8 w-8 text-primary" />}
-                    title="Patient Login"
-                    description="Access records & payments."
-                    color="orange"
-                    button={<Button variant="outline" className="w-full">Login</Button>}
-                />
-            </BookingDialog>
+            <ActionCard
+                icon={<Calendar className="h-8 w-8 text-primary" />}
+                title="Book Appointment"
+                description="Schedule your visit easily."
+                color="orange"
+                button={
+                    <BookingDialog>
+                        <Button className="bg-primary hover:bg-primary/90 text-white w-full">Book Now</Button>
+                    </BookingDialog>
+                }
+            />
+             <ActionCard
+                icon={<Video className="h-8 w-8 text-primary" />}
+                title="Virtual Consultation"
+                description="Meet our doctors online."
+                color="orange"
+                button={
+                    <VideoBookingDialog>
+                        <Button variant="outline" className="w-full">Start Video Call</Button>
+                    </VideoBookingDialog>
+                }
+            />
+            <ActionCard
+                icon={<LogIn className="h-8 w-8 text-primary" />}
+                title="Patient Login"
+                description="Access records & payments."
+                color="orange"
+                 button={
+                    <BookingDialog>
+                        <Button variant="outline" className="w-full">Login</Button>
+                    </BookingDialog>
+                }
+            />
         </div>
 
         <div className="w-full border-t border-gray-200 mb-20"></div>
