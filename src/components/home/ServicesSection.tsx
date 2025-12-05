@@ -1,8 +1,12 @@
 'use client';
 
 import { motion } from "framer-motion";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, Phone, Calendar, Video, LogIn } from "lucide-react";
 import Link from "next/link";
+import { Card, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import BookingDialog from "@/components/BookingDialog";
+
 
 const services = [
   {
@@ -37,6 +41,24 @@ const services = [
     link: "/services#preventive"
   },
 ];
+
+const ActionCard = ({ icon, title, description, button, color, link }: { icon: React.ReactNode, title: string, description: string, button: React.ReactNode, color: 'red' | 'orange' | 'outline', link?: string }) => {
+    const content = (
+        <Card className="text-center p-6 h-full flex flex-col items-center justify-center shadow-md hover:shadow-xl transition-shadow">
+            <div className={`mb-3 ${color === 'red' ? 'text-red-500' : 'text-orange-500'}`}>{icon}</div>
+            <h3 className="text-xl font-bold mb-1">{title}</h3>
+            <p className="text-gray-500 mb-4 text-sm">{description}</p>
+            {button}
+        </Card>
+    );
+
+    if (link) {
+        return <a href={link}>{content}</a>;
+    }
+    
+    return content;
+};
+
 
 const ServiceCard = ({ service }: { service: typeof services[0] }) => {
     return (
@@ -88,6 +110,45 @@ const ServicesSection = () => {
     <section className="bg-white py-16">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
+             <ActionCard
+                icon={<Phone className="h-7 w-7" />}
+                title="Emergency"
+                description="Urgent issue? Tap to call."
+                color="red"
+                link="tel:+918129334858"
+                button={<Button className="bg-red-500 hover:bg-red-600 text-white w-full">Call Now</Button>}
+            />
+             <BookingDialog>
+                 <ActionCard
+                    icon={<Calendar className="h-7 w-7" />}
+                    title="Book Appointment"
+                    description="Schedule your visit easily."
+                    color="orange"
+                    button={<Button className="bg-orange-500 hover:bg-orange-600 text-white w-full">Book Now</Button>}
+                />
+            </BookingDialog>
+             <BookingDialog>
+                <ActionCard
+                    icon={<Video className="h-7 w-7" />}
+                    title="Virtual Consultation"
+                    description="Meet our doctors online."
+                    color="orange"
+                    button={<Button variant="outline" className="w-full">Start Video Call</Button>}
+                />
+            </BookingDialog>
+            <BookingDialog>
+                <ActionCard
+                    icon={<LogIn className="h-7 w-7" />}
+                    title="Patient Login"
+                    description="Access records & payments."
+                    color="orange"
+                    button={<Button variant="outline" className="w-full">Login</Button>}
+                />
+            </BookingDialog>
+        </div>
+
+
         <motion.div 
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
