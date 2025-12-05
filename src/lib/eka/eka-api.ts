@@ -280,7 +280,7 @@ export async function searchPatientByMobile(mobile: string): Promise<any | null>
 }
 
 
-export async function bookAppointment(data: any): Promise<any> {
+export async function bookAppointment(data: any, mode: 'INCLINIC' | 'VIDEO' = 'INCLINIC'): Promise<any> {
     console.log('--- RECEIVED BOOKING DATA FROM FRONTEND ---', JSON.stringify(data, null, 2));
 
     const sanitizedMobile = sanitizeMobileNumber(data.patient.phone);
@@ -347,7 +347,7 @@ export async function bookAppointment(data: any): Promise<any> {
         appointment_details: {
             start_time: startTimeInSeconds,
             end_time: endTimeInSeconds,
-            mode: "INCLINIC",
+            mode: mode,
         },
         patient_details: patientDetailsPayload,
     };
@@ -377,5 +377,3 @@ export async function bookAppointment(data: any): Promise<any> {
         }
     }
 }
-
-    
