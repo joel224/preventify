@@ -166,7 +166,7 @@ export default function HeroSectionContent() {
 
                 {/* BACKGROUND GRAPHIC (Visible on hover) */}
                 <div
-                  className="absolute inset-0 z-[-1] pointer-events-none transition-opacity duration-300"
+                  className="absolute inset-0 z-[-2] pointer-events-none transition-opacity duration-300"
                   style={{
                     opacity: isGraphicHovered ? bgGraphic.opacity : 0,
                     transform: `translate(${bgGraphic.x}px, ${bgGraphic.y}px) scale(${bgGraphic.scale}) rotate(${bgGraphic.rotate}deg)`,
@@ -192,12 +192,13 @@ export default function HeroSectionContent() {
                 
                 {/* INVISIBLE HOVER TRIGGER CIRCLE */}
                 <div
-                  className="absolute rounded-full pointer-events-auto"
+                  className="absolute rounded-full pointer-events-auto "
                   style={{
                     width: bgGraphic.maxWidth,
                     height: bgGraphic.maxWidth,
-                    transform: `translate(${bgGraphic.x}px, ${bgGraphic.y}px) scale(${bgGraphic.scale})`,
+                    transform: `translate(${bgGraphic.x+140}px, ${bgGraphic.y}px) scale(${bgGraphic.scale-1.7})`,
                     transformOrigin: "center center",
+                    
                   }}
                   onMouseEnter={() => setIsGraphicHovered(true)}
                   onMouseLeave={() => setIsGraphicHovered(false)}
