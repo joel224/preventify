@@ -84,12 +84,12 @@ const LAYOUT_CONTROLS = {
 
   // 4. NEW BACKGROUND GRAPHIC CONTROLS
   backgroundGraphic: {
-    src: "/bg.webp", // The source for your new background image
+    src: "/December/idqzew21e9mhrphcvden.webp", // The source for your new background image
     x: -50, // Horizontal position adjustment
     y: -150, // Vertical position adjustment
     scale: 1.5, // Size of the image
     rotate: 0, // Rotation in degrees
-    opacity: 0.1, // Transparency of the image
+    opacity: 0.3, // Transparency of the image
     width: "100%", // CSS width
     maxWidth: "800px", // CSS max-width
   }
