@@ -3,7 +3,6 @@
 
 import * as React from "react";
 import Image from "next/image";
-import TextShine from "../ui/TextShine";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { ChevronRight } from "lucide-react";
@@ -85,9 +84,9 @@ const LAYOUT_CONTROLS = {
   // 4. NEW BACKGROUND GRAPHIC CONTROLS
   backgroundGraphic: {
     src: "/December/idqzew21e9mhrphcvden.webp", // The source for your new background image
-    x: -50, // Horizontal position adjustment
-    y: -150, // Vertical position adjustment
-    scale: 1.5, // Size of the image
+    x: 150, // Horizontal position adjustment
+    y: -310, // Vertical position adjustment
+    scale: 1.1, // Size of the image
     rotate: 0, // Rotation in degrees
     opacity: 0.3, // Transparency of the image
     width: "100%", // CSS width
@@ -100,6 +99,7 @@ export default function HeroSectionContent() {
   const [navbarHeight, setNavbarHeight] = useState(0);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [showImage, setShowImage] = useState(true);
+  const [isGraphicHovered, setIsGraphicHovered] = useState(false);
 
   // All content arrays - easy to expand to 10 slides later
   const images = [
@@ -160,13 +160,17 @@ export default function HeroSectionContent() {
               {/* -------------------------------------------------------
                  LEFT: HEADLINE (Changes with slide)
                  ------------------------------------------------------- */}
-              <div className="lg:col-span-5 z-20 relative">
+              <div 
+                className="lg:col-span-5 z-20 relative pointer-events-auto"
+                onMouseEnter={() => setIsGraphicHovered(true)}
+                onMouseLeave={() => setIsGraphicHovered(false)}
+              >
 
                 {/* NEW BACKGROUND GRAPHIC ELEMENT */}
                 <div
-                  className="absolute inset-0 z-[-1] pointer-events-none"
+                  className="absolute inset-0 z-[-1] pointer-events-none transition-opacity duration-300"
                   style={{
-                    opacity: bgGraphic.opacity,
+                    opacity: isGraphicHovered ? bgGraphic.opacity : 0,
                     transform: `translate(${bgGraphic.x}px, ${bgGraphic.y}px) scale(${bgGraphic.scale}) rotate(${bgGraphic.rotate}deg)`,
                     transformOrigin: "center center",
                   }}
@@ -190,7 +194,7 @@ export default function HeroSectionContent() {
 
 
                 <div
-                  className="relative"
+                  className="relative pointer-events-none"
                   style={{
                     transform: `translate(${currentHeadline.x}px, ${currentHeadline.y}px) scale(${currentHeadline.scale})`,
                     maxWidth: currentHeadline.maxWidth,
