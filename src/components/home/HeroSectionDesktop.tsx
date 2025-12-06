@@ -1,3 +1,4 @@
+
 'use client';
 
 import * as React from "react";
@@ -16,7 +17,7 @@ const { useRef, useState, useEffect } = React;
 const LAYOUT_CONTROLS = {
   
   // 1. HEADLINE CONTROLS (Independent for each slide)
-  headline1: { // For first slide (Preventify)
+  headline1: { 
     text: "Preventify",
     x: 20,
     y: -200,
@@ -26,23 +27,23 @@ const LAYOUT_CONTROLS = {
     fontFamily: 'Medino',
     color: '#25338e',
   },
-  headline2: { // For second slide (Health Starts Here)
+  headline2: { 
     text: (
       <>
         Your Health Starts Here <br />ᵔ ᵕ ᵔ
       </>
     ),
-    x: 50, // Different position
-    y: -200, // Different position
-    scale: 1, // Different scale
+    x: 50, 
+    y: -200, 
+    scale: 1, 
     maxWidth: "100%",
-    fontSize: "4.3rem", // Different size
-    fontFamily: 'Beona Danila ,"font-weight: bold', // Different font
-    color: '#255cc9', // Different color
+    fontSize: "4.3rem", 
+    fontFamily: 'Beona Danila ,"font-weight: bold', 
+    color: '#255cc9', 
   },
 
   // 2. MIDDLE: "CLINIC" TEXT CONTROLS (Independent for each slide)
-  clinicText1: { // For first slide
+  clinicText1: { 
     text: " Your 365-Day Health Passport ",
     x: -300,
     y: -50,
@@ -50,17 +51,17 @@ const LAYOUT_CONTROLS = {
     fontSize: "2.1rem",
     opacity: 1,
   },
-  clinicText2: { // For second slide
+  clinicText2: { 
     text: " ",
-    x: -280, // Different position
-    y: -30, // Different position
-    scale: 1.1, // Different scale
-    fontSize: "2.5rem", // Different size
-    opacity: 0.9, // Different opacity
+    x: -280, 
+    y: -30, 
+    scale: 1.1, 
+    fontSize: "2.5rem", 
+    opacity: 0.9, 
   },
 
   // 3. IMAGE CONTROLS (Independent for each image)
-  image1: { // women.webp
+  image1: { 
     src: "/women.webp",
     width: "200%",
     maxWidth: "500px",
@@ -70,7 +71,7 @@ const LAYOUT_CONTROLS = {
     rotate: 0,
     delay: 0,
   },
-  image2: { // girl2.png
+  image2: { 
     src: "/girl2.png",
     width: "200%",
     maxWidth: "500px",
@@ -79,6 +80,18 @@ const LAYOUT_CONTROLS = {
     scale: 2.2,
     rotate: 0,
     delay: 2,
+  },
+
+  // 4. NEW BACKGROUND GRAPHIC CONTROLS
+  backgroundGraphic: {
+    src: "/bg.webp", // The source for your new background image
+    x: -50, // Horizontal position adjustment
+    y: -150, // Vertical position adjustment
+    scale: 1.5, // Size of the image
+    rotate: 0, // Rotation in degrees
+    opacity: 0.1, // Transparency of the image
+    width: "100%", // CSS width
+    maxWidth: "800px", // CSS max-width
   }
 };
 
@@ -127,6 +140,7 @@ export default function HeroSectionContent() {
   const currentImage = images[currentImageIndex];
   const currentHeadline = headlines[currentImageIndex];
   const currentClinicText = clinicTexts[currentImageIndex];
+  const bgGraphic = LAYOUT_CONTROLS.backgroundGraphic; // Get the background graphic config
 
   return (
     <section
@@ -147,6 +161,34 @@ export default function HeroSectionContent() {
                  LEFT: HEADLINE (Changes with slide)
                  ------------------------------------------------------- */}
               <div className="lg:col-span-5 z-20 relative">
+
+                {/* NEW BACKGROUND GRAPHIC ELEMENT */}
+                <div
+                  className="absolute inset-0 z-[-1] pointer-events-none"
+                  style={{
+                    opacity: bgGraphic.opacity,
+                    transform: `translate(${bgGraphic.x}px, ${bgGraphic.y}px) scale(${bgGraphic.scale}) rotate(${bgGraphic.rotate}deg)`,
+                    transformOrigin: "center center",
+                  }}
+                >
+                  <div 
+                    className="relative" 
+                    style={{ 
+                      width: bgGraphic.width,
+                      maxWidth: bgGraphic.maxWidth,
+                      aspectRatio: '1/1' // Assuming square graphic
+                    }}
+                  >
+                    <Image
+                      src={bgGraphic.src}
+                      alt="Background Graphic"
+                      fill
+                      className="object-contain"
+                    />
+                  </div>
+                </div>
+
+
                 <div
                   className="relative"
                   style={{

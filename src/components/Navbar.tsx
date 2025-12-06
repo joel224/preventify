@@ -228,7 +228,7 @@ const Navbar = () => {
                   <NavigationMenuItem>
                     <Link href="/programs" legacyBehavior passHref>
                       <NavigationMenuLink className={`font-medium transition-colors text-base px-4 py-2 rounded-md ${pathname === "/programs" ? 'text-primary' : 'text-gray-700 hover:text-primary'}`}>
-                        Centers of Excellence
+                        Specialties & Treatments
                       </NavigationMenuLink>
                     </Link>
                   </NavigationMenuItem>
