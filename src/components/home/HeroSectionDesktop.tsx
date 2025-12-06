@@ -161,12 +161,10 @@ export default function HeroSectionContent() {
                  LEFT: HEADLINE (Changes with slide)
                  ------------------------------------------------------- */}
               <div 
-                className="lg:col-span-5 z-20 relative pointer-events-auto"
-                onMouseEnter={() => setIsGraphicHovered(true)}
-                onMouseLeave={() => setIsGraphicHovered(false)}
+                className="lg:col-span-5 z-20 relative"
               >
 
-                {/* NEW BACKGROUND GRAPHIC ELEMENT */}
+                {/* BACKGROUND GRAPHIC (Visible on hover) */}
                 <div
                   className="absolute inset-0 z-[-1] pointer-events-none transition-opacity duration-300"
                   style={{
@@ -191,6 +189,19 @@ export default function HeroSectionContent() {
                     />
                   </div>
                 </div>
+                
+                {/* INVISIBLE HOVER TRIGGER CIRCLE */}
+                <div
+                  className="absolute rounded-full pointer-events-auto"
+                  style={{
+                    width: bgGraphic.maxWidth,
+                    height: bgGraphic.maxWidth,
+                    transform: `translate(${bgGraphic.x}px, ${bgGraphic.y}px) scale(${bgGraphic.scale})`,
+                    transformOrigin: "center center",
+                  }}
+                  onMouseEnter={() => setIsGraphicHovered(true)}
+                  onMouseLeave={() => setIsGraphicHovered(false)}
+                ></div>
 
 
                 <div
