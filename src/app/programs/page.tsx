@@ -237,16 +237,11 @@ const ProgramsPage = () => {
                 description: "Coordination with your primary care and specialist providers.",
               },
             ].map((benefit, index) => (
-              <div key={index} className="bg-white p-6 rounded-lg shadow-sm">
-                <div className="flex items-start gap-4">
-                    <CheckCircle className="h-6 w-6 text-preventify-green mt-1 shrink-0" />
-                    <div>
-                        <h3 className="text-xl font-semibold mb-2 text-preventify-dark-purple">
-                        {benefit.title}
-                        </h3>
-                        <p className="text-gray-600">{benefit.description}</p>
-                    </div>
-                </div>
+              <div key={index} className="bg-white p-6 rounded-lg shadow-sm flex flex-col items-start text-left">
+                <h3 className="text-xl font-semibold mb-2 text-preventify-dark-purple">
+                  {benefit.title}
+                </h3>
+                <p className="text-gray-600">{benefit.description}</p>
               </div>
             ))}
           </div>
