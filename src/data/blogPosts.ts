@@ -134,7 +134,7 @@ export const blogPosts: BlogPost[] = [
       <p>Walk slowly and deliberately, paying attention to the sensation of each foot touching and lifting from the ground. Notice the movement of your body and the environment around you.</p>
       <p>At Preventify, we offer mindfulness workshops and one-on-one sessions to help you develop a sustainable practice for stress management and improved wellbeing.</p>
     `,
-    coverImage: "https://images.unsplash.com/photo-1566765790386-c43812572f20?q=80&w=1635&auto=format&fit=crop",
+    coverImage: "https://images.unsplash.com/photo-1597854772183-b6d3a82c4424?q=80&w=1587&auto=format&fit=crop",
     date: "May 22, 2024",
     author: "Dr. Priya Iyer",
     categories: ["mental health", "wellness", "lifestyle"]
