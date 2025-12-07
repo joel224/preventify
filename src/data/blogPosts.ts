@@ -1,3 +1,4 @@
+
 // src/data/blogPosts.ts
 import { BlogPost } from "@/types/blog"; // Assuming you have this type defined
 
@@ -8,118 +9,44 @@ export const blogPosts: BlogPost[] = [
     slug: "understanding-type-2-diabetes-prevention",
     excerpt: "Learn the essential strategies for preventing type 2 diabetes through lifestyle changes and regular health monitoring.",
     content: `
-      <p class="lead">Type 2 diabetes is a chronic condition that affects millions, but the power to prevent it is largely in your hands. This guide offers quick, actionable answers to the most common questions about protecting your health.</p>
-      
-      <h2 class="text-2xl font-bold mt-8 mb-4 text-preventify-blue">Real Talk Q&A: Your Guide to Diabetes Prevention</h2>
-
-      <div class="faq-container">
-        <details class="group">
-          <summary class="flex justify-between items-center font-medium cursor-pointer list-none">
-            <span>Q: Can I actually prevent type 2 diabetes?</span>
-            <span class="transition group-open:rotate-180">
-              <svg fill="none" height="24" shape-rendering="geometricPrecision" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" viewBox="0 0 24 24" width="24"><path d="M6 9l6 6 6-6"></path></svg>
-            </span>
-          </summary>
-          <div class="text-neutral-600 mt-3 group-open:animate-fadeIn">
-            <p><strong>A:</strong> Absolutely YES. Your daily choices matter more than your genes. Small, consistent changes today build powerful protection for tomorrow.</p>
-          </div>
-        </details>
-
-        <details class="group">
-          <summary class="flex justify-between items-center font-medium cursor-pointer list-none">
-            <span>Q: What's the #1 thing I should do?</span>
-            <span class="transition group-open:rotate-180">
-              <svg fill="none" height="24" shape-rendering="geometricPrecision" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" viewBox="0 0 24 24" width="24"><path d="M6 9l6 6 6-6"></path></svg>
-            </span>
-          </summary>
-          <div class="text-neutral-600 mt-3 group-open:animate-fadeIn">
-            <p><strong>A:</strong> Move your body. Just 30 minutes of walking daily can cut your risk by over 50%. No gym required - even dancing in your kitchen counts!</p>
-          </div>
-        </details>
-
-        <details class="group">
-          <summary class="flex justify-between items-center font-medium cursor-pointer list-none">
-            <span>Q: I hate veggies. What now?</span>
-            <span class="transition group-open:rotate-180">
-              <svg fill="none" height="24" shape-rendering="geometricPrecision" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" viewBox="0 0 24 24" width="24"><path d="M6 9l6 6 6-6"></path></svg>
-            </span>
-          </summary>
-          <div class="text-neutral-600 mt-3 group-open:animate-fadeIn">
-            <p><strong>A:</strong> Start with ONE. Add cherry tomatoes to your sandwich or try frozen berries in yogurt. Your taste buds adapt faster than you think, usually within two weeks.</p>
-          </div>
-        </details>
-
-        <details class="group">
-          <summary class="flex justify-between items-center font-medium cursor-pointer list-none">
-            <span>Q: How much weight do I really need to lose?</span>
-            <span class="transition group-open:rotate-180">
-              <svg fill="none" height="24" shape-rendering="geometricPrecision" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" viewBox="0 0 24 24" width="24"><path d="M6 9l6 6 6-6"></path></svg>
-            </span>
-          </summary>
-          <div class="text-neutral-600 mt-3 group-open:animate-fadeIn">
-            <p><strong>A:</strong> The surprising truth: losing just 5-7% of your body weight is a game-changer. For a 200lb person, that's only 10-14 pounds.</p>
-          </div>
-        </details>
-
-        <details class="group">
-          <summary class="flex justify-between items-center font-medium cursor-pointer list-none">
-            <span>Q: Sugar - how bad is it really?</span>
-            <span class="transition group-open:rotate-180">
-              <svg fill="none" height="24" shape-rendering="geometricPrecision" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" viewBox="0 0 24 24" width="24"><path d="M6 9l6 6 6-6"></path></svg>
-            </span>
-          </summary>
-          <div class="text-neutral-600 mt-3 group-open:animate-fadeIn">
-            <p><strong>A:</strong> Liquid sugar is the main culprit. One soda daily can significantly increase your diabetes risk. Swap to water with lemon; your body will feel the difference in days.</p>
-          </div>
-        </details>
-        
-        <details class="group">
-          <summary class="flex justify-between items-center font-medium cursor-pointer list-none">
-            <span>Q: I'm always stressed. Does that matter?</span>
-            <span class="transition group-open:rotate-180">
-              <svg fill="none" height="24" shape-rendering="geometricPrecision" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" viewBox="0 0 24 24" width="24"><path d="M6 9l6 6 6-6"></path></svg>
-            </span>
-          </summary>
-          <div class="text-neutral-600 mt-3 group-open:animate-fadeIn">
-            <p><strong>A:</strong> Big time. Stress hormones spike your blood sugar. Try this: 60 seconds of deep breathing, three times a day. It works better than you think.</p>
-          </div>
-        </details>
-
-        <details class="group">
-          <summary class="flex justify-between items-center font-medium cursor-pointer list-none">
-            <span>Q: What about sleep?</span>
-            <span class="transition group-open:rotate-180">
-              <svg fill="none" height="24" shape-rendering="geometricPrecision" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" viewBox="0 0 24 24" width="24"><path d="M6 9l6 6 6-6"></path></svg>
-            </span>
-          </summary>
-          <div class="text-neutral-600 mt-3 group-open:animate-fadeIn">
-            <p><strong>A:</strong> Skimping on sleep makes you crave junk food and disrupts blood sugar control. Aim for a minimum of 7 hours. Your future self will high-five you.</p>
-          </div>
-        </details>
-
-        <details class="group">
-          <summary class="flex justify-between items-center font-medium cursor-pointer list-none">
-            <span>Q: What's the easiest first step?</span>
-            <span class="transition group-open:rotate-180">
-              <svg fill="none" height="24" shape-rendering="geometricPrecision" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" viewBox="0 0 24 24" width="24"><path d="M6 9l6 6 6-6"></path></svg>
-            </span>
-          </summary>
-          <div class="text-neutral-600 mt-3 group-open:animate-fadeIn">
-            <p><strong>A:</strong> Ditch sugary drinks TODAY. Replace them with water, herbal tea, or sparkling water. This single change can make the biggest difference, fast.</p>
-          </div>
-        </details>
+      <h2 class="text-2xl font-bold mt-8 mb-6 text-preventify-blue">Real Talk Q&A: Your Guide to Diabetes Prevention</h2>
+      <div class="qa-grid">
+        <div class="qa-card">
+            <p class="question">Q: Can I actually prevent type 2 diabetes?</p>
+            <p class="answer"><strong>A:</strong> Absolutely YES. Your daily choices matter more than your genes. Small changes today build powerful protection for tomorrow.</p>
+        </div>
+        <div class="qa-card">
+            <p class="question">Q: What's the #1 thing I should do?</p>
+            <p class="answer"><strong>A:</strong> Move your body. Just 30 minutes of walking daily can cut your risk by over 50%. No gym required - even dancing in your kitchen counts!</p>
+        </div>
+        <div class="qa-card">
+            <p class="question">Q: I hate veggies. What now?</p>
+            <p class="answer"><strong>A:</strong> Start with ONE. Add cherry tomatoes to your sandwich or try frozen berries in yogurt. Your taste buds adapt faster than you think.</p>
+        </div>
+        <div class="qa-card">
+            <p class="question">Q: How much weight do I really need to lose?</p>
+            <p class="answer"><strong>A:</strong> The surprising truth: losing just 5-7% of your body weight is a game-changer. For a 200lb person, that's only 10-14 pounds.</p>
+        </div>
+        <div class="qa-card">
+            <p class="question">Q: Sugar - how bad is it really?</p>
+            <p class="answer"><strong>A:</strong> Liquid sugar is the main culprit. One soda daily can significantly increase your diabetes risk. Swap to water with lemon; your body will feel the difference.</p>
+        </div>
+        <div class="qa-card">
+            <p class="question">Q: I'm always stressed. Does that matter?</p>
+            <p class="answer"><strong>A:</strong> Big time. Stress hormones spike your blood sugar. Try this: 60 seconds of deep breathing, three times a day. It works better than you think.</p>
+        </div>
+        <div class="qa-card">
+            <p class="question">Q: What about sleep?</p>
+            <p class="answer"><strong>A:</strong> Skimping on sleep makes you crave junk food and disrupts blood sugar control. Aim for a minimum of 7 hours. Your future self will high-five you.</p>
+        </div>
+        <div class="qa-card">
+            <p class="question">Q: What's the easiest first step?</p>
+            <p class="answer"><strong>A:</strong> Ditch sugary drinks TODAY. Replace them with water, herbal tea, or sparkling water. This single change can make the biggest difference, fast.</p>
+        </div>
       </div>
 
-      <h2 class="mt-8 text-2xl font-bold mb-4 text-preventify-blue">Where Do I Start Tomorrow?</h2>
-      <p>Pick just ONE of these to focus on:</p>
-      <ul>
-        <li>Walk for 10 minutes after dinner.</li>
-        <li>Swap one soda for a glass of water.</li>
-        <li>Add one extra vegetable to your lunch.</li>
-        <li>Go to bed 30 minutes earlier than usual.</li>
-      </ul>
-      <div class="bg-blue-50 border-l-4 border-preventify-blue p-4 mt-6">
-        <p class="font-bold text-preventify-blue m-0">Remember: You don't need a perfect plan. You need one small action that sticks. Your healthiest years start with today's choice.</p>
+      <div class="bg-blue-50 border-l-4 border-preventify-blue p-4 mt-8">
+        <p class="font-bold text-preventify-blue m-0">Remember: You don't need a perfect plan. You need one small action that sticks.</p>
       </div>
     `,
     coverImage: "/food.webp",
@@ -227,7 +154,7 @@ export const blogPosts: BlogPost[] = [
       <p>Walk slowly and deliberately, paying attention to the sensation of each foot touching and lifting from the ground. Notice the movement of your body and the environment around you.</p>
       <p>At Preventify, we offer mindfulness workshops and one-on-one sessions to help you develop a sustainable practice for stress management and improved wellbeing.</p>
     `,
-    coverImage: "https://images.unsplash.com/photo-1506126613408-4e652a2756e5?q=80&w=1470&auto=format&fit=crop",
+    coverImage: "https://img.freepik.com/free-vector/cartoon-business-person-meditating_23-2148909904.jpg?t=st=1765124775~exp=1765128375~hmac=25306994d95cf22d6b6355c223c87db9f253579ff296aef8d177bc02b781706f&w=1060",
     date: "May 22, 2024",
     author: "Dr. Priya Iyer",
     categories: ["mental health", "wellness", "lifestyle"]
