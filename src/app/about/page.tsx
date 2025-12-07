@@ -10,6 +10,7 @@ const AboutPage = () => {
       <PageHeader
         title="About Preventify"
         subtitle="Leading the way in evidence-based healthcare across Kerala"
+        backgroundClass="bg-striped-glass"
       />
 
       {/* Vision and Mission */}
