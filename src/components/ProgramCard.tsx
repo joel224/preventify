@@ -1,6 +1,7 @@
 import { Card, CardContent, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Check } from "lucide-react";
+import Link from "next/link";
 
 interface ProgramCardProps {
   title: string;
@@ -31,9 +32,11 @@ const ProgramCard = ({
         </ul>
       </CardContent>
       <CardFooter>
-        <Button className="w-full bg-preventify-blue hover:bg-preventify-dark-blue text-white">
-          Join Program
-        </Button>
+        <Link href="/savings" className="w-full">
+            <Button className="w-full bg-preventify-blue hover:bg-preventify-dark-blue text-white">
+            Join Program
+            </Button>
+        </Link>
       </CardFooter>
     </Card>
   );

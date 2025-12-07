@@ -231,15 +231,8 @@ const ProgramsPage = () => {
       </section>
 
       {/* Program Benefits */}
-       <section className="py-16 bg-preventify-light-gray relative overflow-hidden">
-        <Image
-            src="/food.webp"
-            alt="A plate of healthy food representing a preventive lifestyle"
-            fill
-            className="object-cover -z-10"
-        />
-        <div className="absolute inset-0 bg-white/80 backdrop-blur-sm -z-10"></div>
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+       <section className="py-16 bg-preventify-light-gray">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
            <div className="text-center mb-12">
               <h2 className="text-3xl font-bold mb-4 text-preventify-blue">A Foundation for Lasting Health</h2>
               <p className="text-gray-600 max-w-3xl mx-auto">
