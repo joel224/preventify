@@ -8,110 +8,68 @@ export const blogPosts: BlogPost[] = [
     slug: "understanding-type-2-diabetes-prevention",
     excerpt: "Learn the essential strategies for preventing type 2 diabetes through lifestyle changes and regular health monitoring.",
     content: `
-      <p>Type 2 diabetes is a chronic condition that affects the way your body metabolizes sugar, an important source of fuel for your body. With type 2 diabetes, your body either resists the effects of insulin — a hormone that regulates the movement of sugar into your cells — or doesn't produce enough insulin to maintain normal glucose levels.</p>
-      <h2>Risk Factors</h2>
-      <p>Several factors can increase your risk of developing type 2 diabetes:</p>
-      <ul>
-        <li>Weight: Being overweight is a primary risk factor</li>
-        <li>Fat distribution: Storing fat mainly in your abdomen increases your risk</li>
-        <li>Inactivity: The less active you are, the greater your risk</li>
-        <li>Family history: Your risk increases if a parent or sibling has type 2 diabetes</li>
-        <li>Age: Risk increases as you get older, especially after age 45</li>
-      </ul>
-      <h2>Prevention Strategies</h2>
-      <p>Healthy lifestyle choices can help prevent type 2 diabetes, even if you have biological relatives living with diabetes. If you've been diagnosed with prediabetes, lifestyle changes can slow or stop the progression to diabetes.</p>
-      <p>A healthy lifestyle includes:</p>
-      <ul>
-        <li>Eating healthy foods low in fat and calories and high in fiber</li>
-        <li>Getting at least 150 minutes of moderate physical activity weekly</li>
-        <li>Losing excess weight through diet and exercise</li>
-      </ul>
-      <p>At Preventify Hospitals, we offer comprehensive diabetes prevention programs designed to help you make sustainable lifestyle changes.</p>
-
-      <h2>Unlock Your Health: Simple Secrets to Prevent Type 2 Diabetes</h2>
-      <p>Imagine waking up feeling energetic, strong, and in control of your health. That dream can become your reality. Type 2 diabetes affects millions worldwide. But here's the empowering truth: you have incredible power to prevent it. This isn't about drastic overhauls or impossible diets. Real prevention lives in everyday choices you make. Let's explore practical, joyful ways to protect your health starting today.</p>
-
-      <h3>What Exactly Is Type 2 Diabetes?</h3>
-      <p>Your body uses insulin like a key to unlock cells for energy. Type 2 diabetes happens when this system struggles. Cells become resistant to insulin's effects. Blood sugar levels rise dangerously over time. The scary part? Many people don't notice symptoms until serious damage occurs. Prevention means catching problems before they start. Your future self will thank you.</p>
-
-      <h3>Your Body's Natural Defense System</h3>
-      <p>Every positive choice strengthens your body's ability to manage blood sugar naturally. Movement, nourishing foods, and good sleep work together like a perfect team. Small consistent actions create massive protective effects over time. Think of prevention as building a health fortress brick by brick daily.</p>
-
-      <h3>Move More, Live Better</h3>
-      <p>Sitting all day silently harms your metabolism. Your muscles need regular activation to stay insulin-sensitive. Find activities you genuinely enjoy. Dancing counts. Walking with friends counts. Gardening counts. Aim for 30 minutes most days. Break it into three ten-minute bursts if needed. Every step matters more than you realize. Your body celebrates movement of any kind.</p>
-
-      <h3>Food as Powerful Medicine</h3>
-      <p>Processed foods and sugary drinks are diabetes accelerators. Whole foods are your natural shields. Fill half your plate with colorful vegetables at each meal. Their fiber slows sugar absorption beautifully. Choose whole grains over refined options. Brown rice beats white rice every time for blood sugar control. Protein keeps you full and stabilizes energy. Include lean meats, beans, nuts, and fish regularly.</p>
-
-      <h3>Sweet Truths About Sugar</h3>
-      <p>Sugar hides in unexpected places. Check labels on sauces, breads, and "healthy" snacks. Your taste buds adapt quickly. Reduce added sugars gradually to reset your preferences. Natural sweetness from fruits satisfies cravings without blood sugar spikes. Water is your best friend. Replace sugary drinks with refreshing infused water options.</p>
-
-      <h3>Weight Wisdom That Works</h3>
-      <p>Excess weight, especially around your middle, increases diabetes risk significantly. You don't need dramatic weight loss. Losing just 5-10% of body weight creates major health improvements. Focus on sustainable habits rather than crash diets. Your body responds better to gentle changes. Celebrate non-scale victories like better sleep, more energy, and improved mood.</p>
-
-      <h3>Sleep: Your Secret Weapon</h3>
-      <p>Poor sleep disrupts hunger hormones and insulin sensitivity overnight. Aim for 7-9 hours of quality rest each night. Your body repairs and resets during sleep. Create a calming bedtime routine. Turn off screens one hour before sleep. Dark, cool bedrooms promote deeper rest. Your metabolism thanks you in the morning.</p>
-
-      <h3>Stress Less, Live More</h3>
-      <p>Chronic stress floods your body with cortisol. This hormone directly impacts blood sugar control. Find simple stress-busters that work for you. Deep breathing takes just one minute. Nature walks reset your nervous system beautifully. Even five minutes outside helps. Connect with supportive friends regularly. Laughter truly is good medicine.</p>
-
-      <h3>Your Prevention Action Plan</h3>
-      <ul>
-        <li>Start with one small change this week. Maybe add one extra vegetable to dinner.</li>
-        <li>Track your progress in a journal. Success builds motivation for bigger changes.</li>
-        <li>Find an accountability partner. Shared journeys are easier and more fun.</li>
-        <li>Celebrate every victory, no matter how small. Each choice matters immensely.</li>
-      </ul>
-
-      <h3>Know Your Numbers</h3>
-      <p>Regular check-ups catch problems early. Ask your doctor about A1C tests annually. Normal fasting blood sugar stays below 100 mg/dL. Prediabetes ranges from 100-125. Knowledge empowers action. Understanding your risk helps you stay motivated. Don't wait for symptoms to appear. Prevention works best before problems start.</p>
-
-      <h3>Community Power</h3>
-      <ul>
-        <li>Join local walking groups or cooking classes. Shared experiences make healthy habits stick.</li>
-        <li>Online communities offer support when motivation dips. You're never alone on this journey.</li>
-        <li>Share your successes with others. Your story might inspire someone else to start.</li>
-        <li>Health is contagious in the best possible way. Spread positive energy.</li>
-      </ul>
-
-      <h3>Real People, Real Results</h3>
-      <p><b>Sarah</b> lost 15 pounds walking during lunch breaks. Her blood sugar normalized within months.</p>
-      <p><b>Mike</b> swapped soda for sparkling water. His energy doubled and cravings disappeared.</p>
-      <p><b>Lisa</b> started meal prepping Sundays. Healthy eating became effortless during busy weeks.</p>
-      <p>Your success story starts with one decision today. What will yours be?</p>
-
-      <h3>Myth Busting Time</h3>
-      <ul>
-        <li><b>Myth:</b> Only overweight people get type 2 diabetes. <b>Truth:</b> Thin people develop it too due to poor diet and inactivity.</li>
-        <li><b>Myth:</b> Diabetes prevention requires extreme willpower. <b>Truth:</b> Small sustainable changes create lasting results without deprivation.</li>
-        <li><b>Myth:</b> Genetics determine your fate. <b>Truth:</b> Lifestyle choices can overcome genetic predispositions powerfully.</li>
-      </ul>
-
-      <h3>Your Daily Prevention Checklist</h3>
-      <ul style="list-style-type: '✅ ';">
-        <li>Move your body for 30 minutes</li>
-        <li>Eat three vegetable servings</li>
-        <li>Drink eight glasses of water</li>
-        <li>Get seven hours of sleep</li>
-        <li>Practice five minutes of deep breathing</li>
-      </ul>
-      <p>Copy this list. Post it where you'll see it daily. Small actions compound into big results.</p>
-
-      <h3>Why Prevention Beats Cure</h3>
-      <p>Managing diabetes requires constant medication, monitoring, and lifestyle restrictions. Prevention means freedom from needles, expensive medications, and health complications. Your quality of life improves dramatically. Energy returns. Mental clarity sharpens. Long-term savings go beyond money. You invest in years of vibrant living.</p>
+      <p>Type 2 diabetes is a chronic condition that affects millions, but the power to prevent it is largely in your hands. This guide offers quick, actionable answers to the most common questions about protecting your health.</p>
       
-      <h3>Q&A: Your Diabetes Prevention Questions Answered</h3>
-      <p><b>Q: How quickly can lifestyle changes lower diabetes risk?</b><br/>A: Positive effects start within weeks. Significant risk reduction happens within 3-6 months of consistent changes.</p>
-      <p><b>Q: Can I prevent diabetes if it runs in my family?</b><br/>A: Absolutely. Genetics loads the gun, but lifestyle pulls the trigger. Healthy choices dramatically reduce inherited risk.</p>
-      <p><b>Q: What's the most important prevention step?</b><br/>A: Regular physical activity tops the list. Movement improves insulin sensitivity more powerfully than any single food change.</p>
-      <p><b>Q: Do I need expensive gym memberships or equipment?</b><br/>A: No. Walking requires only comfortable shoes. Bodyweight exercises work anywhere. Nature provides free gyms everywhere.</p>
-      <p><b>Q: How often should I get checked for prediabetes?</b><br/>A: Adults over 45 should test annually. Younger adults with risk factors need earlier and more frequent screening.</p>
-      <p><b>Q: Are all carbs bad for prevention?</b><br/>A: No. Focus on complex carbs like vegetables, fruits, and whole grains. Avoid refined carbs and added sugars.</p>
-      <p><b>Q: Can stress really cause diabetes?</b><br/>A: Chronic stress contributes significantly. It raises blood sugar and promotes unhealthy coping behaviors like overeating.</p>
-      <p><b>Q: What's one easy swap I can make today?</b><br/>A: Replace sugary drinks with water or herbal tea. This single change dramatically reduces diabetes risk.</p>
-      <p><b>Q: Do I need to lose a lot of weight to help?</b><br/>A: Losing just 5-7% of body weight cuts risk by over 50%. Small sustainable losses create big health dividends.</p>
-      <p><b>Q: Where can I find support for prevention?</b><br/>A: Ask your doctor about local programs. Online communities like Diabetes Prevention Program offer free resources and peer support.</p>
-      <p>Your prevention journey starts with awareness. Today you gained powerful knowledge. Take one small step right now. Your healthy future begins with this moment. Share this post with someone you care about. Together, we can prevent diabetes one choice at a time.</p>
+      <h2>Real Talk Q&A: Your Guide to Diabetes Prevention</h2>
+
+      <details>
+        <summary><h3>Q: Can I actually prevent type 2 diabetes?</h3></summary>
+        <p><strong>A:</strong> Absolutely YES. Your daily choices matter more than your genes. Small, consistent changes today build powerful protection for tomorrow.</p>
+      </details>
+      <details>
+        <summary><h3>Q: What's the #1 thing I should do?</h3></summary>
+        <p><strong>A:</strong> Move your body. Just 30 minutes of walking daily can cut your risk by over 50%. No gym required - even dancing in your kitchen counts!</p>
+      </details>
+      <details>
+        <summary><h3>Q: I hate veggies. What now?</h3></summary>
+        <p><strong>A:</strong> Start with ONE. Add cherry tomatoes to your sandwich or try frozen berries in yogurt. Your taste buds adapt faster than you think, usually within two weeks.</p>
+      </details>
+      <details>
+        <summary><h3>Q: How much weight do I really need to lose?</h3></summary>
+        <p><strong>A:</strong> The surprising truth: losing just 5-7% of your body weight is a game-changer. For a 200lb person, that's only 10-14 pounds.</p>
+      </details>
+      <details>
+        <summary><h3>Q: Sugar - how bad is it really?</h3></summary>
+        <p><strong>A:</strong> Liquid sugar is the main culprit. One soda daily can significantly increase your diabetes risk. Swap to water with lemon; your body will feel the difference in days.</p>
+      </details>
+      <details>
+        <summary><h3>Q: I'm always stressed. Does that matter?</h3></summary>
+        <p><strong>A:</strong> Big time. Stress hormones spike your blood sugar. Try this: 60 seconds of deep breathing, three times a day. It works better than you think.</p>
+      </details>
+      <details>
+        <summary><h3>Q: What about sleep?</h3></summary>
+        <p><strong>A:</strong> Skimping on sleep makes you crave junk food and disrupts blood sugar control. Aim for a minimum of 7 hours. Your future self will high-five you.</p>
+      </details>
+      <details>
+        <summary><h3>Q: My family has diabetes. Am I doomed?</h3></summary>
+        <p><strong>A:</strong> Not at all. Genetics might load the gun, but lifestyle pulls the trigger. You are in control of the trigger. Many people beat their family history with smart choices.</p>
+      </details>
+      <details>
+        <summary><h3>Q: What's the easiest first step?</h3></summary>
+        <p><strong>A:</strong> Ditch sugary drinks TODAY. Replace them with water, herbal tea, or sparkling water. This single change can make the biggest difference, fast.</p>
+      </details>
+      <details>
+        <summary><h3>Q: How do I know if I'm at risk?</h3></summary>
+        <p><strong>A:</strong> Get a simple blood test. A fasting blood sugar under 100 mg/dL is good. 100-125 is the warning zone (prediabetes). Over 125 means it's time to act.</p>
+      </details>
+      <details>
+        <summary><h3>Q: I'm too busy for this.</h3></summary>
+        <p><strong>A:</strong> Prevention can happen in tiny moments. Park farther away, take the stairs, or walk while on phone calls. Your health is built in these small choices.</p>
+      </details>
+      <details>
+        <summary><h3>Q: What if I slip up?</h3></summary>
+        <p><strong>A:</strong> One bad meal doesn't ruin your progress, and neither does one bad week. Just get back on track with your next meal. Consistency is the goal, not perfection.</p>
+      </details>
+
+      <h2 class="mt-8">Where Do I Start Tomorrow?</h2>
+      <p>Pick just ONE of these to focus on:</p>
+      <ul>
+        <li>Walk for 10 minutes after dinner.</li>
+        <li>Swap one soda for a glass of water.</li>
+        <li>Add one extra vegetable to your lunch.</li>
+        <li>Go to bed 30 minutes earlier than usual.</li>
+      </ul>
+      <p class="font-bold mt-4">Remember: You don't need a perfect plan. You need one small action that sticks. Your healthiest years start with today's choice.</p>
     `,
     coverImage: "/food.webp",
     date: "June 10, 2024",
@@ -219,7 +177,7 @@ export const blogPosts: BlogPost[] = [
       <p>Walk slowly and deliberately, paying attention to the sensation of each foot touching and lifting from the ground. Notice the movement of your body and the environment around you.</p>
       <p>At Preventify, we offer mindfulness workshops and one-on-one sessions to help you develop a sustainable practice for stress management and improved wellbeing.</p>
     `,
-    coverImage: "https://images.unsplash.com/photo-1597854772183-b6d3a82c4424?q=80&w=1587&auto=format&fit=crop",
+    coverImage: "https://images.unsplash.com/photo-1506126613408-4e652a2756e5?q=80&w=1470&auto=format&fit=crop",
     date: "May 22, 2024",
     author: "Dr. Priya Iyer",
     categories: ["mental health", "wellness", "lifestyle"]
