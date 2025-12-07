@@ -235,8 +235,8 @@ const ProgramsPage = () => {
           <div className="grid md:grid-cols-2 gap-12 items-center mb-12">
             <div className="relative aspect-[4/3] rounded-lg overflow-hidden shadow-lg">
                 <Image 
-                    src="https://images.unsplash.com/photo-1543269865-cbf427effbad?q=80&w=1470&auto=format&fit=crop"
-                    alt="Group of people in a health program"
+                    src="/food.webp"
+                    alt="A plate of healthy food representing a preventive lifestyle"
                     fill
                     className="object-cover"
                 />
