@@ -230,34 +230,35 @@ const ProgramsPage = () => {
       </section>
 
       {/* Program Benefits */}
-      <section className="py-16 bg-preventify-light-gray">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid md:grid-cols-2 gap-12 items-center mb-12">
-            <div className="relative aspect-[4/3] rounded-lg overflow-hidden shadow-lg">
-                <Image 
-                    src="/food.webp"
-                    alt="A plate of healthy food representing a preventive lifestyle"
-                    fill
-                    className="object-contain"
-                />
-            </div>
-            <div>
+       <section className="py-16 bg-preventify-light-gray relative overflow-hidden">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+           <div className="text-center mb-12 relative group">
+              <div className="absolute inset-0 flex items-center justify-center -z-10">
+                <div className="relative w-48 h-48">
+                    <Image 
+                        src="/food.webp"
+                        alt="A plate of healthy food representing a preventive lifestyle"
+                        fill
+                        className="object-contain grayscale opacity-30 transition-all duration-500 group-hover:grayscale-0 group-hover:opacity-60 group-hover:scale-110"
+                    />
+                </div>
+              </div>
               <h2 className="text-3xl font-bold mb-4 text-preventify-blue">A Foundation for Lasting Health</h2>
-              <p className="text-gray-600 max-w-3xl">
+              <p className="text-gray-600 max-w-3xl mx-auto">
                 Each of our programs is built on a core set of principles designed to empower you, deliver measurable results, and foster a supportive community on your journey to wellness.
               </p>
             </div>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-            {programBenefits.map((benefit, index) => (
-              <div key={index} className="bg-white p-6 rounded-lg shadow-sm transition-all duration-300 hover:shadow-xl hover:-translate-y-1">
-                <h3 className="text-xl font-semibold mb-2 text-preventify-dark-purple">
-                  {benefit.title}
-                </h3>
-                <p className="text-gray-600">{benefit.description}</p>
-              </div>
-            ))}
-          </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                {programBenefits.map((benefit, index) => (
+                <div key={index} className="bg-white p-6 rounded-lg shadow-sm transition-all duration-300 hover:shadow-xl hover:-translate-y-1">
+                    <h3 className="text-xl font-semibold mb-2 text-preventify-dark-purple">
+                    {benefit.title}
+                    </h3>
+                    <p className="text-gray-600">{benefit.description}</p>
+                </div>
+                ))}
+            </div>
         </div>
       </section>
 
