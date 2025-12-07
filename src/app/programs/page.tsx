@@ -114,6 +114,42 @@ const ProgramsPage = () => {
     },
   ];
 
+  const programBenefits = [
+    {
+      title: "Personalized Approach",
+      description: "Programs tailored to individual health needs and goals.",
+    },
+    {
+      title: "Expert Guidance",
+      description: "Led by healthcare professionals with specialized training.",
+    },
+    {
+      title: "Sustainable Results",
+      description: "Focus on long-term lifestyle changes, not quick fixes.",
+    },
+    {
+      title: "Holistic Support",
+      description: "Addressing physical, emotional, and social aspects of health.",
+    },
+    {
+      title: "Regular Monitoring",
+      description: "Continuous assessment and adjustment of your health plan.",
+    },
+    {
+      title: "Group Support",
+      description: "Community of individuals with similar health goals.",
+    },
+    {
+      title: "Evidence-Based Methods",
+      description: "Practices supported by medical research and clinical guidelines.",
+    },
+    {
+      title: "Integrated Care",
+      description: "Coordination with your primary care and specialist providers.",
+    },
+  ];
+
+
   return (
     <>
       <PageHeader
@@ -196,48 +232,25 @@ const ProgramsPage = () => {
       {/* Program Benefits */}
       <section className="py-16 bg-preventify-light-gray">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold mb-4">Benefits of Our Programs</h2>
-            <p className="text-gray-600 max-w-3xl mx-auto">
-              Our evidence-based programs are designed to deliver measurable health improvements and enhance quality of life.
-            </p>
+          <div className="grid md:grid-cols-2 gap-12 items-center mb-12">
+            <div className="relative aspect-[4/3] rounded-lg overflow-hidden shadow-lg">
+                <Image 
+                    src="https://images.unsplash.com/photo-1543269865-cbf427effbad?q=80&w=1470&auto=format&fit=crop"
+                    alt="Group of people in a health program"
+                    fill
+                    className="object-cover"
+                />
+            </div>
+            <div>
+              <h2 className="text-3xl font-bold mb-4 text-preventify-blue">A Foundation for Lasting Health</h2>
+              <p className="text-gray-600 max-w-3xl">
+                Each of our programs is built on a core set of principles designed to empower you, deliver measurable results, and foster a supportive community on your journey to wellness.
+              </p>
+            </div>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-            {[
-              {
-                title: "Personalized Approach",
-                description: "Programs tailored to individual health needs and goals.",
-              },
-              {
-                title: "Expert Guidance",
-                description: "Led by healthcare professionals with specialized training.",
-              },
-              {
-                title: "Sustainable Results",
-                description: "Focus on long-term lifestyle changes, not quick fixes.",
-              },
-              {
-                title: "Holistic Support",
-                description: "Addressing physical, emotional, and social aspects of health.",
-              },
-              {
-                title: "Regular Monitoring",
-                description: "Continuous assessment and adjustment of your health plan.",
-              },
-              {
-                title: "Group Support",
-                description: "Community of individuals with similar health goals.",
-              },
-              {
-                title: "Evidence-Based Methods",
-                description: "Practices supported by medical research and clinical guidelines.",
-              },
-              {
-                title: "Integrated Care",
-                description: "Coordination with your primary care and specialist providers.",
-              },
-            ].map((benefit, index) => (
-              <div key={index} className="bg-white p-6 rounded-lg shadow-sm flex flex-col items-start text-left">
+            {programBenefits.map((benefit, index) => (
+              <div key={index} className="bg-white p-6 rounded-lg shadow-sm transition-all duration-300 hover:shadow-xl hover:-translate-y-1">
                 <h3 className="text-xl font-semibold mb-2 text-preventify-dark-purple">
                   {benefit.title}
                 </h3>
