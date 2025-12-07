@@ -13,29 +13,42 @@ const AboutPage = () => {
       />
 
       {/* Vision and Mission */}
-      <section className="py-16 bg-white">
+      <section className="py-20 bg-white">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="max-w-4xl mx-auto">
-            <h2 className="text-3xl font-bold mb-8 text-center text-preventify-blue">Our Vision & Mission</h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-              <div className="bg-preventify-light-gray p-8 rounded-lg shadow-sm">
-                <h3 className="font-display font-semibold text-2xl mb-3 text-preventify-dark-purple flex items-center gap-3">
-                  <Target className="w-7 h-7" />
-                  Our Vision
-                </h3>
-                <p className="text-preventify-dark-gray">
+          <div className="max-w-5xl mx-auto">
+            <h2 className="text-3xl font-bold mb-10 text-center text-preventify-blue">Our Guiding Principles</h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
+              
+              {/* Vision */}
+              <div className="md:pr-8 md:border-r md:border-gray-200">
+                <div className="flex items-center gap-4 mb-4">
+                  <div className="bg-preventify-blue/10 p-3 rounded-full">
+                    <Target className="w-7 h-7 text-preventify-blue" />
+                  </div>
+                  <h3 className="font-display font-semibold text-2xl text-preventify-dark-blue">
+                    Our Vision
+                  </h3>
+                </div>
+                <p className="text-preventify-dark-gray text-lg">
                   To create a patient-centered, outcome-driven, cost-effective, scientifically updated healthcare ecosystem across suburban and semi-urban India, where trust is rebuilt into primary and preventive care.
                 </p>
               </div>
-              <div className="bg-preventify-light-gray p-8 rounded-lg shadow-sm">
-                <h3 className="font-display font-semibold text-2xl mb-3 text-preventify-dark-purple flex items-center gap-3">
-                  <HeartHandshake className="w-7 h-7" />
-                  Our Mission
-                </h3>
-                <p className="text-preventify-dark-gray">
+
+              {/* Mission */}
+              <div className="md:pl-8">
+                 <div className="flex items-center gap-4 mb-4">
+                  <div className="bg-preventify-purple/10 p-3 rounded-full">
+                    <HeartHandshake className="w-7 h-7 text-preventify-purple" />
+                  </div>
+                  <h3 className="font-display font-semibold text-2xl text-preventify-dark-blue">
+                    Our Mission
+                  </h3>
+                </div>
+                <p className="text-preventify-dark-gray text-lg">
                   Preventify is committed to delivering comprehensive healthcare services that combine modern medical practices with preventive approaches, empowering individuals to take control of their health and live fuller lives.
                 </p>
               </div>
+
             </div>
           </div>
         </div>
@@ -70,7 +83,7 @@ const AboutPage = () => {
       <section className="py-16 bg-white">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <h2 className="text-3xl font-bold mb-12 text-center text-preventify-blue">Our Core Values</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
             {[
               {
                 icon: <Microscope className="w-8 h-8 text-preventify-green" />,
