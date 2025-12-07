@@ -174,6 +174,24 @@
       @apply pt-4 border-t border-gray-100 mt-3;
       @apply text-base;
   }
+
+  /* Styles for the new Q&A cards */
+  .qa-grid {
+    @apply grid grid-cols-1 md:grid-cols-2 gap-6 mt-8;
+  }
+
+  .qa-card {
+    @apply bg-white border border-gray-200 rounded-lg p-6 transition-all duration-300;
+    @apply hover:shadow-lg hover:-translate-y-1;
+  }
+
+  .qa-card .question {
+    @apply font-semibold text-lg text-preventify-blue mb-3;
+  }
+
+  .qa-card .answer {
+    @apply text-gray-700;
+  }
 }
 /* 1. Beona Danila Font */
 @font-face {
@@ -235,3 +253,5 @@
   font-style: normal;
   font-display: swap;
 }
+
+```

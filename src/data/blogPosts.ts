@@ -12,67 +12,44 @@ export const blogPosts: BlogPost[] = [
       
       <h2 class="text-2xl font-bold mt-8 mb-4 text-preventify-blue">Real Talk Q&A: Your Guide to Diabetes Prevention</h2>
 
-      <div class="faq-container space-y-4">
-        <details class="group">
-          <summary>Q: Can I actually prevent type 2 diabetes?</summary>
-          <div class="prose-p:my-0">
-            <p><strong>A:</strong> Absolutely YES. Your daily choices matter more than your genes. Small changes today build big protection for tomorrow.</p>
-          </div>
-        </details>
-
-        <details class="group">
-          <summary>Q: What's the #1 thing I should do?</summary>
-          <div>
-            <p><strong>A:</strong> Move your body. Just 30 minutes of walking daily cuts your risk by 50%. No gym required - even dancing in your kitchen counts!</p>
-          </div>
-        </details>
-
-        <details class="group">
-          <summary>Q: I hate veggies. What now?</summary>
-          <div>
-            <p><strong>A:</strong> Start with ONE. Add cherry tomatoes to your sandwich or try frozen berries in yogurt. Your taste buds adapt in about 2 weeks.</p>
-          </div>
-        </details>
-        
-        <details class="group">
-            <summary>Q: How much weight do I really need to lose?</summary>
-            <div>
-                <p><strong>A:</strong> Shocking truth: Losing just 5-7% of your body weight is a game-changer. For a 200lb person, that's only 10-14 pounds.</p>
-            </div>
-        </details>
-
-        <details class="group">
-            <summary>Q: Sugar - how bad is it really?</summary>
-            <div>
-                <p><strong>A:</strong> Liquid sugar is the worst offender. One soda daily significantly increases your diabetes risk. Swap to water with lemon; your body will feel the difference in days.</p>
-            </div>
-        </details>
-
-        <details class="group">
-            <summary>Q: I'm always stressed. Does that matter?</summary>
-            <div>
-                <p><strong>A:</strong> Big time. Stress hormones spike your blood sugar. Try this: 60 seconds of deep breathing, three times a day. It works better than you think.</p>
-            </div>
-        </details>
-
-        <details class="group">
-            <summary>Q: What about sleep?</summary>
-            <div>
-                <p><strong>A:</strong> Skimping on sleep makes you crave junk food and messes with blood sugar. Aim for a minimum of 7 hours. Your future self will high-five you.</p>
-            </div>
-        </details>
-        
-        <details class="group">
-            <summary>Q: What's the easiest first step?</summary>
-            <div>
-              <p><strong>A:</strong> Ditch sugary drinks TODAY. Replace them with water, herbal tea, or sparkling water. This single change makes the biggest difference, fast.</p>
-            </div>
-        </details>
+      <div class="qa-grid">
+        <div class="qa-card">
+          <p class="question">Q: Can I actually prevent type 2 diabetes?</p>
+          <p class="answer">A: Absolutely YES. Your daily choices matter more than your genes. Small changes today build big protection for tomorrow.</p>
+        </div>
+        <div class="qa-card">
+          <p class="question">Q: What's the #1 thing I should do?</p>
+          <p class="answer">A: Move your body. Just 30 minutes of walking daily cuts your risk by over 50%. No gym required - even dancing in your kitchen counts!</p>
+        </div>
+        <div class="qa-card">
+          <p class="question">Q: I hate veggies. What now?</p>
+          <p class="answer">A: Start with ONE. Add cherry tomatoes to your sandwich or try frozen berries in yogurt. Your taste buds adapt faster than you think, usually within two weeks.</p>
+        </div>
+        <div class="qa-card">
+          <p class="question">Q: How much weight do I really need to lose?</p>
+          <p class="answer">A: The surprising truth: losing just 5-7% of your body weight is a game-changer. For a 200lb person, that's only 10-14 pounds.</p>
+        </div>
+        <div class="qa-card">
+          <p class="question">Q: Sugar - how bad is it really?</p>
+          <p class="answer">A: Liquid sugar is the main culprit. One soda daily can significantly increase your diabetes risk. Swap to water with lemon; your body will feel the difference in days.</p>
+        </div>
+        <div class="qa-card">
+          <p class="question">Q: I'm always stressed. Does that matter?</p>
+          <p class="answer">A: Big time. Stress hormones spike your blood sugar. Try this: 60 seconds of deep breathing, three times a day. It works better than you think.</p>
+        </div>
+        <div class="qa-card">
+          <p class="question">Q: What about sleep?</p>
+          <p class="answer">A: Skimping on sleep makes you crave junk food and disrupts blood sugar control. Aim for a minimum of 7 hours. Your future self will high-five you.</p>
+        </div>
+        <div class="qa-card">
+          <p class="question">Q: What's the easiest first step?</p>
+          <p class="answer">A: Ditch sugary drinks TODAY. Replace them with water, herbal tea, or sparkling water. This single change can make the biggest difference, fast.</p>
+        </div>
       </div>
 
       <h2 class="mt-8 text-2xl font-bold mb-4 text-preventify-blue">Where Do I Start Tomorrow?</h2>
       <p>Pick just ONE of these to focus on:</p>
-      <ul class="list-disc pl-6 space-y-2">
+      <ul>
         <li>Walk for 10 minutes after dinner.</li>
         <li>Swap one soda for a glass of water.</li>
         <li>Add one extra vegetable to your lunch.</li>
