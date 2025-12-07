@@ -28,7 +28,7 @@ export const blogPosts: BlogPost[] = [
       </ul>
       <p>At Preventify Hospitals, we offer comprehensive diabetes prevention programs designed to help you make sustainable lifestyle changes.</p>
     `,
-    coverImage: "https://img.freepik.com/free-photo/woman-giving-kiss-hearts_23-2147596650.jpg?t=st=1764264904~exp=1764268504~hmac=233cc3082e06ddbb91fa97f3f15a3e1d2dd97c5e935ceff064b73091686b8878&w=740q=80&w=1470&auto=format&fit=crop",
+    coverImage: "/food.webp",
     date: "June 10, 2024",
     author: "Dr. Anjali Menon",
     categories: ["diabetes", "wellness", "prevention"]
