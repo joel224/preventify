@@ -1,5 +1,5 @@
-
-import { BlogPost } from "@/types/blog";
+// src/data/blogPosts.ts
+import { BlogPost } from "@/types/blog"; // Assuming you have this type defined
 
 export const blogPosts: BlogPost[] = [
   {
@@ -8,75 +8,85 @@ export const blogPosts: BlogPost[] = [
     slug: "understanding-type-2-diabetes-prevention",
     excerpt: "Learn the essential strategies for preventing type 2 diabetes through lifestyle changes and regular health monitoring.",
     content: `
-      <p>Type 2 diabetes is a chronic condition that affects millions, but the power to prevent it is largely in your hands. This guide offers quick, actionable answers to the most common questions about protecting your health.</p>
+      <p class="lead">Type 2 diabetes is a chronic condition that affects millions, but the power to prevent it is largely in your hands. This guide offers quick, actionable answers to the most common questions about protecting your health.</p>
       
-      <h2>Real Talk Q&A: Your Guide to Diabetes Prevention</h2>
+      <h2 class="text-2xl font-bold mt-8 mb-4 text-preventify-blue">Real Talk Q&A: Your Guide to Diabetes Prevention</h2>
 
-      <details>
-        <summary><h3>Q: Can I actually prevent type 2 diabetes?</h3></summary>
-        <p><strong>A:</strong> Absolutely YES. Your daily choices matter more than your genes. Small, consistent changes today build powerful protection for tomorrow.</p>
-      </details>
-      <details>
-        <summary><h3>Q: What's the #1 thing I should do?</h3></summary>
-        <p><strong>A:</strong> Move your body. Just 30 minutes of walking daily can cut your risk by over 50%. No gym required - even dancing in your kitchen counts!</p>
-      </details>
-      <details>
-        <summary><h3>Q: I hate veggies. What now?</h3></summary>
-        <p><strong>A:</strong> Start with ONE. Add cherry tomatoes to your sandwich or try frozen berries in yogurt. Your taste buds adapt faster than you think, usually within two weeks.</p>
-      </details>
-      <details>
-        <summary><h3>Q: How much weight do I really need to lose?</h3></summary>
-        <p><strong>A:</strong> The surprising truth: losing just 5-7% of your body weight is a game-changer. For a 200lb person, that's only 10-14 pounds.</p>
-      </details>
-      <details>
-        <summary><h3>Q: Sugar - how bad is it really?</h3></summary>
-        <p><strong>A:</strong> Liquid sugar is the main culprit. One soda daily can significantly increase your diabetes risk. Swap to water with lemon; your body will feel the difference in days.</p>
-      </details>
-      <details>
-        <summary><h3>Q: I'm always stressed. Does that matter?</h3></summary>
-        <p><strong>A:</strong> Big time. Stress hormones spike your blood sugar. Try this: 60 seconds of deep breathing, three times a day. It works better than you think.</p>
-      </details>
-      <details>
-        <summary><h3>Q: What about sleep?</h3></summary>
-        <p><strong>A:</strong> Skimping on sleep makes you crave junk food and disrupts blood sugar control. Aim for a minimum of 7 hours. Your future self will high-five you.</p>
-      </details>
-      <details>
-        <summary><h3>Q: My family has diabetes. Am I doomed?</h3></summary>
-        <p><strong>A:</strong> Not at all. Genetics might load the gun, but lifestyle pulls the trigger. You are in control of the trigger. Many people beat their family history with smart choices.</p>
-      </details>
-      <details>
-        <summary><h3>Q: What's the easiest first step?</h3></summary>
-        <p><strong>A:</strong> Ditch sugary drinks TODAY. Replace them with water, herbal tea, or sparkling water. This single change can make the biggest difference, fast.</p>
-      </details>
-      <details>
-        <summary><h3>Q: How do I know if I'm at risk?</h3></summary>
-        <p><strong>A:</strong> Get a simple blood test. A fasting blood sugar under 100 mg/dL is good. 100-125 is the warning zone (prediabetes). Over 125 means it's time to act.</p>
-      </details>
-      <details>
-        <summary><h3>Q: I'm too busy for this.</h3></summary>
-        <p><strong>A:</strong> Prevention can happen in tiny moments. Park farther away, take the stairs, or walk while on phone calls. Your health is built in these small choices.</p>
-      </details>
-      <details>
-        <summary><h3>Q: What if I slip up?</h3></summary>
-        <p><strong>A:</strong> One bad meal doesn't ruin your progress, and neither does one bad week. Just get back on track with your next meal. Consistency is the goal, not perfection.</p>
-      </details>
+      <div class="faq-container space-y-4">
+        <details class="group">
+          <summary>Q: Can I actually prevent type 2 diabetes?</summary>
+          <div class="prose-p:my-0">
+            <p><strong>A:</strong> Absolutely YES. Your daily choices matter more than your genes. Small changes today build big protection for tomorrow.</p>
+          </div>
+        </details>
 
-      <h2 class="mt-8">Where Do I Start Tomorrow?</h2>
+        <details class="group">
+          <summary>Q: What's the #1 thing I should do?</summary>
+          <div>
+            <p><strong>A:</strong> Move your body. Just 30 minutes of walking daily cuts your risk by 50%. No gym required - even dancing in your kitchen counts!</p>
+          </div>
+        </details>
+
+        <details class="group">
+          <summary>Q: I hate veggies. What now?</summary>
+          <div>
+            <p><strong>A:</strong> Start with ONE. Add cherry tomatoes to your sandwich or try frozen berries in yogurt. Your taste buds adapt in about 2 weeks.</p>
+          </div>
+        </details>
+        
+        <details class="group">
+            <summary>Q: How much weight do I really need to lose?</summary>
+            <div>
+                <p><strong>A:</strong> Shocking truth: Losing just 5-7% of your body weight is a game-changer. For a 200lb person, that's only 10-14 pounds.</p>
+            </div>
+        </details>
+
+        <details class="group">
+            <summary>Q: Sugar - how bad is it really?</summary>
+            <div>
+                <p><strong>A:</strong> Liquid sugar is the worst offender. One soda daily significantly increases your diabetes risk. Swap to water with lemon; your body will feel the difference in days.</p>
+            </div>
+        </details>
+
+        <details class="group">
+            <summary>Q: I'm always stressed. Does that matter?</summary>
+            <div>
+                <p><strong>A:</strong> Big time. Stress hormones spike your blood sugar. Try this: 60 seconds of deep breathing, three times a day. It works better than you think.</p>
+            </div>
+        </details>
+
+        <details class="group">
+            <summary>Q: What about sleep?</summary>
+            <div>
+                <p><strong>A:</strong> Skimping on sleep makes you crave junk food and messes with blood sugar. Aim for a minimum of 7 hours. Your future self will high-five you.</p>
+            </div>
+        </details>
+        
+        <details class="group">
+            <summary>Q: What's the easiest first step?</summary>
+            <div>
+              <p><strong>A:</strong> Ditch sugary drinks TODAY. Replace them with water, herbal tea, or sparkling water. This single change makes the biggest difference, fast.</p>
+            </div>
+        </details>
+      </div>
+
+      <h2 class="mt-8 text-2xl font-bold mb-4 text-preventify-blue">Where Do I Start Tomorrow?</h2>
       <p>Pick just ONE of these to focus on:</p>
-      <ul>
+      <ul class="list-disc pl-6 space-y-2">
         <li>Walk for 10 minutes after dinner.</li>
         <li>Swap one soda for a glass of water.</li>
         <li>Add one extra vegetable to your lunch.</li>
         <li>Go to bed 30 minutes earlier than usual.</li>
       </ul>
-      <p class="font-bold mt-4">Remember: You don't need a perfect plan. You need one small action that sticks. Your healthiest years start with today's choice.</p>
+      <div class="bg-blue-50 border-l-4 border-preventify-blue p-4 mt-6">
+        <p class="font-bold text-preventify-blue m-0">Remember: You don't need a perfect plan. You need one small action that sticks. Your healthiest years start with today's choice.</p>
+      </div>
     `,
     coverImage: "/food.webp",
     date: "June 10, 2024",
     author: "Dr. Anjali Menon",
     categories: ["diabetes", "wellness", "prevention"]
   },
-  //https://img.freepik.com/free-photo/world-kindness-day-with-women-hugging_23-2150027998.jpg?t=st=1764265077~exp=1764268677~hmac=69894fe57d23e320b17f15feafb2deffbff9da7299424f53de6852445986e004&w=740
   {
     id: 2,
     title: "The Power of South Indian Cuisine in Heart Health",
