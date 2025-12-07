@@ -9,7 +9,6 @@ const ProgramsPage = () => {
     {
       title: "Diabetes Prevention Program",
       description: "A structured program designed to prevent or delay the onset of type 2 diabetes in individuals at high risk.",
-      icon: "https://cdn-icons-png.flaticon.com/512/2755/2755513.png",
       features: [
         "Risk assessment and screening",
         "Personalized nutrition plan",
@@ -21,7 +20,6 @@ const ProgramsPage = () => {
     {
       title: "Diabetes Management",
       description: "Comprehensive care for individuals diagnosed with diabetes to effectively manage their condition and prevent complications.",
-      icon: "https://cdn-icons-png.flaticon.com/512/9383/9383806.png",
       features: [
         "Medication management",
         "Blood glucose monitoring",
@@ -33,7 +31,6 @@ const ProgramsPage = () => {
     {
       title: "Gestational Diabetes Care",
       description: "Specialized care for expecting mothers diagnosed with gestational diabetes to ensure maternal and fetal health.",
-      icon: "https://cdn-icons-png.flaticon.com/512/3820/3820215.png",
       features: [
         "Regular blood glucose monitoring",
         "Nutritional guidance",
@@ -48,7 +45,6 @@ const ProgramsPage = () => {
     {
       title: "Weight Management",
       description: "A personalized program to help individuals achieve and maintain a healthy weight through sustainable lifestyle changes.",
-      icon: "https://cdn-icons-png.flaticon.com/512/3209/3209138.png",
       features: [
         "Body composition analysis",
         "Personalized nutrition plan",
@@ -60,7 +56,6 @@ const ProgramsPage = () => {
     {
       title: "Heart Health Program",
       description: "A comprehensive program aimed at reducing cardiovascular risk factors and promoting heart health.",
-      icon: "https://cdn-icons-png.flaticon.com/512/2996/2996424.png",
       features: [
         "Cardiovascular risk assessment",
         "Blood pressure management",
@@ -72,7 +67,6 @@ const ProgramsPage = () => {
     {
       title: "Senior Wellness",
       description: "A program designed to address the unique health needs of older adults and promote healthy aging.",
-      icon: "https://cdn-icons-png.flaticon.com/512/3588/3588622.png",
       features: [
         "Comprehensive geriatric assessment",
         "Fall prevention strategies",
@@ -87,7 +81,6 @@ const ProgramsPage = () => {
     {
       title: "Maternal & Child Health",
       description: "Comprehensive care for mothers and children to ensure optimal health during pregnancy, infancy, and childhood.",
-      icon: "https://cdn-icons-png.flaticon.com/512/3820/3820215.png",
       features: [
         "Prenatal care and education",
         "Childhood immunizations",
@@ -99,7 +92,6 @@ const ProgramsPage = () => {
     {
       title: "Corporate Wellness",
       description: "Customized wellness programs for organizations to improve employee health and productivity.",
-      icon: "https://cdn-icons-png.flaticon.com/512/1651/1651637.png",
       features: [
         "Health risk assessments",
         "On-site health screenings",
@@ -111,7 +103,6 @@ const ProgramsPage = () => {
     {
       title: "Chronic Disease Management",
       description: "Integrated care for individuals with chronic conditions to improve quality of life and reduce complications.",
-      icon: "https://cdn-icons-png.flaticon.com/512/10015/10015422.png",
       features: [
         "Condition-specific care plans",
         "Medication management",
@@ -154,7 +145,6 @@ const ProgramsPage = () => {
                     key={index}
                     title={program.title}
                     description={program.description}
-                    icon={program.icon}
                     features={program.features}
                   />
                 ))}
@@ -174,7 +164,6 @@ const ProgramsPage = () => {
                     key={index}
                     title={program.title}
                     description={program.description}
-                    icon={program.icon}
                     features={program.features}
                   />
                 ))}
@@ -194,7 +183,6 @@ const ProgramsPage = () => {
                     key={index}
                     title={program.title}
                     description={program.description}
-                    icon={program.icon}
                     features={program.features}
                   />
                 ))}
