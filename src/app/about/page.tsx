@@ -144,7 +144,7 @@ const AboutPage = () => {
               },
             ].map((leader, index) => (
               <div key={index} className="bg-white rounded-lg overflow-hidden shadow-md transition-shadow hover:shadow-xl">
-                <div className="aspect-w-1 aspect-h-1">
+                <div className="relative w-full h-80">
                   <img
                     src={leader.image}
                     alt={leader.name}
