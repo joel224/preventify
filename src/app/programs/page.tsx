@@ -238,7 +238,7 @@ const ProgramsPage = () => {
                     src="/food.webp"
                     alt="A plate of healthy food representing a preventive lifestyle"
                     fill
-                    className="object-cover"
+                    className="object-contain"
                 />
             </div>
             <div>
