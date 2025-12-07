@@ -2,6 +2,7 @@
 import PageHeader from "@/components/PageHeader";
 import ProgramCard from "@/components/ProgramCard";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { CheckCircle } from "lucide-react";
 import Image from "next/image";
 
 const ProgramsPage = () => {
@@ -204,58 +205,48 @@ const ProgramsPage = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
             {[
               {
-                icon: "https://cdn-icons-png.flaticon.com/512/1021/1021293.png",
                 title: "Personalized Approach",
                 description: "Programs tailored to individual health needs and goals.",
               },
               {
-                icon: "https://cdn-icons-png.flaticon.com/512/3731/3731462.png",
                 title: "Expert Guidance",
                 description: "Led by healthcare professionals with specialized training.",
               },
               {
-                icon: "https://cdn-icons-png.flaticon.com/512/3227/3227053.png",
                 title: "Sustainable Results",
                 description: "Focus on long-term lifestyle changes, not quick fixes.",
               },
               {
-                icon: "https://cdn-icons-png.flaticon.com/512/2785/2785657.png",
                 title: "Holistic Support",
                 description: "Addressing physical, emotional, and social aspects of health.",
               },
               {
-                icon: "https://cdn-icons-png.flaticon.com/512/3209/3209124.png",
                 title: "Regular Monitoring",
                 description: "Continuous assessment and adjustment of your health plan.",
               },
               {
-                icon: "https://cdn-icons-png.flaticon.com/512/3588/3588592.png",
                 title: "Group Support",
                 description: "Community of individuals with similar health goals.",
               },
               {
-                icon: "https://cdn-icons-png.flaticon.com/512/2382/2382224.png",
                 title: "Evidence-Based Methods",
                 description: "Practices supported by medical research and clinical guidelines.",
               },
               {
-                icon: "https://cdn-icons-png.flaticon.com/512/921/921347.png",
                 title: "Integrated Care",
                 description: "Coordination with your primary care and specialist providers.",
               },
             ].map((benefit, index) => (
-              <div key={index} className="bg-white p-6 rounded-lg shadow-sm text-center">
-                <Image
-                  src={benefit.icon}
-                  alt={benefit.title}
-                  width={64}
-                  height={64}
-                  className="w-16 h-16 mx-auto mb-4"
-                />
-                <h3 className="text-xl font-semibold mb-2 text-preventify-dark-purple">
-                  {benefit.title}
-                </h3>
-                <p className="text-gray-600">{benefit.description}</p>
+              <div key={index} className="bg-white p-6 rounded-lg shadow-sm">
+                <div className="flex items-start gap-4">
+                    <CheckCircle className="h-6 w-6 text-preventify-green mt-1 shrink-0" />
+                    <div>
+                        <h3 className="text-xl font-semibold mb-2 text-preventify-dark-purple">
+                        {benefit.title}
+                        </h3>
+                        <p className="text-gray-600">{benefit.description}</p>
+                    </div>
+                </div>
               </div>
             ))}
           </div>
