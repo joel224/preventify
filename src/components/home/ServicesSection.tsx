@@ -162,7 +162,7 @@ const ServicesSection = () => {
 
         <div className="w-full border-t border-gray-200 my-20"></div>
 
-        <Carousel className="w-full" opts={{ loop: true }}>
+        <Carousel className="w-full relative" opts={{ loop: true }}>
           <CarouselContent>
             <CarouselItem>
               <motion.div 
@@ -208,8 +208,8 @@ const ServicesSection = () => {
                 </div>
             </CarouselItem>
           </CarouselContent>
-          <CarouselPrevious className="absolute left-[-50px] top-1/2 -translate-y-1/2 bg-white hover:bg-gray-100 shadow-md border" />
-          <CarouselNext className="absolute right-[-50px] top-1/2 -translate-y-1/2 bg-white hover:bg-gray-100 shadow-md border" />
+          <CarouselPrevious className="absolute left-4 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white backdrop-blur-sm shadow-md border z-10" />
+          <CarouselNext className="absolute right-4 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white backdrop-blur-sm shadow-md border z-10" />
         </Carousel>
       </div>
     </section>
