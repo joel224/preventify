@@ -55,32 +55,32 @@ const clinics = [
 const services: { title: string; href: string; description: string, image: string }[] = [
   {
     title: "Primary Care",
-    href: "/services#primary-care",
-    description: "Comprehensive healthcare services for individuals and families, focusing on long-term health and wellness.",
+    href: "/services",
+    description: "Comprehensive healthcare services for individuals and families of all ages, including routine check-ups, and management of acute and chronic illnesses.",
     image: "/service/Primary Care.webp"
   },
   {
     title: "Diabetes Management",
-    href: "/services#diabetes",
+    href: "/services",
     description: "AI-driven specialized programs for the prevention, monitoring, and management of diabetes.",
     image: "/service/Diabetes Management.webp"
   },
   {
     title: "Pediatric Care",
-    href: "/services#pediatrics",
+    href: "/services",
     description: "Specialized, compassionate healthcare services tailored for infants, children, and adolescents.",
     image: "/service/Pediatric Care.webp"
   },
   {
     title: "Women's Health",
-    href: "/services#womens-health",
+    href: "/services",
     description: "Comprehensive care addressing women's unique health needs at every stage of life.",
     image: "/service/Women's Health.webp"
   },
   {
     title: "Preventive Screenings",
-    href: "/services#preventive",
-    description: "Advanced early detection tests to identify potential health issues before they become serious.",
+    href: "/services",
+    description: "A range of early detection tests and health screenings to identify potential health issues before they become serious.",
     image: "/service/Preventive Screenings.webp"
   },
 ];
@@ -182,30 +182,39 @@ const Navbar = () => {
                         Our Services
                     </NavigationMenuTrigger>
                     <NavigationMenuContent>
-                        <ul className="grid w-[600px] gap-6 p-8 md:w-[800px] lg:w-[960px] md:grid-cols-3 min-h-[40vh]">
+                      <ul className="grid w-[600px] gap-4 p-4 md:w-[800px] lg:w-[960px] md:grid-cols-3">
                         {services.map((service) => (
-                            <ListItem
-                                key={service.title}
-                                title={service.title}
-                                href={service.href}
-                            >
-                                <div className="flex flex-col gap-4">
-                                    <div className="relative w-full h-32 rounded-md overflow-hidden flex-shrink-0">
-                                      <Image
-                                          src={service.image}
-                                          alt={service.title}
-                                          fill
-                                          className="object-cover"
-                                        />
-                                    </div>
-                                    <div>
-                                        <p className="font-bold text-xl text-gray-800">{service.title}</p>
-                                        <p className="text-base text-gray-600 line-clamp-3">{service.description}</p>
-                                    </div>
+                          <li key={service.title} className="group relative block h-80 overflow-hidden rounded-xl">
+                            <Link href={service.href} className="w-full h-full block">
+                              {/* Default State */}
+                              <div className="absolute inset-0 z-10 flex flex-col justify-end items-start h-full p-6 transition-opacity duration-300 ease-in-out group-hover:opacity-0">
+                                <Image
+                                  src={service.image}
+                                  alt={service.title}
+                                  fill
+                                  className="object-cover"
+                                />
+                                <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+                                <h3 className="relative text-2xl font-bold text-white z-10">
+                                  {service.title}
+                                </h3>
+                              </div>
+
+                              {/* Hover State */}
+                              <div className="absolute inset-0 z-20 flex flex-col justify-center items-start h-full p-6 bg-preventify-blue text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300 ease-in-out">
+                                <h3 className="text-2xl font-bold mb-3">{service.title}</h3>
+                                <p className="text-base mb-6 text-gray-200">
+                                  {service.description}
+                                </p>
+                                <div className="flex items-center font-semibold mt-auto">
+                                  Read More
+                                  <ArrowRight className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" />
                                 </div>
-                            </ListItem>
+                              </div>
+                            </Link>
+                          </li>
                         ))}
-                        </ul>
+                      </ul>
                     </NavigationMenuContent>
                     </NavigationMenuItem>
 
@@ -376,5 +385,3 @@ const Navbar = () => {
 };
 
 export default Navbar;
-
-    
