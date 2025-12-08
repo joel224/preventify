@@ -1,4 +1,3 @@
-
 'use client'
 
 import { useState, useEffect } from "react";
@@ -185,7 +184,7 @@ const Navbar = () => {
                       <ul className="grid w-[600px] gap-4 p-4 md:w-[800px] lg:w-[960px] md:grid-cols-3">
                         {services.map((service) => (
                           <li key={service.title} className="group relative block h-80 overflow-hidden rounded-xl cursor-pointer">
-                            <Link href={service.href} className="w-full h-full block relative z-10">
+                            <Link href={service.href} className="w-full h-full block">
                               {/* Default State */}
                               <div className="absolute inset-0 z-10 flex flex-col justify-end items-start h-full p-6 transition-opacity duration-300 ease-in-out group-hover:opacity-0">
                                 <Image
