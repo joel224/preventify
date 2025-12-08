@@ -56,31 +56,31 @@ const services: { title: string; href: string; description: string, image: strin
   {
     title: "Primary Care",
     href: "/services#primary-care",
-    description: "Comprehensive healthcare for individuals and families of all ages.",
+    description: "Comprehensive healthcare services for individuals and families, focusing on long-term health and wellness.",
     image: "/service/Primary Care.webp"
   },
   {
     title: "Diabetes Management",
     href: "/services#diabetes",
-    description: "Specialized programs for prevention, diagnosis, and management.",
+    description: "AI-driven specialized programs for the prevention, monitoring, and management of diabetes.",
     image: "/service/Diabetes Management.webp"
   },
   {
     title: "Pediatric Care",
     href: "/services#pediatrics",
-    description: "Specialized healthcare for infants, children, and adolescents.",
+    description: "Specialized, compassionate healthcare services tailored for infants, children, and adolescents.",
     image: "/service/Pediatric Care.webp"
   },
   {
     title: "Women's Health",
     href: "/services#womens-health",
-    description: "Comprehensive care for women's unique health needs.",
+    description: "Comprehensive care addressing women's unique health needs at every stage of life.",
     image: "/service/Women's Health.webp"
   },
   {
     title: "Preventive Screenings",
     href: "/services#preventive",
-    description: "A range of early detection tests to identify potential health issues.",
+    description: "Advanced early detection tests to identify potential health issues before they become serious.",
     image: "/service/Preventive Screenings.webp"
   },
 ];
@@ -182,15 +182,15 @@ const Navbar = () => {
                         Our Services
                     </NavigationMenuTrigger>
                     <NavigationMenuContent>
-                        <ul className="grid w-[600px] gap-4 p-6 md:w-[800px] lg:w-[960px] md:grid-cols-3">
+                        <ul className="grid w-[600px] gap-6 p-8 md:w-[800px] lg:w-[960px] md:grid-cols-3 min-h-[40vh]">
                         {services.map((service) => (
                             <ListItem
                                 key={service.title}
                                 title={service.title}
                                 href={service.href}
                             >
-                                <div className="flex items-start gap-4">
-                                    <div className="relative w-20 h-20 rounded-md overflow-hidden flex-shrink-0">
+                                <div className="flex flex-col gap-4">
+                                    <div className="relative w-full h-32 rounded-md overflow-hidden flex-shrink-0">
                                       <Image
                                           src={service.image}
                                           alt={service.title}
@@ -199,8 +199,8 @@ const Navbar = () => {
                                         />
                                     </div>
                                     <div>
-                                        <p className="font-bold text-lg text-gray-800">{service.title}</p>
-                                        <p className="text-base text-gray-600 line-clamp-2">{service.description}</p>
+                                        <p className="font-bold text-xl text-gray-800">{service.title}</p>
+                                        <p className="text-base text-gray-600 line-clamp-3">{service.description}</p>
                                     </div>
                                 </div>
                             </ListItem>
