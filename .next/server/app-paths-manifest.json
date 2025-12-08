@@ -1,5 +1,7 @@
 {
   "/page": "app/page.js",
+  "/savings/page": "app/savings/page.js",
+  "/blog/page": "app/blog/page.js",
   "/blog/[slug]/page": "app/blog/[slug]/page.js",
-  "/savings/page": "app/savings/page.js"
+  "/_not-found/page": "app/_not-found/page.js"
 }

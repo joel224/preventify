@@ -2,12 +2,21 @@
 'use client';
 
 import { motion } from "framer-motion";
-import { ArrowRight, Phone, Calendar, Video, LogIn } from "lucide-react";
+import { ArrowRight, Phone, Calendar, Video } from "lucide-react";
 import Link from "next/link";
+import Image from "next/image";
 import { Card, CardHeader, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import BookingDialog from "@/components/BookingDialog";
 import VideoBookingDialog from "@/components/VideoBookingDialog";
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from "@/components/ui/carousel";
+import { indiaCentenariansLongevityPost } from "@/data/blog/india-centenarians-longevity";
 
 
 const services = [
@@ -112,6 +121,8 @@ const ServiceCard = ({ service }: { service: typeof services[0] }) => {
 
 
 const ServicesSection = () => {
+  const blogPost = indiaCentenariansLongevityPost;
+
   return (
     <section className="bg-white py-16">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
@@ -151,28 +162,55 @@ const ServicesSection = () => {
 
         <div className="w-full border-t border-gray-200 my-20"></div>
 
+        <Carousel className="w-full" opts={{ loop: true }}>
+          <CarouselContent>
+            <CarouselItem>
+              <motion.div 
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6 }}
+                className="text-center mb-12"
+              >
+                <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-5 text-preventify-blue">
+                  Our Healthcare Services
+                </h2>
+                <p className="text-lg md:text-xl text-preventify-dark-gray max-w-3xl mx-auto">
+                </p>
+              </motion.div>
 
-        <motion.div 
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
-          className="text-center mb-12"
-        >
-          <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-5 text-preventify-blue">
-            Our Healthcare Services
-          </h2>
-          <p className="text-lg md:text-xl text-preventify-dark-gray max-w-3xl mx-auto">
-            
-          </p>
-        </motion.div>
-
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6 md:gap-8">
-            {services.map((service, index) => (
-                <ServiceCard key={index} service={service} />
-            ))}
-        </div>
-
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6 md:gap-8">
+                  {services.map((service, index) => (
+                      <ServiceCard key={index} service={service} />
+                  ))}
+              </div>
+            </CarouselItem>
+            <CarouselItem>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+                    <div>
+                        <h2 className="text-3xl md:text-4xl font-bold mb-5 text-preventify-blue">
+                            From Our Blog
+                        </h2>
+                        <h3 className="text-2xl font-semibold text-preventify-dark-blue mb-4">{blogPost.title}</h3>
+                        <p className="text-preventify-dark-gray mb-6">{blogPost.excerpt}</p>
+                        <Link href={`/blog/${blogPost.slug}`}>
+                            <Button>Read More <ArrowRight className="ml-2 h-4 w-4" /></Button>
+                        </Link>
+                    </div>
+                    <div className="relative h-96 w-full rounded-lg overflow-hidden">
+                        <Image
+                            src={blogPost.coverImage}
+                            alt={blogPost.title}
+                            fill
+                            className="object-cover"
+                        />
+                    </div>
+                </div>
+            </CarouselItem>
+          </CarouselContent>
+          <CarouselPrevious className="absolute left-[-50px] top-1/2 -translate-y-1/2" />
+          <CarouselNext className="absolute right-[-50px] top-1/2 -translate-y-1/2" />
+        </Carousel>
       </div>
     </section>
   );
