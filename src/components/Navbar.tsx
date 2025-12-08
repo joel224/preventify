@@ -182,15 +182,15 @@ const Navbar = () => {
                         Our Services
                     </NavigationMenuTrigger>
                     <NavigationMenuContent>
-                        <ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px] ">
+                        <ul className="grid w-[600px] gap-4 p-4 md:w-[700px] md:grid-cols-2 lg:w-[800px]">
                         {services.map((service) => (
                             <ListItem
                                 key={service.title}
                                 title={service.title}
                                 href={service.href}
                             >
-                                <div className="flex items-start gap-3">
-                                    <div className="relative w-12 h-12 rounded-md overflow-hidden flex-shrink-0">
+                                <div className="flex items-center gap-4">
+                                    <div className="relative w-16 h-16 rounded-md overflow-hidden flex-shrink-0">
                                       <Image
                                           src={service.image}
                                           alt={service.title}
@@ -199,8 +199,8 @@ const Navbar = () => {
                                         />
                                     </div>
                                     <div>
-                                        <p className="font-bold text-gray-800">{service.title}</p>
-                                        <p className="text-sm text-gray-500 line-clamp-2">{service.description}</p>
+                                        <p className="font-bold text-lg text-gray-800">{service.title}</p>
+                                        <p className="text-base text-gray-600 line-clamp-2">{service.description}</p>
                                     </div>
                                 </div>
                             </ListItem>
