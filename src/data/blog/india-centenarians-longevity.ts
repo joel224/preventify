@@ -1,3 +1,4 @@
+
 // src/data/blog/india-centenarians-longevity.ts
 import { BlogPost } from "@/types/blog";
 
@@ -74,9 +75,13 @@ export const indiaCentenariansLongevityPost: BlogPost = {
         <li>Policies that value the contributions of our oldest citizens</li>
         <li>More research on healthy aging specific to Indian lifestyles</li>
       </ul>
+      <a href="/savings" class="inline-flex items-center text-preventify-purple font-semibold group mt-4">
+        For more, check out the Sugam Card
+        <span class="ml-2 transition-transform duration-300 group-hover:translate-x-1 animate-subtle-move-right">→</span>
+      </a>
 
       <h2 class="text-2xl font-bold mt-8 mb-4 text-preventify-blue">Your Longevity Journey Starts Today</h2>
-      <p>The most powerful lesson from Preventify India's 100-year-olds isn't complicated: live simply, eat wisely, stay active, and nurture your relationships. You don't need to make dramatic changes overnight.</p>
+      <p>The most powerful lesson from India's 100-year-olds isn't complicated: live simply, eat wisely, stay active, and nurture your relationships. You don't need to make dramatic changes overnight.</p>
       <p>We Help You Start small:</p>
       <ul>
         <li>Take a 15-minute walk today</li>

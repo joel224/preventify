@@ -66,6 +66,8 @@ export default {
                 preventify: {
                     blue: '#0F2C59',
                     green: '#2EC4B6',
+                    purple: '#6a44c9',
+                    'dark-purple': '#4b2a9a',
                     gray: '#757575',
                     'light-blue': '#4A5AC5',
                     'light-green': '#3DD391',
