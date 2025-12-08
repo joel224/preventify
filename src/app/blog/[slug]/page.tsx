@@ -51,7 +51,7 @@ const BlogPostPage = () => {
             <img
               src={post.coverImage}
               alt={post.title}
-              className="w-full max-h-[450px] object-cover rounded-xl shadow-lg border border-gray-100"
+              className="w-full max-h-[450px] object-cover rounded-xl "
             />
           </div>
           
