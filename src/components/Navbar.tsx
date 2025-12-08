@@ -52,47 +52,36 @@ const clinics = [
   { name: 'Preventify Health Hub', location: 'Koottanad', href: '/clinics' },
 ];
 
-const services: { title: string; href: string; description: string, icon: LucideIcon }[] = [
+const services: { title: string; href: string; description: string, image: string }[] = [
   {
     title: "Primary Care",
-    href: "/services",
-    description:
-      "Comprehensive healthcare for individuals and families of all ages.",
-    icon: Stethoscope
+    href: "/services#primary-care",
+    description: "Comprehensive healthcare for individuals and families of all ages.",
+    image: "/service/Primary Care.webp"
   },
   {
     title: "Diabetes Management",
-    href: "/services",
-    description:
-      "Specialized programs for prevention, diagnosis, and management.",
-    icon: Heart
-  },
-  {
-    title: "Lifestyle Medicine",
-    href: "/services",
-    description:
-      "Evidence-based approach focusing on nutrition and physical activity.",
-    icon: Shield
+    href: "/services#diabetes",
+    description: "Specialized programs for prevention, diagnosis, and management.",
+    image: "/service/Diabetes Management.webp"
   },
   {
     title: "Pediatric Care",
-    href: "/services",
-    description:
-      "Specialized healthcare for infants, children, and adolescents.",
-     icon: Stethoscope
+    href: "/services#pediatrics",
+    description: "Specialized healthcare for infants, children, and adolescents.",
+    image: "/service/Pediatric Care.webp"
   },
   {
     title: "Women's Health",
-    href: "/services",
+    href: "/services#womens-health",
     description: "Comprehensive care for women's unique health needs.",
-     icon: Stethoscope
+    image: "/service/Women's Health.webp"
   },
   {
     title: "Preventive Screenings",
-    href: "/services",
-    description:
-      "A range of early detection tests to identify potential health issues.",
-     icon: Stethoscope
+    href: "/services#preventive",
+    description: "A range of early detection tests to identify potential health issues.",
+    image: "/service/Preventive Screenings.webp"
   },
 ];
 
@@ -201,12 +190,17 @@ const Navbar = () => {
                                 href={service.href}
                             >
                                 <div className="flex items-start gap-3">
-                                    <div className="p-2 bg-gray-100 rounded-md">
-                                        <service.icon className="h-4 w-4 text-primary" />
+                                    <div className="relative w-12 h-12 rounded-md overflow-hidden flex-shrink-0">
+                                      <Image
+                                          src={service.image}
+                                          alt={service.title}
+                                          fill
+                                          className="object-cover"
+                                        />
                                     </div>
                                     <div>
                                         <p className="font-bold text-gray-800">{service.title}</p>
-                                        <p className="text-sm text-gray-500">{service.description}</p>
+                                        <p className="text-sm text-gray-500 line-clamp-2">{service.description}</p>
                                     </div>
                                 </div>
                             </ListItem>
