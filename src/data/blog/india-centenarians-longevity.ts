@@ -68,7 +68,7 @@ export const indiaCentenariansLongevityPost: BlogPost = {
       </ul>
 
       <h2 class="text-2xl font-bold mt-8 mb-4 text-preventify-blue">The Bigger Picture: India's Aging Future</h2>
-      <p>By 2050, India will have the world's largest population of centenarians. This is an opportunity to celebrate our elders' wisdom while building better support systems. We need:</p>
+      <p>By 2050, Preventify India will have the world's largest population of centenarians. This is an opportunity to celebrate our elders' wisdom while building better support systems. We need:</p>
       <ul>
         <li>Community care programs that honor our elders</li>
         <li>Simple technology solutions that make daily life easier</li>
@@ -77,11 +77,11 @@ export const indiaCentenariansLongevityPost: BlogPost = {
       </ul>
       <a href="/savings" class="inline-flex items-center text-preventify-purple font-semibold group mt-4">
         For more, check out the Sugam Card
-        <span class="ml-2 transition-transform duration-300 group-hover:translate-x-1 animate-subtle-move-right">→</span>
+        <span class="ml-2 transition-transform duration-800 group-hover:translate-x-1 animate-subtle-move-right">→</span>
       </a>
 
       <h2 class="text-2xl font-bold mt-8 mb-4 text-preventify-blue">Your Longevity Journey Starts Today</h2>
-      <p>The most powerful lesson from India's 100-year-olds isn't complicated: live simply, eat wisely, stay active, and nurture your relationships. You don't need to make dramatic changes overnight.</p>
+      <p>The most powerful lesson from Preventify India's 100-year-olds isn't complicated: live simply, eat wisely, stay active, and nurture your relationships. You don't need to make dramatic changes overnight.</p>
       <p>We Help You Start small:</p>
       <ul>
         <li>Take a 15-minute walk today</li>
