@@ -1,3 +1,4 @@
+
 'use client'
 
 import { useState, useEffect } from "react";
@@ -28,19 +29,19 @@ const doctors = [
       id: 1,
       name: "Dr. Rakesh K R",
       specialty: "Chief Medical Officer",
-      image: "https://res.cloudinary.com/dyf8umlda/image/upload/v1748262006/Dr_Rakesh_xngrlx.jpg",
+      image: "https://res.cloudinary.com/dyf8umlda/image/upload/v1748262006/Dr_Rakesh_xngrlx.jpg  ",
     },
     {
       id: 2,
       name: "Dr. Mohammed Faisal",
       specialty: "General Practitioner",
-      image: "https://res.cloudinary.com/dyf8umlda/image/upload/v1748257298/Dr_Faisal_stbx3w.jpg",
+      image: "https://res.cloudinary.com/dyf8umlda/image/upload/v1748257298/Dr_Faisal_stbx3w.jpg  ",
     },
     {
       id: 3,
       name: "Dr. Hafsa Hussain",
       specialty: "Pediatrics",
-      image: "https://res.cloudinary.com/dyf8umlda/image/upload/v1748255660/Dr_Hafsa_t3qk7r.jpg",
+      image: "https://res.cloudinary.com/dyf8umlda/image/upload/v1748255660/Dr_Hafsa_t3qk7r.jpg  ",
     },
 ];
 
@@ -130,7 +131,7 @@ const Navbar = () => {
 
   return (
     <header 
-      className="bg-white shadow-sm sticky top-0 z-50 group border-b border-white/20 font-['HELN.TTF']"
+      className="bg-white shadow-sm sticky top-0 z-50 border-b border-white/20 font-['HELN.TTF']"
       data-navbar="main"
       style={{ '--navbar-height': `${navbarHeight}px` } as React.CSSProperties}
     >
@@ -177,29 +178,32 @@ const Navbar = () => {
               <NavigationMenu>
                 <NavigationMenuList>
                   <NavigationMenuItem>
-                    <NavigationMenuTrigger className="font-medium transition-colors text-base text-gray-700 hover:text-primary bg-transparent focus:bg-transparent data-[state=open]:bg-transparent group">
+                    <NavigationMenuTrigger className="font-medium transition-colors text-base text-gray-700 hover:text-primary bg-transparent focus:bg-transparent data-[state=open]:bg-transparent">
                         Our Services
                     </NavigationMenuTrigger>
                     <NavigationMenuContent>
                       <ul className="grid w-[600px] gap-4 p-4 md:w-[800px] lg:w-[960px] md:grid-cols-3">
                         {services.map((service) => (
-                          <li key={service.title} className="group relative block h-80 overflow-hidden rounded-xl cursor-pointer">
+                          <li 
+                            key={service.title} 
+                            className="group relative block h-80 overflow-hidden rounded-xl cursor-pointer"
+                          >
                             <Link href={service.href} className="w-full h-full block">
-                              {/* Default State */}
-                              <div className="absolute inset-0 z-10 flex flex-col justify-end items-start h-full p-6 transition-opacity duration-300 ease-in-out group-hover:opacity-0">
-                                <Image
-                                  src={service.image}
-                                  alt={service.title}
-                                  fill
-                                  className="object-cover"
-                                />
-                                <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
-                                <h3 className="relative text-2xl font-bold text-white z-10">
+                              <Image
+                                src={service.image}
+                                alt={service.title}
+                                fill
+                                className="object-cover transition-all duration-300 grayscale group-hover:grayscale-0"
+                              />
+
+                              {/* Default State - Centered Text, No Gradient */}
+                              <div className="absolute inset-0 z-10 flex flex-col justify-center items-center h-full p-6 transition-opacity duration-300 ease-in-out group-hover:opacity-0">
+                                <h3 className="text-center text-2xl font-bold text-white z-10" style={{textShadow: '1px 1px 3px rgba(0,0,0,0.5)'}}>
                                   {service.title}
                                 </h3>
                               </div>
 
-                              {/* Hover State */}
+                              {/* Hover State - Blue Card */}
                               <div className="absolute inset-0 z-20 flex flex-col justify-center items-start h-full p-6 bg-preventify-blue text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300 ease-in-out">
                                 <h3 className="text-2xl font-bold mb-3">{service.title}</h3>
                                 <p className="text-base mb-6 text-gray-200">
@@ -384,3 +388,5 @@ const Navbar = () => {
 };
 
 export default Navbar;
+
+    
