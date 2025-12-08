@@ -4,7 +4,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { Menu, X, Phone, ChevronDown, User, AlertTriangle, LucideIcon, MapPin, ArrowRight } from "lucide-react"; 
+import { Menu, X, Phone, ChevronDown, User, AlertTriangle, LucideIcon, MapPin, ArrowRight, Stethoscope, Heart, Shield } from "lucide-react"; 
 import { usePathname } from "next/navigation";
 import BookingDialog from "@/components/BookingDialog";
 import {
@@ -51,6 +51,51 @@ const clinics = [
   { name: 'Peekay\'s Preventify Clinic', location: 'Kanjirathani', href: '/clinics' },
   { name: 'Preventify Health Hub', location: 'Koottanad', href: '/clinics' },
 ];
+
+const services: { title: string; href: string; description: string, icon: LucideIcon }[] = [
+  {
+    title: "Primary Care",
+    href: "/services",
+    description:
+      "Comprehensive healthcare for individuals and families of all ages.",
+    icon: Stethoscope
+  },
+  {
+    title: "Diabetes Management",
+    href: "/services",
+    description:
+      "Specialized programs for prevention, diagnosis, and management.",
+    icon: Heart
+  },
+  {
+    title: "Lifestyle Medicine",
+    href: "/services",
+    description:
+      "Evidence-based approach focusing on nutrition and physical activity.",
+    icon: Shield
+  },
+  {
+    title: "Pediatric Care",
+    href: "/services",
+    description:
+      "Specialized healthcare for infants, children, and adolescents.",
+     icon: Stethoscope
+  },
+  {
+    title: "Women's Health",
+    href: "/services",
+    description: "Comprehensive care for women's unique health needs.",
+     icon: Stethoscope
+  },
+  {
+    title: "Preventive Screenings",
+    href: "/services",
+    description:
+      "A range of early detection tests to identify potential health issues.",
+     icon: Stethoscope
+  },
+];
+
 
 const Navbar = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -144,12 +189,31 @@ const Navbar = () => {
               <NavigationMenu>
                 <NavigationMenuList>
                   <NavigationMenuItem>
-                    <Link href="/services" legacyBehavior passHref>
-                      <NavigationMenuLink className={`font-medium transition-colors text-base px-4 py-2 rounded-md ${pathname === "/services" ? 'text-primary' : 'text-gray-700 hover:text-primary'}`}>
+                    <NavigationMenuTrigger className="font-medium transition-colors text-base text-gray-700 hover:text-primary bg-transparent focus:bg-transparent data-[state=open]:bg-transparent group">
                         Our Services
-                      </NavigationMenuLink>
-                    </Link>
-                  </NavigationMenuItem>
+                    </NavigationMenuTrigger>
+                    <NavigationMenuContent>
+                        <ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px] ">
+                        {services.map((service) => (
+                            <ListItem
+                                key={service.title}
+                                title={service.title}
+                                href={service.href}
+                            >
+                                <div className="flex items-start gap-3">
+                                    <div className="p-2 bg-gray-100 rounded-md">
+                                        <service.icon className="h-4 w-4 text-primary" />
+                                    </div>
+                                    <div>
+                                        <p className="font-bold text-gray-800">{service.title}</p>
+                                        <p className="text-sm text-gray-500">{service.description}</p>
+                                    </div>
+                                </div>
+                            </ListItem>
+                        ))}
+                        </ul>
+                    </NavigationMenuContent>
+                    </NavigationMenuItem>
 
                   <NavigationMenuItem>
                     <NavigationMenuTrigger className="font-medium transition-colors text-base text-gray-700 hover:text-primary bg-transparent focus:bg-transparent data-[state=open]:bg-transparent group">
