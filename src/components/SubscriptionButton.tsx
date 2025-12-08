@@ -24,7 +24,7 @@ const SubscriptionButton = () => {
     { name: "All Doctor Visits", detail: "See doctors anytime you need." },
     { name: "Full Year Cover", detail: "One payment covers your whole year." },
     { name: "Family Plans", detail: "Cover your whole family too." },
-    { name: "Specialist Access", detail: "Easy visits to specialists." },
+    { name: "Specialist Access", detail: "Easy visits to specialists, seamless referrals to specialists within the Preventify network." },
   ];
 
   // Auto-open after 60 seconds
