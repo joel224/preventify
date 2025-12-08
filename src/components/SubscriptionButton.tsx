@@ -21,10 +21,10 @@ const SubscriptionButton = () => {
   const timerRef = useRef<NodeJS.Timeout | null>(null);
 
   const benefits = [
-    { name: "Unlimited Doctor Visits", detail: "Consult with our General Physicians and Paediatricians as often as you need." },
-    { name: "Annual Coverage", detail: "A single fee covers all your primary consultations for a full year." },
-    { name: "Family Plan Available", detail: "Extend the same great benefits to your entire family for complete peace of mind." },
-    { name: "Access to Specialists", detail: "Get seamless referrals to specialists within the Preventify network." },
+    { name: "All Doctor Visits", detail: "See doctors anytime you need." },
+    { name: "Full Year Cover", detail: "One payment covers your whole year." },
+    { name: "Family Plans", detail: "Cover your whole family too." },
+    { name: "Specialist Access", detail: "Easy visits to specialists." },
   ];
 
   // Auto-open after 60 seconds
@@ -91,7 +91,7 @@ const SubscriptionButton = () => {
                         The Sugam Card
                     </DialogTitle>
                     <DialogDescription className="text-base text-preventify-dark-gray">
-                        One annual fee for unlimited peace of mind. Stop paying for sick visits and start investing in your health.
+                        One fee. One year. All doctor visits.
                     </DialogDescription>
                 </DialogHeader>
 
