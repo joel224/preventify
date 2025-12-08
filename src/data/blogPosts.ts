@@ -1,4 +1,3 @@
-
 // src/data/blogPosts.ts
 import { BlogPost } from "@/types/blog";
 import { diabetesPreventionPost } from "./blog/diabetes-prevention";
@@ -8,8 +7,10 @@ import { stressManagementPost } from "./blog/stress-management";
 import { preventiveScreeningsPost } from "./blog/preventive-screenings";
 import { glycemicIndexPost } from "./blog/glycemic-index";
 import { keralaHealthCrisisPost } from "./blog/kerala-health-crisis";
+import { indiaCentenariansLongevityPost } from "./blog/india-centenarians-longevity";
 
 export const blogPosts: BlogPost[] = [
+  indiaCentenariansLongevityPost,
   keralaHealthCrisisPost,
   diabetesPreventionPost,
   heartHealthCuisinePost,
