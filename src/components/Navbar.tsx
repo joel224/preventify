@@ -62,19 +62,19 @@ const services: { title: string; href: string; description: string, image: strin
   {
     title: "Diabetes Management",
     href: "/services",
-    description: "AI-driven specialized programs for the prevention, monitoring, and management of diabetes.",
+    description: "AI-driven specialized programs for the prevention, monitoring, and management of diabetes, including personalized diet and lifestyle plans.",
     image: "/service/Diabetes Management.webp"
   },
   {
     title: "Pediatric Care",
     href: "/services",
-    description: "Specialized, compassionate healthcare services tailored for infants, children, and adolescents.",
+    description: "Specialized, compassionate healthcare services tailored for infants, children, and adolescents, including well-child visits, immunizations, and developmental screenings.",
     image: "/service/Pediatric Care.webp"
   },
   {
     title: "Women's Health",
     href: "/services",
-    description: "Comprehensive care addressing women's unique health needs at every stage of life.",
+    description: "Comprehensive care addressing the unique health needs of women, including gynecological exams, family planning, and prenatal care.",
     image: "/service/Women's Health.webp"
   },
   {
@@ -184,8 +184,8 @@ const Navbar = () => {
                     <NavigationMenuContent>
                       <ul className="grid w-[600px] gap-4 p-4 md:w-[800px] lg:w-[960px] md:grid-cols-3">
                         {services.map((service) => (
-                          <li key={service.title} className="group relative block h-80 overflow-hidden rounded-xl">
-                            <Link href={service.href} className="w-full h-full block">
+                          <li key={service.title} className="group relative block h-80 overflow-hidden rounded-xl cursor-pointer">
+                            <Link href={service.href} className="w-full h-full block relative z-10">
                               {/* Default State */}
                               <div className="absolute inset-0 z-10 flex flex-col justify-end items-start h-full p-6 transition-opacity duration-300 ease-in-out group-hover:opacity-0">
                                 <Image
@@ -385,5 +385,3 @@ const Navbar = () => {
 };
 
 export default Navbar;
-
-    
