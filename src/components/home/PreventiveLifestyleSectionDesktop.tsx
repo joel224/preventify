@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState, useRef } from "react";
@@ -107,6 +108,16 @@ const PreventiveLifestyleSectionDesktop = () => {
                          <h2 className="font-display text-4xl md:text-5xl font-bold mb-4 text-preventify-dark-blue">
                             AI assisted Modern Healthcare for a <span className="text-primary">Preventive <br className="hidden md:block" /> Lifestyle</span>
                         </h2>
+                        
+                        <div className="text-lg text-preventify-dark-gray mt-6 max-w-3xl mx-auto text-left">
+                            <p className="font-semibold mb-2">We need:</p>
+                            <ul className="list-disc list-inside space-y-1">
+                                <li>Community care programs that honor our elders</li>
+                                <li>Simple technology solutions that make daily life easier</li>
+                                <li>Policies that value the contributions of our oldest citizens</li>
+                                <li>More research on healthy aging specific to Indian lifestyles</li>
+                            </ul>
+                        </div>
 
                     </div>
                 </div>

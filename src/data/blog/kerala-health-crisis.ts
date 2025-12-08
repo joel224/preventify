@@ -8,7 +8,7 @@ export const keralaHealthCrisisPost: BlogPost = {
   slug: "kerala-health-crisis-simple-steps",
   excerpt: "Kerala faces rising diabetes, heart disease and fatty liver. Discover practical preventive health tips that work with our culture, community values, and busy lifestyles.",
   content: `
-      <p>Let's talk about something we all see but rarely discuss: our health is changing. In Kerala today, uncles, aunts, even young friends are getting diagnosed with diabetes and heart problems much earlier than before. Many of us feel tired all the time but blame it on work stress.</p>
+      <p>Let's talk about something we all see but rarely discuss: Many of us feel tired all the time but blame it on work stress. our health is changing. In Kerala today, even young friends are getting diagnosed with diabetes and heart problems much earlier than before.</p>
       
       <p>Here's the hard truth: Kerala now has some of the highest rates of lifestyle diseases in India. Nearly 9 crore Indians have diabetes, and Kerala contributes significantly to this number. Heart disease is stealing our loved ones in their 40s and 50s. And the scary part? About 65 out of every 100 people have fatty liver without knowing it.</p>
       
