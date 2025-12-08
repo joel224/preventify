@@ -21,7 +21,7 @@ const SubscriptionButton = () => {
   const timerRef = useRef<NodeJS.Timeout | null>(null);
 
   const benefits = [
-    { name: "All Doctor Visits", detail: "See doctors anytime you need." },
+    { name: "All Doctor Visits", detail: "Care when you need it ,See doctors anytime you need." },
     { name: "Full Year Cover", detail: "One payment covers your whole year." },
     { name: "Family Plans", detail: "Cover your whole family too." },
     { name: "Specialist Access", detail: "Easy visits to specialists, seamless referrals to specialists within the Preventify network." },
@@ -31,7 +31,7 @@ const SubscriptionButton = () => {
   useEffect(() => {
     timerRef.current = setTimeout(() => {
       setIsOpen(true);
-    }, 60000); // 60 seconds
+    }, 63000); // 60 seconds
 
     return () => {
       if (timerRef.current) {
@@ -90,7 +90,7 @@ const SubscriptionButton = () => {
                     <DialogTitle className="text-3xl font-bold text-preventify-blue mb-2">
                         The Sugam Card
                     </DialogTitle>
-                    <DialogDescription className="text-base text-preventify-dark-gray">
+                    <DialogDescription className="text-lg text-preventify-dark-gray">
                         One fee. One year. All doctor visits.
                     </DialogDescription>
                 </DialogHeader>
