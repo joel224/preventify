@@ -186,7 +186,7 @@ const Navbar = () => {
                         {services.map((service) => (
                           <li 
                             key={service.title} 
-                            className="group relative block h-80 overflow-hidden rounded-xl cursor-pointer"
+                            className="group relative block h-96 overflow-hidden rounded-xl cursor-pointer"
                           >
                             <Link href={service.href} className="w-full h-full block">
                               <Image
@@ -198,7 +198,7 @@ const Navbar = () => {
 
                               {/* Default State - Centered Text, No Gradient */}
                               <div className="absolute inset-0 z-10 flex flex-col justify-center items-center h-full p-6 transition-opacity duration-300 ease-in-out group-hover:opacity-0">
-                                <h3 className="text-center text-2xl font-bold text-white z-10" style={{textShadow: '1px 1px 3px rgba(0,0,0,0.5)'}}>
+                                <h3 className="text-center text-2xl font-bold text-[#032755] z-10">
                                   {service.title}
                                 </h3>
                               </div>
@@ -388,5 +388,3 @@ const Navbar = () => {
 };
 
 export default Navbar;
-
-    
