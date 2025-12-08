@@ -208,8 +208,8 @@ const ServicesSection = () => {
                 </div>
             </CarouselItem>
           </CarouselContent>
-          <CarouselPrevious className="absolute left-[-50px] top-1/2 -translate-y-1/2 bg-white/80 backdrop-blur-sm hover:bg-white" />
-          <CarouselNext className="absolute right-[-50px] top-1/2 -translate-y-1/2 bg-white/80 backdrop-blur-sm hover:bg-white" />
+          <CarouselPrevious className="absolute left-[-50px] top-1/2 -translate-y-1/2 bg-white hover:bg-gray-100 shadow-md border" />
+          <CarouselNext className="absolute right-[-50px] top-1/2 -translate-y-1/2 bg-white hover:bg-gray-100 shadow-md border" />
         </Carousel>
       </div>
     </section>
