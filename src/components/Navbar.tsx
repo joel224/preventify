@@ -182,15 +182,15 @@ const Navbar = () => {
                         Our Services
                     </NavigationMenuTrigger>
                     <NavigationMenuContent>
-                        <ul className="grid w-[600px] gap-4 p-4 md:w-[700px] md:grid-cols-2 lg:w-[800px]">
+                        <ul className="grid w-[600px] gap-4 p-6 md:w-[800px] lg:w-[960px] md:grid-cols-3">
                         {services.map((service) => (
                             <ListItem
                                 key={service.title}
                                 title={service.title}
                                 href={service.href}
                             >
-                                <div className="flex items-center gap-4">
-                                    <div className="relative w-16 h-16 rounded-md overflow-hidden flex-shrink-0">
+                                <div className="flex items-start gap-4">
+                                    <div className="relative w-20 h-20 rounded-md overflow-hidden flex-shrink-0">
                                       <Image
                                           src={service.image}
                                           alt={service.title}
@@ -376,3 +376,5 @@ const Navbar = () => {
 };
 
 export default Navbar;
+
+    
