@@ -10,9 +10,9 @@ import Image from "next/image"
 
 const HeroSectionMobile = () => {
   const mobileImages = [
-    '/mobile/care_mobile.png',
-    '/mobile/fam_mobile.png',
-    '/mobile/doc_mobile.png',
+    '/mobile/care_mobile (1).webp',
+    '/mobile/doc_mobile (1).webp',
+    '/mobile/fam_mobile (1).webp',
   ];
 
   return (
