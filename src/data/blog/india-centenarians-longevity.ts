@@ -92,7 +92,7 @@ export const indiaCentenariansLongevityPost: BlogPost = {
       <p>Every small choice adds up over time. The centenarians among us prove that longevity isn't about genetics alone - it's about the daily decisions we make and the communities we build around us.</p>
       <p><strong>What simple change will you make today to live like India's healthiest 100-year-olds?</strong></p>
     `,
-  coverImage: "https://images.unsplash.com/photo-1593182393282-e634d0e39a3f?q=80&w=1587&auto=format&fit=crop",
+  coverImage: "https://img.freepik.com/free-vector/elderly-couple-walking-together-vector-style_1308-182519.jpg?t=st=1765276663~exp=1765280263~hmac=8c61c276b3a57ac8d94919ad6ec44c9a5bbdb36a672652fd7784e17e0d06b138&w=740",
   date: "July 22, 2024",
   author: "Preventify Team",
   categories: ["longevity", "wellness", "lifestyle"]
