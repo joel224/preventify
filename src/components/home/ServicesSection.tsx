@@ -76,7 +76,7 @@ const ActionCard = ({ icon, title, description, button, color, link }: { icon: R
 
 const ServiceCard = ({ service }: { service: typeof services[0] }) => {
     return (
-        <Link href={service.link} className="group relative block h-80 overflow-hidden rounded-xl">
+        <div className="group relative block h-80 overflow-hidden rounded-xl">
             {/* Background pattern and gradient */}
             <div
                 className="absolute inset-0 bg-preventify-light-gray bg-opacity-50"
@@ -109,12 +109,12 @@ const ServiceCard = ({ service }: { service: typeof services[0] }) => {
                 <p className="text-base mb-6 text-gray-200">
                     {service.description}
                 </p>
-                <div className="flex items-center font-semibold">
+                <Link href={service.link} className="flex items-center font-semibold">
                     Read More
                     <ArrowRight className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" />
-                </div>
+                </Link>
             </div>
-        </Link>
+        </div>
     );
 };
 

@@ -43,7 +43,7 @@ const PreventiveLifestyleSectionMobile = () => {
                         </h2>
                         
                         <div className="text-base text-preventify-dark-gray mt-6 max-w-3xl mx-auto text-left">
-                            <p className="font-semibold mb-2">We need Us And We Have::</p>
+                            <p className="font-semibold mb-2">We need Us And We Have:</p>
                             <ul className="list-disc list-inside space-y-1">
                                 <li>Community care programs that honor our elders</li>
                                 <li>Simple technology solutions that make daily life easier</li>
@@ -57,9 +57,9 @@ const PreventiveLifestyleSectionMobile = () => {
                             whileInView={{ opacity: 1, y: 0 }}
                             viewport={{ once: true }}
                             transition={{ duration: 0.6, ease: "easeOut" }}
-                            className="text-lg text-preventify-dark-gray my-8 max-w-3xl mx-auto"
+                            className="text-lg text-preventify-dark-gray my-14 max-w-3xl mx-auto"
                         >
-                            AI-assisted evidence-based care across Kerala focused on prevention, early intervention, and better health outcomes for you and your family.
+                           An AI-assisted evidence-based care across Kerala focused on prevention, early intervention, and better health outcomes for you and your family.
                         </motion.p>
 
                         <div className="max-w-3xl mx-auto p-4 md:p-6 rounded-xl bg-white/50 backdrop-blur-sm border border-gray-100 shadow-sm">
