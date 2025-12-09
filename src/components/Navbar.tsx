@@ -53,42 +53,47 @@ const clinics = [
   { name: 'Preventify Health Hub', location: 'Koottanad', href: '/clinics' },
 ];
 
-const services: { title: string; href: string; description: string, icon: LucideIcon, image: string }[] = [
+const services: { title: string; href: string; description: string; longDescription: string; icon: LucideIcon, image: string }[] = [
   {
     title: "Primary Care",
     href: "/services",
-    description: "Comprehensive healthcare services for individuals and families, focusing on long-term health and wellness.",
+    description: "Your family's everyday health.",
+    longDescription: "Comprehensive healthcare services for individuals and families, focusing on long-term health and wellness.",
     icon: Stethoscope,
     image: "/service/Primary Care.webp",
   },
   {
-    title: "Diabetes Management",
+    title: "Diabetes Care",
     href: "/services",
-    description: "AI-driven specialized programs for the prevention, monitoring, and management of diabetes.",
+    description: "Smart help for sugar control.",
+    longDescription: "AI-driven specialized programs for the prevention, monitoring, and management of diabetes.",
     icon: Droplets,
     image: "/service/Diabetes Management.webp",
   },
   {
-    title: "Pediatric Care",
+    title: "Children's Care",
     href: "/services",
-    description: "Specialized, compassionate healthcare services tailored for infants, children, and adolescents.",
+    description: "Happy care for little ones.",
+    longDescription: "Specialized, compassionate healthcare services tailored for infants, children, and adolescents.",
     icon: Heart,
     image: "/service/Pediatric Care.webp",
   },
 ];
 
-const moreServices: { title: string; href: string; description: string, icon: LucideIcon, image: string }[] = [
+const moreServices: { title: string; href: string; description: string; longDescription: string; icon: LucideIcon, image: string }[] = [
     {
-    title: "Women's Health",
+    title: "Women's Care",
     href: "/services",
-    description: "Comprehensive care addressing women's unique health needs at every stage of life.",
+    description: "Health made for you.",
+    longDescription: "Comprehensive care addressing women's unique health needs at every stage of life.",
     icon: Activity,
     image: "/service/Women's Health.webp",
   },
   {
-    title: "Preventive Screenings",
+    title: "Health Checks",
     href: "/services",
-    description: "Advanced early detection tests to identify potential health issues before they become serious.",
+    description: "Find small problems early.",
+    longDescription: "Advanced early detection tests to identify potential health issues before they become serious.",
     icon: Shield,
     image: "/service/Preventive Screenings.webp",
   },
@@ -96,17 +101,20 @@ const moreServices: { title: string; href: string; description: string, icon: Lu
     title: "All Services",
     href: "/services",
     description: "Explore our all medical services.",
+    longDescription: "Explore our full range of medical services, from primary care to specialized treatments.",
     icon: PlusCircle,
     image: "https://images.unsplash.com/photo-1576091160550-2173dba999ef?q=80&w=1470&auto=format&fit=crop",
   },
 ];
 
 
+
+
 const Navbar = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const pathname = usePathname();
   const [navbarHeight, setNavbarHeight] = useState(80);
-  const [activeService, setActiveService] = useState<(typeof services[0] & { image: string }) | null>(null);
+  const [activeService, setActiveService] = useState<(typeof services[0]) | null>(null);
 
   const toggleMenu = () => {
     setMobileMenuOpen(!mobileMenuOpen);
@@ -248,7 +256,7 @@ const Navbar = () => {
                                             </div>
                                             <div className="relative z-10 flex-grow flex flex-col justify-end">
                                                 <h3 className="font-bold text-slate-900 text-lg mb-2">{activeService.title}</h3>
-                                                <p className="text-[15px] text-slate-600 mb-6 leading-relaxed flex-grow">{activeService.description}</p>
+                                                <p className="text-[15px] text-slate-600 mb-6 leading-relaxed flex-grow">{activeService.longDescription}</p>
                                                 <Link href={activeService.href} passHref>
                                                     <Button variant="link" className="p-0 h-auto text-primary">
                                                         Read More <ArrowRight className="ml-1 h-4 w-4"/>
@@ -458,5 +466,7 @@ const Navbar = () => {
 };
 
 export default Navbar;
+
+    
 
     
