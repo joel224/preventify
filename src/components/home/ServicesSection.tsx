@@ -1,4 +1,3 @@
-
 'use client';
 
 import { motion } from "framer-motion";
@@ -192,12 +191,14 @@ const ServicesSection = () => {
                             From Our Blog
                         </h2>
                         <h3 className="text-2xl font-semibold text-preventify-dark-blue mb-4">{blogPost.title}</h3>
-                        <p className="text-preventify-dark-gray mb-6">
-                           Imagine meeting someone who has lived through two world wars, seen India gain independence, witnessed the digital revolution, and is still going strong at 100 years old. These aren't just remarkable individuals - they're living textbooks of longevity. A new study looking at India's oldest citizens has revealed some surprising truths about what it really takes to live a long, healthy life. And the best part? Their secrets aren't complicated or expensive.
-                        </p>
-                        <p className="text-preventify-dark-gray mb-6">
-                            When researchers studied centenarians across India, they found something remarkable: most of these 100-year-olds were actually in good health. No fancy medical treatments or expensive supplements - just basic lifestyle choices that made all the difference. Over 90% of centenarians never drank alcohol. About 68% never smoked tobacco. They didn't need willpower to quit bad habits because they never started them in the first place.
-                        </p>
+                        <div className="text-preventify-dark-gray mb-6 prose lg:prose-lg max-w-none">
+                          <p>
+                            Imagine meeting someone who has lived through two world wars, seen India gain independence, witnessed the digital revolution, and is still going strong at 100 years old. These aren't just remarkable individuals - they're living textbooks of longevity. A new study looking at India's oldest citizens has revealed some surprising truths about what it really takes to live a long, healthy life. And the best part? Their secrets aren't complicated or expensive.
+                          </p>
+                          <p>
+                              When researchers studied centenarians across India, they found something remarkable: most of these 100-year-olds were actually in good health. No fancy medical treatments or expensive supplements - just basic lifestyle choices that made all the difference. Over 90% of centenarians never drank alcohol. About 68% never smoked tobacco. They didn't need willpower to quit bad habits because they never started them in the first place.
+                          </p>
+                        </div>
                         <Link href={`/blog/${blogPost.slug}`}>
                             <Button variant="link" className="p-0 h-auto text-base">Read More <ArrowRight className="ml-2 h-4 w-4" /></Button>
                         </Link>
@@ -205,8 +206,8 @@ const ServicesSection = () => {
                 </div>
             </CarouselItem>
           </CarouselContent>
-          <CarouselPrevious className="absolute left-[-50px] top-1/2 -translate-y-1/2 bg-white hover:bg-white/90 backdrop-blur-sm shadow-md border z-10 h-10 w-10" />
-          <CarouselNext className="absolute right-[-50px] top-1/2 -translate-y-1/2 bg-white hover:bg-white/90 backdrop-blur-sm shadow-md border z-10 h-10 w-10" />
+          <CarouselPrevious className="absolute left-4 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white backdrop-blur-sm shadow-md border z-10" />
+          <CarouselNext className="absolute right-4 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white backdrop-blur-sm shadow-md border z-10" />
         </Carousel>
       </div>
     </section>
