@@ -57,21 +57,21 @@ const services: { title: string; href: string; description: string, icon: Lucide
   {
     title: "Primary Care",
     href: "/services",
-    description: "Your family's everyday health.",
+    description: "Comprehensive healthcare services for individuals and families, focusing on long-term health and wellness.",
     icon: Stethoscope,
     image: "/service/Primary Care.webp",
   },
   {
-    title: "Diabetes Care",
+    title: "Diabetes Management",
     href: "/services",
-    description: "Smart help for sugar control.",
+    description: "AI-driven specialized programs for the prevention, monitoring, and management of diabetes.",
     icon: Droplets,
     image: "/service/Diabetes Management.webp",
   },
   {
-    title: "Children's Care",
+    title: "Pediatric Care",
     href: "/services",
-    description: "Happy care for little ones.",
+    description: "Specialized, compassionate healthcare services tailored for infants, children, and adolescents.",
     icon: Heart,
     image: "/service/Pediatric Care.webp",
   },
@@ -79,23 +79,23 @@ const services: { title: string; href: string; description: string, icon: Lucide
 
 const moreServices: { title: string; href: string; description: string, icon: LucideIcon, image: string }[] = [
     {
-    title: "Women's Care",
+    title: "Women's Health",
     href: "/services",
-    description: "Health made for you.",
+    description: "Comprehensive care addressing women's unique health needs at every stage of life.",
     icon: Activity,
     image: "/service/Women's Health.webp",
   },
   {
-    title: "Health Checks",
+    title: "Preventive Screenings",
     href: "/services",
-    description: "Find small problems early.",
+    description: "Advanced early detection tests to identify potential health issues before they become serious.",
     icon: Shield,
     image: "/service/Preventive Screenings.webp",
   },
   {
     title: "All Services",
     href: "/services",
-    description: "Explore our full range of medical services.",
+    description: "Explore our all medical services.",
     icon: PlusCircle,
     image: "https://images.unsplash.com/photo-1576091160550-2173dba999ef?q=80&w=1470&auto=format&fit=crop",
   },
@@ -458,3 +458,5 @@ const Navbar = () => {
 };
 
 export default Navbar;
+
+    
