@@ -57,21 +57,21 @@ const services: { title: string; href: string; description: string, icon: Lucide
   {
     title: "Primary Care",
     href: "/services",
-    description: "Comprehensive healthcare for individuals and families.",
+    description: "Your family's everyday health.",
     icon: Stethoscope,
     image: "/service/Primary Care.webp",
   },
   {
-    title: "Diabetes Management",
+    title: "Diabetes Care",
     href: "/services",
-    description: "AI-driven programs for prevention and management.",
+    description: "Smart help for sugar control.",
     icon: Droplets,
     image: "/service/Diabetes Management.webp",
   },
   {
-    title: "Pediatric Care",
+    title: "Children's Care",
     href: "/services",
-    description: "Specialized, compassionate care for children.",
+    description: "Happy care for little ones.",
     icon: Heart,
     image: "/service/Pediatric Care.webp",
   },
@@ -79,16 +79,16 @@ const services: { title: string; href: string; description: string, icon: Lucide
 
 const moreServices: { title: string; href: string; description: string, icon: LucideIcon, image: string }[] = [
     {
-    title: "Women's Health",
+    title: "Women's Care",
     href: "/services",
-    description: "Addressing unique health needs of women.",
+    description: "Health made for you.",
     icon: Activity,
     image: "/service/Women's Health.webp",
   },
   {
-    title: "Preventive Screenings",
+    title: "Health Checks",
     href: "/services",
-    description: "Early detection tests for potential health issues.",
+    description: "Find small problems early.",
     icon: Shield,
     image: "/service/Preventive Screenings.webp",
   },
@@ -106,7 +106,7 @@ const Navbar = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const pathname = usePathname();
   const [navbarHeight, setNavbarHeight] = useState(80);
-  const [activeService, setActiveService] = useState<typeof services[0] | null>(null);
+  const [activeService, setActiveService] = useState<(typeof services[0] & { image: string }) | null>(null);
 
   const toggleMenu = () => {
     setMobileMenuOpen(!mobileMenuOpen);
@@ -458,5 +458,3 @@ const Navbar = () => {
 };
 
 export default Navbar;
-
-    
