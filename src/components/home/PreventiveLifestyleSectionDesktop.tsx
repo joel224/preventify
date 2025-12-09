@@ -109,8 +109,8 @@ const PreventiveLifestyleSectionDesktop = () => {
                             AI assisted Modern Healthcare for a <span className="text-primary">Preventive <br className="hidden md:block" /> Lifestyle</span>
                         </h2>
                         
-                        <div className="text-lg text-preventify-dark-gray mt-8 max-w-3xl mx-auto text-left">
-                            <p className="font-semibold mb-2">We need Us And We Have:</p>
+                        <div className="text-lg text-preventify-dark-gray mt-14 max-w-3xl mx-auto text-left">
+                            <p className="font-semibold mb-2 mt-8">We need Us And We Have:</p>
                             <ul className="list-disc list-inside space-y-1">
                                 <li>A Community care program that honor our elders</li>
                                 <li>Simple technology solutions that make daily life easier</li>

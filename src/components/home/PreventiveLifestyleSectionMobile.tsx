@@ -43,7 +43,7 @@ const PreventiveLifestyleSectionMobile = () => {
                         </h2>
                         
                         <div className="text-base text-preventify-dark-gray mt-6 max-w-3xl mx-auto text-left">
-                            <p className="font-semibold mb-2">We need:</p>
+                            <p className="font-semibold mb-2">We need Us And We Have::</p>
                             <ul className="list-disc list-inside space-y-1">
                                 <li>Community care programs that honor our elders</li>
                                 <li>Simple technology solutions that make daily life easier</li>
