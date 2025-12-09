@@ -206,7 +206,7 @@ const CarouselPrevious = React.forwardRef<
       variant={variant}
       size={size}
       className={cn(
-        "absolute h-10 w-10 rounded-full z-10 bg-white/80 hover:bg-white backdrop-blur-sm shadow-md border",
+        "absolute h-10 w-10 rounded-full z-10 bg-white hover:bg-white/90 shadow-md border",
         "left-4 top-1/2 -translate-y-1/2",
         className
       )}
@@ -233,7 +233,7 @@ const CarouselNext = React.forwardRef<
       variant={variant}
       size={size}
       className={cn(
-        "absolute h-10 w-10 rounded-full z-10 bg-white/80 hover:bg-white backdrop-blur-sm shadow-md border",
+        "absolute h-10 w-10 rounded-full z-10 bg-white hover:bg-white/90 shadow-md border",
         "right-4 top-1/2 -translate-y-1/2",
         className
       )}
