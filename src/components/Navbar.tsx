@@ -186,7 +186,8 @@ const Navbar = () => {
                         {services.map((service) => (
                           <li 
                             key={service.title} 
-                            className="group relative block h-96 overflow-hidden rounded-xl cursor-pointer"
+                            className="group relative block overflow-hidden rounded-xl cursor-pointer"
+                            style={{ height: 'calc(60vh - var(--navbar-height))' }}
                           >
                             <Link href={service.href} className="w-full h-full block">
                               <Image
@@ -388,3 +389,5 @@ const Navbar = () => {
 };
 
 export default Navbar;
+
+    
