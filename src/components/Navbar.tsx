@@ -4,7 +4,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { Menu, X, Phone, ChevronDown, User, AlertTriangle, LucideIcon, MapPin, ArrowRight, Stethoscope, Heart, Shield } from "lucide-react"; 
+import { Menu, X, Phone, ChevronDown, User, AlertTriangle, LucideIcon, ArrowRight, Stethoscope, Heart, Shield, Droplets, Activity, PlusCircle, CheckCircle, Star, MapPin } from "lucide-react";
 import { usePathname } from "next/navigation";
 import BookingDialog from "@/components/BookingDialog";
 import {
@@ -52,36 +52,24 @@ const clinics = [
   { name: 'Preventify Health Hub', location: 'Koottanad', href: '/clinics' },
 ];
 
-const services: { title: string; href: string; description: string, image: string }[] = [
+const services: { title: string; href: string; description: string, icon: LucideIcon }[] = [
   {
     title: "Primary Care",
     href: "/services",
-    description: "Comprehensive healthcare services for individuals and families of all ages, including routine check-ups, and management of acute and chronic illnesses.",
-    image: "/service/Primary Care.webp"
+    description: "Comprehensive healthcare for individuals and families.",
+    icon: Stethoscope
   },
   {
     title: "Diabetes Management",
     href: "/services",
-    description: "AI-driven specialized programs for the prevention, monitoring, and management of diabetes, including personalized diet and lifestyle plans.",
-    image: "/service/Diabetes Management.webp"
+    description: "AI-driven programs for prevention and management.",
+    icon: Droplets
   },
   {
     title: "Pediatric Care",
     href: "/services",
-    description: "Specialized, compassionate healthcare services tailored for infants, children, and adolescents, including well-child visits, immunizations, and developmental screenings.",
-    image: "/service/Pediatric Care.webp"
-  },
-  {
-    title: "Women's Health",
-    href: "/services",
-    description: "Comprehensive care addressing the unique health needs of women, including gynecological exams, family planning, and prenatal care.",
-    image: "/service/Women's Health.webp"
-  },
-  {
-    title: "Preventive Screenings",
-    href: "/services",
-    description: "A range of early detection tests and health screenings to identify potential health issues before they become serious.",
-    image: "/service/Preventive Screenings.webp"
+    description: "Specialized, compassionate care for children.",
+    icon: Heart
   },
 ];
 
@@ -128,7 +116,26 @@ const Navbar = () => {
       observer.disconnect();
     };
   }, []);
-
+  const moreServices: { title: string; href: string; description: string, icon: LucideIcon }[] = [
+    {
+    title: "Women's Health",
+    href: "/services",
+    description: "Addressing unique health needs of women.",
+    icon: Activity
+  },
+  {
+    title: "Preventive Screenings",
+    href: "/services",
+    description: "Early detection tests for potential health issues.",
+    icon: Shield
+  },
+  {
+    title: "All Services",
+    href: "/services",
+    description: "Explore our full range of medical services.",
+    icon: PlusCircle
+  },
+];
   return (
     <header 
       className="bg-white shadow-sm sticky top-0 z-50 border-b border-white/20 font-['HELN.TTF']"
@@ -176,52 +183,75 @@ const Navbar = () => {
           <div className="hidden lg:flex items-center gap-4">
              <nav className="hidden lg:flex">
               <NavigationMenu>
-                <NavigationMenuList>
+              <NavigationMenuList className="gap-2">
+                  
+                  {/* SERVICES MENU - REFACTORED FOR SCANNABILITY */}
                   <NavigationMenuItem>
-                    <NavigationMenuTrigger className="font-medium transition-colors text-base text-gray-700 hover:text-primary bg-transparent focus:bg-transparent data-[state=open]:bg-transparent">
+                    <NavigationMenuTrigger className="text-[15px] font-medium text-slate-600 hover:text-primary hover:bg-slate-50/80 data-[state=open]:bg-slate-50">
                         Our Services
                     </NavigationMenuTrigger>
                     <NavigationMenuContent>
-                      <ul className="grid w-[600px] gap-4 p-4 md:w-[800px] lg:w-[960px] md:grid-cols-3">
-                        {services.map((service) => (
-                          <li 
-                            key={service.title} 
-                            className="group relative block overflow-hidden rounded-xl cursor-pointer"
-                            style={{ height: 'calc(60vh - var(--navbar-height))' }}
-                          >
-                            <Link href={service.href} className="w-full h-full block">
-                              <Image
-                                src={service.image}
-                                alt={service.title}
-                                fill
-                                className="object-cover transition-all duration-300 grayscale group-hover:grayscale-0"
-                              />
+                      <div className="grid grid-cols-12 gap-8 p-6 w-[980px] bg-white">
+                        
+                        {/* Column 1 & 2 */}
+                        <div className="col-span-8 flex flex-col gap-2">
+                            <p className="px-4 text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">SERVICES</p>
+                            <div className="grid grid-cols-2 gap-x-6 gap-y-1">
+                                {services.map((service) => (
+                                    <ListItem key={service.title} href={service.href} title={service.title} className="p-4 rounded-xl hover:bg-slate-50 transition-all duration-200 group">
+                                        <div className="flex items-start gap-4">
+                                            <div className="p-2 bg-primary/10 rounded-lg group-hover:bg-primary/20 transition-colors">
+                                                <service.icon className="w-5 h-5 text-primary/80 group-hover:text-primary transition-colors" />
+                                            </div>
+                                            <div>
+                                                <p className="font-semibold text-slate-900 text-[15px] mb-0.5 group-hover:text-primary transition-colors">{service.title}</p>
+                                                <p className="text-sm text-slate-500 leading-relaxed font-normal">{service.description}</p>
+                                            </div>
+                                        </div>
+                                    </ListItem>
+                                ))}
+                                {moreServices.map((service) => (
+                                     <ListItem key={service.title} href={service.href} title={service.title} className="p-4 rounded-xl hover:bg-slate-50 transition-all duration-200 group">
+                                         <div className="flex items-start gap-4">
+                                            <div className="p-2 bg-primary/10 rounded-lg group-hover:bg-primary/20 transition-colors">
+                                                <service.icon className="w-5 h-5 text-primary/80 group-hover:text-primary transition-colors" />
+                                            </div>
+                                            <div>
+                                                <p className="font-semibold text-slate-900 text-[15px] mb-0.5 group-hover:text-primary transition-colors">{service.title}</p>
+                                                <p className="text-sm text-slate-500 leading-relaxed font-normal">{service.description}</p>
+                                            </div>
+                                        </div>
+                                    </ListItem>
+                                ))}
+                            </div>
+                        </div>
 
-                              {/* Default State - Centered Text, No Gradient */}
-                              <div className="absolute inset-0 z-10 flex flex-col justify-center items-center h-full p-6 transition-opacity duration-300 ease-in-out group-hover:opacity-0">
-                                <h3 className="text-center text-2xl font-bold text-[#032755] z-10">
-                                  {service.title}
-                                </h3>
-                              </div>
-
-                              {/* Hover State - Blue Card */}
-                              <div className="absolute inset-0 z-20 flex flex-col justify-center items-start h-full p-6 bg-preventify-blue text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300 ease-in-out">
-                                <h3 className="text-2xl font-bold mb-3">{service.title}</h3>
-                                <p className="text-base mb-6 text-gray-200">
-                                  {service.description}
-                                </p>
-                                <div className="flex items-center font-semibold mt-auto">
-                                  Read More
-                                  <ArrowRight className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" />
+                        {/* Featured Column - Cleaned up visual weight */}
+                        <div className="col-span-4">
+                           <div className="h-full bg-gray-50 rounded-2xl p-6 flex flex-col justify-between hover:border-primary/20 transition-colors border">
+                                <div>
+                                    <div className="flex items-center gap-2 mb-3">
+                                        <Star className="w-4 h-4 text-amber-500 fill-amber-500" />
+                                        <p className="text-xs font-bold text-slate-500 uppercase tracking-wider">FEATURED PLAN</p>
+                                    </div>
+                                    <h3 className="font-bold text-slate-900 text-lg mb-2">Sugam Card</h3>
+                                    <p className="text-[15px] text-slate-600 mb-6 leading-relaxed">One fee. One year. All your doctor visits are covered completely.</p>
+                                    <ul className="space-y-3 text-sm font-medium text-slate-700">
+                                        <li className="flex items-center gap-2.5"><CheckCircle className="h-4 w-4 text-emerald-500"/> Unlimited Consultations</li>
+                                        <li className="flex items-center gap-2.5"><CheckCircle className="h-4 w-4 text-emerald-500"/> Family Plans Available</li>
+                                        <li className="flex items-center gap-2.5"><CheckCircle className="h-4 w-4 text-emerald-500"/> Priority Booking</li>
+                                    </ul>
                                 </div>
-                              </div>
-                            </Link>
-                          </li>
-                        ))}
-                      </ul>
+                                <Link href="/savings" passHref className="mt-6">
+                                    <Button className="w-full bg-primary hover:bg-primary/90 text-white shadow-lg shadow-primary/20 rounded-xl py-5">
+                                        View Plan Details
+                                    </Button>
+                                </Link>
+                            </div>
+                        </div>
+                      </div>
                     </NavigationMenuContent>
                     </NavigationMenuItem>
-
                   <NavigationMenuItem>
                     <NavigationMenuTrigger className="font-medium transition-colors text-base text-gray-700 hover:text-primary bg-transparent focus:bg-transparent data-[state=open]:bg-transparent group">
                       Our Doctors
