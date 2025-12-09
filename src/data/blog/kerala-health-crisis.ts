@@ -59,7 +59,7 @@ export const keralaHealthCrisisPost: BlogPost = {
       
       <p>Preventive health isn't about giving up our culture. It's about returning to our roots - fresh food, active living, community support. It's about making choices today so we can be there for our families tomorrow.</p>
     `,
-  coverImage: "https://images.unsplash.com/photo-1620166299593-3f3605485408?q=80&w=1470&auto=format&fit=crop",
+  coverImage: "https://img.freepik.com/free-photo/top-view-purple-ribbon-with-stethoscope_23-2148283529.jpg?t=st=1765276106~exp=1765279706~hmac=92cece87fcf03a06784d8d4d2d168a02f1b78eca1355d83f659d19023d87be4d&w=740",
   date: "July 12, 2024",
   author: "Preventify Team",
   categories: ["health crisis", "prevention", "kerala"]
