@@ -208,11 +208,11 @@ const Navbar = () => {
                     <NavigationMenuTrigger className="text-[15px] font-medium text-slate-600 hover:text-primary hover:bg-slate-50/80 data-[state=open]:bg-slate-50">
                         Our Services
                     </NavigationMenuTrigger>
-                    <NavigationMenuContent onMouseLeave={() => setActiveService(null)}>
+                    <NavigationMenuContent>
                       <div className="grid grid-cols-12 gap-8 p-6 w-[980px] bg-white">
                         
                         {/* Column 1 & 2 */}
-                        <div className="col-span-8 flex flex-col gap-2">
+                        <div className="col-span-8 flex flex-col gap-2" onMouseLeave={() => setActiveService(null)}>
                             <p className="px-4 text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">SERVICES</p>
                             <div className="grid grid-cols-2 gap-x-6 gap-y-1">
                                 {[...services, ...moreServices].map((service) => (
@@ -470,3 +470,4 @@ export default Navbar;
     
 
     
+
