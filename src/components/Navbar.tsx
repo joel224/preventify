@@ -17,6 +17,7 @@ import {
 } from "@/components/ui/navigation-menu";
 import ListItem from "@/components/ListItem";
 import Image from "next/image";
+import { motion, AnimatePresence } from "framer-motion";
 
 interface NavLinkType {
   name: string;
@@ -52,24 +53,51 @@ const clinics = [
   { name: 'Preventify Health Hub', location: 'Koottanad', href: '/clinics' },
 ];
 
-const services: { title: string; href: string; description: string, icon: LucideIcon }[] = [
+const services: { title: string; href: string; description: string, icon: LucideIcon, image: string }[] = [
   {
     title: "Primary Care",
     href: "/services",
     description: "Comprehensive healthcare for individuals and families.",
-    icon: Stethoscope
+    icon: Stethoscope,
+    image: "/service/Primary Care.webp",
   },
   {
     title: "Diabetes Management",
     href: "/services",
     description: "AI-driven programs for prevention and management.",
-    icon: Droplets
+    icon: Droplets,
+    image: "/service/Diabetes Management.webp",
   },
   {
     title: "Pediatric Care",
     href: "/services",
     description: "Specialized, compassionate care for children.",
-    icon: Heart
+    icon: Heart,
+    image: "/service/Pediatric Care.webp",
+  },
+];
+
+const moreServices: { title: string; href: string; description: string, icon: LucideIcon, image: string }[] = [
+    {
+    title: "Women's Health",
+    href: "/services",
+    description: "Addressing unique health needs of women.",
+    icon: Activity,
+    image: "/service/Women's Health.webp",
+  },
+  {
+    title: "Preventive Screenings",
+    href: "/services",
+    description: "Early detection tests for potential health issues.",
+    icon: Shield,
+    image: "/service/Preventive Screenings.webp",
+  },
+  {
+    title: "All Services",
+    href: "/services",
+    description: "Explore our full range of medical services.",
+    icon: PlusCircle,
+    image: "https://images.unsplash.com/photo-1576091160550-2173dba999ef?q=80&w=1470&auto=format&fit=crop",
   },
 ];
 
@@ -78,6 +106,7 @@ const Navbar = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const pathname = usePathname();
   const [navbarHeight, setNavbarHeight] = useState(80);
+  const [activeService, setActiveService] = useState<typeof services[0] | null>(null);
 
   const toggleMenu = () => {
     setMobileMenuOpen(!mobileMenuOpen);
@@ -116,26 +145,7 @@ const Navbar = () => {
       observer.disconnect();
     };
   }, []);
-  const moreServices: { title: string; href: string; description: string, icon: LucideIcon }[] = [
-    {
-    title: "Women's Health",
-    href: "/services",
-    description: "Addressing unique health needs of women.",
-    icon: Activity
-  },
-  {
-    title: "Preventive Screenings",
-    href: "/services",
-    description: "Early detection tests for potential health issues.",
-    icon: Shield
-  },
-  {
-    title: "All Services",
-    href: "/services",
-    description: "Explore our full range of medical services.",
-    icon: PlusCircle
-  },
-];
+  
   return (
     <header 
       className="bg-white shadow-sm sticky top-0 z-50 border-b border-white/20 font-['HELN.TTF']"
@@ -185,68 +195,97 @@ const Navbar = () => {
               <NavigationMenu>
               <NavigationMenuList className="gap-2">
                   
-                  {/* SERVICES MENU - REFACTORED FOR SCANNABILITY */}
+                  {/* SERVICES MENU - REFACTORED FOR INTERACTIVITY */}
                   <NavigationMenuItem>
                     <NavigationMenuTrigger className="text-[15px] font-medium text-slate-600 hover:text-primary hover:bg-slate-50/80 data-[state=open]:bg-slate-50">
                         Our Services
                     </NavigationMenuTrigger>
-                    <NavigationMenuContent>
+                    <NavigationMenuContent onMouseLeave={() => setActiveService(null)}>
                       <div className="grid grid-cols-12 gap-8 p-6 w-[980px] bg-white">
                         
                         {/* Column 1 & 2 */}
                         <div className="col-span-8 flex flex-col gap-2">
                             <p className="px-4 text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">SERVICES</p>
                             <div className="grid grid-cols-2 gap-x-6 gap-y-1">
-                                {services.map((service) => (
-                                    <ListItem key={service.title} href={service.href} title={service.title} className="p-4 rounded-xl hover:bg-slate-50 transition-all duration-200 group">
-                                        <div className="flex items-start gap-4">
-                                            <div className="p-2 bg-primary/10 rounded-lg group-hover:bg-primary/20 transition-colors">
-                                                <service.icon className="w-5 h-5 text-primary/80 group-hover:text-primary transition-colors" />
+                                {[...services, ...moreServices].map((service) => (
+                                    <div onMouseEnter={() => setActiveService(service)} key={service.title}>
+                                        <ListItem href={service.href} title={service.title} className="p-4 rounded-xl hover:bg-slate-50 transition-all duration-200 group">
+                                            <div className="flex items-start gap-4">
+                                                <div className="p-2 bg-primary/10 rounded-lg group-hover:bg-primary/20 transition-colors">
+                                                    <service.icon className="w-5 h-5 text-primary/80 group-hover:text-primary transition-colors" />
+                                                </div>
+                                                <div>
+                                                    <p className="font-semibold text-slate-900 text-[15px] mb-0.5 group-hover:text-primary transition-colors">{service.title}</p>
+                                                    <p className="text-sm text-slate-500 leading-relaxed font-normal">{service.description}</p>
+                                                </div>
                                             </div>
-                                            <div>
-                                                <p className="font-semibold text-slate-900 text-[15px] mb-0.5 group-hover:text-primary transition-colors">{service.title}</p>
-                                                <p className="text-sm text-slate-500 leading-relaxed font-normal">{service.description}</p>
-                                            </div>
-                                        </div>
-                                    </ListItem>
-                                ))}
-                                {moreServices.map((service) => (
-                                     <ListItem key={service.title} href={service.href} title={service.title} className="p-4 rounded-xl hover:bg-slate-50 transition-all duration-200 group">
-                                         <div className="flex items-start gap-4">
-                                            <div className="p-2 bg-primary/10 rounded-lg group-hover:bg-primary/20 transition-colors">
-                                                <service.icon className="w-5 h-5 text-primary/80 group-hover:text-primary transition-colors" />
-                                            </div>
-                                            <div>
-                                                <p className="font-semibold text-slate-900 text-[15px] mb-0.5 group-hover:text-primary transition-colors">{service.title}</p>
-                                                <p className="text-sm text-slate-500 leading-relaxed font-normal">{service.description}</p>
-                                            </div>
-                                        </div>
-                                    </ListItem>
+                                        </ListItem>
+                                    </div>
                                 ))}
                             </div>
                         </div>
 
-                        {/* Featured Column - Cleaned up visual weight */}
+                        {/* DYNAMIC FEATURED/SERVICE Column */}
                         <div className="col-span-4">
-                           <div className="h-full bg-gray-50 rounded-2xl p-6 flex flex-col justify-between hover:border-primary/20 transition-colors border">
-                                <div>
-                                    <div className="flex items-center gap-2 mb-3">
-                                        <Star className="w-4 h-4 text-amber-500 fill-amber-500" />
-                                        <p className="text-xs font-bold text-slate-500 uppercase tracking-wider">FEATURED PLAN</p>
-                                    </div>
-                                    <h3 className="font-bold text-slate-900 text-lg mb-2">Sugam Card</h3>
-                                    <p className="text-[15px] text-slate-600 mb-6 leading-relaxed">One fee. One year. All your doctor visits are covered completely.</p>
-                                    <ul className="space-y-3 text-sm font-medium text-slate-700">
-                                        <li className="flex items-center gap-2.5"><CheckCircle className="h-4 w-4 text-emerald-500"/> Unlimited Consultations</li>
-                                        <li className="flex items-center gap-2.5"><CheckCircle className="h-4 w-4 text-emerald-500"/> Family Plans Available</li>
-                                        <li className="flex items-center gap-2.5"><CheckCircle className="h-4 w-4 text-emerald-500"/> Priority Booking</li>
-                                    </ul>
-                                </div>
-                                <Link href="/savings" passHref className="mt-6">
-                                    <Button className="w-full bg-primary hover:bg-primary/90 text-white shadow-lg shadow-primary/20 rounded-xl py-5">
-                                        View Plan Details
-                                    </Button>
-                                </Link>
+                           <div className="h-full bg-gray-50 rounded-2xl p-6 flex flex-col justify-between hover:border-primary/20 transition-colors border relative overflow-hidden">
+                                <AnimatePresence mode="wait">
+                                    {activeService ? (
+                                        <motion.div
+                                            key={activeService.title}
+                                            initial={{ opacity: 0, x: 20 }}
+                                            animate={{ opacity: 1, x: 0 }}
+                                            exit={{ opacity: 0, x: -20 }}
+                                            transition={{ duration: 0.3, ease: 'easeInOut' }}
+                                            className="h-full flex flex-col"
+                                        >
+                                            <div className="absolute inset-0 z-0">
+                                                 <img 
+                                                    src={activeService.image} 
+                                                    alt={activeService.title}
+                                                    className="w-full h-full object-cover grayscale opacity-10"
+                                                />
+                                                <div className="absolute inset-0 bg-gradient-to-t from-gray-50 via-gray-50 to-transparent"></div>
+                                            </div>
+                                            <div className="relative z-10 flex-grow flex flex-col justify-end">
+                                                <h3 className="font-bold text-slate-900 text-lg mb-2">{activeService.title}</h3>
+                                                <p className="text-[15px] text-slate-600 mb-6 leading-relaxed flex-grow">{activeService.description}</p>
+                                                <Link href={activeService.href} passHref>
+                                                    <Button variant="link" className="p-0 h-auto text-primary">
+                                                        Read More <ArrowRight className="ml-1 h-4 w-4"/>
+                                                    </Button>
+                                                </Link>
+                                            </div>
+                                        </motion.div>
+                                    ) : (
+                                        <motion.div
+                                            key="sugam-card"
+                                            initial={{ opacity: 0, x: 20 }}
+                                            animate={{ opacity: 1, x: 0 }}
+                                            exit={{ opacity: 0, x: -20 }}
+                                            transition={{ duration: 0.3, ease: 'easeInOut' }}
+                                            className="h-full flex flex-col"
+                                        >
+                                            <div>
+                                                <div className="flex items-center gap-2 mb-3">
+                                                    <Star className="w-4 h-4 text-amber-500 fill-amber-500" />
+                                                    <p className="text-xs font-bold text-slate-500 uppercase tracking-wider">FEATURED PLAN</p>
+                                                </div>
+                                                <h3 className="font-bold text-slate-900 text-lg mb-2">Sugam Card</h3>
+                                                <p className="text-[15px] text-slate-600 mb-6 leading-relaxed">One fee. One year. All your doctor visits are covered completely.</p>
+                                                <ul className="space-y-3 text-sm font-medium text-slate-700">
+                                                    <li className="flex items-center gap-2.5"><CheckCircle className="h-4 w-4 text-emerald-500"/> Unlimited Consultations</li>
+                                                    <li className="flex items-center gap-2.5"><CheckCircle className="h-4 w-4 text-emerald-500"/> Family Plans Available</li>
+                                                    <li className="flex items-center gap-2.5"><CheckCircle className="h-4 w-4 text-emerald-500"/> Priority Booking</li>
+                                                </ul>
+                                            </div>
+                                            <Link href="/savings" passHref className="mt-auto">
+                                                <Button className="w-full bg-primary hover:bg-primary/90 text-white shadow-lg shadow-primary/20 rounded-xl py-5">
+                                                    View Plan Details
+                                                </Button>
+                                            </Link>
+                                        </motion.div>
+                                    )}
+                                </AnimatePresence>
                             </div>
                         </div>
                       </div>
