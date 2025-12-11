@@ -10,7 +10,7 @@ const features = [
   {
     icon: <Users className="h-8 w-8 text-preventify-blue" />,
     title: "Expert Physicians",
-    description: "Experienced doctors specialized in various fields of medicine.",
+    description: "Our doctors bring years of hands-on experience and deep knowledge. They use proven treatments backed by solid research, not just trends. Each specialist listens carefully, combines modern science with time-tested wisdom, and creates care plans that truly work for Kerala families. Real expertise, real results.",
   },
   {
     icon: <Calendar className="h-8 w-8 text-preventify-blue" />,
