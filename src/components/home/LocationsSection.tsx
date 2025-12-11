@@ -1,6 +1,7 @@
 
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
+import MarqueeRibbon from "./MarqueeRibbon"; // Import the new component
 
 const locations = [
   {
@@ -27,8 +28,13 @@ const locations = [
 
 const LocationsSection = () => {
   return (
-    <section className="bg-white py-16" id="locations-section">
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+    <section className="bg-white py-16 relative overflow-hidden" id="locations-section">
+      {/* The new MarqueeRibbon component */}
+      <MarqueeRibbon speed={20}>
+        Find a Clinic Near You • Padinjarangadi • Vattamkulam • Kumbidi • Koottanad •
+      </MarqueeRibbon>
+      
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 mt-12">
         <div className="text-center mb-12">
           <h2 className="text-3xl md:text-4xl font-bold mb-4 text-preventify-blue">
             Our Clinics Across Kerala
