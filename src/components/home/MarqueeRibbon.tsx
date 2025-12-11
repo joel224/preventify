@@ -10,25 +10,25 @@ interface MarqueeRibbonProps {
   className?: string;
 }
 
-const MarqueeRibbon = ({ children, speed = 40, className }: MarqueeRibbonProps) => {
+const MarqueeRibbon = ({ children, speed = 50, className }: MarqueeRibbonProps) => {
   const marqueeContent = (
     <>
-      <span className="mx-4">{children}</span>
-      <span className="mx-4">{children}</span>
-      <span className="mx-4">{children}</span>
-      <span className="mx-4">{children}</span>
+      <span className="mx-8">{children}</span>
+      <span className="mx-8">{children}</span>
+      <span className="mx-8">{children}</span>
+      <span className="mx-8">{children}</span>
     </>
   );
 
   return (
     <div
       className={cn(
-        "absolute left-1/2 -translate-x-1/2 w-[200vw] py-3 bg-preventify-blue text-white overflow-hidden transform -rotate-3 z-0 shadow-lg",
+        "absolute inset-0 w-[200vw] h-[200vh] -top-1/2 -left-1/2 flex items-center justify-center transform rotate-12 z-0 opacity-10",
         className
       )}
     >
       <motion.div
-        className="flex whitespace-nowrap font-semibold uppercase tracking-wider"
+        className="flex whitespace-nowrap text-8xl font-bold uppercase tracking-wider text-preventify-blue"
         animate={{ x: ['0%', '-25%'] }}
         transition={{
           ease: 'linear',
