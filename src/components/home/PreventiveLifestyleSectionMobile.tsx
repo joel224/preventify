@@ -1,109 +1,176 @@
-
-'use client';
-
-import { useState, useRef } from "react";
-import { motion, useScroll, useTransform } from "framer-motion";
-import { Button } from "@/components/ui/button"
-import BookingDialog from "../BookingDialog"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import Image from 'next/image';
-
-const clinicsData = [
-    { id: '673d87fdaa91c2001d716c91', name: 'Padinjarangadi' },
-    { id: 'some-other-clinic-id', name: 'Vattamkulam' } 
-];
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import BookingDialog from "@/components/BookingDialog";
 
 const PreventiveLifestyleSectionMobile = () => {
-    const [selectedClinic, setSelectedClinic] = useState('');
-    const targetRef = useRef<HTMLDivElement>(null);
-    const { scrollYProgress } = useScroll({
-        target: targetRef,
-        offset: ["start end", "end start"]
-    });
+  const [name, setName] = useState("");
+  const [phone, setPhone] = useState("");
 
-    const y = useTransform(scrollYProgress, [0, 1], ["25%", "-25%"]);
-    
-    const handleClinicChange = (clinicId: string) => {
-        setSelectedClinic(clinicId);
-    };
+  const getProcessedNames = () => {
+    if (!name.trim()) return { firstName: "", lastName: "" };
+    const nameParts = name.trim().split(" ");
+    const firstName = nameParts.shift() || "";
+    const lastName = nameParts.join(" ") || "";
+    return { firstName, lastName };
+  };
 
-    return (
-        
-        <section className="bg-white py-16 md:py-24 relative -mt-20 rounded-t-2xl shadow-xl">
-            <div className="absolute -top-12 left-4 sm:left-6 lg:left-8 z-10">
-                <div className="inline-flex items-center gap-2 bg-white rounded-full p-8 shadow border border-gray-200/80">
-                    <Image src="/logo.png" alt="Preventify Logo" width={88} height={88} />
-                </div>
+  const getSanitizedPhone = () => {
+    if (!phone.trim()) return "";
+    const digitsOnly = phone.replace(/\D/g, "");
+    if (digitsOnly.startsWith("91") && digitsOnly.length === 12) {
+      return digitsOnly.slice(2);
+    }
+    if (digitsOnly.startsWith("0") && digitsOnly.length === 11) {
+      return digitsOnly.slice(1);
+    }
+    return digitsOnly.slice(-10);
+  };
+
+  return (
+    <section className="relative bg-gradient-to-b from-[#f0f7ff] to-white pt-16 pb-10 px-4">
+      {/* Decorative Elements */}
+      <div className="absolute top-0 left-0 w-full h-20 bg-gradient-to-b from-white to-transparent z-10"></div>
+      
+      <div className="max-w-md mx-auto relative">
+        {/* Floating Card with Subtle Shadow */}
+        <div className="bg-white rounded-3xl shadow-xl p-6 mb-8 border border-gray-100 relative overflow-hidden">
+          {/* Decorative Header */}
+          <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-blue-500 to-teal-400"></div>
+          
+          {/* Title */}
+          <h2 className="font-bold text-2xl text-center text-gray-800 mb-2 relative z-10">
+            AI Assisted <span className="text-[#004c9e]">Healthcare</span>
+          </h2>
+          <p className="text-gray-600 text-center text-sm mb-6 relative z-10">
+            For a preventive lifestyle
+          </p>
+
+          {/* Form Container */}
+          <div className="space-y-5">
+            {/* Name Input */}
+            <div className="space-y-2">
+              <Label htmlFor="name-mobile" className="text-xs text-gray-500 uppercase tracking-wider">
+                Full Name
+              </Label>
+              <div className="relative">
+                <Input
+                  id="name-mobile"
+                  type="text"
+                  placeholder="Enter your name"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  required
+                  autoComplete="name"
+                  name="name"
+                  className="pl-10 h-12 rounded-xl border-gray-200 focus:border-[#004c9e] focus:ring-1 focus:ring-[#004c9e] shadow-sm"
+                />
+                <svg 
+                  className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" 
+                  xmlns="http://www.w3.org/2000/svg" 
+                  viewBox="0 0 24 24" 
+                  fill="none" 
+                  stroke="currentColor" 
+                  strokeWidth="2"
+                >
+                  <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                  <circle cx="12" cy="7" r="4"></circle>
+                </svg>
+              </div>
             </div>
-            <motion.div style={{ y }} className="container mx-auto px-4 sm:px-6 lg:px-8">
-                <div className="grid grid-cols-1 gap-8 md:gap-12 items-center">
-                    <div className="text-center">
-                        <h2 className="font-display text-3xl md:text-4xl lg:text-5xl font-bold mb-4 text-preventify-dark-blue">
-                            AI assisted Modern Healthcare for a <span className="text-primary">Preventive <br className="hidden md:block" /> Lifestyle</span>
-                        </h2>
-                        
-                        <div className="text-base text-preventify-dark-gray mt-6 max-w-3xl mx-auto text-left">
-                            <p className="font-semibold mb-2">We need Us And We Have:</p>
-                            <ul className="list-disc list-inside space-y-1">
-                                <li>Community care programs that honor our elders</li>
-                                <li>Simple technology solutions that make daily life easier</li>
-                                <li>Policies that value the contributions of our oldest citizens</li>
-                                <li>More research on healthy aging specific to Indian lifestyles</li>
-                            </ul>
-                        </div>
 
-                        <motion.p 
-                            initial={{ opacity: 0, y: 20 }}
-                            whileInView={{ opacity: 1, y: 0 }}
-                            viewport={{ once: true }}
-                            transition={{ duration: 0.6, ease: "easeOut" }}
-                            className="text-lg text-preventify-dark-gray my-14 max-w-3xl mx-auto"
-                        >
-                           An AI-assisted evidence-based care across Kerala focused on prevention, early intervention, and better health outcomes for you and your family.
-                        </motion.p>
+            {/* Phone Input */}
+            <div className="space-y-2">
+              <Label htmlFor="phone-mobile" className="text-xs text-gray-500 uppercase tracking-wider">
+                Phone Number
+              </Label>
+              <div className="relative">
+                <Input
+                  id="phone-mobile"
+                  type="tel"
+                  placeholder="Enter phone number"
+                  value={phone}
+                  onChange={(e) => setPhone(e.target.value)}
+                  required
+                  autoComplete="tel"
+                  name="tel"
+                  className="pl-10 h-12 rounded-xl border-gray-200 focus:border-[#004c9e] focus:ring-1 focus:ring-[#004c9e] shadow-sm"
+                />
+                <svg 
+                  className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" 
+                  xmlns="http://www.w3.org/2000/svg" 
+                  viewBox="0 0 24 24" 
+                  fill="none" 
+                  stroke="currentColor" 
+                  strokeWidth="2"
+                >
+                  <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
+                </svg>
+              </div>
+            </div>
 
-                        <div className="max-w-3xl mx-auto p-4 md:p-6 rounded-xl bg-white/50 backdrop-blur-sm border border-gray-100 shadow-sm">
-                            <div className="flex flex-col sm:flex-row justify-center items-center gap-4">
-                                <div className="w-full sm:w-auto">
-                                    <Select onValueChange={handleClinicChange} value={selectedClinic}>
-                                        <SelectTrigger className="w-full h-12 text-base bg-preventify-blue hover:bg-preventify-dark-blue text-white font-medium transition-colors duration-200">
-                                            <SelectValue placeholder="Select Clinic Location" />
-                                        </SelectTrigger>
-                                        <SelectContent>
-                                            {clinicsData.map(clinic => (
-                                                <SelectItem key={clinic.id} value={clinic.id} className="cursor-pointer hover:bg-gray-50">
-                                                    {clinic.name}
-                                                </SelectItem>
-                                            ))}
-                                        </SelectContent>
-                                    </Select>
-                                </div>
+            {/* Book Now Button */}
+            <BookingDialog
+              initialFirstName={getProcessedNames().firstName}
+              initialPhone={getSanitizedPhone()}
+            >
+              <Button 
+                type="button" 
+                className="w-full h-12 bg-gradient-to-r from-[#004c9e] to-[#3370b1] hover:from-[#3370b1] hover:to-[#004c9e] text-white font-semibold rounded-xl shadow-md transition-all duration-300 transform hover:scale-[1.02] mt-2"
+              >
+                Book Consultation
+              </Button>
+            </BookingDialog>
+          </div>
+        </div>
 
-                                <div className="w-full sm:w-auto">
-                                    <BookingDialog>
-                                        <Button className="w-full sm:min-w-[180px] h-12 text-base bg-secondary hover:bg-secondary/90 text-secondary-foreground font-medium transition-all duration-200 shadow-md hover:shadow-lg">
-                                            Book Appointment
-                                        </Button>
-                                    </BookingDialog>
-                                </div>
-                            </div>
+        {/* Info Section */}
+        <div className="bg-white rounded-2xl p-5 shadow-sm border border-gray-100">
+          <h3 className="font-bold text-lg text-gray-800 mb-3">Why Choose Preventive Care?</h3>
+          <ul className="space-y-3">
+            <li className="flex items-start">
+              <div className="bg-blue-100 rounded-full p-1 mr-3 mt-0.5">
+                <svg className="w-4 h-4 text-[#004c9e]" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path>
+                </svg>
+              </div>
+              <span className="text-gray-600 text-sm">Simple technology solutions that make daily life easier</span>
+            </li>
+            <li className="flex items-start">
+              <div className="bg-blue-100 rounded-full p-1 mr-3 mt-0.5">
+                <svg className="w-4 h-4 text-[#004c9e]" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path>
+                </svg>
+              </div>
+              <span className="text-gray-600 text-sm">Personalized health recommendations</span>
+            </li>
+            <li className="flex items-start">
+              <div className="bg-blue-100 rounded-full p-1 mr-3 mt-0.5">
+                <svg className="w-4 h-4 text-[#004c9e]" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path>
+                </svg>
+              </div>
+              <span className="text-gray-600 text-sm">Policies that value the contributions of our oldest citizens & AI-powered health insights</span>
+            </li>
+            <li className="flex items-start">
+              <div className="bg-blue-100 rounded-full p-1 mr-3 mt-0.5">
+                <svg className="w-4 h-4 text-[#004c9e]" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path>
+                </svg>
+              </div>
+              <span className="text-gray-600 text-sm"> Researchs on healthy aging specific to Kerala lifestyles</span>
+            </li>
+          </ul>
+        </div>
 
-                            {selectedClinic && (
-                                <motion.div
-                                    initial={{ opacity: 0, y: 5 }}
-                                    animate={{ opacity: 1, y: 0 }}
-                                    transition={{ duration: 0.3, ease: "easeOut" }}
-                                    className="mt-4 text-sm text-preventify-dark-gray/80"
-                                >
-                                    <span className="font-medium text-preventify-dark-blue">Selected:</span> {clinicsData.find(c => c.id === selectedClinic)?.name} clinic
-                                </motion.div>
-                            )}
-                        </div>
-                    </div>
-                </div>
-            </motion.div>
-        </section>
-    )
-}
+        {/* Disclaimer */}
+        <p className="text-xs text-gray-500 mt-6 text-center">
+          By submitting your contact details, you agree to receive automated SMS/MMS messages from Preventify. Message & data rates may apply.
+        </p>
+      </div>
+    </section>
+  );
+};
 
 export default PreventiveLifestyleSectionMobile;

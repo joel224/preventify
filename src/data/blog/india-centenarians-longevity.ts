@@ -8,8 +8,8 @@ export const indiaCentenariansLongevityPost: BlogPost = {
   slug: "india-centenarians-longevity-secrets",
   excerpt: "Discover the simple secrets of India's centenarians - from diet and lifestyle to happiness habits. Learn practical lessons for living longer and healthier from those who've mastered the art of aging well.",
   content: `
-      <p>Imagine meeting someone who has lived through two world wars, seen India gain independence, witnessed the digital revolution, and is still going strong at 100 years old. These aren't just remarkable individuals - they're living textbooks of longevity.</p>
-      <p>A new study looking at India's oldest citizens has revealed some surprising truths about what it really takes to live a long, healthy life. And the best part? Their secrets aren't complicated or expensive. They're simple habits that any of us can start practicing today.</p>
+      <p>Meet Kerala's 100-year-olds. They've seen decades of success, yet their secret to long life isn't magic pills or expensive treatments. New research shows their longevity comes from simple daily habits anyone can follow. Real wisdom from real lives.</p>
+      <p></p>
 
       <h2 class="text-2xl font-bold mt-8 mb-4 text-preventify-blue">The Health Habits of India's 100-Year-Olds</h2>
       <p>When researchers studied centenarians across India, they found something remarkable: most of these 100-year-olds were actually in good health. No fancy medical treatments or expensive supplements - just basic lifestyle choices that made all the difference.</p>

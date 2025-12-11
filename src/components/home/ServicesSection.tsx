@@ -193,10 +193,12 @@ const ServicesSection = () => {
                         <h3 className="text-2xl font-semibold text-preventify-dark-blue mb-4">{blogPost.title}</h3>
                         <div className="text-preventify-dark-gray mb-6 prose lg:prose-lg max-w-none">
                           <p>
-                            Imagine meeting someone who has lived through two world wars, seen India gain independence, witnessed the digital revolution, and is still going strong at 100 years old. These aren't just remarkable individuals - they're living textbooks of longevity. A new study looking at India's oldest citizens has revealed some surprising truths about what it really takes to live a long, healthy life. And the best part? Their secrets aren't complicated or expensive.
+                          Meet Kerala's centenarians—those who've witnessed India's independence, survived global upheavals, and thrived into their tenth decade. They're not just survivors; they're living proof of longevity's secrets.
+
+New research reveals their wisdom: living long and well doesn't require expensive solutions. It's built on simple, everyday habits anyone can adopt. Their lives hold timeless lessons for all of us.
                           </p>
                           <p>
-                              When researchers studied centenarians across India, they found something remarkable: most of these 100-year-olds were actually in good health. No fancy medical treatments or expensive supplements - just basic lifestyle choices that made all the difference. Over 90% of centenarians never drank alcohol. About 68% never smoked tobacco. They didn't need willpower to quit bad habits because they never started them in the first place.
+                              When researchers studied centenarians across India, they found something remarkable: most of these 100-year-olds were actually in good health. Meet Kerala's 100-year-olds. They've seen decades of success, yet their secret to long life isn't magic pills or expensive treatments. New research shows their longevity comes from simple daily habits anyone can follow. Real wisdom from real lives.
                           </p>
                         </div>
                         <Link href={`/blog/${blogPost.slug}`}>

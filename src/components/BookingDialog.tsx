@@ -337,7 +337,7 @@ const Step2Doctor = ({ dispatch, formData }: { dispatch: React.Dispatch<Action>,
                 <DialogHeader>
                     <DialogTitle className="text-2xl">Describe Your Symptoms</DialogTitle>
                     <DialogDescription className="text-lg">
-                        Tell us what's bothering you, and our AI will suggest the right doctor.
+                        Tell us what's bothering you (Malayalam/English ), and our AI will suggest the right doctor.
                     </DialogDescription>
                 </DialogHeader>
                 <div className="py-4 space-y-4">
