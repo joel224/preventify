@@ -1,5 +1,6 @@
 
 'use client'
+import { useState, useEffect } from 'react';
 import PageHeader from "@/components/PageHeader";
 import ProgramCard from "@/components/ProgramCard";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -9,8 +10,22 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { toast } from '@/components/ui/use-toast';
+
+interface Testimonial {
+  quote: string;
+  name: string;
+  program: string;
+}
 
 const ProgramsPage = () => {
+  const [testimonials, setTestimonials] = useState<Testimonial[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  const [reviewName, setReviewName] = useState('');
+  const [reviewProgram, setReviewProgram] = useState('');
+  const [reviewStory, setReviewStory] = useState('');
+
   const diabetesPrograms = [
     {
       title: "Diabetes Prevention Program",
@@ -154,10 +169,63 @@ const ProgramsPage = () => {
     },
   ];
 
-  const handleReviewSubmit = (event: React.FormEvent) => {
+  const fetchTestimonials = async () => {
+    try {
+      const response = await fetch('/api/testimonials');
+      if (response.ok) {
+        const data = await response.json();
+        setTestimonials(data);
+      }
+    } catch (error) {
+      console.error("Failed to fetch testimonials", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchTestimonials();
+  }, []);
+
+  const handleReviewSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
-    alert("Thank you for sharing your story! Our team will review it shortly.");
-    // In a real app, you'd handle form submission here, e.g., send to an API.
+    
+    const newTestimonial: Testimonial = {
+      name: reviewName,
+      program: reviewProgram,
+      quote: reviewStory,
+    };
+
+    try {
+      const response = await fetch('/api/testimonials', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(newTestimonial),
+      });
+
+      if (response.ok) {
+        toast({
+          title: "Success!",
+          description: "Thank you for sharing your story. It has been submitted.",
+          variant: "default",
+        });
+        // Clear form and refetch testimonials
+        setReviewName('');
+        setReviewProgram('');
+        setReviewStory('');
+        fetchTestimonials();
+      } else {
+        throw new Error('Failed to submit story');
+      }
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "There was a problem submitting your story. Please try again.",
+        variant: "destructive",
+      });
+    }
   };
 
   return (
@@ -271,36 +339,24 @@ const ProgramsPage = () => {
               Real experiences from individuals who have benefited from our health programs.
             </p>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {[
-              {
-                quote: "The Diabetes Prevention Program gave me the tools and knowledge to make lasting lifestyle changes. After six months, my blood sugar levels normalized.",
-                name: "Rajesh M.",
-                program: "Diabetes Prevention Program",
-              },
-              {
-                quote: "The Weight Management program helped me lose 15kg in a healthy, sustainable way. The support from the team kept me motivated throughout my journey.",
-                name: "Meera T.",
-                program: "Weight Management Program",
-              },
-              {
-                quote: "The Heart Health Program helped me understand my risk factors and make changes that lowered my blood pressure and cholesterol levels significantly.",
-                name: "Thomas J.",
-                program: "Heart Health Program",
-              },
-            ].map((testimonial, index) => (
-              <div key={index} className="bg-white p-8 rounded-lg shadow-md border border-gray-100">
-                <svg className="h-8 w-8 text-preventify-purple mb-4" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10h-9.983zm-14.017 0v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151c-2.433.917-3.996 3.638-3.996 5.849h3.983v10h-9.983z" />
-                </svg>
-                <p className="text-gray-700 mb-6 italic">{testimonial.quote}</p>
-                <div>
-                  <p className="font-semibold">{testimonial.name}</p>
-                  <p className="text-preventify-purple text-sm">{testimonial.program}</p>
+          {isLoading ? (
+            <p>Loading testimonials...</p>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {testimonials.map((testimonial, index) => (
+                <div key={index} className="bg-white p-8 rounded-lg shadow-md border border-gray-100">
+                  <svg className="h-8 w-8 text-preventify-purple mb-4" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10h-9.983zm-14.017 0v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151c-2.433.917-3.996 3.638-3.996 5.849h3.983v10h-9.983z" />
+                  </svg>
+                  <p className="text-gray-700 mb-6 italic">{testimonial.quote}</p>
+                  <div>
+                    <p className="font-semibold">{testimonial.name}</p>
+                    <p className="text-preventify-purple text-sm">{testimonial.program}</p>
+                  </div>
                 </div>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          )}
         </div>
       </section>
 
@@ -319,11 +375,11 @@ const ProgramsPage = () => {
                 <div className="space-y-6">
                   <div className="space-y-2">
                     <Label htmlFor="review-name">Your Name</Label>
-                    <Input id="review-name" placeholder="e.g., John Doe" required />
+                    <Input id="review-name" placeholder="e.g., My name" value={reviewName} onChange={(e) => setReviewName(e.target.value)} required />
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="review-program">Program Attended</Label>
-                    <Input id="review-program" placeholder="e.g., Diabetes Prevention Program" required />
+                    <Input id="review-program" placeholder="e.g., Diabetes Prevention Program" value={reviewProgram} onChange={(e) => setReviewProgram(e.target.value)} required />
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="review-story">Your Story</Label>
@@ -331,6 +387,8 @@ const ProgramsPage = () => {
                       id="review-story"
                       placeholder="Share your experience with our program..."
                       className="min-h-[150px]"
+                      value={reviewStory}
+                      onChange={(e) => setReviewStory(e.target.value)}
                       required
                     />
                   </div>
