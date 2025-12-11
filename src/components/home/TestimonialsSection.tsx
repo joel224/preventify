@@ -179,7 +179,7 @@ const TestimonialsSection = () => {
                     <Label htmlFor="name" className="text-right">
                       Name
                     </Label>
-                    <Input id="name" value={reviewName} onChange={(e) => setReviewName(e.target.value)} className="col-span-3" placeholder="e.g., Anjali S." required />
+                    <Input id="name" value={reviewName} onChange={(e) => setReviewName(e.target.value)} className="col-span-3" placeholder="e.g., Manu S." required />
                   </div>
                   <div className="grid grid-cols-4 items-center gap-4">
                     <Label htmlFor="program" className="text-right">
