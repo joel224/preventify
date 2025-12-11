@@ -27,12 +27,12 @@ const HeroSectionMobile = () => {
         <CarouselContent>
           {mobileImages.map((src, index) => (
             <CarouselItem key={index}>
-              <div className="w-full h-[480px] relative">
+              <div className="w-full aspect-[9/10] relative">
                 <Image
                   src={src}
                   alt={`Hero Image ${index + 1} (Mobile)`}
                   fill
-                  className="object-cover object-left"
+                  className="object-contain"
                   priority={index === 0}
                 />
               </div>
