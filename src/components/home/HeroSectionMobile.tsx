@@ -33,9 +33,7 @@ const HeroSectionMobile = () => {
                   src={src}
                   alt={`Hero Image ${index + 1} (Mobile)`}
                   fill
-                  className={cn(
-                    "object-cover",
-                  )}
+                  className="object-cover"
                   style={index === 0 ? { objectPosition: '30% 50%' } : {}}
                   priority={index === 0}
                 />
