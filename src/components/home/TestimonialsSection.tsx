@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -17,6 +16,14 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from '@/components/ui/use-toast';
 import { ArrowRight } from 'lucide-react';
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from "@/components/ui/carousel";
+import Autoplay from "embla-carousel-autoplay";
 
 interface Testimonial {
   quote: string;
@@ -40,7 +47,7 @@ const TestimonialsSection = () => {
       const response = await fetch('/api/testimonials');
       if (response.ok) {
         const data = await response.json();
-        setTestimonials(data.slice(0, 3)); // Only show the latest 3
+        setTestimonials(data);
       }
     } catch (error) {
       console.error("Failed to fetch testimonials", error);
@@ -116,20 +123,40 @@ const TestimonialsSection = () => {
         {isLoading ? (
           <p className="text-center">Loading testimonials...</p>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {testimonials.map((testimonial, index) => (
-              <div key={index} className="bg-preventify-light-gray p-8 rounded-lg shadow-sm h-full flex flex-col">
-                <svg className="h-8 w-8 text-preventify-purple mb-4" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10h-9.983zm-14.017 0v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151c-2.433.917-3.996 3.638-3.996 5.849h3.983v10h-9.983z" />
-                </svg>
-                <p className="text-gray-700 mb-6 italic flex-grow">"{testimonial.quote}"</p>
-                <div className="mt-auto">
-                  <p className="font-semibold text-preventify-dark-blue">{testimonial.name}</p>
-                  <p className="text-preventify-purple text-sm">{testimonial.program}</p>
-                </div>
-              </div>
-            ))}
-          </div>
+          <Carousel
+            opts={{
+              align: "start",
+              loop: true,
+            }}
+            plugins={[
+              Autoplay({
+                delay: 5000,
+                stopOnInteraction: true,
+              }),
+            ]}
+            className="w-full"
+          >
+            <CarouselContent className="-ml-4">
+              {testimonials.map((testimonial, index) => (
+                <CarouselItem key={index} className="pl-4 md:basis-1/2 lg:basis-1/3">
+                  <div className="p-1 h-full">
+                    <div className="bg-preventify-light-gray p-8 rounded-lg shadow-sm h-full flex flex-col">
+                      <svg className="h-8 w-8 text-preventify-purple mb-4" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10h-9.983zm-14.017 0v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151c-2.433.917-3.996 3.638-3.996 5.849h3.983v10h-9.983z" />
+                      </svg>
+                      <p className="text-gray-700 mb-6 italic flex-grow">"{testimonial.quote}"</p>
+                      <div className="mt-auto">
+                        <p className="font-semibold text-preventify-dark-blue">{testimonial.name}</p>
+                        <p className="text-preventify-purple text-sm">{testimonial.program}</p>
+                      </div>
+                    </div>
+                  </div>
+                </CarouselItem>
+              ))}
+            </CarouselContent>
+            <CarouselPrevious className="hidden sm:flex" />
+            <CarouselNext className="hidden sm:flex" />
+          </Carousel>
         )}
 
         <div className="text-center mt-12">
