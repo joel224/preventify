@@ -5,7 +5,7 @@ const features = [
   {
     icon: <Info className="h-8 w-8 text-preventify-blue" />,
     title: "Evidence-Based Care",
-    description: "Treatment protocols based on the latest medical research and guidelines.",
+    description: "We blend today's best medical science with time-tested wisdom. Every treatment follows proven research, carefully chosen for Kerala families. Our doctors combine modern knowledge with thoughtful care—because healing works best when science and understanding walk together.",
   },
   {
     icon: <Users className="h-8 w-8 text-preventify-blue" />,
