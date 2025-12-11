@@ -34,7 +34,7 @@ const LocationsSection = () => {
         Find a Clinic Near You • Padinjarangadi • Vattamkulam • Kumbidi • Koottanad •
       </MarqueeRibbon>
       
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8 mt-12">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 mt-12 relative z-10">
         <div className="text-center mb-12">
           <h2 className="text-3xl md:text-4xl font-bold mb-4 text-preventify-blue">
             Our Clinics Across Kerala

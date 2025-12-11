@@ -23,7 +23,7 @@ const MarqueeRibbon = ({ children, speed = 40, className }: MarqueeRibbonProps) 
   return (
     <div
       className={cn(
-        "absolute left-1/2 -translate-x-1/2 w-[200vw] py-3 bg-preventify-blue text-white overflow-hidden transform -rotate-3 z-10 shadow-lg",
+        "absolute left-1/2 -translate-x-1/2 w-[200vw] py-3 bg-preventify-blue text-white overflow-hidden transform -rotate-3 z-0 shadow-lg",
         className
       )}
     >
