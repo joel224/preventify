@@ -36,7 +36,7 @@ const HeroSectionMobile = () => {
                   className={cn(
                     "object-cover",
                   )}
-                  style={index === 0 ? { transform: 'translateX(-1px) scale(1.02)' } : {}}
+                  style={index === 0 ? { objectPosition: '30% 50%' } : {}}
                   priority={index === 0}
                 />
               </div>
