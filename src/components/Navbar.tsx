@@ -207,6 +207,10 @@ const Navbar = () => {
                   <NavigationMenuItem>
                     <NavigationMenuTrigger className="text-[15px] font-medium text-slate-600 hover:text-primary hover:bg-slate-50/80 data-[state=open]:bg-slate-50">
                         Our Services
+                        <ChevronDown
+                        className="relative top-[1px] ml-1 h-3 w-3 transition duration-200 group-data-[state=open]:rotate-180"
+                        aria-hidden="true"
+                      />
                     </NavigationMenuTrigger>
                     <NavigationMenuContent>
                       <div className="grid grid-cols-12 gap-8 p-6 w-[980px] bg-white">
@@ -217,6 +221,7 @@ const Navbar = () => {
                               className="px-4 text-xs font-bold text-slate-400 uppercase tracking-wider mb-2"
                               onMouseEnter={() => setActiveService(null)}
                             >
+                              
                               SERVICES
                             </p>
                             <div className="grid grid-cols-2 gap-x-6 gap-y-1">

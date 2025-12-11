@@ -5,6 +5,10 @@ import ProgramCard from "@/components/ProgramCard";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { CheckCircle } from "lucide-react";
 import Image from "next/image";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
 
 const ProgramsPage = () => {
   const diabetesPrograms = [
@@ -150,6 +154,11 @@ const ProgramsPage = () => {
     },
   ];
 
+  const handleReviewSubmit = (event: React.FormEvent) => {
+    event.preventDefault();
+    alert("Thank you for sharing your story! Our team will review it shortly.");
+    // In a real app, you'd handle form submission here, e.g., send to an API.
+  };
 
   return (
     <>
@@ -291,6 +300,46 @@ const ProgramsPage = () => {
                 </div>
               </div>
             ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Share Your Story Form */}
+      <section className="py-16 bg-preventify-light-gray">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="max-w-3xl mx-auto">
+            <div className="text-center mb-12">
+              <h2 className="text-3xl font-bold mb-4">Share Your Success Story</h2>
+              <p className="text-gray-600">
+                Have our programs made a difference in your life? We'd love to hear about it. Your story can inspire others to take the first step towards better health.
+              </p>
+            </div>
+            <div className="bg-white p-8 rounded-lg shadow-md border border-gray-100">
+              <form onSubmit={handleReviewSubmit}>
+                <div className="space-y-6">
+                  <div className="space-y-2">
+                    <Label htmlFor="review-name">Your Name</Label>
+                    <Input id="review-name" placeholder="e.g., John Doe" required />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="review-program">Program Attended</Label>
+                    <Input id="review-program" placeholder="e.g., Diabetes Prevention Program" required />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="review-story">Your Story</Label>
+                    <Textarea
+                      id="review-story"
+                      placeholder="Share your experience with our program..."
+                      className="min-h-[150px]"
+                      required
+                    />
+                  </div>
+                  <Button type="submit" className="w-full bg-preventify-blue hover:bg-preventify-dark-blue text-white">
+                    Submit Your Story
+                  </Button>
+                </div>
+              </form>
+            </div>
           </div>
         </div>
       </section>
