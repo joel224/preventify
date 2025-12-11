@@ -32,7 +32,7 @@ const HeroSectionMobile = () => {
                   src={src}
                   alt={`Hero Image ${index + 1} (Mobile)`}
                   fill
-                  className="object-contain"
+                  className="object-cover"
                   priority={index === 0}
                 />
               </div>
