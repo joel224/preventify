@@ -15,7 +15,7 @@ const features = [
   {
     icon: <Calendar className="h-8 w-8 text-preventify-blue" />,
     title: "Annual Memberships",
-    description: "Lower costs for you and your family.",
+    description: "One payment covers all your doctor visits for a whole year. No surprise bills when you walk in. Individual plan costs less than ₹20 a day. Family plan protects everyone you love for just ₹1,999/y. You pay once, we care all year. Simple, predictable, and truly yours.",
   },
 ];
 
