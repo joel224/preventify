@@ -7,6 +7,7 @@ import {
 } from "@/components/ui/carousel"
 import Autoplay from "embla-carousel-autoplay"
 import Image from "next/image"
+import { cn } from "@/lib/utils";
 
 const HeroSectionMobile = () => {
   const mobileImages = [
@@ -32,7 +33,10 @@ const HeroSectionMobile = () => {
                   src={src}
                   alt={`Hero Image ${index + 1} (Mobile)`}
                   fill
-                  className="object-cover object-left"
+                  className={cn(
+                    "object-cover",
+                    index === 0 ? "object-left" : "object-center" // Apply special class only to the first image
+                  )}
                   priority={index === 0}
                 />
               </div>
