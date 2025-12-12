@@ -1,8 +1,8 @@
-// app/layout.tsx (UNCHANGED - Your code is fine as-is)
-'use client';
+
 import React from "react";
+import type { Metadata } from 'next'
 import { Inter, Poppins } from "next/font/google";
-import '@/globals.css';
+import '@/app/globals.css';
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -23,6 +23,13 @@ const poppins = Poppins({
   weight: ['400', '500', '600', '700'],
   variable: '--font-poppins',
 });
+
+// Metadata for SEO
+export const metadata: Metadata = {
+  title: "Preventify - Evidence-Based Healthcare in Kerala",
+  description: "Preventify offers modern, evidence-based healthcare across Kerala, focusing on prevention, diabetes care, and lifestyle medicine for better health outcomes.",
+};
+
 
 export default function RootLayout({
   children,

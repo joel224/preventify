@@ -9,8 +9,7 @@ export const indiaCentenariansLongevityPost: BlogPost = {
   excerpt: "Discover the simple secrets of India's centenarians - from diet and lifestyle to happiness habits. Learn practical lessons for living longer and healthier from those who've mastered the art of aging well.",
   content: `
       <p>Meet Kerala's 100-year-olds. They've seen decades of success, yet their secret to long life isn't magic pills or expensive treatments. New research shows their longevity comes from simple daily habits anyone can follow. Real wisdom from real lives.</p>
-      <p></p>
-
+      
       <h2 class="text-2xl font-bold mt-8 mb-4 text-preventify-blue">The Health Habits of India's 100-Year-Olds</h2>
       <p>When researchers studied centenarians across India, they found something remarkable: most of these 100-year-olds were actually in good health. No fancy medical treatments or expensive supplements - just basic lifestyle choices that made all the difference.</p>
       <p>Here's what stood out:</p>
@@ -68,7 +67,7 @@ export const indiaCentenariansLongevityPost: BlogPost = {
       </ul>
 
       <h2 class="text-2xl font-bold mt-8 mb-4 text-preventify-blue">The Bigger Picture: India's Aging Future</h2>
-      <p>By 2050, Preventify India will have the world's largest population of centenarians. This is an opportunity to celebrate our elders' wisdom while building better support systems. We need:</p>
+      <div>By 2050, Preventify India will have the world's largest population of centenarians. This is an opportunity to celebrate our elders' wisdom while building better support systems. We need:</div>
       <ul>
         <li>Community care programs that honor our elders</li>
         <li>Simple technology solutions that make daily life easier</li>

@@ -15,7 +15,7 @@ const Footer = () => {
               Evidence-based modern healthcare across Kerala, focused on prevention and better health outcomes.
             </p>
             <div className="flex flex-col space-y-4">
-                <a href="https://www.instagram.com/preventify.me/" target="_blank" rel="noopener noreferrer" className="inline-flex items-center text-gray-600 hover:text-preventify-purple transition-colors group">
+                <a href="https://www.instagram.com/preventify.me/" target="_blank" rel="noopener noreferrer" aria-label="Instagram" className="inline-flex items-center text-gray-600 hover:text-preventify-purple transition-colors group">
                     <svg className="h-6 w-6 mr-3" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <defs>
                             <radialGradient id="insta-gradient-footer" cx="0.3" cy="1.2" r="1.2">
@@ -30,13 +30,13 @@ const Footer = () => {
                     </svg>
                     <span className="group-hover:underline">Instagram</span>
                 </a>
-                <a href="#" className="inline-flex items-center text-gray-600 hover:text-preventify-purple transition-colors group">
+                <a href="#" aria-label="Facebook" className="inline-flex items-center text-gray-600 hover:text-preventify-purple transition-colors group">
                     <svg className="h-6 w-6 mr-3" viewBox="0 0 24 24" fill="#1877F2" xmlns="http://www.w3.org/2000/svg">
                         <path d="M18 2H15C13.6739 2 12.4021 2.52678 11.4645 3.46447C10.5268 4.40215 10 5.67392 10 7V10H7V14H10V22H14V14H17L18 10H14V7C14 6.73478 14.1054 6.48043 14.2929 6.29289C14.4804 6.10536 14.7348 6 15 6H18V2Z" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
                     </svg>
                     <span className="group-hover:underline">Facebook</span>
                 </a>
-                 <a href="#" className="inline-flex items-center text-gray-600 hover:text-preventify-purple transition-colors group">
+                 <a href="#" aria-label="YouTube" className="inline-flex items-center text-gray-600 hover:text-preventify-purple transition-colors group">
                     <svg className="h-6 w-6 mr-3" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <g clipPath="url(#clip0_105_2_footer)">
                             <path d="M20.25 4.5H3.75C3.33579 4.5 3 4.83579 3 5.25V18.75C3 19.1642 3.33579 19.5 3.75 19.5H20.25C20.6642 19.5 21 19.1642 21 18.75V5.25C21 4.83579 20.6642 4.5 20.25 4.5Z" stroke="#FF0000" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
@@ -50,7 +50,7 @@ const Footer = () => {
                     </svg>
                      <span className="group-hover:underline">YouTube</span>
                 </a>
-                 <a href="#" className="inline-flex items-center text-gray-600 hover:text-preventify-purple transition-colors group">
+                 <a href="#" aria-label="LinkedIn" className="inline-flex items-center text-gray-600 hover:text-preventify-purple transition-colors group">
                      <svg className="h-6 w-6 mr-3" fill="#0A66C2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                       <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.225 0z" fill="#0A66C2" />
                     </svg>
