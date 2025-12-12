@@ -2,6 +2,7 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import MarqueeRibbon from "./MarqueeRibbon"; // Import the new component
+import Image from "next/image";
 
 const locations = [
   {
@@ -30,7 +31,7 @@ const LocationsSection = () => {
   return (
     <section className="bg-white py-16 relative overflow-hidden" id="locations-section">
       <MarqueeRibbon speed={40}>
-        Padinjarangadi • Vattamkulam • Kumbidi • Koottanad • Sugam Card
+        Sugam Card
       </MarqueeRibbon>
       
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
@@ -46,9 +47,10 @@ const LocationsSection = () => {
           {locations.map((location, index) => (
             <Link key={index} href="/clinics" className="group">
               <div className="relative overflow-hidden rounded-lg h-64">
-                <img
+                <Image
                   src={location.image}
                   alt={location.name}
+                  fill
                   className="w-full h-full object-cover transition-all duration-500 group-hover:scale-110 saturate-50 group-hover:saturate-100"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent flex items-end">

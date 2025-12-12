@@ -1,3 +1,4 @@
+
 'use client';
 
 import { motion } from "framer-motion";
@@ -95,9 +96,10 @@ const ServiceCard = ({ service }: { service: typeof services[0] }) => {
                     </h3>
                 </div>
                  <div className="absolute w-full h-full right-0 bottom-0">
-                    <img 
+                    <Image 
                         src={service.image} 
                         alt={service.title}
+                        fill
                         className="w-full h-full object-contain object-right-bottom grayscale group-hover:grayscale-0 transition-all duration-300"
                     />
                 </div>
