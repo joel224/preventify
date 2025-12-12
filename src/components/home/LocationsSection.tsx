@@ -30,7 +30,7 @@ const LocationsSection = () => {
   return (
     <section className="bg-white py-16 relative overflow-hidden" id="locations-section">
       <MarqueeRibbon speed={40}>
-        Find a Clinic Near You • Padinjarangadi • Vattamkulam • Kumbidi • Koottanad •
+        Padinjarangadi • Vattamkulam • Kumbidi • Koottanad • Sugam Card
       </MarqueeRibbon>
       
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">

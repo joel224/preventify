@@ -23,7 +23,7 @@ const MarqueeRibbon = ({ children, speed = 50, className }: MarqueeRibbonProps) 
   return (
     <div
       className={cn(
-        "absolute inset-0 w-[200vw] h-[200vh] -top-1/2 -left-1/2 flex items-center justify-center transform rotate-12 z-0 opacity-10",
+        "solute inset-0 w-[200vw] h-[200vh] -top-[50%] -left-1/2 flex items-center justify-center transform rotate-12 z-0 opacity-10",
         className
       )}
     >
