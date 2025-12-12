@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import Link from "next/link";
 import BookingDialog from "@/components/BookingDialog";
+import Image from "next/image";
 
 interface ClinicCardProps {
   name: string;
@@ -19,9 +20,10 @@ const ClinicCard = ({ name, location, address, phone, image }: ClinicCardProps) 
   return (
     <Card className="overflow-hidden h-full transition-all hover:shadow-lg">
       <div className="aspect-video relative overflow-hidden">
-        <img 
+        <Image 
           src={image} 
           alt={name} 
+          fill
           className="w-full h-full object-cover transition-transform hover:scale-105 duration-500"
         />
       </div>
@@ -53,5 +55,3 @@ const ClinicCard = ({ name, location, address, phone, image }: ClinicCardProps) 
 };
 
 export default ClinicCard;
-
-    

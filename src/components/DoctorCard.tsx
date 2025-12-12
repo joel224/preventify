@@ -3,6 +3,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import BookingDialog from "@/components/BookingDialog";
+import Image from "next/image";
 
 interface DoctorCardProps {
   name: string;
@@ -22,9 +23,10 @@ const DoctorCard = ({
   return (
     <Card className="overflow-hidden h-full transition-all hover:shadow-lg">
       <div className="aspect-square relative overflow-hidden bg-preventify-light-green/20">
-        <img 
+        <Image 
           src={image} 
           alt={`Dr. ${name}`} 
+          fill
           className="w-full h-full object-cover"
         />
       </div>
@@ -44,5 +46,3 @@ const DoctorCard = ({
 };
 
 export default DoctorCard;
-
-    
