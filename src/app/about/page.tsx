@@ -3,6 +3,7 @@
 
 import PageHeader from "@/components/PageHeader";
 import { Award, HeartHandshake, Microscope, Target, Users, Gem } from "lucide-react";
+import Image from "next/image";
 
 const AboutPage = () => {
   return (
@@ -146,9 +147,10 @@ const AboutPage = () => {
             ].map((leader, index) => (
               <div key={index} className="bg-white rounded-lg overflow-hidden shadow-md transition-shadow hover:shadow-xl">
                 <div className="relative w-full h-80">
-                  <img
+                  <Image
                     src={leader.image}
                     alt={leader.name}
+                    fill
                     className="w-full h-full object-cover object-center"
                   />
                 </div>
