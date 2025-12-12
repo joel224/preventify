@@ -1,9 +1,11 @@
+
 'use client'
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import { blogPosts } from "@/data/blogPosts";
 import { Calendar } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import Image from "next/image";
 
 const BlogPostPage = () => {
   const params = useParams();
@@ -47,11 +49,12 @@ const BlogPostPage = () => {
           
           {/* UPDATED IMAGE STYLING */}
           {/* Constrained height, object-cover to prevent stretch, shadow for depth */}
-          <div className="w-full relative mb-10 group">
-            <img
+          <div className="w-full relative mb-10 group h-[450px]">
+            <Image
               src={post.coverImage}
               alt={post.title}
-              className="w-full max-h-[450px] object-cover rounded-xl "
+              fill
+              className="object-cover rounded-xl "
             />
           </div>
           
