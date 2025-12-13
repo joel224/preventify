@@ -34,9 +34,28 @@ export default function ClientLayout({
 }) {
   const pathname = usePathname();
   const isHomePage = pathname === '/';
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    // This effect runs once the component mounts on the client-side.
+    // We can then hide the loader.
+    setLoading(false);
+  }, []);
   
   return (
     <TooltipProvider>
+      {loading && (
+        <div 
+          className="fixed inset-0 z-[100] flex items-center justify-center bg-white"
+        >
+          <dotlottie-wc 
+              src="https://lottie.host/0083ce0e-679f-4d56-ba14-06430aaf6d50/Gj92cCYgEe.lottie" 
+              style={{ width: '300px', height: '300px' }}
+              autoplay 
+              loop>
+          </dotlottie-wc>
+        </div>
+      )}
       <div className="flex flex-col min-h-screen">
         <Navbar />
         <main className="flex-grow">
@@ -51,7 +70,7 @@ export default function ClientLayout({
       <SubscriptionButton />
       <WebsiteSharpener />
       <Script 
-        src="https://unpkg.com/@lottiefiles/dotlottie-wc@0.8.5/dist/dotlottie-wc.js" 
+        src="https://unpkg.com/@lottiefiles/dotlottie-wc@0.8.11/dist/dotlottie-wc.js" 
         type="module"
       />
     </TooltipProvider>
