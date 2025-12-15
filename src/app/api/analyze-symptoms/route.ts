@@ -26,10 +26,9 @@ export async function POST(req: NextRequest) {
 
     const result = await analyzeSymptoms({ symptoms, doctors });
     
-    // Return the full result from the AI flow
+    // Return only the recommendedDoctorId
     return NextResponse.json({ 
-        recommendedDoctorId: result.recommendedDoctorId,
-        reasoning: result.reasoning
+        recommendedDoctorId: result.recommendedDoctorId
     });
   } catch (error: any) {
     console.error('Error in analyze-symptoms API:', error);

@@ -10,7 +10,7 @@
 
 import { ai } from '@/ai/genkit';
 import { z } from 'genkit';
-import { llama3_8b_instant } from 'genkitx-groq';
+import { llama31x8bInstant } from 'genkitx-groq';
 
 const DoctorSchema = z.object({
     id: z.string().describe('The unique identifier for the doctor.'),
@@ -71,7 +71,7 @@ const symptomAnalyzerFlow = ai.defineFlow(
   },
   async (input) => {
     const { output } = await symptomAnalyzerPrompt(input, {
-      model: llama3_8b_instant,
+      model: llama31x8bInstant,
     });
     return output!;
   }
