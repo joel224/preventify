@@ -153,6 +153,7 @@ const DoctorsPageContent = () => {
     const handleAISearch = async (symptoms: string) => {
       setIsAiLoading(true);
       setAiRecommendedDoctorId(null);
+      const analysisToast = toast.loading("Analyzing your symptoms to find the best doctor...");
       
       try {
         const response = await fetch('/api/analyze-symptoms', {
@@ -169,13 +170,13 @@ const DoctorsPageContent = () => {
         
         if (recommendedDoctorId) {
             setAiRecommendedDoctorId(recommendedDoctorId);
-            toast.success("We've found a recommended doctor for you!");
+            toast.success("We've found a recommended doctor for you!", { id: analysisToast });
         } else {
             throw new Error('Could not find a suitable doctor. Please try rephrasing.');
         }
 
       } catch (error: any) {
-        toast.error(error.message);
+        toast.error(error.message, { id: analysisToast });
       } finally {
         setIsAiLoading(false);
       }
@@ -278,7 +279,7 @@ const DoctorsPageContent = () => {
           {isAiLoading ? (
              <div className="text-center py-12">
                 <div className="flex justify-center items-center mb-4 h-32">
-                    <iframe src="https://lottie.host/embed/0083ce0e-679f-4d56-ba14-06430aaf6d50/Gj92cCYgEe.lottie" style={{border: 'none', width: '300px', height: '300px'}}></iframe>
+                    <iframe src="https://lottie.host/embed/0083ce0e-679f-4d56-ba14-06430aaf6d50/Gj92cCYgEe.lottie" style={{border: 'none', width: '150px', height: '150px'}}></iframe>
                 </div>
                 <h3 className="text-xl font-semibold mb-2 text-primary">AI is at work...</h3>
                 <p className="text-gray-600 max-w-md mx-auto">
@@ -348,5 +349,3 @@ const DoctorsPage = () => {
 };
 
 export default DoctorsPage;
-
-    

@@ -4,6 +4,5 @@
   "/savings/page": "app/savings/page.js",
   "/doctors/page": "app/doctors/page.js",
   "/emergency/page": "app/emergency/page.js",
-  "/api/testimonials/route": "app/api/testimonials/route.js",
-  "/_not-found/page": "app/_not-found/page.js"
+  "/api/analyze-symptoms/route": "app/api/analyze-symptoms/route.js"
 }
