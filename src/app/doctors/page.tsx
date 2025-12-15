@@ -153,10 +153,7 @@ const DoctorsPageContent = () => {
     const handleAISearch = async (symptoms: string) => {
       setIsAiLoading(true);
       setAiRecommendedDoctorId(null);
-      toast.info("Analyzing your symptoms to find the best doctor...", {
-          icon: <Sparkles className="h-4 w-4" />,
-      });
-
+      
       try {
         const response = await fetch('/api/analyze-symptoms', {
           method: 'POST',
@@ -284,12 +281,6 @@ const DoctorsPageContent = () => {
             </div>
           ) : filteredDoctors.length > 0 ? (
             <>
-              {aiRecommendedDoctorId && (
-                <div className="mb-8 p-4 bg-blue-50 border-l-4 border-blue-500 rounded-r-lg">
-                  <h3 className="font-bold text-blue-800 flex items-center gap-2"><Sparkles className="h-5 w-5" /> AI Recommendation</h3>
-                  <p className="text-blue-700">Based on your search, we recommend the following specialist. You can clear the filters to see all doctors.</p>
-                </div>
-              )}
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
                 {filteredDoctors.map((doctor) => (
                   <DoctorCard
