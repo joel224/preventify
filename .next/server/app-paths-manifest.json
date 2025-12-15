@@ -3,5 +3,7 @@
   "/programs/page": "app/programs/page.js",
   "/savings/page": "app/savings/page.js",
   "/doctors/page": "app/doctors/page.js",
-  "/api/analyze-symptoms/route": "app/api/analyze-symptoms/route.js"
+  "/api/analyze-symptoms/route": "app/api/analyze-symptoms/route.js",
+  "/api/testimonials/route": "app/api/testimonials/route.js",
+  "/_not-found/page": "app/_not-found/page.js"
 }
