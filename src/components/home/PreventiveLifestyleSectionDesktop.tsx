@@ -6,7 +6,8 @@ import { motion, useScroll, useTransform } from "framer-motion";
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "../ui/label";
-import BookingDialog from "../BookingDialog";
+import { Search, MapPin } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 const PreventiveLifestyleSectionDesktop = () => {
     const targetRef = useRef<HTMLDivElement>(null);
@@ -15,29 +16,22 @@ const PreventiveLifestyleSectionDesktop = () => {
         offset: ["start end", "end start"]
     });
 
-    const [name, setName] = useState('');
-    const [phone, setPhone] = useState('');
+    const [location, setLocation] = useState('');
+    const [searchQuery, setSearchQuery] = useState('');
+    const router = useRouter();
 
     const y = useTransform(scrollYProgress, [0, 1], ["25%", "-25%"]);
     
-    const getProcessedNames = () => {
-        if (!name.trim()) return { firstName: '', lastName: '' };
-        const nameParts = name.trim().split(' ');
-        const firstName = nameParts.shift() || '';
-        const lastName = nameParts.join(' ') || ''; // Handle names with multiple parts
-        return { firstName, lastName };
-    };
-
-    const getSanitizedPhone = () => {
-        if (!phone.trim()) return '';
-        const digitsOnly = phone.replace(/\D/g, '');
-        if (digitsOnly.startsWith('91') && digitsOnly.length === 12) {
-            return digitsOnly.slice(2);
+    const handleSearch = () => {
+        // Construct the query parameters for the /doctors page
+        const params = new URLSearchParams();
+        if (location) {
+            params.set('location', location);
         }
-        if (digitsOnly.startsWith('0') && digitsOnly.length === 11) {
-            return digitsOnly.slice(1);
+        if (searchQuery) {
+            params.set('q', searchQuery);
         }
-        return digitsOnly.slice(-10);
+        router.push(`/doctors?${params.toString()}`);
     };
 
     return (
@@ -49,33 +43,31 @@ const PreventiveLifestyleSectionDesktop = () => {
                         <div className="max-w-5xl mx-auto rounded-xl shadow-lg -mt-72 flex">
                             <div className="bg-[#004c9e] text-white p-5 rounded-l-xl flex-grow">
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
-                                    {/* Name Input */}
+                                    {/* Location Input */}
                                     <div className="space-y-1">
-                                        <Label htmlFor="name-desktop" className="text-sm font-medium text-white/90">Name</Label>
+                                        <Label htmlFor="location-desktop" className="text-sm font-medium text-white/90 flex items-center gap-1">
+                                            <MapPin className="w-4 h-4" /> I’m looking for in
+                                        </Label>
                                         <Input 
-                                            id="name-desktop" 
+                                            id="location-desktop" 
                                             type="text" 
-                                            placeholder="Your Name" 
-                                            value={name} 
-                                            onChange={(e) => setName(e.target.value)} 
-                                            required 
-                                            autoComplete="name"
-                                            name="name"
+                                            placeholder="Location/City" 
+                                            value={location} 
+                                            onChange={(e) => setLocation(e.target.value)} 
                                             className="h-10 text-lg bg-transparent border-0 border-b-2 border-white/50 rounded-none focus:ring-0 focus:border-white p-0 text-white placeholder:text-white/70 focus-visible:ring-0 focus-visible:ring-offset-0"
                                         />
                                     </div>
-                                    {/* Phone Input */}
+                                    {/* Search Input */}
                                     <div className="space-y-1">
-                                        <Label htmlFor="phone-desktop" className="text-sm font-medium text-white/90">Phone Number</Label>
+                                        <Label htmlFor="search-desktop" className="text-sm font-medium text-white/90">
+                                            Search Doctors by Specialty, Condition, Doctor’s name
+                                        </Label>
                                         <Input 
-                                            id="phone-desktop" 
-                                            type="tel" 
-                                            placeholder="Your Number" 
-                                            value={phone} 
-                                            onChange={(e) => setPhone(e.target.value)} 
-                                            required
-                                            autoComplete="tel"
-                                            name="tel"
+                                            id="search-desktop" 
+                                            type="text" 
+                                            placeholder="e.g., Cardiology, Dr. Rakesh" 
+                                            value={searchQuery} 
+                                            onChange={(e) => setSearchQuery(e.target.value)}
                                             className="h-10 text-lg bg-transparent border-0 border-b-2 border-white/50 rounded-none focus:ring-0 focus:border-white p-0 text-white placeholder:text-white/70 focus-visible:ring-0 focus-visible:ring-offset-0"
                                         />
                                     </div>
@@ -83,21 +75,15 @@ const PreventiveLifestyleSectionDesktop = () => {
                             </div>
                             
                             {/* Submit Button */}
-                            <BookingDialog
-                                initialFirstName={getProcessedNames().firstName}
-                                initialPhone={getSanitizedPhone()}
+                             <Button 
+                                type="button" 
+                                onClick={handleSearch}
+                                className="h-auto text-lg bg-[#3370b1] hover:bg-[#4a80c2] text-white font-semibold transition-all duration-200 rounded-l-none rounded-r-xl px-8 flex flex-col items-center justify-center gap-1"
                             >
-                                <Button 
-                                    type="button" 
-                                    className="h-auto text-lg bg-[#3370b1] hover:bg-[#4a80c2] text-white font-semibold transition-all duration-200 rounded-l-none rounded-r-xl px-8"
-                                >
-                                    Book Now
-                                </Button>
-                            </BookingDialog>
+                                <Search className="w-6 h-6" />
+                                <span>Search</span>
+                            </Button>
                         </div>
-                        <p className="text-xs text-gray-500 mt-4 text-center max-w-4xl mx-auto">
-                            By submitting your contact details, you agree to receive automated SMS/MMS messages from Preventify. Message & data rates may apply.
-                        </p>
                         
                         <p 
                             className="text-lg text-preventify-dark-gray mb-8 max-w-3xl mx-auto mt-12"
