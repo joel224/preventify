@@ -79,7 +79,7 @@ const PreventiveLifestyleSectionDesktop = () => {
                                         <Input 
                                             id="search-desktop" 
                                             type="text" 
-                                            placeholder="Specialty, Condition, Doctor's name"
+                                            placeholder="Specialty, Condition(sentence), Doctor's name"
                                             value={searchQuery} 
                                             onChange={(e) => setSearchQuery(e.target.value)}
                                             className="h-10 text-lg bg-transparent border-0 border-b-2 border-white/50 rounded-none focus:ring-0 focus:border-white p-0 text-white placeholder:text-white/70 focus-visible:ring-0 focus-visible:ring-offset-0"
