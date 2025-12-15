@@ -56,7 +56,7 @@ const PreventiveLifestyleSectionDesktop = () => {
                                                 placeholder="e.g. Padinjarangadi" 
                                                 value={location} 
                                                 onChange={(e) => setLocation(e.target.value)} 
-                                                className="h-10 text-lg bg-transparent border-0 border-b border-white/50 rounded-none focus:ring-0 focus:border-white p-0 pr-6 text-white placeholder:text-white/70 focus-visible:ring-0 focus-visible:ring-offset-0"
+                                                className="h-10 text-lg bg-transparent border-0 border-b-2 border-white/50 rounded-none focus:ring-0 focus:border-white p-0 text-white placeholder:text-white/70 focus-visible:ring-0 focus-visible:ring-offset-0"
                                             />
                                             <ChevronDown className="absolute right-0 top-1/2 -translate-y-1/2 h-5 w-5 text-white/70" />
                                         </div>
@@ -69,10 +69,10 @@ const PreventiveLifestyleSectionDesktop = () => {
                                         <Input 
                                             id="search-desktop" 
                                             type="text" 
-                                            placeholder="e.g., Cardiology, Dr. Rakesh" 
+                                            placeholder="Specialty, Condition, Doctor's name"
                                             value={searchQuery} 
                                             onChange={(e) => setSearchQuery(e.target.value)}
-                                            className="h-10 text-lg bg-transparent border-0 border-b border-white/50 rounded-none focus:ring-0 focus:border-white p-0 text-white placeholder:text-white/70 focus-visible:ring-0 focus-visible:ring-offset-0"
+                                            className="h-10 text-lg bg-transparent border-0 border-b-2 border-white/50 rounded-none focus:ring-0 focus:border-white p-0 text-white placeholder:text-white/70 focus-visible:ring-0 focus-visible:ring-offset-0"
                                         />
                                     </div>
                                 </div>
