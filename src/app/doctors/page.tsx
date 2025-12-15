@@ -276,8 +276,14 @@ const DoctorsPageContent = () => {
       <section className="py-16">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           {isAiLoading ? (
-            <div className="flex justify-center items-center h-40">
-                <Loader2 className="h-12 w-12 animate-spin text-primary" />
+             <div className="text-center py-12">
+                <div className="flex justify-center items-center mb-4">
+                    <Sparkles className="h-12 w-12 text-primary animate-pulse" />
+                </div>
+                <h3 className="text-xl font-semibold mb-2 text-primary">AI is at work...</h3>
+                <p className="text-gray-600 max-w-md mx-auto">
+                    Analyzing your symptoms to find the best-matched specialist from our team. This may take a moment.
+                </p>
             </div>
           ) : filteredDoctors.length > 0 ? (
             <>
