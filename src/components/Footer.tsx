@@ -61,63 +61,41 @@ const Footer = () => {
 
           <div>
             <h3 className="text-xl font-display font-semibold mb-4">Quick Links</h3>
-            <ul className="space-y-4">
-              <li>
-                <Link href="/about" className="text-gray-600 hover:text-preventify-purple transition-colors group inline-flex items-center">
-                  <span className="opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-200 text-preventify-purple mr-1">&gt;</span>About Us
-                </Link>
-              </li>
-              <li>
-                <Link href="/clinics" className="text-gray-600 hover:text-preventify-purple transition-colors group inline-flex items-center">
-                  <span className="opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-200 text-preventify-purple mr-1">&gt;</span>Our Clinics
-                </Link>
-              </li>
-              <li>
-                <Link href="/doctors" className="text-gray-600 hover:text-preventify-purple transition-colors group inline-flex items-center">
-                  <span className="opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-200 text-preventify-purple mr-1">&gt;</span>Our Doctors
-                </Link>
-              </li>
-              <li>
-                <Link href="/programs" className="text-gray-600 hover:text-preventify-purple transition-colors group inline-flex items-center">
-                  <span className="opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-200 text-preventify-purple mr-1">&gt;</span>Health Programs
-                </Link>
-              </li>
-              <li>
-                <Link href="/partners" className="text-gray-600 hover:text-preventify-purple transition-colors group inline-flex items-center">
-                  <span className="opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-200 text-preventify-purple mr-1">&gt;</span>Partner with Us
-                </Link>
-              </li>
+            <ul className="space-y-2">
+              {[
+                { href: "/about", text: "About Us" },
+                { href: "/clinics", text: "Our Clinics" },
+                { href: "/doctors", text: "Our Doctors" },
+                { href: "/programs", text: "Health Programs" },
+                { href: "/partners", text: "Partner with Us" },
+              ].map(link => (
+                <li key={link.href}>
+                  <Link href={link.href} className="relative group inline-flex items-center text-gray-600 hover:text-preventify-purple transition-colors">
+                    <span className="absolute left-0 opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300 text-preventify-purple">&gt;</span>
+                    <span className="pl-0 group-hover:pl-4 transition-all duration-300">{link.text}</span>
+                  </Link>
+                </li>
+              ))}
             </ul>
           </div>
 
           <div>
             <h3 className="text-xl font-display font-semibold mb-4">Our Services</h3>
-            <ul className="space-y-4">
-              <li>
-                <Link href="/services" className="text-gray-600 hover:text-preventify-purple transition-colors group inline-flex items-center">
-                  <span className="opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-200 text-preventify-purple mr-1">&gt;</span>Diabetes Care
-                </Link>
-              </li>
-              <li>
-                 <Link href="/services" className="text-gray-600 hover:text-preventify-purple transition-colors group inline-flex items-center">
-                  <span className="opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-200 text-preventify-purple mr-1">&gt;</span>Preventive Healthcare
-                </Link>
-              </li>
-              <li>
-                 <Link href="/services" className="text-gray-600 hover:text-preventify-purple transition-colors group inline-flex items-center">
-                  <span className="opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-200 text-preventify-purple mr-1">&gt;</span>Lifestyle Medicine
-                </Link>
-              </li>
-              <li>
-                 <Link href="/services" className="text-gray-600 hover:text-preventify-purple transition-colors group inline-flex items-center">
-                  <span className="opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-200 text-preventify-purple mr-1">&gt;</span>Primary Care
-                </Link>
-              </li>
-              <li>
-                 <Link href="/services" className="text-gray-600 hover:text-preventify-purple transition-colors group inline-flex items-center">
-                  <span className="opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-200 text-preventify-purple mr-1">&gt;</span>Specialist Consultation
-                </Link>
-              </li>
+            <ul className="space-y-2">
+              {[
+                  { href: "/services", text: "Diabetes Care" },
+                  { href: "/services", text: "Preventive Healthcare" },
+                  { href: "/services", text: "Lifestyle Medicine" },
+                  { href: "/services", text: "Primary Care" },
+                  { href: "/services", text: "Specialist Consultation" },
+              ].map(link => (
+                <li key={link.text}>
+                  <Link href={link.href} className="relative group inline-flex items-center text-gray-600 hover:text-preventify-purple transition-colors">
+                    <span className="absolute left-0 opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300 text-preventify-purple">&gt;</span>
+                    <span className="pl-0 group-hover:pl-4 transition-all duration-300">{link.text}</span>
+                  </Link>
+                </li>
+              ))}
             </ul>
           </div>
 
