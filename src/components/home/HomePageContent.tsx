@@ -25,8 +25,8 @@ const HomePageContent = () => {
             <PreventiveLifestyleSection />
             <ServicesSection />
             <FeaturesSection />
-            <BlogPreviewSection />
             <TestimonialsSection />
+            <BlogPreviewSection />
             <LocationsSection />
             <CtaSection />
         </div>
