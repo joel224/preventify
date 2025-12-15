@@ -64,27 +64,27 @@ const Footer = () => {
             <ul className="space-y-4">
               <li>
                 <Link href="/about" className="text-gray-600 hover:text-preventify-purple transition-colors group inline-flex items-center">
-                  <span className="opacity-0 w-0 group-hover:w-4 group-hover:mr-1 transition-all duration-200">&gt;</span>About Us
+                  <span className="opacity-0 w-0 group-hover:w-4 group-hover:mr-1 transition-all duration-200 text-preventify-purple">&gt;</span>About Us
                 </Link>
               </li>
               <li>
                 <Link href="/clinics" className="text-gray-600 hover:text-preventify-purple transition-colors group inline-flex items-center">
-                  <span className="opacity-0 w-0 group-hover:w-4 group-hover:mr-1 transition-all duration-200">&gt;</span>Our Clinics
+                  <span className="opacity-0 w-0 group-hover:w-4 group-hover:mr-1 transition-all duration-200 text-preventify-purple">&gt;</span>Our Clinics
                 </Link>
               </li>
               <li>
                 <Link href="/doctors" className="text-gray-600 hover:text-preventify-purple transition-colors group inline-flex items-center">
-                  <span className="opacity-0 w-0 group-hover:w-4 group-hover:mr-1 transition-all duration-200">&gt;</span>Our Doctors
+                  <span className="opacity-0 w-0 group-hover:w-4 group-hover:mr-1 transition-all duration-200 text-preventify-purple">&gt;</span>Our Doctors
                 </Link>
               </li>
               <li>
                 <Link href="/programs" className="text-gray-600 hover:text-preventify-purple transition-colors group inline-flex items-center">
-                  <span className="opacity-0 w-0 group-hover:w-4 group-hover:mr-1 transition-all duration-200">&gt;</span>Health Programs
+                  <span className="opacity-0 w-0 group-hover:w-4 group-hover:mr-1 transition-all duration-200 text-preventify-purple">&gt;</span>Health Programs
                 </Link>
               </li>
               <li>
                 <Link href="/partners" className="text-gray-600 hover:text-preventify-purple transition-colors group inline-flex items-center">
-                  <span className="opacity-0 w-0 group-hover:w-4 group-hover:mr-1 transition-all duration-200">&gt;</span>Partner with Us
+                  <span className="opacity-0 w-0 group-hover:w-4 group-hover:mr-1 transition-all duration-200 text-preventify-purple">&gt;</span>Partner with Us
                 </Link>
               </li>
             </ul>
@@ -95,27 +95,27 @@ const Footer = () => {
             <ul className="space-y-4">
               <li>
                 <Link href="/services" className="text-gray-600 hover:text-preventify-purple transition-colors group inline-flex items-center">
-                  <span className="opacity-0 w-0 group-hover:w-4 group-hover:mr-1 transition-all duration-200">&gt;</span>Diabetes Care
+                  <span className="opacity-0 w-0 group-hover:w-4 group-hover:mr-1 transition-all duration-200 text-preventify-purple">&gt;</span>Diabetes Care
                 </Link>
               </li>
               <li>
                  <Link href="/services" className="text-gray-600 hover:text-preventify-purple transition-colors group inline-flex items-center">
-                  <span className="opacity-0 w-0 group-hover:w-4 group-hover:mr-1 transition-all duration-200">&gt;</span>Preventive Healthcare
+                  <span className="opacity-0 w-0 group-hover:w-4 group-hover:mr-1 transition-all duration-200 text-preventify-purple">&gt;</span>Preventive Healthcare
                 </Link>
               </li>
               <li>
                  <Link href="/services" className="text-gray-600 hover:text-preventify-purple transition-colors group inline-flex items-center">
-                  <span className="opacity-0 w-0 group-hover:w-4 group-hover:mr-1 transition-all duration-200">&gt;</span>Lifestyle Medicine
+                  <span className="opacity-0 w-0 group-hover:w-4 group-hover:mr-1 transition-all duration-200 text-preventify-purple">&gt;</span>Lifestyle Medicine
                 </Link>
               </li>
               <li>
                  <Link href="/services" className="text-gray-600 hover:text-preventify-purple transition-colors group inline-flex items-center">
-                  <span className="opacity-0 w-0 group-hover:w-4 group-hover:mr-1 transition-all duration-200">&gt;</span>Primary Care
+                  <span className="opacity-0 w-0 group-hover:w-4 group-hover:mr-1 transition-all duration-200 text-preventify-purple">&gt;</span>Primary Care
                 </Link>
               </li>
               <li>
                  <Link href="/services" className="text-gray-600 hover:text-preventify-purple transition-colors group inline-flex items-center">
-                  <span className="opacity-0 w-0 group-hover:w-4 group-hover:mr-1 transition-all duration-200">&gt;</span>Specialist Consultation
+                  <span className="opacity-0 w-0 group-hover:w-4 group-hover:mr-1 transition-all duration-200 text-preventify-purple">&gt;</span>Specialist Consultation
                 </Link>
               </li>
             </ul>
