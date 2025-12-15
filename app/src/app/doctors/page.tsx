@@ -153,6 +153,7 @@ const DoctorsPageContent = () => {
     const handleAISearch = async (symptoms: string) => {
       setIsAiLoading(true);
       setAiRecommendedDoctorId(null);
+      const analysisToast = toast.loading("Analyzing your symptoms to find the best doctor...");
       
       try {
         const response = await fetch('/api/analyze-symptoms', {
@@ -169,13 +170,13 @@ const DoctorsPageContent = () => {
         
         if (recommendedDoctorId) {
             setAiRecommendedDoctorId(recommendedDoctorId);
-            toast.success("We've found a recommended doctor for you!");
+            toast.success("We've found a recommended doctor for you!", { id: analysisToast });
         } else {
             throw new Error('Could not find a suitable doctor. Please try rephrasing.');
         }
 
       } catch (error: any) {
-        toast.error(error.message);
+        toast.error(error.message, { id: analysisToast });
       } finally {
         setIsAiLoading(false);
       }
@@ -348,3 +349,5 @@ const DoctorsPage = () => {
 };
 
 export default DoctorsPage;
+
+    
