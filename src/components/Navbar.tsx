@@ -234,7 +234,7 @@ const Navbar = () => {
                                                 </div>
                                                 <div>
                                                     <p className="font-semibold text-slate-900 text-[15px] mb-0.5 group-hover:text-primary transition-colors">{service.title}</p>
-                                                    <p className="text-sm text-slate-500 leading-relaxed font-normal">{service.description}</p>
+                                                    <p className="text-sm text-slate-500 leading-relaxed font-normal group-hover:text-preventify-green transition-colors">{service.description}</p>
                                                 </div>
                                             </div>
                                         </ListItem>
