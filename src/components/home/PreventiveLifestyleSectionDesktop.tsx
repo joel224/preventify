@@ -6,8 +6,17 @@ import { motion, useScroll, useTransform } from "framer-motion";
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "../ui/label";
-import { Search, MapPin, ChevronDown } from "lucide-react";
+import { ChevronDown } from "lucide-react";
 import { useRouter } from "next/navigation";
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from "@/components/ui/select"
+
+const locations = ["All", "Padinjarangadi", "Vattamkulam", "Padinjarangadi & Vattamkulam"];
 
 const PreventiveLifestyleSectionDesktop = () => {
     const targetRef = useRef<HTMLDivElement>(null);
@@ -16,7 +25,7 @@ const PreventiveLifestyleSectionDesktop = () => {
         offset: ["start end", "end start"]
     });
 
-    const [location, setLocation] = useState('');
+    const [location, setLocation] = useState('All');
     const [searchQuery, setSearchQuery] = useState('');
     const router = useRouter();
 
@@ -25,7 +34,7 @@ const PreventiveLifestyleSectionDesktop = () => {
     const handleSearch = () => {
         // Construct the query parameters for the /doctors page
         const params = new URLSearchParams();
-        if (location) {
+        if (location && location !== 'All') {
             params.set('location', location);
         }
         if (searchQuery) {
@@ -41,7 +50,7 @@ const PreventiveLifestyleSectionDesktop = () => {
                     <div className="text-center">
 
                         <div className="max-w-5xl mx-auto rounded-xl shadow-lg -mt-72 flex bg-[#004c9e] text-white">
-                            <div className="p-8 flex-grow">
+                            <div className="p-7 flex-grow">
                                 <h3 className="text-2xl font-bold text-left mb-6">I'm looking for</h3>
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-end">
                                     {/* Location Input */}
@@ -49,22 +58,23 @@ const PreventiveLifestyleSectionDesktop = () => {
                                         <Label htmlFor="location-desktop" className="text-sm font-medium text-white/90 flex items-center gap-1">
                                             Location/City
                                         </Label>
-                                        <div className="relative">
-                                            <Input 
-                                                id="location-desktop" 
-                                                type="text" 
-                                                placeholder="e.g. Padinjarangadi" 
-                                                value={location} 
-                                                onChange={(e) => setLocation(e.target.value)} 
-                                                className="h-10 text-lg bg-transparent border-0 border-b-2 border-white/50 rounded-none focus:ring-0 focus:border-white p-0 text-white placeholder:text-white/70 focus-visible:ring-0 focus-visible:ring-offset-0"
-                                            />
-                                            <ChevronDown className="absolute right-0 top-1/2 -translate-y-1/2 h-5 w-5 text-white/70" />
-                                        </div>
+                                         <Select value={location} onValueChange={setLocation}>
+                                            <SelectTrigger className="w-full h-10 text-lg bg-transparent border-0 border-b-2 border-white/50 rounded-none focus:ring-0 focus:border-white p-0 text-white placeholder:text-white/70 focus-visible:ring-0 focus-visible:ring-offset-0">
+                                                <SelectValue placeholder="Select Location" />
+                                            </SelectTrigger>
+                                            <SelectContent>
+                                                {locations.map((loc) => (
+                                                    <SelectItem key={loc} value={loc}>
+                                                        {loc}
+                                                    </SelectItem>
+                                                ))}
+                                            </SelectContent>
+                                        </Select>
                                     </div>
                                     {/* Search Input */}
                                     <div className="space-y-1 text-left">
                                         <Label htmlFor="search-desktop" className="text-sm font-medium text-white/90">
-                                            Search Doctors by Specialty, Condition, Doctor’s name
+                                            Search Doctors 
                                         </Label>
                                         <Input 
                                             id="search-desktop" 
