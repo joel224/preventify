@@ -205,7 +205,10 @@ const Navbar = () => {
                   
                   {/* SERVICES MENU - REFACTORED FOR INTERACTIVITY */}
                   <NavigationMenuItem>
-                    <NavigationMenuTrigger className="text-[15px] font-medium text-slate-600 hover:text-primary hover:bg-slate-50/80 data-[state=open]:bg-slate-50">
+                    <NavigationMenuTrigger 
+                      className="text-[15px] font-medium text-slate-600 hover:text-primary hover:bg-slate-50/80 data-[state=open]:bg-slate-50"
+                      onMouseEnter={() => setActiveService(null)}
+                    >
                         Our Services
                         <ChevronDown
                         className="relative top-[1px] ml-1 h-3 w-3 transition duration-200 group-data-[state=open]:rotate-180"
@@ -219,9 +222,7 @@ const Navbar = () => {
                         <div className="col-span-8 flex flex-col gap-2">
                             <p 
                               className="px-4 text-xs font-bold text-slate-400 uppercase tracking-wider mb-2"
-                              onMouseEnter={() => setActiveService(null)}
                             >
-                              
                               SERVICES
                             </p>
                             <div className="grid grid-cols-2 gap-x-6 gap-y-1">
@@ -246,6 +247,19 @@ const Navbar = () => {
                         {/* DYNAMIC FEATURED/SERVICE Column */}
                         <div className="col-span-4">
                            <div className="h-full bg-gray-50 rounded-2xl p-6 flex flex-col justify-between hover:border-primary/20 transition-colors border relative overflow-hidden">
+                                <div className="absolute inset-0 z-0">
+                                    {/* Preload all images but keep them hidden */}
+                                    {[...services, ...moreServices].map((service) => (
+                                        <img 
+                                            key={service.title}
+                                            src={service.image} 
+                                            alt={service.title}
+                                            className="absolute inset-0 w-full h-full object-cover grayscale opacity-0 transition-opacity duration-300"
+                                            style={{ opacity: activeService?.title === service.title ? 0.1 : 0 }}
+                                        />
+                                    ))}
+                                    <div className="absolute inset-0 bg-gradient-to-t from-gray-50 via-gray-50 to-transparent"></div>
+                                </div>
                                 <AnimatePresence mode="wait">
                                     {activeService ? (
                                         <motion.div
@@ -254,25 +268,15 @@ const Navbar = () => {
                                             animate={{ opacity: 1, x: 0 }}
                                             exit={{ opacity: 0, x: -20 }}
                                             transition={{ duration: 0.3, ease: 'easeInOut' }}
-                                            className="h-full flex flex-col"
+                                            className="relative z-10 flex-grow flex flex-col justify-end"
                                         >
-                                            <div className="absolute inset-0 z-0">
-                                                 <img 
-                                                    src={activeService.image} 
-                                                    alt={activeService.title}
-                                                    className="w-full h-full object-cover grayscale opacity-10"
-                                                />
-                                                <div className="absolute inset-0 bg-gradient-to-t from-gray-50 via-gray-50 to-transparent"></div>
-                                            </div>
-                                            <div className="relative z-10 flex-grow flex flex-col justify-end">
-                                                <h3 className="font-bold text-slate-900 text-lg mb-2">{activeService.title}</h3>
-                                                <p className="text-[15px] text-slate-600 mb-6 leading-relaxed flex-grow">{activeService.longDescription}</p>
-                                                <Link href={activeService.href} passHref>
-                                                    <Button variant="link" className="p-0 h-auto text-primary">
-                                                        Read More <ArrowRight className="ml-1 h-4 w-4"/>
-                                                    </Button>
-                                                </Link>
-                                            </div>
+                                            <h3 className="font-bold text-slate-900 text-lg mb-2">{activeService.title}</h3>
+                                            <p className="text-[15px] text-slate-600 mb-6 leading-relaxed flex-grow">{activeService.longDescription}</p>
+                                            <Link href={activeService.href} passHref>
+                                                <Button variant="link" className="p-0 h-auto text-primary">
+                                                    Read More <ArrowRight className="ml-1 h-4 w-4"/>
+                                                </Button>
+                                            </Link>
                                         </motion.div>
                                     ) : (
                                         <motion.div
