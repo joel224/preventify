@@ -61,7 +61,7 @@ const Footer = () => {
 
           <div>
             <h3 className="text-xl font-display font-semibold mb-4">Quick Links</h3>
-            <ul className="space-y-2">
+            <ul className="space-y-4">
               {[
                 { href: "/about", text: "About Us" },
                 { href: "/clinics", text: "Our Clinics" },
@@ -71,7 +71,7 @@ const Footer = () => {
               ].map(link => (
                 <li key={link.href}>
                   <Link href={link.href} className="relative group inline-flex items-center text-gray-600 hover:text-preventify-purple transition-colors">
-                    <span className="absolute left-0 opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300 text-preventify-purple">&gt;</span>
+                    <span className="absolute left-0 opacity-0 group-hover:opacity-100 transition-all duration-300 text-preventify-purple">&gt;</span>
                     <span className="pl-0 group-hover:pl-4 transition-all duration-300">{link.text}</span>
                   </Link>
                 </li>
@@ -81,7 +81,7 @@ const Footer = () => {
 
           <div>
             <h3 className="text-xl font-display font-semibold mb-4">Our Services</h3>
-            <ul className="space-y-2">
+            <ul className="space-y-4">
               {[
                   { href: "/services", text: "Diabetes Care" },
                   { href: "/services", text: "Preventive Healthcare" },
@@ -91,7 +91,7 @@ const Footer = () => {
               ].map(link => (
                 <li key={link.text}>
                   <Link href={link.href} className="relative group inline-flex items-center text-gray-600 hover:text-preventify-purple transition-colors">
-                    <span className="absolute left-0 opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300 text-preventify-purple">&gt;</span>
+                    <span className="absolute left-0 opacity-0 group-hover:opacity-100 transition-all duration-300 text-preventify-purple">&gt;</span>
                     <span className="pl-0 group-hover:pl-4 transition-all duration-300">{link.text}</span>
                   </Link>
                 </li>
