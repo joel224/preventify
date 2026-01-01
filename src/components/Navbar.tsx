@@ -1,7 +1,6 @@
-
 'use client'
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Menu, X, Phone, ChevronDown, User, AlertTriangle, LucideIcon, ArrowRight, Stethoscope, Heart, Shield, Droplets, Activity, PlusCircle, CheckCircle, Star, MapPin } from "lucide-react";
@@ -19,30 +18,32 @@ import ListItem from "@/components/ListItem";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 
+// --- Types ---
 interface NavLinkType {
   name: string;
   path: string;
   icon?: LucideIcon; 
 }
 
+// --- Data Constants ---
 const doctors = [
     {
       id: 1,
       name: "Dr. Rakesh K R",
       specialty: "Chief Medical Officer",
-      image: "https://res.cloudinary.com/dyf8umlda/image/upload/v1748262006/Dr_Rakesh_xngrlx.jpg  ",
+      image: "https://res.cloudinary.com/dyf8umlda/image/upload/v1748262006/Dr_Rakesh_xngrlx.jpg",
     },
     {
       id: 2,
       name: "Dr. Mohammed Faisal",
       specialty: "General Practitioner",
-      image: "https://res.cloudinary.com/dyf8umlda/image/upload/v1748257298/Dr_Faisal_stbx3w.jpg  ",
+      image: "https://res.cloudinary.com/dyf8umlda/image/upload/v1748257298/Dr_Faisal_stbx3w.jpg",
     },
     {
       id: 3,
       name: "Dr. Hafsa Hussain",
       specialty: "Pediatrics",
-      image: "https://res.cloudinary.com/dyf8umlda/image/upload/v1748255660/Dr_Hafsa_t3qk7r.jpg  ",
+      image: "https://res.cloudinary.com/dyf8umlda/image/upload/v1748255660/Dr_Hafsa_t3qk7r.jpg",
     },
 ];
 
@@ -107,14 +108,73 @@ const moreServices: { title: string; href: string; description: string; longDesc
   },
 ];
 
+// --- Helper Component: ServiceItem ---
+// Now accepts specific handlers for enter/leave instead of raw setters
+const ServiceItem = ({ 
+  service, 
+  isActive, 
+  onEnter, 
+  onLeave 
+}: { 
+  service: any, 
+  isActive: boolean, 
+  onEnter: () => void, 
+  onLeave: () => void 
+}) => (
+  <div 
+    onMouseEnter={onEnter}
+    onMouseLeave={onLeave}
+    className="rounded-xl transition-all duration-300 ease-in-out h-full"
+  >
+    <ListItem href={service.href} title={service.title} className="p-4 rounded-xl hover:bg-slate-50 transition-all duration-200 group h-full">
+      <div className="flex items-start gap-4">
+        <div className={`p-2 rounded-lg transition-colors duration-300 ${isActive ? 'bg-primary/20' : 'bg-primary/10'}`}>
+          <service.icon className={`w-5 h-5 transition-colors duration-300 ${isActive ? 'text-primary' : 'text-primary/80'}`} />
+        </div>
+        <div className="flex-1">
+          <p className="font-semibold text-slate-900 text-[15px] mb-0.5 group-hover:text-primary transition-colors">
+            {service.title}
+          </p>
+          <p className="text-sm text-slate-500 font-normal group-hover:text-preventify-green transition-colors">
+            {service.description}
+          </p>
+          
+          <AnimatePresence>
+            {isActive && (
+              <motion.div
+                initial={{ height: 0, opacity: 0, marginTop: 0 }}
+                animate={{ height: "auto", opacity: 1, marginTop: 8 }}
+                exit={{ height: 0, opacity: 0, marginTop: 0 }}
+                transition={{ duration: 0.3, ease: "easeInOut" }} // Slightly slower animation for smoothness
+                className="overflow-hidden"
+              >
+                <p className="text-sm text-slate-600 leading-relaxed mb-2">
+                  {service.longDescription}
+                </p>
+                <div className="flex items-center text-primary text-xs font-semibold tracking-wide uppercase">
+                  Read More <ArrowRight className="ml-1 h-3 w-3" />
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
+      </div>
+    </ListItem>
+  </div>
+);
 
 
-
+// --- Main Component: Navbar ---
 const Navbar = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const pathname = usePathname();
   const [navbarHeight, setNavbarHeight] = useState(80);
+  
+  // State for active service
   const [activeService, setActiveService] = useState<(typeof services[0]) | null>(null);
+  
+  // Ref to hold the timeout ID so we can clear it
+  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   const toggleMenu = () => {
     setMobileMenuOpen(!mobileMenuOpen);
@@ -124,6 +184,25 @@ const Navbar = () => {
     { name: "About Us", path: "/about" },
     { name: "Blogs", path: "/blog" },
   ];
+
+  // --- Debounce Logic Handlers ---
+  const handleServiceEnter = (service: typeof services[0]) => {
+    // If there is a pending close action, cancel it immediately
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
+      timeoutRef.current = null;
+    }
+    // Set the new active service immediately
+    setActiveService(service);
+  };
+
+  const handleServiceLeave = () => {
+    // Don't close immediately. Wait 300ms.
+    // This allows the user to bridge the gap to the next item if the layout shifted.
+    timeoutRef.current = setTimeout(() => {
+      setActiveService(null);
+    }, 300); 
+  };
 
   useEffect(() => {
     const updateNavbarHeight = () => {
@@ -203,11 +282,15 @@ const Navbar = () => {
               <NavigationMenu>
               <NavigationMenuList className="gap-2">
                   
-                  {/* SERVICES MENU - REFACTORED FOR INTERACTIVITY */}
+                  {/* SERVICES MENU */}
                   <NavigationMenuItem>
                     <NavigationMenuTrigger 
                       className="text-[15px] font-medium text-slate-600 hover:text-primary hover:bg-slate-50/80 data-[state=open]:bg-slate-50"
-                      onMouseEnter={() => setActiveService(null)}
+                      onMouseEnter={() => {
+                        // Clear service selection when entering the top menu item
+                        if (timeoutRef.current) clearTimeout(timeoutRef.current);
+                        setActiveService(null);
+                      }}
                     >
                         Our Services
                         <ChevronDown
@@ -215,104 +298,91 @@ const Navbar = () => {
                         aria-hidden="true"
                       />
                     </NavigationMenuTrigger>
+                    
                     <NavigationMenuContent>
                       <div className="grid grid-cols-12 gap-8 p-6 w-[980px] bg-white">
                         
-                        {/* Column 1 & 2 */}
-                        <div className="col-span-8 flex flex-col gap-2">
-                            <p 
-                              className="px-4 text-xs font-bold text-slate-400 uppercase tracking-wider mb-2"
-                            >
-                              SERVICES
-                            </p>
-                            <div className="grid grid-cols-2 gap-x-6 gap-y-1">
-                                {[...services, ...moreServices].map((service) => (
-                                    <div onMouseEnter={() => setActiveService(service)} key={service.title}>
-                                        <ListItem href={service.href} title={service.title} className="p-4 rounded-xl hover:bg-slate-50 transition-all duration-200 group">
-                                            <div className="flex items-start gap-4">
-                                                <div className="p-2 bg-primary/10 rounded-lg group-hover:bg-primary/20 transition-colors">
-                                                    <service.icon className="w-5 h-5 text-primary/80 group-hover:text-primary transition-colors" />
-                                                </div>
-                                                <div>
-                                                    <p className="font-semibold text-slate-900 text-[15px] mb-0.5 group-hover:text-primary transition-colors">{service.title}</p>
-                                                    <p className="text-sm text-slate-500 leading-relaxed font-normal group-hover:text-preventify-green transition-colors">{service.description}</p>
-                                                </div>
-                                            </div>
-                                        </ListItem>
-                                    </div>
-                                ))}
+                        {/* COLUMNS 1 & 2: Independent Vertical Columns (Masonry Layout) */}
+                        <div className="col-span-8">
+                          <p className="px-4 text-xs font-bold text-slate-400 uppercase tracking-wider mb-2 cursor-pointer hover:text-primary transition-colors"
+                             onMouseEnter={() => setActiveService(null)}>
+                            SERVICES
+                          </p>
+
+                          {/* Main Layout Container: 2 Separate Columns */}
+                          <div className="grid grid-cols-2 gap-6">
+                            
+                            {/* LEFT COLUMN (Even Indexes) */}
+                            <div className="flex flex-col gap-2">
+                              {[...services, ...moreServices].filter((_, i) => i % 2 === 0).map((service) => (
+                                 <ServiceItem 
+                                   key={service.title} 
+                                   service={service} 
+                                   isActive={activeService?.title === service.title}
+                                   onEnter={() => handleServiceEnter(service)} 
+                                   onLeave={handleServiceLeave}
+                                 />
+                              ))}
                             </div>
+
+                            {/* RIGHT COLUMN (Odd Indexes) */}
+                            <div className="flex flex-col gap-2">
+                              {[...services, ...moreServices].filter((_, i) => i % 2 !== 0).map((service) => (
+                                 <ServiceItem 
+                                   key={service.title} 
+                                   service={service} 
+                                   isActive={activeService?.title === service.title}
+                                   onEnter={() => handleServiceEnter(service)} 
+                                   onLeave={handleServiceLeave}
+                                 />
+                              ))}
+                            </div>
+
+                          </div>
                         </div>
 
-                        {/* DYNAMIC FEATURED/SERVICE Column */}
+                        {/* COLUMN 3: Fixed Sugam Card */}
                         <div className="col-span-4">
-                           <div className="h-full bg-gray-50 rounded-2xl p-6 flex flex-col justify-between hover:border-primary/20 transition-colors border relative overflow-hidden">
-                                <div className="absolute inset-0 z-0">
-                                    {/* Preload all images but keep them hidden */}
-                                    {[...services, ...moreServices].map((service) => (
-                                        <img 
-                                            key={service.title}
-                                            src={service.image} 
-                                            alt={service.title}
-                                            className="absolute inset-0 w-full h-full object-cover grayscale opacity-0 transition-opacity duration-300"
-                                            style={{ opacity: activeService?.title === service.title ? 0.1 : 0 }}
-                                        />
-                                    ))}
-                                    <div className="absolute inset-0 bg-gradient-to-t from-gray-50 via-gray-50 to-transparent"></div>
-                                </div>
-                                <AnimatePresence mode="wait">
-                                    {activeService ? (
-                                        <motion.div
-                                            key={activeService.title}
-                                            initial={{ opacity: 0, x: 20 }}
-                                            animate={{ opacity: 1, x: 0 }}
-                                            exit={{ opacity: 0, x: -20 }}
-                                            transition={{ duration: 0.3, ease: 'easeInOut' }}
-                                            className="relative z-10 flex-grow flex flex-col justify-end"
-                                        >
-                                            <h3 className="font-bold text-slate-900 text-lg mb-2">{activeService.title}</h3>
-                                            <p className="text-[15px] text-slate-600 mb-6 leading-relaxed flex-grow">{activeService.longDescription}</p>
-                                            <Link href={activeService.href} passHref>
-                                                <Button variant="link" className="p-0 h-auto text-primary">
-                                                    Read More <ArrowRight className="ml-1 h-4 w-4"/>
-                                                </Button>
-                                            </Link>
-                                        </motion.div>
-                                    ) : (
-                                        <motion.div
-                                            key="sugam-card"
-                                            initial={{ opacity: 0, x: 20 }}
-                                            animate={{ opacity: 1, x: 0 }}
-                                            exit={{ opacity: 0, x: -20 }}
-                                            transition={{ duration: 0.3, ease: 'easeInOut' }}
-                                            className="h-full flex flex-col"
-                                        >
-                                            <div>
-                                                <div className="flex items-center gap-2 mb-3">
-                                                    <Star className="w-4 h-4 text-amber-500 fill-amber-500" />
-                                                    <p className="text-xs font-bold text-slate-500 uppercase tracking-wider">FEATURED PLAN</p>
-                                                </div>
-                                                <h3 className="font-bold text-slate-900 text-lg mb-2">Sugam Card</h3>
-                                                <p className="text-[15px] text-slate-600 mb-6 leading-relaxed">One fee. One year. All your doctor visits are covered completely.</p>
-                                                <ul className="space-y-3 text-sm font-medium text-slate-700">
-                                                    <li className="flex items-center gap-2.5"><CheckCircle className="h-4 w-4 text-emerald-500"/> Unlimited Consultations</li>
-                                                    <li className="flex items-center gap-2.5"><CheckCircle className="h-4 w-4 text-emerald-500"/> Family Plans Available</li>
-                                                    <li className="flex items-center gap-2.5"><CheckCircle className="h-4 w-4 text-emerald-500"/> Priority Booking</li>
-                                                </ul>
-                                            </div>
-                                            <Link href="/savings" passHref className="mt-auto">
-                                                <Button className="w-full bg-primary hover:bg-primary/90 text-white shadow-lg shadow-primary/20 rounded-xl py-5">
-                                                    View Plan Details
-                                                </Button>
-                                            </Link>
-                                        </motion.div>
-                                    )}
-                                </AnimatePresence>
+                          <div className="h-full bg-gray-50 rounded-2xl p-6 flex flex-col justify-between hover:border-primary/20 transition-colors border relative overflow-hidden">
+                            <div className="absolute inset-0 z-0">
+                               <img 
+                                   src="/service/Primary Care.webp" 
+                                   alt="Background"
+                                   className="absolute inset-0 w-full h-full object-cover grayscale opacity-0"
+                               />
+                               <div className="absolute inset-0 bg-gradient-to-t from-gray-50 via-gray-50 to-transparent"></div>
                             </div>
+
+                            <div className="relative z-10 h-full flex flex-col">
+                              <div>
+                                <div className="flex items-center gap-2 mb-3">
+                                  <Star className="w-4 h-4 text-amber-500 fill-amber-500" />
+                                  <p className="text-xs font-bold text-slate-500 uppercase tracking-wider">FEATURED PLAN</p>
+                                </div>
+                                <h3 className="font-bold text-slate-900 text-lg mb-2">Sugam Card</h3>
+                                <p className="text-[15px] text-slate-600 mb-6 leading-relaxed">
+                                  One fee. One year. All your doctor visits are covered completely.
+                                </p>
+                                <ul className="space-y-3 text-sm font-medium text-slate-700">
+                                  <li className="flex items-center gap-2.5"><CheckCircle className="h-4 w-4 text-emerald-500"/> Unlimited Consultations</li>
+                                  <li className="flex items-center gap-2.5"><CheckCircle className="h-4 w-4 text-emerald-500"/> Family Plans Available</li>
+                                  <li className="flex items-center gap-2.5"><CheckCircle className="h-4 w-4 text-emerald-500"/> Priority Booking</li>
+                                </ul>
+                              </div>
+                              <Link href="/savings" passHref className="mt-auto">
+                                <Button className="w-full bg-primary hover:bg-primary/90 text-white shadow-lg shadow-primary/20 rounded-xl py-5 mt-4">
+                                  View Plan Details
+                                </Button>
+                              </Link>
+                            </div>
+                          </div>
                         </div>
+
                       </div>
                     </NavigationMenuContent>
-                    </NavigationMenuItem>
+                  </NavigationMenuItem>
+                  
+                  {/* DOCTORS MENU */}
                   <NavigationMenuItem>
                     <NavigationMenuTrigger className="font-medium transition-colors text-base text-gray-700 hover:text-primary bg-transparent focus:bg-transparent data-[state=open]:bg-transparent group">
                       Our Doctors
@@ -352,6 +422,7 @@ const Navbar = () => {
                     </NavigationMenuContent>
                   </NavigationMenuItem>
 
+                  {/* CLINICS MENU */}
                   <NavigationMenuItem>
                     <NavigationMenuTrigger className="font-medium transition-colors text-base text-gray-700 hover:text-primary bg-transparent focus:bg-transparent data-[state=open]:bg-transparent group">
                       Our Clinics
